@@ -3,7 +3,6 @@ import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navig
 import { fireEvent, render, waitFor } from '@testing-library/react-native'
 import React from 'react'
 import { Text, View } from 'react-native'
-import Button from 'src/components/Button'
 import {
   navigate,
   navigateBack,
@@ -13,6 +12,7 @@ import {
   navigatorIsReadyRef,
 } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+import Button from 'src/public/components/Button'
 
 const Stack = createNativeStackNavigator()
 

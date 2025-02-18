@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next'
 import Education, { EducationTopic } from 'src/account/Education'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { OnboardingEvents } from 'src/analytics/Events'
-import { BtnTypes } from 'src/components/Button'
 import { accountKey1, accountKey2, accountKey3, accountKey4 } from 'src/images/Images'
 import { noHeader } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
+import { BtnTypes } from 'src/public/components/Button'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.AccountKeyEducation>
 

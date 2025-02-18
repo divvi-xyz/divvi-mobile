@@ -5,6 +5,7 @@
  * - Enable better tree-shaking
  * - Prevent accidental exposure of internal implementation details
  */
+export { Button } from './components/Button'
 export { createApp } from './createApp'
 export { getFees } from './getFees'
 export { getPublicClient } from './getPublicClient'

@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import * as React from 'react'
-import Button, { BtnTypes, TextSizes } from 'src/components/Button'
+import Button, { BtnTypes, TextSizes } from 'src/public/components/Button'
 
 describe('Button', () => {
   describe('when pressed', () => {

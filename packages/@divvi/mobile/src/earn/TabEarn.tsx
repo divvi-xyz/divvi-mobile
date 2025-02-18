@@ -18,7 +18,6 @@ import { AppState } from 'src/app/actions'
 import { appStateSelector, phoneNumberVerifiedSelector } from 'src/app/selectors'
 import { getAppConfig } from 'src/appConfig'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
-import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import {
   ALERT_BANNER_DURATION,
   DEFAULT_TESTNET,
@@ -39,6 +38,7 @@ import {
   positionsFetchedAtSelector,
   positionsStatusSelector,
 } from 'src/positions/selectors'
+import Button, { BtnSizes, BtnTypes } from 'src/public/components/Button'
 import { phoneRecipientCacheSelector } from 'src/recipients/reducer'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { initializeSentryUserContext } from 'src/sentry/actions'

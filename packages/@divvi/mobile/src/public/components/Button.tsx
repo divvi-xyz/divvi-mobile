@@ -46,7 +46,7 @@ export interface ButtonProps {
   textSize?: TextSizes
 }
 
-export default React.memo(function Button(props: ButtonProps) {
+export const Button = React.memo(function Button(props: ButtonProps) {
   const {
     accessibilityLabel,
     disabled,

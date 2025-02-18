@@ -16,7 +16,6 @@ import {
   getStoredMnemonic,
   isValidBackupPhrase,
 } from 'src/backup/utils'
-import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import CurrencyDisplay from 'src/components/CurrencyDisplay'
 import Dialog from 'src/components/Dialog'
 import KeyboardAwareScrollView from 'src/components/KeyboardAwareScrollView'
@@ -28,6 +27,7 @@ import { navigate, navigateClearingStack } from 'src/navigator/NavigationService
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import TopBarTextButtonOnboarding from 'src/onboarding/TopBarTextButtonOnboarding'
+import Button, { BtnSizes, BtnTypes } from 'src/public/components/Button'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { isAppConnected } from 'src/redux/selectors'
 import { typeScale } from 'src/styles/fonts'

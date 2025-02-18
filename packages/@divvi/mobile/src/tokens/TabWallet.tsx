@@ -11,7 +11,6 @@ import Animated, {
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { AssetsEvents } from 'src/analytics/Events'
 import { getAppConfig } from 'src/appConfig'
-import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import { AssetsTokenBalance } from 'src/components/TokenBalance'
 import ActionsCarousel from 'src/home/ActionsCarousel'
 import { navigate } from 'src/navigator/NavigationService'
@@ -22,6 +21,7 @@ import {
   positionsWithBalanceSelector,
   positionsWithClaimableRewardsSelector,
 } from 'src/positions/selectors'
+import Button, { BtnSizes, BtnTypes } from 'src/public/components/Button'
 import { useSelector } from 'src/redux/hooks'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
