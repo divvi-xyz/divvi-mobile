@@ -5,7 +5,7 @@
  * - Enable better tree-shaking
  * - Prevent accidental exposure of internal implementation details
  */
-export { Button, type BtnSizes, type BtnTypes, type TextSizes } from './components/Button'
+export { BtnSizes, BtnTypes, Button, TextSizes } from './components/Button'
 export { createApp } from './createApp'
 export { getFees } from './getFees'
 export { getPublicClient } from './getPublicClient'
