@@ -13,6 +13,7 @@ import BackupPhraseContainer, {
 } from 'src/backup/BackupPhraseContainer'
 import { useAccountKey } from 'src/backup/utils'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import TextButton from 'src/components/TextButton'
 import CopyIcon from 'src/icons/CopyIcon'
 import { HeaderTitleWithSubtitle, nuxNavigationOptionsOnboarding } from 'src/navigator/Headers'
@@ -24,7 +25,6 @@ import {
   goToNextOnboardingScreen,
   onboardingPropsSelector,
 } from 'src/onboarding/steps'
-import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'

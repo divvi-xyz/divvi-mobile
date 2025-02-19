@@ -7,6 +7,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { KeylessBackupEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import CustomHeader from 'src/components/header/CustomHeader'
 import TextButton from 'src/components/TextButton'
@@ -25,7 +26,6 @@ import {
   goToNextOnboardingScreen,
   onboardingPropsSelector,
 } from 'src/onboarding/steps'
-import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { default as Colors, default as colors } from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
