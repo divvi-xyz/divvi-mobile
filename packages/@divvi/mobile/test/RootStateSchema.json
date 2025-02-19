@@ -3978,36 +3978,6 @@
         "StandbyTransaction": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/PendingStandbyTransaction<TokenTransfer>"
-                },
-                {
-                    "$ref": "#/definitions/PendingStandbyTransaction<TokenApproval>"
-                },
-                {
-                    "$ref": "#/definitions/PendingStandbyTransaction<NftTransfer>"
-                },
-                {
-                    "$ref": "#/definitions/PendingStandbyTransaction<DepositOrWithdraw>"
-                },
-                {
-                    "$ref": "#/definitions/PendingStandbyTransaction<EarnWithdraw>"
-                },
-                {
-                    "$ref": "#/definitions/PendingStandbyTransaction<EarnClaimReward>"
-                },
-                {
-                    "$ref": "#/definitions/PendingStandbyTransaction<PendingTokenExchange>"
-                },
-                {
-                    "$ref": "#/definitions/PendingStandbyTransaction<ClaimReward>"
-                },
-                {
-                    "$ref": "#/definitions/PendingStandbyTransaction<EarnDeposit>"
-                },
-                {
-                    "$ref": "#/definitions/PendingStandbyTransaction<EarnSwapDeposit>"
-                },
-                {
                     "additionalProperties": false,
                     "properties": {
                         "block": {
@@ -4673,6 +4643,36 @@
                         "type"
                     ],
                     "type": "object"
+                },
+                {
+                    "$ref": "#/definitions/PendingStandbyTransaction<PendingTokenExchange>"
+                },
+                {
+                    "$ref": "#/definitions/PendingStandbyTransaction<TokenTransfer>"
+                },
+                {
+                    "$ref": "#/definitions/PendingStandbyTransaction<TokenApproval>"
+                },
+                {
+                    "$ref": "#/definitions/PendingStandbyTransaction<NftTransfer>"
+                },
+                {
+                    "$ref": "#/definitions/PendingStandbyTransaction<DepositOrWithdraw>"
+                },
+                {
+                    "$ref": "#/definitions/PendingStandbyTransaction<ClaimReward>"
+                },
+                {
+                    "$ref": "#/definitions/PendingStandbyTransaction<EarnDeposit>"
+                },
+                {
+                    "$ref": "#/definitions/PendingStandbyTransaction<EarnSwapDeposit>"
+                },
+                {
+                    "$ref": "#/definitions/PendingStandbyTransaction<EarnWithdraw>"
+                },
+                {
+                    "$ref": "#/definitions/PendingStandbyTransaction<EarnClaimReward>"
                 }
             ]
         },
@@ -4687,6 +4687,9 @@
                 },
                 "appState": {
                     "$ref": "#/definitions/AppState"
+                },
+                "divviRegistrations": {
+                    "$ref": "#/definitions/{\"celo-mainnet\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"celo-alfajores\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"ethereum-mainnet\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"ethereum-sepolia\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"arbitrum-one\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"arbitrum-sepolia\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"op-mainnet\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"op-sepolia\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"polygon-pos-mainnet\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"polygon-pos-amoy\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"base-mainnet\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"base-sepolia\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;}"
                 },
                 "fiatConnectCashInEnabled": {
                     "type": "boolean"
@@ -4722,9 +4725,6 @@
                     "type": "number"
                 },
                 "locked": {
-                    "type": "boolean"
-                },
-                "loggedIn": {
                     "type": "boolean"
                 },
                 "pendingDeepLinks": {
@@ -4777,6 +4777,7 @@
                 "activeScreen",
                 "analyticsEnabled",
                 "appState",
+                "divviRegistrations",
                 "fiatConnectCashInEnabled",
                 "fiatConnectCashOutEnabled",
                 "hapticFeedbackEnabled",
@@ -4785,7 +4786,6 @@
                 "inviterAddress",
                 "lastTimeBackgrounded",
                 "locked",
-                "loggedIn",
                 "pendingDeepLinks",
                 "phoneNumberVerified",
                 "pushNotificationRequestedUnixTime",
@@ -6423,10 +6423,10 @@
         "TokenTransaction": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/TokenTransfer"
+                    "$ref": "#/definitions/TokenExchange"
                 },
                 {
-                    "$ref": "#/definitions/TokenExchange"
+                    "$ref": "#/definitions/TokenTransfer"
                 },
                 {
                     "$ref": "#/definitions/TokenApproval"
@@ -6438,12 +6438,6 @@
                     "$ref": "#/definitions/DepositOrWithdraw"
                 },
                 {
-                    "$ref": "#/definitions/EarnWithdraw"
-                },
-                {
-                    "$ref": "#/definitions/EarnClaimReward"
-                },
-                {
                     "$ref": "#/definitions/ClaimReward"
                 },
                 {
@@ -6451,6 +6445,12 @@
                 },
                 {
                     "$ref": "#/definitions/EarnSwapDeposit"
+                },
+                {
+                    "$ref": "#/definitions/EarnWithdraw"
+                },
+                {
+                    "$ref": "#/definitions/EarnClaimReward"
                 }
             ]
         },
@@ -6759,6 +6759,288 @@
                 "percentage",
                 "tokenId"
             ],
+            "type": "object"
+        },
+        "{\"celo-mainnet\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"celo-alfajores\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"ethereum-mainnet\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"ethereum-sepolia\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"arbitrum-one\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"arbitrum-sepolia\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"op-mainnet\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"op-sepolia\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"polygon-pos-mainnet\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"polygon-pos-amoy\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"base-mainnet\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;\"base-sepolia\"?:(\"beefy\"|\"tether\"|\"somm\"|\"celo\"|\"aerodrome\"|\"velodrome\"|\"vana\"|\"curve\"|\"farcaster\"|\"mento\"|\"yearn\"|\"fonbnk\"|\"offchainlabs\"|\"euler\"|\"ubeswap\")[]|undefined;}": {
+            "additionalProperties": false,
+            "properties": {
+                "arbitrum-one": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "arbitrum-sepolia": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "base-mainnet": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "base-sepolia": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "celo-alfajores": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "celo-mainnet": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "ethereum-mainnet": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "ethereum-sepolia": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "op-mainnet": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "op-sepolia": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "polygon-pos-amoy": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "polygon-pos-mainnet": {
+                    "items": {
+                        "enum": [
+                            "aerodrome",
+                            "beefy",
+                            "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
+                            "fonbnk",
+                            "mento",
+                            "offchainlabs",
+                            "somm",
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
+                        ],
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
             "type": "object"
         },
         "{AccountNumber?:{institutionName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;accountName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;fiatAccountType?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;accountNumber?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;country?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;}|undefined;MobileMoney?:{institutionName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;accountName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;fiatAccountType?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;country?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;mobile?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;operator?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;}|undefined;DuniaWallet?:{institutionName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;accountName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;fiatAccountType?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;mobile?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;}|undefined;IBANNumber?:{institutionName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;accountName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;fiatAccountType?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;iban?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;country?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;}|undefined;IFSCAccount?:{institutionName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;accountName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;fiatAccountType?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;accountNumber?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;country?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;ifsc?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;}|undefined;PIXAccount?:{institutionName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;accountName?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;fiatAccountType?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;keyType?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;key?:{regex:string;errorString:string;errorParams?:Record<string,any>|undefined;}|undefined;}|undefined;}": {
