@@ -1,8 +1,8 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text } from 'react-native'
+import Button, { BtnTypes } from 'src/components/Button'
 import { navigateBack } from 'src/navigator/NavigationService'
-import Button, { BtnTypes } from 'src/public/components/Button'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 

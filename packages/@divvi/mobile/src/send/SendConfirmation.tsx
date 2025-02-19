@@ -8,6 +8,7 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import BackButton from 'src/components/BackButton'
+import Button, { BtnSizes } from 'src/components/Button'
 import {
   ReviewContent,
   ReviewDetails,
@@ -26,7 +27,6 @@ import { getLocalCurrencyCode, getLocalCurrencySymbol } from 'src/localCurrency/
 import { noHeader } from 'src/navigator/Headers'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
-import Button, { BtnSizes } from 'src/public/components/Button'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { sendPayment } from 'src/send/actions'
 import { isSendingSelector } from 'src/send/selectors'

@@ -28,7 +28,7 @@ import {
 } from 'src/points/selectors'
 import { getPointsConfigRetry, pointsDataRefreshStarted } from 'src/points/slice'
 import { BottomSheetParams, PointsActivityId } from 'src/points/types'
-import Button, { BtnSizes, BtnTypes } from 'src/public/components/Button'
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'

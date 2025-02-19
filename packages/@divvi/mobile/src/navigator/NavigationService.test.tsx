@@ -12,7 +12,7 @@ import {
   navigatorIsReadyRef,
 } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
-import Button from 'src/public/components/Button'
+import Button from 'src/components/Button'
 
 const Stack = createNativeStackNavigator()
 

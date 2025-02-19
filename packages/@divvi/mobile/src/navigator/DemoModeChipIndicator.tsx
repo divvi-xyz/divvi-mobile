@@ -5,7 +5,7 @@ import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet
 import Touchable from 'src/components/Touchable'
 import { navigateClearingStack } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
-import Button, { BtnSizes, BtnTypes } from 'src/public/components/Button'
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'

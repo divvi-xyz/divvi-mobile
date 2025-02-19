@@ -13,7 +13,7 @@ import ClockIcon from 'src/icons/ClockIcon'
 import { navigateHome } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
-import Button, { BtnSizes, BtnTypes } from 'src/public/components/Button'
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 

@@ -18,7 +18,7 @@ import { getLocalCurrencyCode, usdToLocalCurrencyRateSelector } from 'src/localC
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
-import Button, { BtnSizes } from 'src/public/components/Button'
+import Button, { BtnSizes } from 'src/components/Button'
 import { useSelector } from 'src/redux/hooks'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'

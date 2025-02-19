@@ -5,10 +5,10 @@ import { setGoldEducationCompleted } from 'src/account/actions'
 import { celoEducationCompletedSelector } from 'src/account/selectors'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { OnboardingEvents } from 'src/analytics/Events'
+import { BtnTypes } from 'src/components/Button'
 import { celoEducation1, celoEducation2, celoEducation3, celoEducation4 } from 'src/images/Images'
 import { noHeader } from 'src/navigator/Headers'
 import { navigateBack, navigateHome } from 'src/navigator/NavigationService'
-import { BtnTypes } from 'src/public/components/Button'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 
 export default function GoldEducation() {

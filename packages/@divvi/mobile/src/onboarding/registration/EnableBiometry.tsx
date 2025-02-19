@@ -32,7 +32,7 @@ import {
   onboardingPropsSelector,
 } from 'src/onboarding/steps'
 import { setPincodeWithBiometry } from 'src/pincode/authentication'
-import Button, { BtnSizes, BtnTypes } from 'src/public/components/Button'
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { isUserCancelledError } from 'src/storage/keychain'
 import { typeScale } from 'src/styles/fonts'

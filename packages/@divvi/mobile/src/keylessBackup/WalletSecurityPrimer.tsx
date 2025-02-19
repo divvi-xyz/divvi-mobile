@@ -10,7 +10,7 @@ import { KeylessBackupFlow } from 'src/keylessBackup/types'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
-import Button, { BtnSizes, BtnTypes } from 'src/public/components/Button'
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 

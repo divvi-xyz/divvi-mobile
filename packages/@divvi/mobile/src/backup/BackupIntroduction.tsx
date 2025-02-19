@@ -10,12 +10,12 @@ import BackupPhraseContainer, {
   BackupPhraseType,
 } from 'src/backup/BackupPhraseContainer'
 import { useAccountKey } from 'src/backup/utils'
+import Button from 'src/components/Button'
 import TextButton from 'src/components/TextButton'
 import Logo from 'src/images/Logo'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
-import Button from 'src/public/components/Button'
 import { RootState } from 'src/redux/reducers'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'

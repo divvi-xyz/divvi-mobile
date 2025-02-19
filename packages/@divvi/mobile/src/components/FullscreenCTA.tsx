@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Button, { BtnTypes } from 'src/public/components/Button'
+import Button, { BtnTypes } from 'src/components/Button'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import variables from 'src/styles/variables'
