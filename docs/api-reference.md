@@ -9,9 +9,8 @@ The documentation will be generated from TypeScript types and JSDoc comments in 
 The API reference documentation is currently under development. It will include:
 
 - Component APIs
-- Hook documentation
 - Type definitions
-- Context providers
+- React hooks documentation
 - Utility functions
 
 For now, you can explore the public interface in the `src/public` directory of the framework.
