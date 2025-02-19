@@ -46,7 +46,7 @@ export interface ButtonProps {
   textSize?: TextSizes
 }
 
-export const Button = React.memo(function Button(props: ButtonProps) {
+const Button = React.memo(function Button(props: ButtonProps) {
   const {
     accessibilityLabel,
     disabled,
@@ -121,6 +121,8 @@ export const Button = React.memo(function Button(props: ButtonProps) {
     </View>
   )
 })
+
+export default Button
 
 const styles = StyleSheet.create({
   // on android Touchable Provides a ripple effect, by itself it does not respect the border radius on Touchable
