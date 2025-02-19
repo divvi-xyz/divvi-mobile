@@ -7,8 +7,9 @@ const config: KnipConfig = {
       ignoreBinaries: [
         // Maybe we can remove these once we upgrade knip?
         // See https://github.com/webpro-nl/knip/issues/735
-        'prebuild', // used in workflows to build the example app
+        'e2e:prebuild', // used in workflows to build the example app
         'e2e:build:android-release', // used in workflows to build the example app
+        'typecheck', // used in workflows to typecheck the example app
         'build:plugin', // used in postinstall script
       ],
       ignoreDependencies: [
@@ -21,7 +22,7 @@ const config: KnipConfig = {
     },
     'apps/example': {
       entry: [
-        'index.ts!',
+        'index.tsx!',
         'metro.config.js!',
         'detox.config.js!',
         'plugins/**/*.{js,ts}',
@@ -41,9 +42,10 @@ const config: KnipConfig = {
         'ts-node', // used in workflows run by github actions from the example app dir
         '@walletconnect/core', // used in e2e tests via @walletconnect/sign-client
         'tslib', // for some reason this is triggered after applying multiple tsconfigs to "extends" of apps/example/tsconfig.json
+        '@tsconfig/node-lts', // used in e2e/tsconfig.json
       ],
     },
-    'packages/@interaxyz/mobile': {
+    'packages/@divvi/mobile': {
       entry: ['index.js!', 'metro.config.js!', './scripts/**/*.js'],
       project: ['src/**/*.ts!', 'src/**/*.tsx!', 'src/**/*.js!'],
       ignoreDependencies: [
