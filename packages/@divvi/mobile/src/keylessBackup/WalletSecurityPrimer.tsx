@@ -11,7 +11,6 @@ import { KeylessBackupFlow } from 'src/keylessBackup/types'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
-
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 

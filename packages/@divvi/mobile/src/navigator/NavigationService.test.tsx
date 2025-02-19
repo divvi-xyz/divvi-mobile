@@ -13,6 +13,7 @@ import {
   navigatorIsReadyRef,
 } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+
 const Stack = createNativeStackNavigator()
 
 const TestScreen = ({ route }: NativeStackScreenProps<ParamListBase>) => (

@@ -9,7 +9,7 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { OnboardingEvents } from 'src/analytics/Events'
 import { getAppConfig } from 'src/appConfig'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
-import Button, { BtnSizes, BtnTypes } from 'src/components/Button
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import DivviLogo from 'src/images/DivviLogo'
 import { welcomeBackground } from 'src/images/Images'
 import WelcomeLogo from 'src/images/WelcomeLogo'
