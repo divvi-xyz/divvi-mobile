@@ -1,4 +1,4 @@
-import type { ImageSourcePropType, ViewStyle } from 'react-native'
+import type { ImageSourcePropType } from 'react-native'
 import { SupportedProtocolId } from 'src/divviProtocol/constants'
 import type { NavigatorScreen } from './navigate'
 
@@ -108,8 +108,6 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
         brandLogo?: React.ComponentType<{
           size?: number
           color?: string
-          style?: ViewStyle
-          testID?: string
         }>
         noEarnPoolsLogo?: React.ComponentType<any>
         biometryImages?: {

@@ -17,7 +17,7 @@ export default function Logo({ style, size = 32, color = Colors.contentPrimary, 
   if (CustomLogo) {
     return (
       <View testID={testID} style={[styles.container, style]}>
-        <CustomLogo size={size} color={color} testID={testID} />
+        <CustomLogo size={size} color={color} />
       </View>
     )
   }
