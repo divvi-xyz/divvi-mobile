@@ -92,8 +92,6 @@ export default function Welcome() {
   }
 
   const assetsConfig = getAppConfig().themes?.default?.assets
-
-  const Logo = assetsConfig?.welcomeLogo ?? WelcomeLogo
   const backgroundImage = assetsConfig?.welcomeBackgroundImage
 
   return (
@@ -106,7 +104,7 @@ export default function Welcome() {
             onLongPress={onRequestActivateDemoMode}
             testID="Welcome/RequestActivateDemoMode"
           >
-            <Logo />
+            <WelcomeLogo />
           </TouchableWithoutFeedback>
         </View>
         <View style={{ ...styles.buttonView, marginBottom: Math.max(0, 40 - insets.bottom) }}>
