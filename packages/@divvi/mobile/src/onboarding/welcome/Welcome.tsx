@@ -11,7 +11,6 @@ import { getAppConfig } from 'src/appConfig'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import DivviLogo from 'src/images/DivviLogo'
-import { welcomeBackground } from 'src/images/Images'
 import WelcomeLogo from 'src/images/WelcomeLogo'
 import { nuxNavigationOptions } from 'src/navigator/Headers'
 import { navigate, navigateHome } from 'src/navigator/NavigationService'
@@ -95,10 +94,7 @@ export default function Welcome() {
   const assetsConfig = getAppConfig().themes?.default?.assets
 
   const Logo = assetsConfig?.welcomeLogo ?? WelcomeLogo
-  const backgroundImage =
-    assetsConfig && 'welcomeBackgroundImage' in assetsConfig
-      ? assetsConfig.welcomeBackgroundImage
-      : welcomeBackground
+  const backgroundImage = assetsConfig?.welcomeBackgroundImage
 
   return (
     <SafeAreaView style={styles.container}>

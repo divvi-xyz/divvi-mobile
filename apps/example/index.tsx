@@ -76,13 +76,6 @@ const App = createApp({
     protocolIds: ['somm'],
     referrerId: 'some-referrer-id',
   },
-  themes: {
-    default: {
-      assets: {
-        welcomeBackgroundImage: undefined,
-      },
-    },
-  },
 })
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
