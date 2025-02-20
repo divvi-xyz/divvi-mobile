@@ -15,12 +15,13 @@ on:
   pull_request:
     branches:
       - main
+  merge_group:
 
 jobs:
   publish:
     name: ${{ github.ref == 'refs/heads/main' && 'Publish' || 'Publish (dry-run)' }}
     # Only run if the test workflow succeeded or it's a PR (where we don't want to delay the dry run)
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'pull_request' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'pull_request' || github.event_name == 'merge_group' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write # to be able to publish a GitHub release
