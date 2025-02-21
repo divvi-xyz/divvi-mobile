@@ -30,6 +30,25 @@ const App = createApp({
 
 You can customize various aspects of your app by adding optional configuration:
 
+## Integrating with the Divvi Protocol
+
+Earn Divvi rewards based on the value your users bring to the blockchain protocols you integrate with. To register your app with the Divvi Protocol, follow these steps:
+
+1. Fill out the [Divvi Protocol registration form](https://docs.google.com/forms/d/e/1FAIpQLScTXExYljGoWsw4-mMHf7nXUxXV6QSrXa5zUMPK2foUwpdwZQ/viewform).
+1. Once your registration is processed, your app will be registered to the selected protocols, and Divvi rewards will start accruing based on user activity.
+
+To enable Divvi Protocol integration, add the `divviProtocol` configuration to your app:
+
+```typescript
+const App = createApp({
+  // ... basic config
+  divviProtocol: {
+    referrerId: 'someUniqueIdentifierForYourApp', // Use the same value as in the Divvi Protocol registration form
+    protocolIds: ['somm', 'celo'], // Replace with the protocols your app integrates with
+  },
+})
+```
+
 ### Theme Customization
 
 ```typescript

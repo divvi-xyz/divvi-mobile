@@ -5,7 +5,19 @@ sidebar_label: Getting started
 
 # Getting Started with Divvi Mobile
 
-Creating a mobile app with Divvi Mobile is incredibly quick and straightforward. In just a few steps, you'll have your own mobile app ready for development!
+Build a fully functional blockchain wallet app in minutes with just a few lines of code. Divvi Mobile provides a complete foundation, including wallet setup, token transactions, and onboarding, so that you can focus on what makes your app unique.
+
+## Why Use Divvi Mobile?
+
+✅ **Launch faster** – Spin up a mobile wallet app with built-in onboarding, cash-in, swap, and send flows.
+
+✅ **Customizable look and feel** – Adjust feature visibility, colors, and assets to match your brand.
+
+✅ **Flexible integrations** – Add custom screens and flows while keeping essential wallet functionality intact.
+
+✅ **Divvi Protocol built in** – Earn rewards from the value your users bring to integrated protocols.
+
+With Divvi Mobile, you don’t have to worry about how users will acquire a wallet or tokens. Instead, you can focus on what sets your app apart while Divvi Mobile ensures your users have everything they need to get started.
 
 ## Basic Prerequisites
 
@@ -76,6 +88,6 @@ This will build your app and launch it in your simulator/emulator. The developme
 
 If you run into any issues or have questions:
 
-- Open an issue on our GitHub repository
-- Join our community Discord server
-- Check our troubleshooting guide
+- Open an issue on our [GitHub repository](https://github.com/divvi-xyz/divvi-mobile)
+- Join our community [Discord server](https://discord.com/invite/EaxZDhMuDn)
+- Coming soon: check our troubleshooting guide
