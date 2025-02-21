@@ -44,7 +44,7 @@ const App = createApp({
   // ... basic config
   divviProtocol: {
     referrerId: 'someUniqueIdentifierForYourApp', // Use the same value as in the Divvi Protocol registration form
-    protocolIds: ['somm', 'celo'], // Replace with the protocols your app integrates with
+    protocolIds: ['somm', 'celo'], // Replace with the protocols selected in the Divvi Protocol registration form
   },
 })
 ```
