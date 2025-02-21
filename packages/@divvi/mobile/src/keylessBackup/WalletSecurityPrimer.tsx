@@ -13,16 +13,22 @@ import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
+import { getAppConfig } from 'src/appConfig'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.WalletSecurityPrimer>
 
 function WalletSecurityPrimer({ route }: Props) {
   const { t } = useTranslation()
+  const cloudBackupConfig = getAppConfig().themes?.default?.assets?.cloudBackup
+  const educationImage = cloudBackupConfig?.educationImage
+    ? cloudBackupConfig.educationImage
+    : walletSafe
+
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.imageContainer}>
-          <Image testID="Email" source={walletSafe} />
+          <Image testID="EducationImage" source={educationImage} />
         </View>
         <Text style={styles.title}>{t('walletSecurityPrimer.title')}</Text>
         <Text style={styles.description}>{t('walletSecurityPrimer.description')}</Text>

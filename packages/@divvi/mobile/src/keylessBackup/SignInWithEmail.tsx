@@ -33,6 +33,7 @@ import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
 import Logger from 'src/utils/Logger'
 import { walletAddressSelector } from 'src/web3/selectors'
+import { getAppConfig } from 'src/appConfig'
 
 const TAG = 'keylessBackup/SignInWithEmail'
 
@@ -111,6 +112,9 @@ function SignInWithEmail({ route, navigation }: Props) {
     paddingBottom: Math.max(0, 40 - bottom),
   }
   const address = useSelector(walletAddressSelector)
+
+  const cloudBackupConfig = getAppConfig().themes?.default?.assets?.cloudBackup
+  const emailImage = cloudBackupConfig?.emailImage ? cloudBackupConfig.emailImage : email
 
   // We check whether or not there is anything to go back to
   // in case that this screen is the app's initial route, which can occur
@@ -228,7 +232,7 @@ function SignInWithEmail({ route, navigation }: Props) {
       />
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.imageContainer}>
-          <Image testID="Email" source={email} />
+          <Image testID="Email" source={emailImage} />
         </View>
         <Text style={styles.title}>{t('signInWithEmail.title')}</Text>
         <Text style={styles.subtitle}>
