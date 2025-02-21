@@ -43,7 +43,7 @@ To enable Divvi Protocol integration, add the `divviProtocol` configuration to y
 const App = createApp({
   // ... basic config
   divviProtocol: {
-    referrerId: 'someUniqueIdentifierForYourApp', // Use the same value as in the Divvi Protocol registration form
+    referrerId: 'YourAppName', // Use the same value as in the Divvi Protocol registration form
     protocolIds: ['somm', 'celo'], // Replace with the protocols selected in the Divvi Protocol registration form
   },
 })
