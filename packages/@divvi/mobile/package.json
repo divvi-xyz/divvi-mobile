@@ -23,6 +23,7 @@
   "files": [
     "tsconfig.json",
     "tsconfig.base.json",
+    "metro-config.js",
     "src",
     "locales",
     "plugin/build",
@@ -223,7 +224,6 @@
   },
   "devDependencies": {
     "@actions/github": "^5.1.1",
-    "@react-native/metro-config": "0.76.5",
     "@sentry/types": "^7.111.0",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^12.7.2",
@@ -240,7 +240,6 @@
     "babel-jest": "^29.2.1",
     "babel-plugin-module-resolver": "^4.1.0",
     "detox": "^20.28.0",
-    "escape-string-regexp": "^1.0.5",
     "husky": "^3.0.0",
     "jest": "^29.6.2",
     "jest-circus": "^29.6.2",

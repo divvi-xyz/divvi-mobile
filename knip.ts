@@ -38,7 +38,6 @@ const config: KnipConfig = {
         'expo-status-bar', // used in app.json
         '@config-plugins/detox', // used in app.json
         'babel-preset-expo', // not listed in package.json so we use the version used by expo
-        'babel-plugin-module-resolver', // not listed in package.json so we use the version from the runtime for now
         'ts-node', // used in workflows run by github actions from the example app dir
         '@walletconnect/core', // used in e2e tests via @walletconnect/sign-client
         'tslib', // for some reason this is triggered after applying multiple tsconfigs to "extends" of apps/example/tsconfig.json
@@ -46,7 +45,7 @@ const config: KnipConfig = {
       ],
     },
     'packages/@divvi/mobile': {
-      entry: ['index.js!', 'metro.config.js!', './scripts/**/*.js'],
+      entry: ['index.js!', 'metro-config.js!', './scripts/**/*.js'],
       project: ['src/**/*.ts!', 'src/**/*.tsx!', 'src/**/*.js!'],
       ignoreDependencies: [
         '@actions/github',
