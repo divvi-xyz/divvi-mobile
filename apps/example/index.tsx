@@ -74,7 +74,7 @@ const App = createApp({
   },
   divviProtocol: {
     protocolIds: ['somm'],
-    referrerId: 'some-referrer-id',
+    referrerId: 'ExampleApp',
   },
 })
 
