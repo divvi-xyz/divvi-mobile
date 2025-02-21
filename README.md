@@ -28,7 +28,7 @@ Built on top of [Expo](https://expo.dev), the industry standard for React Native
 ## Quick Start
 
 ```bash
-yarn create expo --template https://github.com/divvi-xyz/beefy my-app
+yarn create expo --template https://github.com/divvi-xyz/divvi-app-starter my-app
 cd my-app
 yarn install
 ```
