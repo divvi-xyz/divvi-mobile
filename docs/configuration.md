@@ -30,7 +30,7 @@ const App = createApp({
 
 You can customize various aspects of your app by adding optional configuration:
 
-## Integrating with the Divvi Protocol
+### Integrating with the Divvi Protocol
 
 Earn Divvi rewards based on the value your users bring to the blockchain protocols you integrate with. To register your app with the Divvi Protocol, follow these steps:
 
@@ -51,6 +51,8 @@ const App = createApp({
 
 ### Theme Customization
 
+Divvi Mobile allows you to customize the look and feel of your app through the `themes` configuration. Note that currently only a single theme is supported.
+
 ```typescript
 import WelcomeLogo from './assets/WelcomeLogo'
 import BrandLogo from './assets/BrandLogo'
@@ -59,7 +61,7 @@ const App = createApp({
   // ... basic config
   themes: {
     default: {
-      isDark: false,
+      isDark: false, // Specify if your app is dark mode
       colors: {
         // Customize your app's color scheme
         backgroundPrimary: '#FFFFFF',
@@ -72,11 +74,23 @@ const App = createApp({
         welcomeLogo: WelcomeLogo,
         brandLogo: BrandLogo,
         onboardingSuccessImage: require('./assets/onboarding-success.png'),
+        // See API reference for all available asset options
       },
     },
   },
 })
 ```
+
+#### Tips for Theming
+
+✅ **Use brand colors consistently**  
+Align buttons, text, and backgrounds with your brand identity to create a cohesive user experience.
+
+✅ **Test contrast & accessibility**  
+Ensure text and UI elements remain readable, especially for users with visual impairments. Use high-contrast colors where necessary.
+
+✅ **Optimize asset sizes**  
+Provide high-resolution images and icons to ensure crisp visuals across different devices. For best results, include **multiple asset sizes** (`@1.5x`, `@2x`, `@3x`, and `@4x`). This prevents pixelation on high-density screens and avoids unnecessary upscaling, keeping your app looking sharp.
 
 ### Tab Navigation
 
