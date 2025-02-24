@@ -20,7 +20,7 @@ You'll need:
 1. Create a new app using our template:
 
 ```bash
-yarn create expo --template https://github.com/divvi-xyz/beefy my-app
+yarn create expo --template https://github.com/divvi-xyz/divvi-app-starter my-app
 cd my-app
 ```
 
