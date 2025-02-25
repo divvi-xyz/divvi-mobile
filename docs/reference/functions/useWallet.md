@@ -1,0 +1,35 @@
+[**@divvi/mobile**](../index.md)
+
+---
+
+[@divvi/mobile](../index.md) / useWallet
+
+# Function: useWallet()
+
+```ts
+function useWallet(): object
+```
+
+Defined in: [packages/@divvi/mobile/src/public/hooks/useWallet.ts:51](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/hooks/useWallet.ts#L51)
+
+## Returns
+
+`object`
+
+### address
+
+```ts
+address: null | string
+```
+
+### earnPositions
+
+```ts
+earnPositions: EarnPosition[];
+```
+
+### tokens
+
+```ts
+tokens: TokenBalance[];
+```
