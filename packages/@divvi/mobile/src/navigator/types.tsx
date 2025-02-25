@@ -12,6 +12,7 @@ import { Nft } from 'src/nfts/types'
 import { EarnPosition } from 'src/positions/types'
 import { Recipient } from 'src/recipients/recipient'
 import { QrCode, TransactionDataInput } from 'src/send/types'
+import type { UsePrepareSendTransactions } from 'src/send/usePrepareSendTransactions'
 import { AssetTabType } from 'src/tokens/types'
 import { NetworkId, TokenTransaction, TokenTransfer } from 'src/transactions/types'
 import { Countries } from 'src/utils/Countries'
@@ -29,10 +30,18 @@ type NestedNavigatorParams<ParamList> = {
     : { screen: K; params: ParamList[K] }
 }[keyof ParamList]
 
+interface SendConfirmationFromExternalParams {
+  origin: SendOrigin
+  transactionData: TransactionDataInput
+  isFromScan: boolean
+  prepareTransactions?: never
+}
+
 interface SendConfirmationParams {
   origin: SendOrigin
   transactionData: TransactionDataInput
   isFromScan: boolean
+  prepareTransactions: UsePrepareSendTransactions
 }
 
 type SendEnterAmountParams = {
@@ -249,7 +258,7 @@ export type StackParamList = {
       }
     | undefined
   [Screens.SendConfirmation]: SendConfirmationParams
-  [Screens.SendConfirmationFromExternal]: SendConfirmationParams
+  [Screens.SendConfirmationFromExternal]: SendConfirmationFromExternalParams
   [Screens.SendEnterAmount]: SendEnterAmountParams
   [Screens.JumpstartEnterAmount]: undefined
   [Screens.JumpstartSendConfirmation]: {

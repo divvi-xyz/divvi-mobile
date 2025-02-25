@@ -63,7 +63,7 @@ export default function SendConfirmation(props: Props) {
     refreshPreparedTransactions,
     clearPreparedTransactions,
     prepareTransactionLoading,
-  } = usePrepareSendTransactions()
+  } = usePrepareSendTransactions(props.route.params.prepareTransactions)
 
   const fromExternal = props.route.name === Screens.SendConfirmationFromExternal
   const tokenInfo = useTokenInfo(tokenId)

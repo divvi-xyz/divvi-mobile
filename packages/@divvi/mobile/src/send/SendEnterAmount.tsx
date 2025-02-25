@@ -50,6 +50,7 @@ function SendEnterAmount({ route }: Props) {
     navigate(Screens.SendConfirmation, {
       origin,
       isFromScan,
+      prepareTransactions,
       transactionData: {
         tokenId: token.tokenId,
         recipient,
@@ -76,13 +77,14 @@ function SendEnterAmount({ route }: Props) {
     })
   }
 
+  const prepareTransactions = usePrepareSendTransactions()
   const {
     prepareTransactionsResult,
     refreshPreparedTransactions,
     clearPreparedTransactions,
     prepareTransactionError,
     prepareTransactionLoading,
-  } = usePrepareSendTransactions()
+  } = prepareTransactions
 
   const walletAddress = useSelector(walletAddressSelector)
 

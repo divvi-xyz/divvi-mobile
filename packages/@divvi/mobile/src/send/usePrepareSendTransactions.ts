@@ -6,23 +6,25 @@ import Logger from 'src/utils/Logger'
 import {
   prepareERC20TransferTransaction,
   prepareSendNativeAssetTransaction,
+  type PreparedTransactionsResult,
 } from 'src/viem/prepareTransactions'
 
 const TAG = 'src/send/usePrepareSendTransactions'
 
+type PrepareSendTransactionsCallbackProps = {
+  amount: BigNumber
+  token: TokenBalance
+  recipientAddress: string
+  walletAddress: string
+  feeCurrencies: TokenBalance[]
+}
 export async function prepareSendTransactionsCallback({
   amount,
   token,
   recipientAddress,
   walletAddress,
   feeCurrencies,
-}: {
-  amount: BigNumber
-  token: TokenBalance
-  recipientAddress: string
-  walletAddress: string
-  feeCurrencies: TokenBalance[]
-}) {
+}: PrepareSendTransactionsCallbackProps) {
   if (amount.isLessThanOrEqualTo(0)) {
     return
   }
@@ -54,18 +56,39 @@ export async function prepareSendTransactionsCallback({
 /**
  * Hook to prepare transactions for sending crypto.
  */
-export function usePrepareSendTransactions() {
-  const prepareTransactions = useAsyncCallback(prepareSendTransactionsCallback, {
-    onError: (error) => {
-      Logger.error(TAG, `prepareTransactionsOutput: ${error}`)
-    },
-  })
 
-  return {
-    prepareTransactionsResult: prepareTransactions.result,
-    refreshPreparedTransactions: prepareTransactions.execute,
-    clearPreparedTransactions: prepareTransactions.reset,
-    prepareTransactionError: prepareTransactions.error,
-    prepareTransactionLoading: prepareTransactions.loading,
-  }
+export type UsePrepareSendTransactions = {
+  prepareTransactionsResult: PreparedTransactionsResult | undefined
+  refreshPreparedTransactions: (
+    props: PrepareSendTransactionsCallbackProps
+  ) => Promise<PreparedTransactionsResult | undefined>
+  clearPreparedTransactions: () => void
+  prepareTransactionError: Error | undefined
+  prepareTransactionLoading: boolean
+}
+
+export function usePrepareSendTransactions(
+  existingPrepareTranscation?: UsePrepareSendTransactions
+) {
+  const prepareTransactions = useAsyncCallback(
+    (props: PrepareSendTransactionsCallbackProps) => {
+      if (existingPrepareTranscation) return
+      return prepareSendTransactionsCallback(props)
+    },
+    {
+      onError: (error) => {
+        Logger.error(TAG, `prepareTransactionsOutput: ${error}`)
+      },
+    }
+  )
+
+  return (
+    existingPrepareTranscation ?? {
+      prepareTransactionsResult: prepareTransactions.result,
+      refreshPreparedTransactions: prepareTransactions.execute,
+      clearPreparedTransactions: prepareTransactions.reset,
+      prepareTransactionError: prepareTransactions.error,
+      prepareTransactionLoading: prepareTransactions.loading,
+    }
+  )
 }
