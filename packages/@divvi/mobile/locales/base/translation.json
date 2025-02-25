@@ -2853,7 +2853,18 @@
   "reviewTransaction": {
     "title": "Review Send",
     "totalPlusFees": "Total Plus Fees",
-    "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
+    "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}",
+    "totalBottomSheet": {
+      "totalPlusFees": "Total Plus Fees",
+      "totalLessFees": "Total Less Fees",
+      "sending": "Sending",
+      "depositing": "Depositing",
+      "withdrawing": "Withdrawing",
+      "fees": "Fees",
+      "estimatedFee": "Estimated Network Fee",
+      "maxFee": "Max Network Fee",
+      "infoDismissButton": "Got it"
+    }
   },
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
@@ -2862,6 +2873,7 @@
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "demoMode": {
     "confirmEnter": {
       "title": "Demo Mode",

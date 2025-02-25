@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import BigNumber from 'bignumber.js'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Text } from 'react-native'
 import { showError } from 'src/alert/actions'
@@ -8,6 +8,7 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import BackButton from 'src/components/BackButton'
+import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes } from 'src/components/Button'
 import {
   ReviewContent,
@@ -17,6 +18,9 @@ import {
   ReviewSummary,
   ReviewSummaryItem,
   ReviewSummaryItemContact,
+  ReviewTotalBottomSheet,
+  ReviewTotalBottomSheetDetailsItem,
+  ReviewTotalBottomSheetDetailsItemTotal,
   ReviewTotalValue,
   ReviewTransaction,
 } from 'src/components/ReviewTransaction'
@@ -52,6 +56,7 @@ export const sendConfirmationScreenNavOptions = noHeader
 export default function SendConfirmation(props: Props) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const totalBottomSheetRef = useRef<BottomSheetModalRefType>(null)
 
   const {
     origin,
@@ -74,17 +79,25 @@ export default function SendConfirmation(props: Props) {
   const usdAmount = useAmountAsUsd(tokenAmount, tokenId)
   const walletAddress = useSelector(walletAddressSelector)
   const feeCurrencies = useSelector((state) => feeCurrenciesSelector(state, tokenInfo!.networkId))
-  const { maxFeeAmount, feeCurrency: feeTokenInfo } =
-    getFeeCurrencyAndAmounts(prepareTransactionsResult)
-  const tokenFeeAmount = maxFeeAmount ?? new BigNumber(0)
-  const localFeeAmount = useTokenToLocalAmount(tokenFeeAmount, feeTokenInfo?.tokenId)
+  const {
+    maxFeeAmount,
+    estimatedFeeAmount,
+    feeCurrency: feeTokenInfo,
+  } = getFeeCurrencyAndAmounts(prepareTransactionsResult)
+  const tokenMaxFeeAmount = maxFeeAmount ?? new BigNumber(0)
+  const localMaxFeeAmount = useTokenToLocalAmount(tokenMaxFeeAmount, feeTokenInfo?.tokenId)
+  const tokenEstimatedFeeAmount = estimatedFeeAmount ?? new BigNumber(0)
+  const localEstimatedFeeAmount = useTokenToLocalAmount(
+    tokenEstimatedFeeAmount,
+    feeTokenInfo?.tokenId
+  )
 
   const networkFeeDisplayAmount = useMemo(
     () => ({
-      token: formatValueToDisplay(tokenFeeAmount),
-      local: localFeeAmount ? formatValueToDisplay(localFeeAmount) : undefined,
+      token: formatValueToDisplay(tokenMaxFeeAmount),
+      local: localMaxFeeAmount ? formatValueToDisplay(localMaxFeeAmount) : undefined,
     }),
-    [localFeeAmount, tokenFeeAmount]
+    [localMaxFeeAmount, tokenMaxFeeAmount]
   )
 
   useEffect(() => {
@@ -189,7 +202,7 @@ export default function SendConfirmation(props: Props) {
             value={
               <Trans
                 i18nKey={'tokenAndLocalAmountApprox'}
-                context={localFeeAmount?.gt(0) ? undefined : 'noFiatPrice'}
+                context={localMaxFeeAmount?.gt(0) ? undefined : 'noFiatPrice'}
                 tOptions={{
                   tokenAmount: networkFeeDisplayAmount.token,
                   localAmount: networkFeeDisplayAmount.local,
@@ -206,6 +219,7 @@ export default function SendConfirmation(props: Props) {
             variant="bold"
             label={t('reviewTransaction.totalPlusFees')}
             isLoading={prepareTransactionLoading}
+            onInfoPress={() => totalBottomSheetRef.current?.snapToIndex(0)}
             value={
               <ReviewTotalValue
                 tokenInfo={tokenInfo}
@@ -213,7 +227,7 @@ export default function SendConfirmation(props: Props) {
                 tokenAmount={tokenAmount}
                 localAmount={localAmount}
                 feeTokenAmount={maxFeeAmount}
-                feeLocalAmount={localFeeAmount}
+                feeLocalAmount={localMaxFeeAmount}
                 localCurrencySymbol={localCurrencySymbol}
               />
             }
@@ -232,6 +246,43 @@ export default function SendConfirmation(props: Props) {
           disabled={disableSend}
         />
       </ReviewFooter>
+
+      <ReviewTotalBottomSheet
+        forwardedRef={totalBottomSheetRef}
+        title={t('reviewTransaction.totalBottomSheet.totalPlusFees')}
+      >
+        <ReviewTotalBottomSheetDetailsItem
+          label={t('reviewTransaction.totalBottomSheet.sending')}
+          tokenAmount={tokenAmount}
+          localAmount={localAmount}
+          tokenInfo={tokenInfo}
+          localCurrencySymbol={localCurrencySymbol}
+        />
+        <ReviewTotalBottomSheetDetailsItem
+          label={t('reviewTransaction.totalBottomSheet.estimatedFee')}
+          tokenAmount={tokenEstimatedFeeAmount}
+          localAmount={localEstimatedFeeAmount}
+          tokenInfo={feeTokenInfo}
+          localCurrencySymbol={localCurrencySymbol}
+        />
+        <ReviewTotalBottomSheetDetailsItem
+          label={t('reviewTransaction.totalBottomSheet.maxFee')}
+          tokenAmount={tokenMaxFeeAmount}
+          localAmount={localMaxFeeAmount}
+          tokenInfo={feeTokenInfo}
+          localCurrencySymbol={localCurrencySymbol}
+        />
+        <ReviewTotalBottomSheetDetailsItemTotal
+          label={t('reviewTransaction.totalBottomSheet.totalPlusFees')}
+          tokenInfo={tokenInfo}
+          feeTokenInfo={feeTokenInfo}
+          tokenAmount={tokenAmount}
+          localAmount={localAmount}
+          feeTokenAmount={maxFeeAmount}
+          feeLocalAmount={localMaxFeeAmount}
+          localCurrencySymbol={localCurrencySymbol}
+        />
+      </ReviewTotalBottomSheet>
     </ReviewTransaction>
   )
 }
