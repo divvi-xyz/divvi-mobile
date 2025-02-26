@@ -43,6 +43,7 @@
     "build:ts": "tsc --noEmit",
     "build:metro": "yarn run react-native bundle --entry-file index.js --bundle-output bundle.js; rm bundle.js",
     "build:plugin": "rimraf plugin/build && tsc --build plugin",
+    "docs": "typedoc",
     "dev:android": "./scripts/run_app.sh -p android",
     "dev:ios": "./scripts/run_app.sh -p ios",
     "dev:ios:mainnet": "yarn dev:ios -e mainnetdev",
