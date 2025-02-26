@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / NetworkId
+[@divvi/mobile](../README.md) / NetworkId
 
 # Type Alias: NetworkId
 

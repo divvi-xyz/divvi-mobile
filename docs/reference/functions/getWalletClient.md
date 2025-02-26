@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / getWalletClient
+[@divvi/mobile](../README.md) / getWalletClient
 
 # Function: getWalletClient()
 

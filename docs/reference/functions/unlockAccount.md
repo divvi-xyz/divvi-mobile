@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / unlockAccount
+[@divvi/mobile](../README.md) / unlockAccount
 
 # Function: unlockAccount()
 

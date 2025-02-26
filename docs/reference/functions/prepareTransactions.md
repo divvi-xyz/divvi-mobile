@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / prepareTransactions
+[@divvi/mobile](../README.md) / prepareTransactions
 
 # Function: prepareTransactions()
 

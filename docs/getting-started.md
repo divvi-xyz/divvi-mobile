@@ -70,7 +70,7 @@ This will build your app and launch it in your simulator/emulator. The developme
 
 - Learn how to [configure your app](configuration.md)
 - Explore the [architecture](architecture.md)
-- Browse the [API reference](api-reference.md)
+- Browse the [API reference](reference)
 
 ## Need Help?
 

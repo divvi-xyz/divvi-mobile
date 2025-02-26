@@ -8,21 +8,6 @@ title: API reference
 
 This section contains the auto-generated API documentation for the Divvi Mobile framework's public interface.
 
-## Interfaces
-
-- [PreparedTransactionsNeedDecreaseSpendAmountForGas](interfaces/PreparedTransactionsNeedDecreaseSpendAmountForGas.md)
-- [PreparedTransactionsNotEnoughBalanceForGas](interfaces/PreparedTransactionsNotEnoughBalanceForGas.md)
-- [PreparedTransactionsPossible](interfaces/PreparedTransactionsPossible.md)
-- [PublicAppConfig](interfaces/PublicAppConfig.md)
-
-## Type Aliases
-
-- [NetworkId](type-aliases/NetworkId.md)
-- [PreparedTransactionsResult](type-aliases/PreparedTransactionsResult.md)
-- [StackParamList](type-aliases/StackParamList.md)
-- [TransactionRequest](type-aliases/TransactionRequest.md)
-- [UnlockResult](type-aliases/UnlockResult.md)
-
 ## Functions
 
 - [createApp](functions/createApp.md)
@@ -38,3 +23,18 @@ This section contains the auto-generated API documentation for the Divvi Mobile 
 - [useSendTransactions](functions/useSendTransactions.md)
 - [useWallet](functions/useWallet.md)
 - [useWalletClient](functions/useWalletClient.md)
+
+## Interfaces
+
+- [PreparedTransactionsNeedDecreaseSpendAmountForGas](interfaces/PreparedTransactionsNeedDecreaseSpendAmountForGas.md)
+- [PreparedTransactionsNotEnoughBalanceForGas](interfaces/PreparedTransactionsNotEnoughBalanceForGas.md)
+- [PreparedTransactionsPossible](interfaces/PreparedTransactionsPossible.md)
+- [PublicAppConfig](interfaces/PublicAppConfig.md)
+
+## Type Aliases
+
+- [NetworkId](type-aliases/NetworkId.md)
+- [PreparedTransactionsResult](type-aliases/PreparedTransactionsResult.md)
+- [StackParamList](type-aliases/StackParamList.md)
+- [TransactionRequest](type-aliases/TransactionRequest.md)
+- [UnlockResult](type-aliases/UnlockResult.md)
