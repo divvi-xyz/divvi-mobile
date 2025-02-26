@@ -130,7 +130,7 @@ describe('send/utils', () => {
         ])
         .run()
       expect(navigate).toHaveBeenCalledWith(
-        Screens.SendConfirmation,
+        Screens.SendConfirmationFromExternal,
         expect.objectContaining({
           transactionData: {
             recipient: { address: mockData.address, recipientType: RecipientType.Address },
@@ -165,7 +165,7 @@ describe('send/utils', () => {
         ])
         .run()
       expect(navigate).toHaveBeenCalledWith(
-        Screens.SendConfirmation,
+        Screens.SendConfirmationFromExternal,
         expect.objectContaining({
           transactionData: {
             recipient: { address: mockData.address, recipientType: RecipientType.Address },
@@ -242,7 +242,7 @@ describe('send/utils', () => {
           ])
           .run()
         expect(navigate).toHaveBeenCalledWith(
-          Screens.SendConfirmation,
+          Screens.SendConfirmationFromExternal,
           expect.objectContaining({
             origin: SendOrigin.AppSendFlow,
             transactionData: mockTransactionData,
@@ -270,7 +270,7 @@ describe('send/utils', () => {
           ])
           .run()
         expect(navigate).toHaveBeenCalledWith(
-          Screens.SendConfirmation,
+          Screens.SendConfirmationFromExternal,
           expect.objectContaining({
             origin: SendOrigin.AppSendFlow,
             transactionData: mockTransactionData,
@@ -295,7 +295,7 @@ describe('send/utils', () => {
           ])
           .run()
         expect(navigate).toHaveBeenCalledWith(
-          Screens.SendConfirmation,
+          Screens.SendConfirmationFromExternal,
           expect.objectContaining({
             origin: SendOrigin.AppSendFlow,
             transactionData: {
