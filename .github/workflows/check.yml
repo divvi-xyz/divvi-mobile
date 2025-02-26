@@ -41,6 +41,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/yarn-install
       - run: git diff --exit-code
+  docs:
+    name: Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/yarn-install
+      - run: yarn run docs
+      # If this fails, just run `yarn docs` locally and commit the changes.
+      - name: Fail if someone forgot to commit updated docs
+        run: git diff --exit-code
   licenses:
     name: Licenses
     runs-on: ubuntu-latest
