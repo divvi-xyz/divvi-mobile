@@ -1,12 +1,7 @@
 import { dismissBanners } from '../utils/banners'
+import { navigateToPreferences, navigateToProfile } from '../utils/navigation'
 import { reloadReactNative } from '../utils/retries'
-import {
-  navigateToPreferences,
-  navigateToProfile,
-  scrollIntoView,
-  waitForElementById,
-  sleep,
-} from '../utils/utils'
+import { scrollIntoView, sleep, waitForElementById } from '../utils/utils'
 
 const faker = require('@faker-js/faker')
 

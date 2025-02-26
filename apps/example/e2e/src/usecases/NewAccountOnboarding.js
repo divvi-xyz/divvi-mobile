@@ -1,12 +1,6 @@
 import { launchApp } from '../utils/retries'
-import {
-  completeProtectWalletScreen,
-  enterPinUi,
-  navigateToSecurity,
-  quickOnboarding,
-  waitForElementById,
-  sleep,
-} from '../utils/utils'
+import { navigateToSecurity } from '../utils/navigation'
+import { enterPinUi, quickOnboarding, sleep, waitForElementById } from '../utils/utils'
 
 import jestExpect from 'expect'
 
@@ -29,6 +23,14 @@ const startBackupFromNotifications = async () => {
 const arriveAtHomeScreen = async () => {
   // Arrived to Home screen
   await waitForElementById('HomeAction-Send')
+}
+
+const completeProtectWalletScreen = async () => {
+  await expect(element(by.id('recoveryPhraseCard'))).toBeVisible()
+  await element(by.id('recoveryPhraseCard')).tap()
+  await enterPinUi()
+  await expect(element(by.id('protectWalletBottomSheetContinue'))).toBeVisible()
+  await element(by.id('protectWalletBottomSheetContinue')).tap()
 }
 
 export default NewAccountOnboarding = () => {
