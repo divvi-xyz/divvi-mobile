@@ -4691,12 +4691,6 @@
                 "divviRegistrations": {
                     "$ref": "#/definitions/{\"celo-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"celo-alfajores\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"ethereum-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"ethereum-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"arbitrum-one\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"arbitrum-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"op-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"op-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"polygon-pos-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"polygon-pos-amoy\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"base-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"base-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;}"
                 },
-                "fiatConnectCashInEnabled": {
-                    "type": "boolean"
-                },
-                "fiatConnectCashOutEnabled": {
-                    "type": "boolean"
-                },
                 "googleMobileServicesAvailable": {
                     "type": "boolean"
                 },
@@ -4778,8 +4772,6 @@
                 "analyticsEnabled",
                 "appState",
                 "divviRegistrations",
-                "fiatConnectCashInEnabled",
-                "fiatConnectCashOutEnabled",
                 "hapticFeedbackEnabled",
                 "hideBalances",
                 "inAppReviewLastInteractionTimestamp",

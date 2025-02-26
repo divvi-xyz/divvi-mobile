@@ -16,6 +16,7 @@
     "format:check": "prettier --check .",
     "check-licenses": "yarn licenses list --prod | grep '\\(─ GPL\\|─ (GPL-[1-9]\\.[0-9]\\+ OR GPL-[1-9]\\.[0-9]\\+)\\)' && echo 'Found GPL license(s). Use 'yarn licenses list --prod' to look up the offending package' && exit 1 || echo 'No GPL licenses found'",
     "knip:depcheck": "knip --include dependencies",
+    "docs": "yarn --cwd packages/@divvi/mobile docs",
     "postinstall": "patch-package && cp packages/@divvi/mobile/secrets.json.template packages/@divvi/mobile/secrets.json && yarn --cwd packages/@divvi/mobile build:plugin",
     "release": "multi-semantic-release"
   },
@@ -44,6 +45,9 @@
     "semantic-release": "^24.2.1",
     "shelljs": "^0.8.5",
     "strip-ansi": "^6.0.0",
+    "typedoc": "^0.27.9",
+    "typedoc-plugin-frontmatter": "^1.2.1",
+    "typedoc-plugin-markdown": "^4.4.2",
     "yargs": "^17.7.2"
   },
   "//resolutions": "Ensure we use a single version of expo, react, react-native and native dependencies otherwise it can cause issues",
@@ -52,7 +56,7 @@
     "@divvi/react-native-fs": "^2.20.1",
     "@divvi/react-native-keychain": "^9.2.2",
     "@interaxyz/react-native-webview": "^13.13.4",
-    "@react-native-async-storage/async-storage": "^2.1.0",
+    "@react-native-async-storage/async-storage": "^2.1.1",
     "@react-native-clipboard/clipboard": "^1.15.0",
     "@react-native-community/netinfo": "^11.4.1",
     "@react-native-firebase/analytics": "19.1.0",
