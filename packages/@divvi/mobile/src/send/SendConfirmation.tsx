@@ -1,8 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import BigNumber from 'bignumber.js'
-import React, { useEffect, useMemo, useRef } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
-import { Text } from 'react-native'
+import React, { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { showError } from 'src/alert/actions'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
@@ -19,9 +18,6 @@ import {
   ReviewSummaryItem,
   ReviewSummaryItemContact,
   ReviewTotalBottomSheet,
-  ReviewTotalBottomSheetDetailsItem,
-  ReviewTotalBottomSheetDetailsItemTotal,
-  ReviewTotalValue,
   ReviewTransaction,
 } from 'src/components/ReviewTransaction'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
@@ -90,14 +86,6 @@ export default function SendConfirmation(props: Props) {
   const localEstimatedFeeAmount = useTokenToLocalAmount(
     tokenEstimatedFeeAmount,
     feeTokenInfo?.tokenId
-  )
-
-  const networkFeeDisplayAmount = useMemo(
-    () => ({
-      token: formatValueToDisplay(tokenMaxFeeAmount),
-      local: localMaxFeeAmount ? formatValueToDisplay(localMaxFeeAmount) : undefined,
-    }),
-    [localMaxFeeAmount, tokenMaxFeeAmount]
   )
 
   useEffect(() => {
@@ -192,45 +180,34 @@ export default function SendConfirmation(props: Props) {
         <ReviewDetails>
           <ReviewDetailsItem
             testID="SendConfirmationNetwork"
+            type="plain-text"
             label={t('transactionDetails.network')}
             value={NETWORK_NAMES[tokenInfo.networkId]}
           />
           <ReviewDetailsItem
             testID="SendConfirmationFee"
+            type="token-amount"
             label={t('networkFee')}
             isLoading={prepareTransactionLoading}
-            value={
-              <Trans
-                i18nKey={'tokenAndLocalAmountApprox'}
-                context={localMaxFeeAmount?.gt(0) ? undefined : 'noFiatPrice'}
-                tOptions={{
-                  tokenAmount: networkFeeDisplayAmount.token,
-                  localAmount: networkFeeDisplayAmount.local,
-                  tokenSymbol: feeTokenInfo?.symbol,
-                  localCurrencySymbol,
-                }}
-              >
-                <Text />
-              </Trans>
-            }
+            tokenAmount={tokenMaxFeeAmount}
+            localAmount={localMaxFeeAmount}
+            tokenInfo={feeTokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
           />
+
           <ReviewDetailsItem
             testID="SendConfirmationTotal"
-            variant="bold"
+            type="total-token-amount"
             label={t('reviewTransaction.totalPlusFees')}
             isLoading={prepareTransactionLoading}
             onInfoPress={() => totalBottomSheetRef.current?.snapToIndex(0)}
-            value={
-              <ReviewTotalValue
-                tokenInfo={tokenInfo}
-                feeTokenInfo={feeTokenInfo}
-                tokenAmount={tokenAmount}
-                localAmount={localAmount}
-                feeTokenAmount={maxFeeAmount}
-                feeLocalAmount={localMaxFeeAmount}
-                localCurrencySymbol={localCurrencySymbol}
-              />
-            }
+            tokenInfo={tokenInfo}
+            feeTokenInfo={feeTokenInfo}
+            tokenAmount={tokenAmount}
+            localAmount={localAmount}
+            feeTokenAmount={maxFeeAmount}
+            feeLocalAmount={localMaxFeeAmount}
+            localCurrencySymbol={localCurrencySymbol}
           />
         </ReviewDetails>
       </ReviewContent>
@@ -251,28 +228,36 @@ export default function SendConfirmation(props: Props) {
         forwardedRef={totalBottomSheetRef}
         title={t('reviewTransaction.totalBottomSheet.totalPlusFees')}
       >
-        <ReviewTotalBottomSheetDetailsItem
+        <ReviewDetailsItem
+          fontSize="small"
+          type="token-amount"
           label={t('reviewTransaction.totalBottomSheet.sending')}
           tokenAmount={tokenAmount}
           localAmount={localAmount}
           tokenInfo={tokenInfo}
           localCurrencySymbol={localCurrencySymbol}
         />
-        <ReviewTotalBottomSheetDetailsItem
+        <ReviewDetailsItem
+          fontSize="small"
+          type="token-amount"
           label={t('reviewTransaction.totalBottomSheet.estimatedFee')}
           tokenAmount={tokenEstimatedFeeAmount}
           localAmount={localEstimatedFeeAmount}
           tokenInfo={feeTokenInfo}
           localCurrencySymbol={localCurrencySymbol}
         />
-        <ReviewTotalBottomSheetDetailsItem
+        <ReviewDetailsItem
+          fontSize="small"
+          type="token-amount"
           label={t('reviewTransaction.totalBottomSheet.maxFee')}
           tokenAmount={tokenMaxFeeAmount}
           localAmount={localMaxFeeAmount}
           tokenInfo={feeTokenInfo}
           localCurrencySymbol={localCurrencySymbol}
         />
-        <ReviewTotalBottomSheetDetailsItemTotal
+        <ReviewDetailsItem
+          fontSize="small"
+          type="total-token-amount"
           label={t('reviewTransaction.totalBottomSheet.totalPlusFees')}
           tokenInfo={tokenInfo}
           feeTokenInfo={feeTokenInfo}
