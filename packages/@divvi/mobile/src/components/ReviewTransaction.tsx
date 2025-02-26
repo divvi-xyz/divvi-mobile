@@ -154,7 +154,7 @@ interface ReviewDetailsItemProps {
   label: ReactNode
   value: ReactNode
   variant?: 'default' | 'bold'
-  size?: 'small' | 'normal'
+  fontSize?: 'small' | 'medium'
   color?: keyof typeof colors
   isLoading?: boolean
   testID?: string
@@ -165,18 +165,19 @@ export function ReviewDetailsItem({
   label,
   value,
   variant = 'default',
-  size = 'normal',
+  fontSize = 'medium',
   color = 'contentPrimary',
   isLoading,
   testID,
   onInfoPress,
 }: ReviewDetailsItemProps) {
-  const textFont = useMemo((): StyleProp<TextStyle> => {
-    if (size === 'small') {
+  const fontStyle = useMemo((): StyleProp<TextStyle> => {
+    if (fontSize === 'small') {
       return variant === 'bold' ? typeScale.labelSemiBoldSmall : typeScale.bodySmall
     }
     return variant === 'bold' ? typeScale.labelSemiBoldMedium : typeScale.bodyMedium
-  }, [variant, size])
+  }, [variant, fontSize])
+
   return (
     <View style={styles.reviewDetailsItem} testID={testID}>
       <Touchable
@@ -185,7 +186,7 @@ export function ReviewDetailsItem({
         disabled={!onInfoPress || isLoading}
       >
         <>
-          <Text style={[textFont, { color: colors[color] }]} testID={`${testID}/Label`}>
+          <Text style={[fontStyle, { color: colors[color] }]} testID={`${testID}/Label`}>
             {label}
           </Text>
           {onInfoPress && <InfoIcon testID={`${testID}/InfoIcon`} />}
@@ -204,7 +205,7 @@ export function ReviewDetailsItem({
           </View>
         ) : (
           <Text
-            style={[styles.reviewDetailsItemValueText, textFont, { color }]}
+            style={[styles.reviewDetailsItemValueText, fontStyle, { color }]}
             testID={`${testID}/Value`}
           >
             {value}
@@ -343,7 +344,7 @@ export function ReviewTotalBottomSheetDetailsItem(
 ) {
   return (
     <ReviewDetailsItem
-      size="small"
+      fontSize="small"
       label={props.label}
       value={
         <Trans
@@ -369,7 +370,7 @@ export function ReviewTotalBottomSheetDetailsItemTotal({
 }: Pick<ReviewDetailsItemProps, 'label'> & ReviewTotalValueProps) {
   return (
     <ReviewDetailsItem
-      size="small"
+      fontSize="small"
       variant="bold"
       label={label}
       value={<ReviewTotalValue {...totalProps} />}
