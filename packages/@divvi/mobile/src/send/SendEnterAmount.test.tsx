@@ -167,7 +167,7 @@ describe('SendEnterAmount', () => {
     expect(navigate).toHaveBeenLastCalledWith(Screens.SendConfirmation, {
       origin: params.origin,
       isFromScan: params.isFromScan,
-      prepareTransactions: mockedPrepareTransactions,
+      prepareTransactionsResult: mockedPrepareTransactions.prepareTransactionsResult,
       transactionData: {
         tokenId: mockCeloTokenId,
         recipient: params.recipient,
