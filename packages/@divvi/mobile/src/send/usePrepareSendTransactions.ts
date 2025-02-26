@@ -56,23 +56,12 @@ export async function prepareSendTransactionsCallback({
 /**
  * Hook to prepare transactions for sending crypto.
  */
-
-export type UsePrepareSendTransactions = {
-  prepareTransactionsResult: PreparedTransactionsResult | undefined
-  refreshPreparedTransactions: (
-    props: PrepareSendTransactionsCallbackProps
-  ) => Promise<PreparedTransactionsResult | undefined>
-  clearPreparedTransactions: () => void
-  prepareTransactionError: Error | undefined
-  prepareTransactionLoading: boolean
-}
-
 export function usePrepareSendTransactions(
-  existingPrepareTranscation?: UsePrepareSendTransactions
+  existingPrepareTransactionResult?: PreparedTransactionsResult
 ) {
   const prepareTransactions = useAsyncCallback(
     (props: PrepareSendTransactionsCallbackProps) => {
-      if (existingPrepareTranscation) return
+      if (existingPrepareTransactionResult) return
       return prepareSendTransactionsCallback(props)
     },
     {
@@ -82,13 +71,13 @@ export function usePrepareSendTransactions(
     }
   )
 
-  return (
-    existingPrepareTranscation ?? {
-      prepareTransactionsResult: prepareTransactions.result,
-      refreshPreparedTransactions: prepareTransactions.execute,
-      clearPreparedTransactions: prepareTransactions.reset,
-      prepareTransactionError: prepareTransactions.error,
-      prepareTransactionLoading: prepareTransactions.loading,
-    }
-  )
+  return {
+    prepareTransactionsResult: existingPrepareTransactionResult ?? prepareTransactions.result,
+    refreshPreparedTransactions: prepareTransactions.execute,
+    clearPreparedTransactions: prepareTransactions.reset,
+    prepareTransactionError: prepareTransactions.error,
+    prepareTransactionLoading: existingPrepareTransactionResult
+      ? false
+      : prepareTransactions.loading,
+  }
 }

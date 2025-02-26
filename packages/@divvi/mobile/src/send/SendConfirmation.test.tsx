@@ -9,10 +9,7 @@ import { StackParamList } from 'src/navigator/types'
 import { RootState } from 'src/redux/reducers'
 import SendConfirmation from 'src/send/SendConfirmation'
 import { sendPayment } from 'src/send/actions'
-import {
-  usePrepareSendTransactions,
-  type UsePrepareSendTransactions,
-} from 'src/send/usePrepareSendTransactions'
+import { usePrepareSendTransactions } from 'src/send/usePrepareSendTransactions'
 import { PreparedTransactionsPossible } from 'src/viem/prepareTransactions'
 import { getSerializablePreparedTransaction } from 'src/viem/preparedTransactionSerialization'
 import { RecursivePartial, createMockStore, getMockStackScreenProps } from 'test/utils'
@@ -46,7 +43,7 @@ const mockScreenProps = getMockStackScreenProps(Screens.SendConfirmation, {
   },
   origin: SendOrigin.AppSendFlow,
   isFromScan: false,
-  prepareTransactions: undefined as never,
+  prepareTransactionsResult: undefined as never,
 })
 
 const mockFeeCurrencies = [
@@ -76,7 +73,7 @@ type ScreenProps = NativeStackScreenProps<
 >
 
 describe('SendConfirmation', () => {
-  let mockUsePrepareSendTransactionsOutput: UsePrepareSendTransactions
+  let mockUsePrepareSendTransactionsOutput: ReturnType<typeof usePrepareSendTransactions>
 
   beforeEach(() => {
     jest.clearAllMocks()

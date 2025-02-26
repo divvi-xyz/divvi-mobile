@@ -63,7 +63,7 @@ export default function SendConfirmation(props: Props) {
     refreshPreparedTransactions,
     clearPreparedTransactions,
     prepareTransactionLoading,
-  } = usePrepareSendTransactions(props.route.params.prepareTransactions)
+  } = usePrepareSendTransactions(props.route.params.prepareTransactionsResult)
 
   const fromExternal = props.route.name === Screens.SendConfirmationFromExternal
   const tokenInfo = useTokenInfo(tokenId)
@@ -88,9 +88,15 @@ export default function SendConfirmation(props: Props) {
   )
 
   useEffect(() => {
+    // do not refresh if prepared transactions is available in the route params
+    if (fromExternal) {
+      return
+    }
+
     if (!walletAddress || !tokenInfo) {
       return // should never happen
     }
+
     clearPreparedTransactions()
     const debouncedRefreshTransactions = setTimeout(() => {
       return refreshPreparedTransactions({
@@ -102,7 +108,7 @@ export default function SendConfirmation(props: Props) {
       })
     }, DEBOUNCE_TIME_MS)
     return () => clearTimeout(debouncedRefreshTransactions)
-  }, [tokenInfo, tokenAmount, recipient, walletAddress, feeCurrencies])
+  }, [tokenInfo, tokenAmount, recipient, walletAddress, feeCurrencies, fromExternal])
 
   const disableSend =
     isSending || !prepareTransactionsResult || prepareTransactionsResult.type !== 'possible'

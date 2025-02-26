@@ -10,9 +10,9 @@ import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
 import { Screens } from 'src/navigator/Screens'
 import { Nft } from 'src/nfts/types'
 import { EarnPosition } from 'src/positions/types'
+import type { PreparedTransactionsResult } from 'src/public'
 import { Recipient } from 'src/recipients/recipient'
 import { QrCode, TransactionDataInput } from 'src/send/types'
-import type { UsePrepareSendTransactions } from 'src/send/usePrepareSendTransactions'
 import { AssetTabType } from 'src/tokens/types'
 import { NetworkId, TokenTransaction, TokenTransfer } from 'src/transactions/types'
 import { Countries } from 'src/utils/Countries'
@@ -34,14 +34,14 @@ interface SendConfirmationFromExternalParams {
   origin: SendOrigin
   transactionData: TransactionDataInput
   isFromScan: boolean
-  prepareTransactions?: never
+  prepareTransactionsResult?: never
 }
 
 interface SendConfirmationParams {
   origin: SendOrigin
   transactionData: TransactionDataInput
   isFromScan: boolean
-  prepareTransactions: UsePrepareSendTransactions
+  prepareTransactionsResult: PreparedTransactionsResult
 }
 
 type SendEnterAmountParams = {
