@@ -89,7 +89,7 @@ export default function SendConfirmation(props: Props) {
 
   useEffect(() => {
     // do not refresh if prepared transactions is available in the route params
-    if (fromExternal) {
+    if (!fromExternal) {
       return
     }
 
