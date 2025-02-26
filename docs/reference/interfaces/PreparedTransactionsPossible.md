@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / PreparedTransactionsPossible
+[@divvi/mobile](../README.md) / PreparedTransactionsPossible
 
 # Interface: PreparedTransactionsPossible
 

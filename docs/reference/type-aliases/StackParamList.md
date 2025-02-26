@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / StackParamList
+[@divvi/mobile](../README.md) / StackParamList
 
 # Type Alias: StackParamList
 
