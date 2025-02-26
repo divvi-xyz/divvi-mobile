@@ -244,6 +244,11 @@ const sendScreens = (Navigator: typeof Stack) => (
       options={sendConfirmationScreenNavOptions as NativeStackNavigationOptions}
     />
     <Navigator.Screen
+      name={Screens.SendConfirmationFromExternal}
+      component={SendConfirmation}
+      options={sendConfirmationScreenNavOptions as NativeStackNavigationOptions}
+    />
+    <Navigator.Screen
       name={Screens.ValidateRecipientIntro}
       component={ValidateRecipientIntro}
       options={validateRecipientIntroScreenNavOptions}
@@ -691,11 +696,6 @@ const modalAnimatedScreens = (Navigator: typeof Stack) => (
       name={Screens.SelectCountry}
       component={SelectCountry}
       options={SelectCountry.navigationOptions as NativeStackNavigationOptions}
-    />
-    <Navigator.Screen
-      name={Screens.SendConfirmationFromExternal}
-      component={SendConfirmation}
-      options={sendConfirmationScreenNavOptions as NativeStackNavigationOptions}
     />
   </>
 )
