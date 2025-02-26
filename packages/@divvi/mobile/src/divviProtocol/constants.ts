@@ -14,7 +14,7 @@ export const supportedProtocolIds = [
   'mento',
   'morpho',
   'offchain',
-  'sommelier',
+  'somm',
   'tether',
   'ubeswap',
   'vana',
