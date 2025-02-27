@@ -1,5 +1,5 @@
 import React from 'react'
-import BaseButton, { BtnSizes, BtnTypes, ButtonProps, TextSizes } from 'src/components/Button'
+import BaseButton, { BtnSizes, BtnTypes, ButtonProps, TextSizes } from '../../components/Button'
 
 export type ButtonSize = `${BtnSizes}`
 export type ButtonType = `${BtnTypes}`
