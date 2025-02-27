@@ -24,7 +24,7 @@ const valoraTestFaucetSecret = process.env['E2E_TEST_FAUCET_SECRET']!
   const walletsToBeFunded: Address[] = [E2E_TEST_WALLET, E2E_TEST_WALLET_SECURE_SEND]
   const walletBalances = await Promise.all(walletsToBeFunded.map(getCeloTokensBalance))
   for (let i = 0; i < walletsToBeFunded.length; i++) {
-    console.log(`Initial balance for ${walletsToBeFunded[i]}:`)
+    console.log(`Initial balance for wallet at: ${walletsToBeFunded[i]}`)
     console.table(walletBalances[i])
   }
 
