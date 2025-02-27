@@ -19,7 +19,7 @@ const recipientAddress = E2E_TEST_FAUCET
 ;(async () => {
   const singleVerifiedTokenBalance =
     (await getCeloTokensBalance(E2E_TEST_WALLET_SINGLE_VERIFIED_ADDRESS)) ?? {}
-  console.log(`Initial balance for wallet at: ${E2E_TEST_WALLET_SINGLE_VERIFIED_ADDRESS}:`)
+  console.log(`Initial balance for wallet at: ${E2E_TEST_WALLET_SINGLE_VERIFIED_ADDRESS}`)
   console.table(singleVerifiedTokenBalance)
 
   const signer = new Wallet(e2eWalletSingleVerifiedPrivateKey, provider)
@@ -31,4 +31,7 @@ const recipientAddress = E2E_TEST_FAUCET
       await transferToken(TOKENS_BY_SYMBOL[tokenSymbol], amountToSend, recipientAddress, signer)
     }
   }
+
+  console.log(`Ending balance for wallet at: ${E2E_TEST_WALLET_SINGLE_VERIFIED_ADDRESS}`)
+  console.table(await getCeloTokensBalance(E2E_TEST_WALLET_SINGLE_VERIFIED_ADDRESS))
 })()
