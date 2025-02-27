@@ -6,6 +6,9 @@ import type { NetworkConfig, NetworkIdToNetwork } from '../web3/networkConfig'
 import type { NetworkId } from './types'
 
 // TODO: return a chain typed client
+/**
+ * @returns Viem [`WalletClient`](https://viem.sh/docs/clients/wallet.html) for the given networkId.
+ */
 export async function getWalletClient({ networkId }: { networkId: NetworkId }) {
   const runSaga = require('../redux/store').runSaga as RunSaga
   const getViemWallet = require('../web3/contracts').getViemWallet as GetViemWallet

@@ -2,6 +2,7 @@ import { ConfigPlugin, withPlugins } from '@expo/config-plugins'
 
 import { withAndroidCameraBuildFix } from './withAndroidCameraBuildFix'
 import { withAndroidUserAgent } from './withAndroidUserAgent'
+import { withAndroidWindowSoftInputModeAdjustNothing } from './withAndroidWindowSoftInputModeAdjustNothing'
 import { withIosAppDelegateResetKeychain } from './withIosAppDelegateResetKeychain'
 import { withIosUserAgent } from './withIosUserAgent'
 
@@ -17,6 +18,7 @@ const withMobileApp: ConfigPlugin<{ appName?: string }> = (config, props = {}) =
     // Android
     withAndroidCameraBuildFix,
     [withAndroidUserAgent, props],
+    withAndroidWindowSoftInputModeAdjustNothing,
   ])
 }
 

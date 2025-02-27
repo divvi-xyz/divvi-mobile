@@ -4,6 +4,9 @@ import type { NetworkConfig, NetworkIdToNetwork } from '../web3/networkConfig'
 import type { NetworkId } from './types'
 
 // TODO: return a chain typed client
+/**
+ * @returns Viem [`PublicClient`](https://viem.sh/docs/clients/public) for the given networkId.
+ */
 export function getPublicClient({ networkId }: { networkId: NetworkId }) {
   const publicClient = require('../viem').publicClient as StaticPublicClient
   const networkIdToNetwork = require('../web3/networkConfig')

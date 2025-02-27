@@ -7,6 +7,7 @@ import type {
   TransactionRequest as InternalTransactionRequest,
   PrepareTransactions,
 } from '../viem/prepareTransactions'
+import type { WalletAddressSelector } from '../web3/selectors'
 import type { NetworkId } from './types'
 
 export type {
@@ -25,8 +26,12 @@ export type TransactionRequest = {
   estimatedGasUse?: bigint // in wei
 }
 
-function toInternalTransactionRequest(tx: TransactionRequest): InternalTransactionRequest {
+function toInternalTransactionRequest(
+  tx: TransactionRequest,
+  walletAddress: Address
+): InternalTransactionRequest {
   return {
+    from: walletAddress,
     to: tx.to,
     value: tx.value,
     data: tx.data,
@@ -35,8 +40,11 @@ function toInternalTransactionRequest(tx: TransactionRequest): InternalTransacti
   }
 }
 
-function toInternalTransactionRequests(txs: TransactionRequest[]): InternalTransactionRequest[] {
-  return txs.map(toInternalTransactionRequest)
+function toInternalTransactionRequests(
+  txs: TransactionRequest[],
+  walletAddress: Address
+): InternalTransactionRequest[] {
+  return txs.map((tx) => toInternalTransactionRequest(tx, walletAddress))
 }
 
 export async function prepareTransactions({
@@ -51,12 +59,19 @@ export async function prepareTransactions({
     .feeCurrenciesSelector as FeeCurrenciesSelector
   const prepareTransactions = require('../viem/prepareTransactions')
     .prepareTransactions as PrepareTransactions
+  const walletAddressSelector = require('../web3/selectors')
+    .walletAddressSelector as WalletAddressSelector
 
-  const feeCurrencies = feeCurrenciesSelector(store.getState(), networkId as InternalNetworkId)
+  const state = store.getState()
+  const feeCurrencies = feeCurrenciesSelector(state, networkId as InternalNetworkId)
+  const walletAddress = walletAddressSelector(state)
+  if (!walletAddress) {
+    throw new Error('Wallet address not found')
+  }
   const result = await prepareTransactions({
     feeCurrencies,
     decreasedAmountGasFeeMultiplier: 1,
-    baseTransactions: toInternalTransactionRequests(transactionRequests),
+    baseTransactions: toInternalTransactionRequests(transactionRequests, walletAddress as Address),
     origin: 'framework',
   })
   return result
