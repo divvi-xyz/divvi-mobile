@@ -28,7 +28,6 @@ import {
   getRequirePinOnAppOpen,
   inAppReviewLastInteractionTimestampSelector,
 } from 'src/app/selectors'
-import { getAppConfig } from 'src/appConfig'
 import { DEEP_LINK_URL_SCHEME } from 'src/config'
 import { activeDappSelector } from 'src/dapps/selectors'
 import { FiatExchangeFlow } from 'src/fiatExchanges/types'
@@ -125,14 +124,6 @@ describe('handleDeepLink', () => {
   })
 
   it('Handles Bidali deep link if it is enabled', async () => {
-    jest.mocked(getAppConfig).mockReturnValue({
-      registryName: 'test',
-      displayName: 'test',
-      deepLinkUrlScheme: 'test',
-      features: {
-        bidali: true,
-      },
-    })
     const deepLink = `${DEEP_LINK_URL_SCHEME}://wallet/bidali`
     await expectSaga(handleDeepLink, openDeepLink(deepLink))
       .provide([[select(walletAddressSelector), mockAccount]])
