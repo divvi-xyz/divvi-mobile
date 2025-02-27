@@ -154,10 +154,6 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     segment?: {
       apiKey: string
     }
-
-    bidali?: boolean
-    inviteFriends?: boolean
-    notificationCenter?: boolean
   }
 
   /**
@@ -213,6 +209,11 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     }
     transactions?: {
       emptyState?: React.ReactElement
+    }
+    features?: {
+      bidali?: boolean
+      inviteFriends?: boolean
+      notificationCenter?: boolean
     }
   }
 

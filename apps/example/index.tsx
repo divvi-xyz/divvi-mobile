@@ -22,10 +22,9 @@ const App = createApp({
       : expoConfig.scheme
     : 'example',
   features: {
-    // Special cases to ensure e2e tests work
+    // Special case for e2e tests as it doesn't handle cloud backup
     ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
       cloudBackup: false,
-      bidali: true,
     }),
   },
   locales: {
@@ -77,6 +76,16 @@ const App = createApp({
     protocolIds: ['somm'],
     referrerId: 'ExampleApp',
   },
+
+  // Special cases to cover experimental features with e2e tests
+  ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
+    experimental: {
+      features: {
+        bidali: true,
+        notificationCenter: true,
+      },
+    },
+  }),
 })
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

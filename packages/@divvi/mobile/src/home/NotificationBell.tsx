@@ -17,7 +17,7 @@ interface Props {
 }
 
 export default function NotificationBell({ testID, size, style }: Props) {
-  const appFeatures = getAppConfig().features
+  const notificationCenterEnabled = getAppConfig().experimental?.features?.notificationCenter
   const notifications = useNotifications()
 
   const hasNotifications = notifications.length > 0
@@ -28,7 +28,7 @@ export default function NotificationBell({ testID, size, style }: Props) {
     navigate(Screens.NotificationCenter)
   }
 
-  if (!appFeatures?.notificationCenter) {
+  if (!notificationCenterEnabled) {
     return null
   }
   return (

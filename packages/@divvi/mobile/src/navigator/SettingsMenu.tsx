@@ -132,7 +132,7 @@ export default function SettingsMenu({ route }: Props) {
   const sessionId = useSelector(sessionIdSelector)
   const devModeActive = useSelector(devModeSelector)
 
-  const appFeatures = getAppConfig().features
+  const inviteFriendsEnabled = getAppConfig().experimental?.features?.inviteFriends
 
   useEffect(() => {
     if (AppAnalytics.getSessionId() !== sessionId) {
@@ -205,7 +205,7 @@ export default function SettingsMenu({ route }: Props) {
           showChevron
           borderless
         />
-        {appFeatures?.inviteFriends && (
+        {inviteFriendsEnabled && (
           <SettingsItemTextValue
             icon={<Envelope color={Colors.contentPrimary} />}
             title={t('invite')}
