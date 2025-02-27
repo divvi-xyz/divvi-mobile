@@ -5,6 +5,7 @@ import { View } from 'react-native'
 import { Provider } from 'react-redux'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { type Recipient } from 'src/recipients/recipient'
+import { typeScale } from 'src/styles/fonts'
 import { TokenBalance } from 'src/tokens/slice'
 import Logger from 'src/utils/Logger'
 import { createMockStore } from 'test/utils'
@@ -16,6 +17,7 @@ import {
   ReviewSummaryItem,
   ReviewSummaryItemContact,
   ReviewTransaction,
+  type ReviewDetailsItemProps,
 } from './ReviewTransaction'
 
 jest.mock('src/utils/Logger')
@@ -147,6 +149,31 @@ describe('ReviewDetailsItem', () => {
     expect(tree.queryByTestId('DetailsItem/Loader')).toBeNull()
     expect(tree.getByTestId('DetailsItem/Value')).toHaveTextContent('Value')
   })
+
+  it.each([
+    { fontSize: 'small', type: 'plain-text', font: typeScale.bodySmall },
+    { fontSize: 'medium', type: 'plain-text', font: typeScale.bodyMedium },
+    { fontSize: undefined, type: 'plain-text', font: typeScale.bodyMedium },
+    { fontSize: 'small', type: 'total-token-amount', font: typeScale.labelSemiBoldSmall },
+    { fontSize: 'medium', type: 'total-token-amount', font: typeScale.labelSemiBoldMedium },
+    { fontSize: undefined, type: 'total-token-amount', font: typeScale.labelSemiBoldMedium },
+  ] as (Pick<ReviewDetailsItemProps, 'fontSize' | 'type'> & { font: any })[])(
+    'renders correct font style for $fontSize $type',
+    ({ fontSize, type, font }) => {
+      const tree = render(
+        <ReviewDetailsItem
+          fontSize={fontSize}
+          type={type}
+          testID="DetailsItem"
+          label="Label"
+          {...({} as any)}
+        />
+      )
+
+      expect(tree.getByTestId('DetailsItem/Label')).toHaveStyle(font)
+      expect(tree.getByTestId('DetailsItem/Value')).toHaveStyle(font)
+    }
+  )
 })
 
 describe('ReviewDetailsItemTotalValue', () => {

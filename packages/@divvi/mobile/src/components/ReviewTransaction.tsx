@@ -150,7 +150,7 @@ export function ReviewDetails(props: { children: ReactNode }) {
   return <View style={styles.reviewDetails}>{props.children}</View>
 }
 
-type ReviewDetailsItemProps = {
+export type ReviewDetailsItemProps = {
   label: ReactNode
   fontSize?: 'small' | 'medium'
   color?: keyof typeof colors
