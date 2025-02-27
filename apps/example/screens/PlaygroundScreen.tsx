@@ -1,5 +1,4 @@
 import {
-  BtnSizes,
   Button,
   getFees,
   navigate,
@@ -180,7 +179,7 @@ export default function PlaygroundScreen(_props: RootStackScreenProps<'Playgroun
             text={sendStatus === 'loading' ? 'Sending...' : 'Send Transaction'}
             disabled={sendStatus === 'loading'}
             showLoading={sendStatus === 'loading'}
-            size={BtnSizes.FULL}
+            size={'full'}
           />
         )}
 
