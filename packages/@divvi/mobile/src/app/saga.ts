@@ -232,7 +232,7 @@ export function* handleDeepLink(action: OpenDeepLink) {
       navigate(Screens.FiatExchangeCurrencyBottomSheet, { flow: FiatExchangeFlow.CashIn })
     } else if (rawParams.pathname === '/bidali') {
       if (getAppConfig().features?.bidali) {
-        navigate(Screens.BidaliScreen, { currency: rawParams.query?.currency })
+        navigate(Screens.BidaliScreen, { currency: undefined })
       }
     } else if (rawParams.path.startsWith('/cash-in-success')) {
       // Some providers append transaction information to the redirect links so can't check for strict equality
