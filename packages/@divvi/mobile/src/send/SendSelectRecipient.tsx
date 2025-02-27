@@ -8,6 +8,7 @@ import { isAddressFormat } from 'src/account/utils'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { SendOrigin } from 'src/analytics/types'
+import { getAppConfig } from 'src/appConfig'
 import BackButton from 'src/components/BackButton'
 import Button, { BtnSizes } from 'src/components/Button'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
@@ -152,9 +153,12 @@ function SendOrInviteButton({
   onPress: (shouldInviteRecipient: boolean) => void
 }) {
   const { t } = useTranslation()
+  const appFeatures = getAppConfig().features
+
   const sendOrInviteButtonDisabled =
     !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN
   const shouldInviteRecipient =
+    !!appFeatures?.inviteFriends &&
     !sendOrInviteButtonDisabled &&
     recipient?.recipientType === RecipientType.PhoneNumber &&
     recipientVerificationStatus === RecipientVerificationStatus.UNVERIFIED
