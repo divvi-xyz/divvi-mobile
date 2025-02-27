@@ -13,7 +13,7 @@ export const supportedProtocolIds = [
   'fonbnk',
   'mento',
   'morpho',
-  'offchain',
+  'offchainlabs',
   'somm',
   'tether',
   'ubeswap',
