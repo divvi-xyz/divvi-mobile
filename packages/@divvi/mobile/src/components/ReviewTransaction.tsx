@@ -234,13 +234,16 @@ function ReviewDetailsItemValue(props: ReviewDetailsItemValueProps) {
   }
 
   if (props.type === 'token-amount') {
+    // this should not happen
+    if (!props.tokenAmount) return null
+
     return (
       <Trans
         i18nKey={'tokenAndLocalAmountApprox'}
         context={props.tokenAmount?.gt(0) ? undefined : 'noFiatPrice'}
         tOptions={{
-          tokenAmount: props.tokenAmount,
-          localAmount: props.localAmount,
+          tokenAmount: formatValueToDisplay(props.tokenAmount),
+          localAmount: props.localAmount ? formatValueToDisplay(props.localAmount) : '',
           tokenSymbol: props.tokenInfo?.symbol,
           localCurrencySymbol: props.localCurrencySymbol,
         }}
