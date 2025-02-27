@@ -37,15 +37,6 @@ jest.mock('src/web3/networkConfig', () => {
 })
 jest.mock('src/send/usePrepareSendTransactions')
 
-const mockScreenProps = getMockStackScreenProps(Screens.SendConfirmation, {
-  transactionData: {
-    ...mockTokenTransactionData,
-  },
-  origin: SendOrigin.AppSendFlow,
-  isFromScan: false,
-  prepareTransactionsResult: undefined as never,
-})
-
 const mockFeeCurrencies = [
   { ...mockCeloTokenBalance, priceUsd: new BigNumber('5'), lastKnownPriceUsd: new BigNumber('5') },
   mockCusdTokenBalance,
@@ -66,6 +57,24 @@ const mockPrepareTransactionsResultPossible: PreparedTransactionsPossible = {
   ],
   feeCurrency: mockFeeCurrencies[0],
 }
+
+const mockBaseScreenProps = {
+  transactionData: {
+    ...mockTokenTransactionData,
+  },
+  origin: SendOrigin.AppSendFlow,
+  isFromScan: false,
+}
+
+const mockSendConfirmationProps = getMockStackScreenProps(Screens.SendConfirmation, {
+  ...mockBaseScreenProps,
+  prepareTransactionsResult: mockPrepareTransactionsResultPossible,
+})
+
+const mockSendConfirmationFromExternalProps = getMockStackScreenProps(
+  Screens.SendConfirmationFromExternal,
+  mockBaseScreenProps
+)
 
 type ScreenProps = NativeStackScreenProps<
   StackParamList,
@@ -88,10 +97,7 @@ describe('SendConfirmation', () => {
     jest.mocked(usePrepareSendTransactions).mockReturnValue(mockUsePrepareSendTransactionsOutput)
   })
 
-  function renderScreen(
-    storeOverrides: RecursivePartial<RootState> = {},
-    screenProps?: ScreenProps
-  ) {
+  function renderScreen(screenProps: ScreenProps, storeOverrides?: RecursivePartial<RootState>) {
     const store = createMockStore({
       tokens: {
         tokenBalances: {
@@ -105,7 +111,7 @@ describe('SendConfirmation', () => {
 
     const tree = render(
       <Provider store={store}>
-        <SendConfirmation {...(screenProps ? screenProps : mockScreenProps)} />
+        <SendConfirmation {...screenProps} />
       </Provider>
     )
 
@@ -116,7 +122,7 @@ describe('SendConfirmation', () => {
   }
 
   it('renders the structure properly', () => {
-    const { getByTestId } = renderScreen()
+    const { getByTestId } = renderScreen(mockSendConfirmationProps)
 
     // renders screen header
     expect(getByTestId('CustomHeaderTitle')).toHaveTextContent('reviewTransaction.title')
@@ -160,31 +166,43 @@ describe('SendConfirmation', () => {
     expect(getByTestId('ConfirmButton')).toHaveTextContent('send')
   })
 
-  it('prepares a transaction on load', () => {
-    renderScreen()
-    expect(mockUsePrepareSendTransactionsOutput.clearPreparedTransactions).toHaveBeenCalledWith()
-    jest.advanceTimersByTime(300)
-    expect(mockUsePrepareSendTransactionsOutput.refreshPreparedTransactions).toHaveBeenCalledTimes(
-      1
-    )
-    expect(mockUsePrepareSendTransactionsOutput.refreshPreparedTransactions).toHaveBeenCalledWith({
-      amount: mockTokenTransactionData.tokenAmount,
-      token: mockCusdTokenBalance,
-      recipientAddress: mockTokenTransactionData.recipient.address,
-      walletAddress: mockAccount.toLowerCase(),
-      feeCurrencies: mockFeeCurrencies,
+  it('does not prepare a transaction when navigated from SendEnterAmount', () => {
+    renderScreen(mockSendConfirmationProps)
+    expect(mockUsePrepareSendTransactionsOutput.clearPreparedTransactions).not.toHaveBeenCalled()
+    expect(mockUsePrepareSendTransactionsOutput.refreshPreparedTransactions).not.toHaveBeenCalled()
+    expect(mockUsePrepareSendTransactionsOutput.prepareTransactionLoading).toBe(false)
+    expect(mockUsePrepareSendTransactionsOutput.prepareTransactionError).toBeUndefined()
+  })
+
+  describe('when opened with a deeplink', () => {
+    it('prepares a transaction on load if the screen is opened with a deeplink', () => {
+      renderScreen(mockSendConfirmationFromExternalProps)
+      expect(mockUsePrepareSendTransactionsOutput.clearPreparedTransactions).toHaveBeenCalledWith()
+      jest.advanceTimersByTime(300)
+      expect(
+        mockUsePrepareSendTransactionsOutput.refreshPreparedTransactions
+      ).toHaveBeenCalledTimes(1)
+      expect(mockUsePrepareSendTransactionsOutput.refreshPreparedTransactions).toHaveBeenCalledWith(
+        {
+          amount: mockTokenTransactionData.tokenAmount,
+          token: mockCusdTokenBalance,
+          recipientAddress: mockTokenTransactionData.recipient.address,
+          walletAddress: mockAccount.toLowerCase(),
+          feeCurrencies: mockFeeCurrencies,
+        }
+      )
+    })
+
+    it('disables send if transaction is not prepared yet', () => {
+      mockUsePrepareSendTransactionsOutput.prepareTransactionsResult = undefined
+      const { getByTestId } = renderScreen(mockSendConfirmationFromExternalProps)
+
+      expect(getByTestId('ConfirmButton')).toBeDisabled()
     })
   })
 
-  it('disables send if transaction is not prepared yet', () => {
-    mockUsePrepareSendTransactionsOutput.prepareTransactionsResult = undefined
-    const { getByTestId } = renderScreen()
-
-    expect(getByTestId('ConfirmButton')).toBeDisabled()
-  })
-
   it('dispatches an action with prepared transaction when the confirm button is pressed', async () => {
-    const { store, getByTestId } = renderScreen({}, mockScreenProps)
+    const { store, getByTestId } = renderScreen(mockSendConfirmationProps)
 
     expect(store.getActions().length).toEqual(0)
 
