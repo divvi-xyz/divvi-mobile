@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / PreparedTransactionsResult
+[@divvi/mobile](../README.md) / PreparedTransactionsResult
 
 # Type Alias: PreparedTransactionsResult
 

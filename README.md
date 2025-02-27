@@ -52,7 +52,7 @@ Visit our [Getting Started Guide](docs/getting-started.md) for detailed instruct
 - [Getting Started](docs/getting-started.md) - Create your first app
 - [Configuration](docs/configuration.md) - Customize your app
 - [Architecture](docs/architecture.md) - Understand the framework
-- [API Reference](docs/api-reference.md) - Explore the API
+- [API Reference](docs/reference) - Explore the API
 
 ## Example App
 

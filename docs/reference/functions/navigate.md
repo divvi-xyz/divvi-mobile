@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / navigate
+[@divvi/mobile](../README.md) / navigate
 
 # Function: navigate()
 

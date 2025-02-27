@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / PreparedTransactionsNeedDecreaseSpendAmountForGas
+[@divvi/mobile](../README.md) / PreparedTransactionsNeedDecreaseSpendAmountForGas
 
 # Interface: PreparedTransactionsNeedDecreaseSpendAmountForGas
 

@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / getPublicClient
+[@divvi/mobile](../README.md) / getPublicClient
 
 # Function: getPublicClient()
 
