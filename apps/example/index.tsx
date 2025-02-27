@@ -22,9 +22,10 @@ const App = createApp({
       : expoConfig.scheme
     : 'example',
   features: {
-    // Special case for e2e tests as it doesn't handle cloud backup
+    // Special cases to ensure e2e tests work
     ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
       cloudBackup: false,
+      bidali: true,
     }),
   },
   locales: {
