@@ -5,7 +5,6 @@ import { View } from 'react-native'
 import { Provider } from 'react-redux'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { type Recipient } from 'src/recipients/recipient'
-import { typeScale } from 'src/styles/fonts'
 import { TokenBalance } from 'src/tokens/slice'
 import Logger from 'src/utils/Logger'
 import { createMockStore } from 'test/utils'
@@ -13,9 +12,9 @@ import { mockCeloTokenId, mockCusdTokenId, mockTokenBalances } from 'test/values
 import {
   ReviewContent,
   ReviewDetailsItem,
+  ReviewDetailsItemTotalValue,
   ReviewSummaryItem,
   ReviewSummaryItemContact,
-  ReviewTotalValue,
   ReviewTransaction,
 } from './ReviewTransaction'
 
@@ -130,6 +129,7 @@ describe('ReviewDetailsItem', () => {
     const tree = render(
       <ReviewDetailsItem
         isLoading
+        type="plain-text"
         testID="LoadingItem"
         label="Loading Label"
         value="Should not show"
@@ -141,20 +141,15 @@ describe('ReviewDetailsItem', () => {
   })
 
   it('renders value text if isLoading is false', () => {
-    const tree = render(<ReviewDetailsItem testID="DetailsItem" label="Label" value="Value" />)
+    const tree = render(
+      <ReviewDetailsItem type="plain-text" testID="DetailsItem" label="Label" value="Value" />
+    )
     expect(tree.queryByTestId('DetailsItem/Loader')).toBeNull()
     expect(tree.getByTestId('DetailsItem/Value')).toHaveTextContent('Value')
   })
-
-  it('applies bold variant if specified', () => {
-    const tree = render(
-      <ReviewDetailsItem testID="BoldItem" label="Bold Label" value="Bold Value" variant="bold" />
-    )
-    expect(tree.getByTestId('BoldItem/Label')).toHaveStyle(typeScale.labelSemiBoldMedium)
-  })
 })
 
-describe('ReviewTotalValue', () => {
+describe('ReviewDetailsItemTotalValue', () => {
   const celoToken = mockTokenBalances[mockCeloTokenId] as unknown as TokenBalance
   const cUSDToken = mockTokenBalances[mockCusdTokenId] as unknown as TokenBalance
   it.each([
@@ -241,7 +236,7 @@ describe('ReviewTotalValue', () => {
       const tree = render(
         <Provider store={createMockStore()}>
           <View testID="Total">
-            <ReviewTotalValue
+            <ReviewDetailsItemTotalValue
               tokenInfo={tokenInfo}
               feeTokenInfo={feeTokenInfo}
               tokenAmount={tokenAmount}

@@ -150,33 +150,33 @@ export function ReviewDetails(props: { children: ReactNode }) {
   return <View style={styles.reviewDetails}>{props.children}</View>
 }
 
-interface ReviewDetailsItemProps {
+type ReviewDetailsItemProps = {
   label: ReactNode
-  value: ReactNode
-  variant?: 'default' | 'bold'
   fontSize?: 'small' | 'medium'
   color?: keyof typeof colors
   isLoading?: boolean
   testID?: string
   onInfoPress?: () => void
-}
+} & ReviewDetailsItemValueProps
 
-export function ReviewDetailsItem({
-  label,
-  value,
-  variant = 'default',
-  fontSize = 'medium',
-  color = 'contentPrimary',
-  isLoading,
-  testID,
-  onInfoPress,
-}: ReviewDetailsItemProps) {
+export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
+  const {
+    label,
+    fontSize = 'medium',
+    color = 'contentPrimary',
+    isLoading,
+    testID,
+    onInfoPress,
+    ...valueProps
+  } = props
+
   const fontStyle = useMemo((): StyleProp<TextStyle> => {
+    const isTotal = props.type === 'total-token-amount'
     if (fontSize === 'small') {
-      return variant === 'bold' ? typeScale.labelSemiBoldSmall : typeScale.bodySmall
+      return isTotal ? typeScale.labelSemiBoldSmall : typeScale.bodySmall
     }
-    return variant === 'bold' ? typeScale.labelSemiBoldMedium : typeScale.bodyMedium
-  }, [variant, fontSize])
+    return isTotal ? typeScale.labelSemiBoldMedium : typeScale.bodyMedium
+  }, [fontSize])
 
   return (
     <View style={styles.reviewDetailsItem} testID={testID}>
@@ -204,7 +204,7 @@ export function ReviewDetailsItem({
             style={[styles.reviewDetailsItemValueText, fontStyle, { color }]}
             testID={`${testID}/Value`}
           >
-            {value}
+            <ReviewDetailsItemValue {...valueProps} />
           </Text>
         )}
       </View>
@@ -212,11 +212,56 @@ export function ReviewDetailsItem({
   )
 }
 
+type ReviewDetailsItemValueProps =
+  | {
+      type: 'plain-text'
+      value: ReactNode
+    }
+  | {
+      type: 'token-amount'
+      tokenAmount: BigNumber | undefined | null
+      localAmount: BigNumber | undefined | null
+      tokenInfo: TokenBalance | undefined | null
+      localCurrencySymbol: LocalCurrencySymbol
+    }
+  | ({
+      type: 'total-token-amount'
+    } & ReviewDetailsItemTotalValueProps)
+
+function ReviewDetailsItemValue(props: ReviewDetailsItemValueProps) {
+  if (props.type === 'plain-text') {
+    return props.value
+  }
+
+  if (props.type === 'token-amount') {
+    return (
+      <Trans
+        i18nKey={'tokenAndLocalAmountApprox'}
+        context={props.tokenAmount?.gt(0) ? undefined : 'noFiatPrice'}
+        tOptions={{
+          tokenAmount: props.tokenAmount,
+          localAmount: props.localAmount,
+          tokenSymbol: props.tokenInfo?.symbol,
+          localCurrencySymbol: props.localCurrencySymbol,
+        }}
+      >
+        <Text />
+      </Trans>
+    )
+  }
+
+  if (props.type === 'total-token-amount') {
+    return <ReviewDetailsItemTotalValue {...props} />
+  }
+
+  return null
+}
+
 export function ReviewFooter(props: { children: ReactNode }) {
   return <View style={styles.reviewFooter}>{props.children}</View>
 }
 
-type ReviewTotalValueProps = {
+type ReviewDetailsItemTotalValueProps = {
   tokenInfo: TokenBalance | undefined
   feeTokenInfo: TokenBalance | undefined
   tokenAmount: BigNumber | null
@@ -226,7 +271,7 @@ type ReviewTotalValueProps = {
   localCurrencySymbol: LocalCurrencySymbol
 }
 
-export function ReviewTotalValue({
+export function ReviewDetailsItemTotalValue({
   tokenInfo,
   feeTokenInfo,
   tokenAmount,
@@ -234,7 +279,7 @@ export function ReviewTotalValue({
   feeTokenAmount,
   feeLocalAmount,
   localCurrencySymbol,
-}: ReviewTotalValueProps) {
+}: ReviewDetailsItemTotalValueProps) {
   const { t } = useTranslation()
 
   // if there are not token info or token amount then it should not even be possible to get to the review screen
@@ -327,50 +372,6 @@ export function ReviewTotalBottomSheet(props: {
         onPress={() => props.forwardedRef.current?.close()}
       />
     </BottomSheet>
-  )
-}
-
-export function ReviewTotalBottomSheetDetailsItem(
-  props: Pick<ReviewDetailsItemProps, 'label'> & {
-    tokenAmount: BigNumber | null
-    localAmount: BigNumber | null
-    tokenInfo: TokenBalance | undefined
-    localCurrencySymbol: LocalCurrencySymbol
-  }
-) {
-  return (
-    <ReviewDetailsItem
-      fontSize="small"
-      label={props.label}
-      value={
-        <Trans
-          i18nKey={'tokenAndLocalAmountApprox'}
-          context={props.tokenAmount?.gt(0) ? undefined : 'noFiatPrice'}
-          values={{
-            tokenAmount: formatValueToDisplay(props.tokenAmount ?? new BigNumber(0)),
-            localAmount: formatValueToDisplay(props.localAmount ?? new BigNumber(0)),
-            tokenSymbol: props.tokenInfo?.symbol,
-            localCurrencySymbol: props.localCurrencySymbol,
-          }}
-        >
-          <Text />
-        </Trans>
-      }
-    />
-  )
-}
-
-export function ReviewTotalBottomSheetDetailsItemTotal({
-  label,
-  ...totalProps
-}: Pick<ReviewDetailsItemProps, 'label'> & ReviewTotalValueProps) {
-  return (
-    <ReviewDetailsItem
-      fontSize="small"
-      variant="bold"
-      label={label}
-      value={<ReviewTotalValue {...totalProps} />}
-    />
   )
 }
 
