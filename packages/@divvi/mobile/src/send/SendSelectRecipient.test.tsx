@@ -5,11 +5,13 @@ import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { SendOrigin } from 'src/analytics/types'
+import { getAppConfig } from 'src/appConfig'
 import { fetchAddressVerification, fetchAddressesAndValidate } from 'src/identity/actions'
 import { AddressValidationType } from 'src/identity/reducer'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+import { PublicAppConfig } from 'src/public'
 import { RecipientType, getRecipientVerificationStatus } from 'src/recipients/recipient'
 import SendSelectRecipient from 'src/send/SendSelectRecipient'
 import { getDynamicConfigParams } from 'src/statsig'
@@ -269,7 +271,12 @@ describe('SendSelectRecipient', () => {
       origin: SendOrigin.AppSendFlow,
     })
   })
-  it('navigates to invite modal when search result next button is pressed', async () => {
+  it('navigates to invite modal when search result next button is pressed and the feature is enabled', async () => {
+    jest.mocked(getAppConfig).mockReturnValue({
+      features: {
+        inviteFriends: true,
+      },
+    } as PublicAppConfig)
     jest
       .mocked(getRecipientVerificationStatus)
       .mockReturnValue(RecipientVerificationStatus.UNVERIFIED)

@@ -3,6 +3,7 @@ import * as React from 'react'
 import 'react-native'
 import { Provider } from 'react-redux'
 import { clearStoredAccount } from 'src/account/actions'
+import { getAppConfig } from 'src/appConfig'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import SettingsMenu from 'src/navigator/SettingsMenu'
@@ -32,8 +33,19 @@ jest.mock('src/config', () => ({
 }))
 
 describe('SettingsMenu', () => {
+  const defaultAppConfig = {
+    displayName: 'Test App',
+    deepLinkUrlScheme: 'testapp',
+    registryName: 'test',
+  }
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(getAppConfig).mockReturnValue({
+      ...defaultAppConfig,
+      features: {
+        inviteFriends: true,
+      },
+    })
   })
 
   it('shows the expected menu items', () => {
@@ -52,6 +64,16 @@ describe('SettingsMenu', () => {
     expect(getByTestId('SettingsMenu/Help')).toBeTruthy()
     expect(getByTestId('SettingsMenu/Legal')).toBeTruthy()
     expect(getByTestId('SettingsMenu/Version')).toBeTruthy()
+  })
+  it('does not show the invite item if the feature is disabled', () => {
+    jest.mocked(getAppConfig).mockReturnValue(defaultAppConfig)
+    const store = createMockStore()
+    const { queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator component={SettingsMenu}></MockedNavigator>
+      </Provider>
+    )
+    expect(queryByTestId('SettingsMenu/Invite')).toBeFalsy()
   })
   it('does not show username if not set', () => {
     const store = createMockStore({
