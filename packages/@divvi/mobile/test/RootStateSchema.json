@@ -3379,6 +3379,64 @@
             "additionalProperties": false,
             "type": "object"
         },
+        "ProposalTypes.Struct": {
+            "additionalProperties": false,
+            "properties": {
+                "expiry": {
+                    "type": "number"
+                },
+                "expiryTimestamp": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "number"
+                },
+                "optionalNamespaces": {
+                    "$ref": "#/definitions/ProposalTypes.OptionalNamespaces"
+                },
+                "pairingTopic": {
+                    "type": "string"
+                },
+                "proposer": {
+                    "additionalProperties": false,
+                    "properties": {
+                        "metadata": {
+                            "$ref": "#/definitions/CoreTypes.Metadata"
+                        },
+                        "publicKey": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "metadata",
+                        "publicKey"
+                    ],
+                    "type": "object"
+                },
+                "relays": {
+                    "items": {
+                        "$ref": "#/definitions/RelayerTypes.ProtocolOptions"
+                    },
+                    "type": "array"
+                },
+                "requiredNamespaces": {
+                    "$ref": "#/definitions/ProposalTypes.RequiredNamespaces"
+                },
+                "sessionProperties": {
+                    "$ref": "#/definitions/ProposalTypes.SessionProperties"
+                }
+            },
+            "required": [
+                "expiryTimestamp",
+                "id",
+                "optionalNamespaces",
+                "pairingTopic",
+                "proposer",
+                "relays",
+                "requiredNamespaces"
+            ],
+            "type": "object"
+        },
         "ProviderFeedInfo": {
             "additionalProperties": false,
             "properties": {
@@ -4898,11 +4956,80 @@
             "additionalProperties": false,
             "properties": {
                 "pendingActions": {
-                    "items": {},
+                    "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "params": {
+                                "additionalProperties": false,
+                                "properties": {
+                                    "chainId": {
+                                        "type": "string"
+                                    },
+                                    "request": {
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "expiryTimestamp": {
+                                                "type": "number"
+                                            },
+                                            "method": {
+                                                "type": "string"
+                                            },
+                                            "params": {}
+                                        },
+                                        "required": [
+                                            "method",
+                                            "params"
+                                        ],
+                                        "type": "object"
+                                    }
+                                },
+                                "required": [
+                                    "chainId",
+                                    "request"
+                                ],
+                                "type": "object"
+                            },
+                            "topic": {
+                                "type": "string"
+                            },
+                            "verifyContext": {
+                                "$ref": "#/definitions/Verify.Context"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "params",
+                            "topic",
+                            "verifyContext"
+                        ],
+                        "type": "object"
+                    },
                     "type": "array"
                 },
                 "pendingSessions": {
-                    "items": {},
+                    "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "params": {
+                                "$ref": "#/definitions/ProposalTypes.Struct"
+                            },
+                            "verifyContext": {
+                                "$ref": "#/definitions/Verify.Context"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "params",
+                            "verifyContext"
+                        ],
+                        "type": "object"
+                    },
                     "type": "array"
                 },
                 "sessions": {
@@ -6499,6 +6626,43 @@
                 "countryCodeAlpha2",
                 "ipAddress",
                 "region"
+            ],
+            "type": "object"
+        },
+        "Verify.Context": {
+            "additionalProperties": false,
+            "properties": {
+                "verified": {
+                    "additionalProperties": false,
+                    "properties": {
+                        "isScam": {
+                            "type": "boolean"
+                        },
+                        "origin": {
+                            "type": "string"
+                        },
+                        "validation": {
+                            "enum": [
+                                "INVALID",
+                                "UNKNOWN",
+                                "VALID"
+                            ],
+                            "type": "string"
+                        },
+                        "verifyUrl": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "origin",
+                        "validation",
+                        "verifyUrl"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "verified"
             ],
             "type": "object"
         },
