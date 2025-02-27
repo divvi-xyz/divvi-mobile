@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { HomeEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import Card from 'src/components/Card'
 import Touchable from 'src/components/Touchable'
 import { ENABLED_QUICK_ACTIONS } from 'src/config'
@@ -33,6 +34,7 @@ function ActionsCarousel() {
   const shouldShowSwapAction = getDynamicConfigParams(
     DynamicConfigs[StatsigDynamicConfigs.SWAP_CONFIG]
   ).enabled
+  const bidaliEnabled = getAppConfig().features?.bidali
 
   const actions: Actions = {
     [HomeActionName.Send]: {
@@ -70,7 +72,11 @@ function ActionsCarousel() {
       title: t('homeActions.withdraw'),
       icon: <QuickActionsWithdraw color={Colors.buttonQuickActionContent} />,
       onPress: () => {
-        navigate(Screens.WithdrawSpend)
+        if (bidaliEnabled) {
+          navigate(Screens.WithdrawSpend)
+        } else {
+          navigate(Screens.FiatExchangeCurrencyBottomSheet, { flow: FiatExchangeFlow.CashOut })
+        }
       },
     },
   }

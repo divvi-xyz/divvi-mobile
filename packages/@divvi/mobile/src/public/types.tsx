@@ -154,6 +154,10 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     segment?: {
       apiKey: string
     }
+
+    bidali?: boolean
+    inviteFriends?: boolean
+    phoneNumberVerification?: boolean
   }
 
   /**
