@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / TransactionRequest
+[@divvi/mobile](../README.md) / TransactionRequest
 
 # Type Alias: TransactionRequest
 

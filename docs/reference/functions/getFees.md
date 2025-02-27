@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / getFees
+[@divvi/mobile](../README.md) / getFees
 
 # Function: getFees()
 

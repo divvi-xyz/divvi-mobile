@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / PreparedTransactionsNotEnoughBalanceForGas
+[@divvi/mobile](../README.md) / PreparedTransactionsNotEnoughBalanceForGas
 
 # Interface: PreparedTransactionsNotEnoughBalanceForGas
 

@@ -249,7 +249,7 @@ const App = createApp({
 
 ## Configuration Reference
 
-For a complete list of configuration options, see the [API reference](api-reference.md) or check the type definition:
+For a complete list of configuration options, see the [API reference](reference) or check the type definition:
 
 ```typescript
 import type { PublicAppConfig } from '@divvi/mobile'

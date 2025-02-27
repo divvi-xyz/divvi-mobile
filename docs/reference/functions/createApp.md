@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / createApp
+[@divvi/mobile](../README.md) / createApp
 
 # Function: createApp()
 

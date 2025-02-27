@@ -97,7 +97,9 @@ export const SHOW_TESTNET_BANNER = stringToBoolean(Config.SHOW_TESTNET_BANNER ||
 export const SENTRY_ENABLED = stringToBoolean(Config.SENTRY_ENABLED || 'false')
 
 export const WEB3AUTH_CLIENT_ID =
-  'BH-yuQkutyRCHMwcTQu_zSpkbG5fGeJEoc45DeoW4krzESwLD6qhQXRCuTSrFU_-qbvIvLcZhUJv9G5xmoFip8M'
+  DEFAULT_TESTNET === 'mainnet'
+    ? 'BAJWXF8YqQSoNtdfX3z-vxgkZ0ZfN0hJVT0eGuf9BqoRbojNIxthU0wnW0oBScduV6XLeEePSmVhHQXuaqBMjcw'
+    : 'BH-yuQkutyRCHMwcTQu_zSpkbG5fGeJEoc45DeoW4krzESwLD6qhQXRCuTSrFU_-qbvIvLcZhUJv9G5xmoFip8M'
 
 // SECRETS
 export const ALCHEMY_ETHEREUM_API_KEY = keyOrUndefined(
@@ -136,7 +138,10 @@ export const WALLET_CONNECT_PROJECT_ID =
   keyOrUndefined(secretsFile, DEFAULT_TESTNET, 'WALLET_CONNECT_PROJECT_ID') ??
   // valora-e2e-client project in the WC project dashboard
   '8f6f2517f4485c013849d38717ec90d1'
-export const AUTH0_CLIENT_ID = 'FS2sPfMvDBKy0udOoCbc4ao8HakvAR6b'
+export const AUTH0_CLIENT_ID =
+  DEFAULT_TESTNET === 'mainnet'
+    ? 'FS2sPfMvDBKy0udOoCbc4ao8HakvAR6b'
+    : 'YgsHPq93Egfap5Wc4iEQlGyQMqjLeBf2'
 
 export const AUTH0_DOMAIN = configOrThrow('AUTH0_DOMAIN')
 
