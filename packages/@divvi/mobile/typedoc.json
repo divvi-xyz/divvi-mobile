@@ -2,6 +2,7 @@
   // See the following for more details:
   // - https://typedoc-plugin-markdown.org/docs/options
   // - https://typedoc-plugin-markdown.org/plugins/frontmatter/options
+  "$schema": "https://typedoc-plugin-markdown.org/schema.json",
   "exclude": ["**/*+(index|.test).ts"],
   "excludePrivate": true,
   "excludeInternal": true,
@@ -18,10 +19,11 @@
   "plugin": ["typedoc-plugin-markdown", "typedoc-plugin-frontmatter"],
   // Append the documentation index page to the readme page.
   "mergeReadme": true,
-  "entryFileName": "index",
-  "indexFrontmatter": {
+  "readmeFrontmatter": {
     "title": "API reference"
   },
   "formatWithPrettier": true,
-  "useCodeBlocks": true
+  "useCodeBlocks": true,
+  // Show functions first in the index
+  "groupOrder": ["Functions", "*"]
 }

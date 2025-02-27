@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../index.md)
+[**@divvi/mobile**](../README.md)
 
 ---
 
-[@divvi/mobile](../index.md) / useWallet
+[@divvi/mobile](../README.md) / useWallet
 
 # Function: useWallet()
 
