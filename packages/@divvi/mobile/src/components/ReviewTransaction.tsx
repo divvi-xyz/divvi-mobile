@@ -201,7 +201,7 @@ export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
           </View>
         ) : (
           <Text
-            style={[styles.reviewDetailsItemValueText, fontStyle, { color }]}
+            style={[styles.reviewDetailsItemValueText, fontStyle, { color: colors[color] }]}
             testID={`${testID}/Value`}
           >
             <ReviewDetailsItemValue {...valueProps} />
