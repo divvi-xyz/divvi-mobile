@@ -1,5 +1,5 @@
 import { launchApp } from '../utils/retries'
-import { isElementVisible, sleep, waitForElementById, waitForElementByText } from '../utils/utils'
+import { isElementVisible, waitForElementById, sleep } from '../utils/utils'
 
 async function multiTap(testID, { numberOfTaps = 2 } = {}) {
   try {
@@ -39,7 +39,7 @@ export default onRamps = () => {
     await waitForElementById('FiatExchangeInput')
     await element(by.id('FiatExchangeInput')).replaceText(`${amount}`)
     await waitForElementById('FiatExchangeNextButton', { tap: true })
-    await waitForElementByText({ text: 'Select Payment Method' })
+    await waitFor(element(by.text('Select Payment Method'))).toBeVisible()
     // Check IF Single Card Provider
     if (await isElementVisible('Card/singleProvider')) {
       await expect(element(by.id('Card/provider-0'))).toExist()
