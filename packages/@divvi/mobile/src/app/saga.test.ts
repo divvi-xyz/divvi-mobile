@@ -123,7 +123,7 @@ describe('handleDeepLink', () => {
     })
   })
 
-  it('Handles Bidali deep link if it is enabled', async () => {
+  it('Handles Bidali deep link', async () => {
     const deepLink = `${DEEP_LINK_URL_SCHEME}://wallet/bidali`
     await expectSaga(handleDeepLink, openDeepLink(deepLink))
       .provide([[select(walletAddressSelector), mockAccount]])
