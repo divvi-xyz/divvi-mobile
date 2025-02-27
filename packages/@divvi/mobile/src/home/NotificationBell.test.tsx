@@ -20,9 +20,7 @@ describe('NotificationBell', () => {
       deepLinkUrlScheme: 'testapp',
       registryName: 'test',
       experimental: {
-        features: {
-          notificationCenter: true,
-        },
+        notificationCenter: true,
       },
     })
   })
@@ -30,9 +28,7 @@ describe('NotificationBell', () => {
   it('renders nothing if notification center is not enabled', () => {
     jest.mocked(getAppConfig).mockReturnValue({
       experimental: {
-        features: {
-          notificationCenter: false,
-        },
+        notificationCenter: false,
       },
     } as PublicAppConfig)
 

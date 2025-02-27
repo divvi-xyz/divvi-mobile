@@ -132,7 +132,7 @@ export default function SettingsMenu({ route }: Props) {
   const sessionId = useSelector(sessionIdSelector)
   const devModeActive = useSelector(devModeSelector)
 
-  const inviteFriendsEnabled = getAppConfig().experimental?.features?.inviteFriends
+  const inviteFriendsEnabled = getAppConfig().experimental?.inviteFriends
 
   useEffect(() => {
     if (AppAnalytics.getSessionId() !== sessionId) {

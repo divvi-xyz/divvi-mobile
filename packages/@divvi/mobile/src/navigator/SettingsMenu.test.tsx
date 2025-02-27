@@ -43,9 +43,7 @@ describe('SettingsMenu', () => {
     jest.mocked(getAppConfig).mockReturnValue({
       ...defaultAppConfig,
       experimental: {
-        features: {
-          inviteFriends: true,
-        },
+        inviteFriends: true,
       },
     })
   })

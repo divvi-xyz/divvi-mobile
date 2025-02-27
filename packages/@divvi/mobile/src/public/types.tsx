@@ -210,11 +210,9 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     transactions?: {
       emptyState?: React.ReactElement
     }
-    features?: {
-      bidali?: boolean
-      inviteFriends?: boolean
-      notificationCenter?: boolean
-    }
+    bidali?: boolean
+    inviteFriends?: boolean
+    notificationCenter?: boolean
   }
 
   divviProtocol?: {

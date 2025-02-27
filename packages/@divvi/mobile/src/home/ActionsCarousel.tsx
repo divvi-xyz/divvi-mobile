@@ -34,7 +34,7 @@ function ActionsCarousel() {
   const shouldShowSwapAction = getDynamicConfigParams(
     DynamicConfigs[StatsigDynamicConfigs.SWAP_CONFIG]
   ).enabled
-  const bidaliEnabled = getAppConfig().experimental?.features?.bidali
+  const bidaliEnabled = getAppConfig().experimental?.bidali
 
   const actions: Actions = {
     [HomeActionName.Send]: {

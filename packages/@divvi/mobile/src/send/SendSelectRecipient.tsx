@@ -153,7 +153,7 @@ function SendOrInviteButton({
   onPress: (shouldInviteRecipient: boolean) => void
 }) {
   const { t } = useTranslation()
-  const inviteFriendsEnabled = getAppConfig().experimental?.features?.inviteFriends
+  const inviteFriendsEnabled = getAppConfig().experimental?.inviteFriends
 
   const sendOrInviteButtonDisabled =
     !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN

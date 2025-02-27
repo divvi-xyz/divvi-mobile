@@ -274,9 +274,7 @@ describe('SendSelectRecipient', () => {
   it('navigates to invite modal when search result next button is pressed and the feature is enabled', async () => {
     jest.mocked(getAppConfig).mockReturnValue({
       experimental: {
-        features: {
-          inviteFriends: true,
-        },
+        inviteFriends: true,
       },
     } as PublicAppConfig)
     jest

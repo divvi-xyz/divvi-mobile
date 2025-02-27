@@ -80,10 +80,8 @@ const App = createApp({
   // Special cases to cover experimental features with e2e tests
   ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
     experimental: {
-      features: {
-        bidali: true,
-        notificationCenter: true,
-      },
+      bidali: true,
+      notificationCenter: true,
     },
   }),
 })
