@@ -5,8 +5,7 @@ export type ButtonSize = `${BtnSizes}`
 export type ButtonType = `${BtnTypes}`
 export type ButtonTextSize = `${TextSizes}`
 
-export interface CustomButtonProps
-  extends Omit<ButtonProps, 'size' | 'type' | 'textSize'> {
+export interface CustomButtonProps extends Omit<ButtonProps, 'size' | 'type' | 'textSize'> {
   size?: ButtonSize
   type?: ButtonType
   textSize?: ButtonTextSize
