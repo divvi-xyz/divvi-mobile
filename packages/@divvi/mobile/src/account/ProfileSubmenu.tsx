@@ -6,7 +6,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SettingsEvents } from 'src/analytics/Events'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
-import { getAppConfig } from 'src/appConfig'
 import BackButton from 'src/components/BackButton'
 import { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import CustomHeader from 'src/components/header/CustomHeader'
@@ -26,8 +25,6 @@ export default function ProfileSubmenu(props: Props) {
   const { t } = useTranslation()
   const numberVerified = useSelector(phoneNumberVerifiedSelector)
   const revokeBottomSheetRef = useRef<BottomSheetModalRefType>(null)
-
-  const phoneNumberVerificationEnabled = getAppConfig().experimental?.phoneNumberVerification
 
   const handleShowConfirmRevoke = () => {
     AppAnalytics.track(SettingsEvents.settings_revoke_phone_number)
@@ -56,27 +53,25 @@ export default function ProfileSubmenu(props: Props) {
             onPress={goToProfile}
             showChevron
           />
-          {phoneNumberVerificationEnabled ? (
-            !numberVerified ? (
-              <SettingsItemTextValue
-                testID="ProfileSubmenu/Verify"
-                icon={<Phone />}
-                title={t('confirmNumber')}
-                onPress={goToConfirmNumber}
-                borderless
-                showChevron
-              />
-            ) : (
-              <SettingsExpandedItem
-                testID="ProfileSubmenu/Revoke"
-                icon={<Phone />}
-                title={t('revokePhoneNumber.title')}
-                details={t('revokePhoneNumber.description')}
-                onPress={handleShowConfirmRevoke}
-                borderless
-              />
-            )
-          ) : null}
+          {!numberVerified ? (
+            <SettingsItemTextValue
+              testID="ProfileSubmenu/Verify"
+              icon={<Phone />}
+              title={t('confirmNumber')}
+              onPress={goToConfirmNumber}
+              borderless
+              showChevron
+            />
+          ) : (
+            <SettingsExpandedItem
+              testID="ProfileSubmenu/Revoke"
+              icon={<Phone />}
+              title={t('revokePhoneNumber.title')}
+              details={t('revokePhoneNumber.description')}
+              onPress={handleShowConfirmRevoke}
+              borderless
+            />
+          )}
         </View>
       </ScrollView>
       <RevokePhoneNumber forwardedRef={revokeBottomSheetRef} />
