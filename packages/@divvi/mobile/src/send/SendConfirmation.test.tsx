@@ -144,7 +144,7 @@ describe('SendConfirmation', () => {
     // renders fee details
     expect(getByTestId('SendConfirmationFee/Label')).toHaveTextContent('networkFee')
     expect(getByTestId('SendConfirmationFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.01","localAmount":"0.067","tokenSymbol":"CELO","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"0.01","localAmount":"0.067","tokenSymbol":"CELO","localCurrencySymbol":"₱"}'
     )
 
     // renders total details
@@ -152,7 +152,7 @@ describe('SendConfirmation', () => {
       'reviewTransaction.totalPlusFees'
     )
     expect(getByTestId('SendConfirmationTotal/Value')).toHaveTextContent(
-      'localAmountApprox, {"localAmount":"1.40","localCurrencySymbol":"₱"}'
+      'localAmount, {"localAmount":"1.40","localCurrencySymbol":"₱"}'
     )
 
     // renders confirmation button
