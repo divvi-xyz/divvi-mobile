@@ -2865,7 +2865,6 @@
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
-  "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "demoMode": {
     "confirmEnter": {
       "title": "Demo Mode",
