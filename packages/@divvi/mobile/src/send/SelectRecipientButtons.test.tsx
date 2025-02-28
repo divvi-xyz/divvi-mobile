@@ -5,6 +5,7 @@ import { RESULTS, check, request } from 'react-native-permissions'
 import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { JumpstartEvents, SendEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import SelectRecipientButtons from 'src/send/SelectRecipientButtons'
@@ -29,6 +30,11 @@ function renderComponent(phoneNumberVerified: boolean = false, defaultTokenIdOve
 }
 
 describe('SelectRecipientButtons', () => {
+  const defaultAppConfig = {
+    displayName: 'Test App',
+    deepLinkUrlScheme: 'testapp',
+    registryName: 'test',
+  }
   beforeEach(() => {
     jest.clearAllMocks()
     jest.mocked(check).mockResolvedValue(RESULTS.DENIED)
@@ -36,8 +42,20 @@ describe('SelectRecipientButtons', () => {
       showBalances: ['celo-alfajores'],
       jumpstartContracts: {},
     })
+    jest.mocked(getAppConfig).mockReturnValue({
+      ...defaultAppConfig,
+      experimental: {
+        phoneNumberVerification: true,
+      },
+    })
   })
 
+  it('does not render the contacts button if phone number verification is disabled', async () => {
+    jest.mocked(getAppConfig).mockReturnValue(defaultAppConfig)
+    const { queryByTestId } = renderComponent()
+
+    await waitFor(() => expect(queryByTestId('SelectRecipient/Contacts')).toBeFalsy())
+  })
   it('renders the jumpstart button if it is enabled', async () => {
     jest
       .mocked(getFeatureGate)
@@ -50,7 +68,6 @@ describe('SelectRecipientButtons', () => {
     expect(AppAnalytics.track).toHaveBeenCalledWith(JumpstartEvents.send_select_recipient_jumpstart)
     expect(navigate).toHaveBeenCalledWith(Screens.JumpstartEnterAmount)
   })
-
   it('renders QR and contacts button with no check mark on contacts if phone number is not verified', async () => {
     const { getByTestId, queryByTestId, findByTestId } = renderComponent()
     // using findByTestId for first assertion in all tests to ensure rendering is finished after useAsync

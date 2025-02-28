@@ -213,6 +213,7 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     bidali?: boolean
     inviteFriends?: boolean
     notificationCenter?: boolean
+    phoneNumberVerification?: boolean
   }
 
   divviProtocol?: {

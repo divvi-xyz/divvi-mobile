@@ -9,6 +9,7 @@ import { HomeEvents } from 'src/analytics/Events'
 import { ScrollDirection } from 'src/analytics/types'
 import { openUrl } from 'src/app/actions'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
+import { getAppConfig } from 'src/appConfig'
 import Pagination from 'src/components/Pagination'
 import SimpleMessagingCard, {
   Props as SimpleMessagingCardProps,
@@ -46,20 +47,16 @@ export function useSimpleActions() {
   const { backupCompleted, dismissedGetVerified, dismissedGoldEducation } = useSelector(
     (state) => state.account
   )
-
   const phoneNumberVerified = useSelector(phoneNumberVerifiedSelector)
-
   const celoEducationCompleted = useSelector(celoEducationCompletedSelector)
-
   const extraNotifications = useSelector(getExtraNotifications)
+  const cloudBackupCompleted = useSelector(cloudBackupCompletedSelector)
 
   const { t } = useTranslation()
-
   const dispatch = useDispatch()
 
   const showKeylessBackup = ONBOARDING_FEATURES_ENABLED[ToggleableOnboardingFeatures.CloudBackup]
-
-  const cloudBackupCompleted = useSelector(cloudBackupCompletedSelector)
+  const phoneNumberVerificationEnabled = getAppConfig().experimental?.phoneNumberVerification
 
   const actions: SimpleAction[] = []
   if (!backupCompleted && !cloudBackupCompleted) {
@@ -128,7 +125,7 @@ export function useSimpleActions() {
     }
   }
 
-  if (!dismissedGetVerified && !phoneNumberVerified) {
+  if (phoneNumberVerificationEnabled && !dismissedGetVerified && !phoneNumberVerified) {
     actions.push({
       id: NotificationType.verification_prompt,
       type: NotificationType.verification_prompt,

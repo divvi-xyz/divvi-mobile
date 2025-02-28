@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { HomeEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
+import { getAppConfig } from 'src/appConfig'
 import NotificationCenter from 'src/home/NotificationCenter'
 import { NotificationBannerCTATypes, NotificationType } from 'src/home/types'
 import { Screens } from 'src/navigator/Screens'
@@ -112,6 +113,12 @@ describe('NotificationCenter', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     jest.clearAllTimers()
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+      experimental: { phoneNumberVerification: true },
+    })
   })
 
   it('renders empty state when there is no notifications at all', () => {

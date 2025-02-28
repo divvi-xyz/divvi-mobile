@@ -48,27 +48,32 @@ type Props = NativeStackScreenProps<StackParamList, Screens.SendSelectRecipient>
 
 function GetStartedSection() {
   const { t } = useTranslation()
+  const phoneNumberVerificationEnabled = getAppConfig().experimental?.phoneNumberVerification
 
   const renderOption = ({
     optionNum,
     title,
     subtitle,
+    showNum,
   }: {
     optionNum: string
     title: string
     subtitle: string
+    showNum: boolean
   }) => {
     return (
       <View key={`getStartedOption-${optionNum}`} style={getStartedStyles.optionWrapper}>
-        <CircledIcon
-          radius={Math.min(24 * getFontScaleSync(), 50)}
-          style={getStartedStyles.optionNum}
-          backgroundColor={colors.backgroundPrimary}
-        >
-          <Text adjustsFontSizeToFit={true} style={getStartedStyles.optionNumText}>
-            {optionNum}
-          </Text>
-        </CircledIcon>
+        {showNum && (
+          <CircledIcon
+            radius={Math.min(24 * getFontScaleSync(), 50)}
+            style={getStartedStyles.optionNum}
+            backgroundColor={colors.backgroundPrimary}
+          >
+            <Text adjustsFontSizeToFit={true} style={getStartedStyles.optionNumText}>
+              {optionNum}
+            </Text>
+          </CircledIcon>
+        )}
         <View style={getStartedStyles.optionText}>
           <Text style={getStartedStyles.optionTitle}>{title}</Text>
           <Text style={getStartedStyles.optionSubtitle}>{subtitle}</Text>
@@ -83,11 +88,15 @@ function GetStartedSection() {
       title: t('sendSelectRecipient.getStarted.options.one.title'),
       subtitle: t('sendSelectRecipient.getStarted.options.one.subtitle'),
     },
-    {
-      optionNum: '2',
-      title: t('sendSelectRecipient.getStarted.options.two.title'),
-      subtitle: t('sendSelectRecipient.getStarted.options.two.subtitle'),
-    },
+    ...(phoneNumberVerificationEnabled
+      ? [
+          {
+            optionNum: '2',
+            title: t('sendSelectRecipient.getStarted.options.two.title'),
+            subtitle: t('sendSelectRecipient.getStarted.options.two.subtitle'),
+          },
+        ]
+      : []),
   ]
 
   return (
@@ -98,7 +107,7 @@ function GetStartedSection() {
         </Text>
         <Text style={getStartedStyles.title}>{t('sendSelectRecipient.getStarted.title')}</Text>
       </View>
-      {options.map((params) => renderOption(params))}
+      {options.map((params) => renderOption({ ...params, showNum: options.length > 1 }))}
     </View>
   )
 }
@@ -121,6 +130,7 @@ const getStartedStyles = StyleSheet.create({
   },
   optionWrapper: {
     flexDirection: 'row',
+    gap: Spacing.Smallest8,
   },
   optionNum: {
     borderWidth: 1,
@@ -130,7 +140,6 @@ const getStartedStyles = StyleSheet.create({
     ...typeScale.labelXSmall,
   },
   optionText: {
-    paddingLeft: Spacing.Smallest8,
     flex: 1,
   },
   optionTitle: {

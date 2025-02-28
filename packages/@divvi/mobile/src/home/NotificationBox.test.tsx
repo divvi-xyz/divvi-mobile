@@ -2,13 +2,14 @@ import { act, fireEvent, render } from '@testing-library/react-native'
 import * as React from 'react'
 import { Provider } from 'react-redux'
 import { openUrl } from 'src/app/actions'
+import { getAppConfig } from 'src/appConfig'
+import { ONBOARDING_FEATURES_ENABLED } from 'src/config'
 import NotificationBox from 'src/home/NotificationBox'
 import { ensurePincode, navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+import { ToggleableOnboardingFeatures } from 'src/onboarding/types'
 import { createMockStore } from 'test/utils'
 import { mockE164Number, mockTokenBalances } from 'test/values'
-import { ONBOARDING_FEATURES_ENABLED } from 'src/config'
-import { ToggleableOnboardingFeatures } from 'src/onboarding/types'
 
 const TWO_DAYS_MS = 2 * 24 * 60 * 1000
 const BACKUP_TIME = new Date().getTime() - TWO_DAYS_MS
@@ -80,6 +81,11 @@ const storeDataNotificationsDisabled = {
 }
 
 describe('NotificationBox', () => {
+  const defaultAppConfig = {
+    displayName: 'Test App',
+    deepLinkUrlScheme: 'testapp',
+    registryName: 'test',
+  }
   beforeEach(() => {
     jest.replaceProperty(
       ONBOARDING_FEATURES_ENABLED,
@@ -87,8 +93,15 @@ describe('NotificationBox', () => {
       false
     )
     jest.clearAllMocks()
+    jest.mocked(getAppConfig).mockReturnValue(defaultAppConfig)
   })
   it('renders correctly for with all notifications', () => {
+    jest.mocked(getAppConfig).mockReturnValue({
+      ...defaultAppConfig,
+      experimental: {
+        phoneNumberVerification: true,
+      },
+    })
     const store = createMockStore({
       ...storeDataNotificationsEnabled,
       account: {
@@ -125,7 +138,13 @@ describe('NotificationBox', () => {
     // expect(getByText('inviteAnyone')).toBeTruthy()
   })
 
-  it('renders verification reminder when not verified', () => {
+  it('renders verification reminder when not verified and enabled', () => {
+    jest.mocked(getAppConfig).mockReturnValue({
+      ...defaultAppConfig,
+      experimental: {
+        phoneNumberVerification: true,
+      },
+    })
     const store = createMockStore({
       ...storeDataNotificationsDisabled,
       account: {
