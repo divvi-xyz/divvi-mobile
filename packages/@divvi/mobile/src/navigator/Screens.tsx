@@ -79,7 +79,6 @@ export enum Screens {
   SelectProvider = 'SelectProvider',
   SendSelectRecipient = 'SendSelectRecipient',
   SendConfirmation = 'SendConfirmation',
-  SendConfirmationFromExternal = 'SendConfirmationFromExternal',
   SendEnterAmount = 'SendEnterAmount',
   SignInWithEmail = 'SignInWithEmail',
   Simplex = 'Simplex',

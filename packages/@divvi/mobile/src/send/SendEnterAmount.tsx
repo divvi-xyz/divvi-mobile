@@ -50,6 +50,7 @@ function SendEnterAmount({ route }: Props) {
     navigate(Screens.SendConfirmation, {
       origin,
       isFromScan,
+      prepareTransactionsResult,
       transactionData: {
         tokenId: token.tokenId,
         recipient,

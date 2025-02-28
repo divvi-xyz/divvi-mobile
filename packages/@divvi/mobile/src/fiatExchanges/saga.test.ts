@@ -108,7 +108,7 @@ describe(watchBidaliPaymentRequests, () => {
         .dispatch(sendPaymentSuccess({ amount, tokenId: expectedTokenId }))
         .run()
 
-      expect(navigate).toHaveBeenCalledWith(Screens.SendConfirmationFromExternal, {
+      expect(navigate).toHaveBeenCalledWith(Screens.SendConfirmation, {
         origin: SendOrigin.Bidali,
         transactionData: {
           inputAmount: amount,
@@ -162,7 +162,7 @@ describe(watchBidaliPaymentRequests, () => {
       .dispatch(activeScreenChanged(Screens.BidaliScreen))
       .run()
 
-    expect(navigate).toHaveBeenCalledWith(Screens.SendConfirmationFromExternal, {
+    expect(navigate).toHaveBeenCalledWith(Screens.SendConfirmation, {
       origin: SendOrigin.Bidali,
       transactionData: {
         inputAmount: amount,
