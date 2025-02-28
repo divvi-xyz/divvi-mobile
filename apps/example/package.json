@@ -91,7 +91,7 @@
     "@config-plugins/detox": "^9.0.0",
     "@expo/config-plugins": "~9.0.12",
     "@faker-js/faker": "^5.5.3",
-    "@mento-protocol/mento-sdk": "^0.2.3",
+    "@mento-protocol/mento-sdk": "^1.0.3",
     "@tsconfig/node-lts": "^22.0.1",
     "@types/fs-extra": "^9.0.13",
     "@types/react": "~18.3.12",
