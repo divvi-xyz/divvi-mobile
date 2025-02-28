@@ -96,7 +96,7 @@
     "@types/fs-extra": "^9.0.13",
     "@types/react": "~18.3.12",
     "@walletconnect/sign-client": "^2.18.1",
-    "detox": "^20.32.0",
+    "detox": "^20.34.3",
     "dotenv": "^16.3.1",
     "ethers": "^5.7.2",
     "expect": "^29.7.0",
