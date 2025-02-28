@@ -244,11 +244,6 @@ const sendScreens = (Navigator: typeof Stack) => (
       options={sendConfirmationScreenNavOptions as NativeStackNavigationOptions}
     />
     <Navigator.Screen
-      name={Screens.SendConfirmationFromExternal}
-      component={SendConfirmation}
-      options={sendConfirmationScreenNavOptions as NativeStackNavigationOptions}
-    />
-    <Navigator.Screen
       name={Screens.ValidateRecipientIntro}
       component={ValidateRecipientIntro}
       options={validateRecipientIntroScreenNavOptions}

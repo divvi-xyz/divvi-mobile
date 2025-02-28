@@ -93,7 +93,7 @@ export function* handleSendPaymentData({
       tokenId: tokenInfo.tokenId,
     }
 
-    navigate(Screens.SendConfirmationFromExternal, {
+    navigate(Screens.SendConfirmation, {
       transactionData,
       isFromScan,
       origin: SendOrigin.AppSendFlow,

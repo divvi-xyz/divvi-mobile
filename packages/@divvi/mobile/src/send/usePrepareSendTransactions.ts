@@ -6,25 +6,23 @@ import Logger from 'src/utils/Logger'
 import {
   prepareERC20TransferTransaction,
   prepareSendNativeAssetTransaction,
-  type PreparedTransactionsResult,
 } from 'src/viem/prepareTransactions'
 
 const TAG = 'src/send/usePrepareSendTransactions'
 
-type PrepareSendTransactionsCallbackProps = {
-  amount: BigNumber
-  token: TokenBalance
-  recipientAddress: string
-  walletAddress: string
-  feeCurrencies: TokenBalance[]
-}
 export async function prepareSendTransactionsCallback({
   amount,
   token,
   recipientAddress,
   walletAddress,
   feeCurrencies,
-}: PrepareSendTransactionsCallbackProps) {
+}: {
+  amount: BigNumber
+  token: TokenBalance
+  recipientAddress: string
+  walletAddress: string
+  feeCurrencies: TokenBalance[]
+}) {
   if (amount.isLessThanOrEqualTo(0)) {
     return
   }
@@ -53,31 +51,19 @@ export async function prepareSendTransactionsCallback({
   }
 }
 
-/**
- * Hook to prepare transactions for sending crypto.
- */
-export function usePrepareSendTransactions(
-  existingPrepareTransactionResult?: PreparedTransactionsResult
-) {
-  const prepareTransactions = useAsyncCallback(
-    (props: PrepareSendTransactionsCallbackProps) => {
-      if (existingPrepareTransactionResult) return
-      return prepareSendTransactionsCallback(props)
+// Hook to prepare transactions for sending crypto.
+export function usePrepareSendTransactions() {
+  const prepareTransactions = useAsyncCallback(prepareSendTransactionsCallback, {
+    onError: (error) => {
+      Logger.error(TAG, `prepareTransactionsOutput: ${error}`)
     },
-    {
-      onError: (error) => {
-        Logger.error(TAG, `prepareTransactionsOutput: ${error}`)
-      },
-    }
-  )
+  })
 
   return {
-    prepareTransactionsResult: existingPrepareTransactionResult ?? prepareTransactions.result,
+    prepareTransactionsResult: prepareTransactions.result,
     refreshPreparedTransactions: prepareTransactions.execute,
     clearPreparedTransactions: prepareTransactions.reset,
     prepareTransactionError: prepareTransactions.error,
-    prepareTransactionLoading: existingPrepareTransactionResult
-      ? false
-      : prepareTransactions.loading,
+    prepareTransactionLoading: prepareTransactions.loading,
   }
 }

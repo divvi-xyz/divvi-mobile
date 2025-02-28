@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { fireEvent, render } from '@testing-library/react-native'
+import { fireEvent, render, waitFor } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import * as React from 'react'
 import { Provider } from 'react-redux'
@@ -72,14 +72,11 @@ const mockSendConfirmationProps = getMockStackScreenProps(Screens.SendConfirmati
 })
 
 const mockSendConfirmationFromExternalProps = getMockStackScreenProps(
-  Screens.SendConfirmationFromExternal,
+  Screens.SendConfirmation,
   mockBaseScreenProps
 )
 
-type ScreenProps = NativeStackScreenProps<
-  StackParamList,
-  Screens.SendConfirmation | Screens.SendConfirmationFromExternal
->
+type ScreenProps = NativeStackScreenProps<StackParamList, Screens.SendConfirmation>
 
 describe('SendConfirmation', () => {
   let mockUsePrepareSendTransactionsOutput: ReturnType<typeof usePrepareSendTransactions>
@@ -175,9 +172,13 @@ describe('SendConfirmation', () => {
   })
 
   describe('when opened with a deeplink', () => {
-    it('prepares a transaction on load if the screen is opened with a deeplink', () => {
+    it('prepares a transaction on load if the screen is opened with a deeplink', async () => {
       renderScreen(mockSendConfirmationFromExternalProps)
-      expect(mockUsePrepareSendTransactionsOutput.clearPreparedTransactions).toHaveBeenCalledWith()
+      await waitFor(() =>
+        expect(
+          mockUsePrepareSendTransactionsOutput.refreshPreparedTransactions
+        ).toHaveBeenCalledTimes(1)
+      )
       jest.advanceTimersByTime(300)
       expect(
         mockUsePrepareSendTransactionsOutput.refreshPreparedTransactions

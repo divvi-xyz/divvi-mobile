@@ -164,7 +164,7 @@ describe('SendEnterAmount', () => {
       underlyingTokenSymbol: 'CELO',
       amountEnteredIn: 'token',
     })
-    expect(navigate).toHaveBeenLastCalledWith(Screens.SendConfirmation, {
+    expect(navigate).toHaveBeenCalledWith(Screens.SendConfirmation, {
       origin: params.origin,
       isFromScan: params.isFromScan,
       prepareTransactionsResult: mockedPrepareTransactions.prepareTransactionsResult,

@@ -77,14 +77,13 @@ function SendEnterAmount({ route }: Props) {
     })
   }
 
-  const prepareTransactions = usePrepareSendTransactions()
   const {
     prepareTransactionsResult,
     refreshPreparedTransactions,
     clearPreparedTransactions,
     prepareTransactionError,
     prepareTransactionLoading,
-  } = prepareTransactions
+  } = usePrepareSendTransactions()
 
   const walletAddress = useSelector(walletAddressSelector)
 

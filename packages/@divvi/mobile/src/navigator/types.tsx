@@ -30,18 +30,11 @@ type NestedNavigatorParams<ParamList> = {
     : { screen: K; params: ParamList[K] }
 }[keyof ParamList]
 
-interface SendConfirmationFromExternalParams {
-  origin: SendOrigin
-  transactionData: TransactionDataInput
-  isFromScan: boolean
-  prepareTransactionsResult?: never
-}
-
 interface SendConfirmationParams {
   origin: SendOrigin
   transactionData: TransactionDataInput
   isFromScan: boolean
-  prepareTransactionsResult: PreparedTransactionsResult
+  prepareTransactionsResult?: PreparedTransactionsResult
 }
 
 type SendEnterAmountParams = {
@@ -258,7 +251,6 @@ export type StackParamList = {
       }
     | undefined
   [Screens.SendConfirmation]: SendConfirmationParams
-  [Screens.SendConfirmationFromExternal]: SendConfirmationFromExternalParams
   [Screens.SendEnterAmount]: SendEnterAmountParams
   [Screens.JumpstartEnterAmount]: undefined
   [Screens.JumpstartSendConfirmation]: {

@@ -39,10 +39,7 @@ import { getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
 import { getSerializablePreparedTransaction } from 'src/viem/preparedTransactionSerialization'
 import { walletAddressSelector } from 'src/web3/selectors'
 
-type Props = NativeStackScreenProps<
-  StackParamList,
-  Screens.SendConfirmation | Screens.SendConfirmationFromExternal
->
+type Props = NativeStackScreenProps<StackParamList, Screens.SendConfirmation>
 
 const DEBOUNCE_TIME_MS = 250
 const TAG = 'send/SendConfirmation'
@@ -63,9 +60,11 @@ export default function SendConfirmation(props: Props) {
     refreshPreparedTransactions,
     clearPreparedTransactions,
     prepareTransactionLoading,
-  } = usePrepareSendTransactions(props.route.params.prepareTransactionsResult)
+  } = usePrepareSendTransactions()
 
-  const fromExternal = props.route.name === Screens.SendConfirmationFromExternal
+  const openedViaDeeplink = !props.route.params.prepareTransactionsResult
+  const preparedResult = props.route.params.prepareTransactionsResult ?? prepareTransactionsResult
+
   const tokenInfo = useTokenInfo(tokenId)
   const isSending = useSelector(isSendingSelector)
   const localCurrencyCode = useSelector(getLocalCurrencyCode)
@@ -74,8 +73,7 @@ export default function SendConfirmation(props: Props) {
   const usdAmount = useAmountAsUsd(tokenAmount, tokenId)
   const walletAddress = useSelector(walletAddressSelector)
   const feeCurrencies = useSelector((state) => feeCurrenciesSelector(state, tokenInfo!.networkId))
-  const { maxFeeAmount, feeCurrency: feeTokenInfo } =
-    getFeeCurrencyAndAmounts(prepareTransactionsResult)
+  const { maxFeeAmount, feeCurrency: feeTokenInfo } = getFeeCurrencyAndAmounts(preparedResult)
   const tokenFeeAmount = maxFeeAmount ?? new BigNumber(0)
   const localFeeAmount = useTokenToLocalAmount(tokenFeeAmount, feeTokenInfo?.tokenId)
 
@@ -88,8 +86,7 @@ export default function SendConfirmation(props: Props) {
   )
 
   useEffect(() => {
-    // do not refresh if prepared transactions is available in the route params
-    if (!fromExternal) {
+    if (!openedViaDeeplink) {
       return
     }
 
@@ -108,16 +105,13 @@ export default function SendConfirmation(props: Props) {
       })
     }, DEBOUNCE_TIME_MS)
     return () => clearTimeout(debouncedRefreshTransactions)
-  }, [tokenInfo, tokenAmount, recipient, walletAddress, feeCurrencies, fromExternal])
+  }, [tokenInfo, tokenAmount, recipient, walletAddress, feeCurrencies, openedViaDeeplink])
 
-  const disableSend =
-    isSending || !prepareTransactionsResult || prepareTransactionsResult.type !== 'possible'
+  const disableSend = isSending || !preparedResult || preparedResult.type !== 'possible'
 
   const onSend = () => {
     const preparedTransaction =
-      prepareTransactionsResult &&
-      prepareTransactionsResult.type === 'possible' &&
-      prepareTransactionsResult.transactions[0]
+      preparedResult && preparedResult.type === 'possible' && preparedResult.transactions[0]
     if (!preparedTransaction) {
       // This should never happen because the confirm button is disabled if this happens.
       dispatch(showError(ErrorMessages.SEND_PAYMENT_FAILED))
@@ -145,7 +139,7 @@ export default function SendConfirmation(props: Props) {
         tokenId,
         usdAmount,
         recipient,
-        fromExternal,
+        openedViaDeeplink,
         getSerializablePreparedTransaction(preparedTransaction)
       )
     )
