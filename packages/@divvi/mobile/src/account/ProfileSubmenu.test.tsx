@@ -5,6 +5,7 @@ import * as React from 'react'
 import 'react-native'
 import { Provider } from 'react-redux'
 import ProfileSubmenu from 'src/account/ProfileSubmenu'
+import { getAppConfig } from 'src/appConfig'
 import { Screens } from 'src/navigator/Screens'
 import Logger from 'src/utils/Logger'
 import networkConfig from 'src/web3/networkConfig'
@@ -24,8 +25,19 @@ mockedKeychain.getGenericPassword.mockResolvedValue({
 })
 
 describe('ProfileSubmenu', () => {
+  const defaultAppConfig = {
+    displayName: 'Test App',
+    deepLinkUrlScheme: 'testapp',
+    registryName: 'test',
+  }
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(getAppConfig).mockReturnValue({
+      ...defaultAppConfig,
+      experimental: {
+        phoneNumberVerification: true,
+      },
+    })
   })
 
   it('shows the expected menu items', () => {
@@ -37,6 +49,16 @@ describe('ProfileSubmenu', () => {
     )
     expect(getByTestId('ProfileSubmenu/EditProfile')).toBeTruthy()
     expect(getByTestId('ProfileSubmenu/Verify')).toBeTruthy()
+  })
+  it('does not show the verify phone number item if not enabled', () => {
+    jest.mocked(getAppConfig).mockReturnValue(defaultAppConfig)
+    const { getByTestId, queryByTestId } = render(
+      <Provider store={createMockStore()}>
+        <MockedNavigator component={ProfileSubmenu}></MockedNavigator>
+      </Provider>
+    )
+    expect(getByTestId('ProfileSubmenu/EditProfile')).toBeTruthy()
+    expect(queryByTestId('ProfileSubmenu/Verify')).toBeFalsy()
   })
   it('can revoke the phone number successfully', async () => {
     mockFetch.mockResponseOnce(JSON.stringify({ message: 'OK' }), {
