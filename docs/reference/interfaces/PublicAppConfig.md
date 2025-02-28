@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:215](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L215)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:218](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L218)
 
 #### protocolIds
 
@@ -104,6 +104,12 @@ optional hideActionsCarousel: boolean;
 optional alchemyKeys: Record<string, string>;
 ```
 
+#### bidali?
+
+```ts
+optional bidali: boolean;
+```
+
 #### earn?
 
 ```ts
@@ -126,6 +132,18 @@ optional showSafetyScoreOnPoolCard: boolean;
 
 ```ts
 optional firebase: boolean;
+```
+
+#### inviteFriends?
+
+```ts
+optional inviteFriends: boolean;
+```
+
+#### notificationCenter?
+
+```ts
+optional notificationCenter: boolean;
 ```
 
 #### onboarding?
