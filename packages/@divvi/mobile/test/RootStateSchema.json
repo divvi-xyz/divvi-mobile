@@ -4636,7 +4636,7 @@
                     "$ref": "#/definitions/AppState"
                 },
                 "divviRegistrations": {
-                    "$ref": "#/definitions/{\"celo-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"celo-alfajores\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"ethereum-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"ethereum-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"arbitrum-one\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"arbitrum-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"op-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"op-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"polygon-pos-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"polygon-pos-amoy\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"base-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"base-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;}"
+                    "$ref": "#/definitions/{\"celo-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"celo-alfajores\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"ethereum-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"ethereum-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"arbitrum-one\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"arbitrum-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"op-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"op-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"polygon-pos-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"polygon-pos-amoy\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"base-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"base-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;}"
                 },
                 "googleMobileServicesAvailable": {
                     "type": "boolean"
@@ -6684,7 +6684,7 @@
             ],
             "type": "object"
         },
-        "{\"celo-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"celo-alfajores\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"ethereum-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"ethereum-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"arbitrum-one\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"arbitrum-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"op-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"op-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"polygon-pos-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"polygon-pos-amoy\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"base-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;\"base-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"somm\"|\"vana\"|\"mento\")[]|undefined;}": {
+        "{\"celo-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"celo-alfajores\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"ethereum-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"ethereum-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"arbitrum-one\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"arbitrum-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"op-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"op-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"polygon-pos-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"polygon-pos-amoy\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"base-mainnet\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;\"base-sepolia\"?:(\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"curve\"|\"euler\"|\"farcaster\"|\"fonbnk\"|\"mento\"|\"morpho\"|\"offchainlabs\"|\"somm\"|\"tether\"|\"ubeswap\"|\"vana\"|\"velodrome\"|\"yearn\")[]|undefined;}": {
             "additionalProperties": false,
             "properties": {
                 "arbitrum-one": {
@@ -6694,10 +6694,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
@@ -6710,10 +6719,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
@@ -6726,10 +6744,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
@@ -6742,10 +6769,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
@@ -6758,10 +6794,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
@@ -6774,10 +6819,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
@@ -6790,10 +6844,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
@@ -6806,10 +6869,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
@@ -6822,10 +6894,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
@@ -6838,10 +6919,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
@@ -6854,10 +6944,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
@@ -6870,10 +6969,19 @@
                             "allbridge",
                             "beefy",
                             "celo",
+                            "curve",
+                            "euler",
+                            "farcaster",
                             "fonbnk",
                             "mento",
+                            "morpho",
+                            "offchainlabs",
                             "somm",
-                            "vana"
+                            "tether",
+                            "ubeswap",
+                            "vana",
+                            "velodrome",
+                            "yearn"
                         ],
                         "type": "string"
                     },
