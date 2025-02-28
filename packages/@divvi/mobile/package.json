@@ -29,6 +29,26 @@
     "plugin/build",
     "app.plugin.js"
   ],
+  "keywords": [
+    "web3",
+    "mobile",
+    "react-native",
+    "expo",
+    "ethereum",
+    "celo",
+    "polygon",
+    "arbitrum",
+    "optimism",
+    "base",
+    "blockchain",
+    "wallet",
+    "crypto",
+    "divvi",
+    "multi-chain",
+    "configurable",
+    "mobile-framework",
+    "quick-start-app"
+  ],
   "scripts": {
     "lint": "eslint --ext=.tsx,.ts src/",
     "format": "prettier --loglevel error --write .",
