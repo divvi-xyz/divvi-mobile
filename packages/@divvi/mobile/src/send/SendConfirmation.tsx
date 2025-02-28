@@ -185,6 +185,7 @@ export default function SendConfirmation(props: Props) {
             value={NETWORK_NAMES[tokenInfo.networkId]}
           />
           <ReviewDetailsItem
+            approx
             testID="SendConfirmationFee"
             type="token-amount"
             label={t('networkFee')}
@@ -196,6 +197,7 @@ export default function SendConfirmation(props: Props) {
           />
 
           <ReviewDetailsItem
+            approx
             testID="SendConfirmationTotal"
             type="total-token-amount"
             label={t('reviewTransaction.totalPlusFees')}
@@ -226,21 +228,22 @@ export default function SendConfirmation(props: Props) {
 
       <ReviewTotalBottomSheet
         forwardedRef={totalBottomSheetRef}
-        title={t('reviewTransaction.totalBottomSheet.totalPlusFees')}
+        title={t('reviewTransaction.totalPlusFees')}
       >
         <ReviewDetailsItem
           fontSize="small"
           type="token-amount"
-          label={t('reviewTransaction.totalBottomSheet.sending')}
+          label={t('sending')}
           tokenAmount={tokenAmount}
           localAmount={localAmount}
           tokenInfo={tokenInfo}
           localCurrencySymbol={localCurrencySymbol}
         />
         <ReviewDetailsItem
+          approx
           fontSize="small"
           type="token-amount"
-          label={t('reviewTransaction.totalBottomSheet.estimatedFee')}
+          label={t('estimatedNetworkFee')}
           tokenAmount={tokenEstimatedFeeAmount}
           localAmount={localEstimatedFeeAmount}
           tokenInfo={feeTokenInfo}
@@ -249,16 +252,17 @@ export default function SendConfirmation(props: Props) {
         <ReviewDetailsItem
           fontSize="small"
           type="token-amount"
-          label={t('reviewTransaction.totalBottomSheet.maxFee')}
+          label={t('maxNetworkFee')}
           tokenAmount={tokenMaxFeeAmount}
           localAmount={localMaxFeeAmount}
           tokenInfo={feeTokenInfo}
           localCurrencySymbol={localCurrencySymbol}
         />
         <ReviewDetailsItem
+          approx
           fontSize="small"
           type="total-token-amount"
-          label={t('reviewTransaction.totalBottomSheet.totalPlusFees')}
+          label={t('reviewTransaction.totalPlusFees')}
           tokenInfo={tokenInfo}
           feeTokenInfo={feeTokenInfo}
           tokenAmount={tokenAmount}

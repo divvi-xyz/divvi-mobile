@@ -190,7 +190,7 @@ describe('ReviewDetailsItemTotalValue', () => {
       title:
         'returns the token and fiat amount when fee info is missing and local price is available',
       result:
-        'tokenAndLocalAmountApprox, {"tokenAmount":"10.00","localAmount":"10.00","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+        'tokenAndLocalAmount, {"tokenAmount":"10.00","localAmount":"10.00","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
     },
     {
       tokenInfo: { ...celoToken, priceUsd: null },
@@ -201,7 +201,7 @@ describe('ReviewDetailsItemTotalValue', () => {
       feeLocalAmount: null,
       title:
         'returns only the token amount when fee info is missing and no local price is available',
-      result: 'tokenAmountApprox, {"tokenAmount":"10.00","tokenSymbol":"CELO"}',
+      result: 'tokenAmount, {"tokenAmount":"10.00","tokenSymbol":"CELO"}',
     },
     {
       tokenInfo: { ...celoToken, priceUsd: new BigNumber(1) },
@@ -213,7 +213,7 @@ describe('ReviewDetailsItemTotalValue', () => {
       title:
         'returns the token and local amount when the token and fee token are the same and local price is available',
       result:
-        'tokenAndLocalAmountApprox, {"tokenAmount":"10.50","localAmount":"10.50","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+        'tokenAndLocalAmount, {"tokenAmount":"10.50","localAmount":"10.50","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
     },
     {
       tokenInfo: { ...celoToken, priceUsd: null },
@@ -224,7 +224,7 @@ describe('ReviewDetailsItemTotalValue', () => {
       feeLocalAmount: null,
       title:
         "returns only the token amount when token and fee token are the same but they don't have local price",
-      result: 'tokenAmountApprox, {"tokenAmount":"10.50","tokenSymbol":"CELO"}',
+      result: 'tokenAmount, {"tokenAmount":"10.50","tokenSymbol":"CELO"}',
     },
     {
       tokenInfo: { ...cUSDToken, priceUsd: new BigNumber(1) },
@@ -235,7 +235,7 @@ describe('ReviewDetailsItemTotalValue', () => {
       feeLocalAmount: new BigNumber(0.5),
       title:
         'returns only the local amount when token and fee token are different but local prices are available for both',
-      result: 'localAmountApprox, {"localAmount":"10.50","localCurrencySymbol":"₱"}',
+      result: 'localAmount, {"localAmount":"10.50","localCurrencySymbol":"₱"}',
     },
     {
       tokenInfo: { ...cUSDToken, priceUsd: null },
