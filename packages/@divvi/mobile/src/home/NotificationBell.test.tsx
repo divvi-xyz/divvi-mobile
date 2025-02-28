@@ -3,7 +3,9 @@ import * as React from 'react'
 import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { HomeEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import NotificationBell from 'src/home/NotificationBell'
+import { PublicAppConfig } from 'src/public'
 import { createMockStore } from 'test/utils'
 
 jest.mock('src/analytics/AppAnalytics')
@@ -13,6 +15,30 @@ const testId = 'NotificationBell'
 describe('NotificationBell', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+      experimental: {
+        notificationCenter: true,
+      },
+    })
+  })
+
+  it('renders nothing if notification center is not enabled', () => {
+    jest.mocked(getAppConfig).mockReturnValue({
+      experimental: {
+        notificationCenter: false,
+      },
+    } as PublicAppConfig)
+
+    const { toJSON } = render(
+      <Provider store={createMockStore()}>
+        <NotificationBell testID={testId} />
+      </Provider>
+    )
+
+    expect(toJSON()).toBeNull()
   })
 
   it(`emits the analytics event on press when there is no new notification`, () => {
