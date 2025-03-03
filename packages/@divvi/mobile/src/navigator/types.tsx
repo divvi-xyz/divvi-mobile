@@ -10,6 +10,7 @@ import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
 import { Screens } from 'src/navigator/Screens'
 import { Nft } from 'src/nfts/types'
 import { EarnPosition } from 'src/positions/types'
+import type { PreparedTransactionsResult } from 'src/public'
 import { Recipient } from 'src/recipients/recipient'
 import { QrCode, TransactionDataInput } from 'src/send/types'
 import { AssetTabType } from 'src/tokens/types'
@@ -33,6 +34,7 @@ interface SendConfirmationParams {
   origin: SendOrigin
   transactionData: TransactionDataInput
   isFromScan: boolean
+  prepareTransactionsResult?: PreparedTransactionsResult
 }
 
 type SendEnterAmountParams = {
@@ -249,7 +251,6 @@ export type StackParamList = {
       }
     | undefined
   [Screens.SendConfirmation]: SendConfirmationParams
-  [Screens.SendConfirmationFromExternal]: SendConfirmationParams
   [Screens.SendEnterAmount]: SendEnterAmountParams
   [Screens.JumpstartEnterAmount]: undefined
   [Screens.JumpstartSendConfirmation]: {
