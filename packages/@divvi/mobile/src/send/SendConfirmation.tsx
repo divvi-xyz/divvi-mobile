@@ -41,7 +41,6 @@ import { walletAddressSelector } from 'src/web3/selectors'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SendConfirmation>
 
-const DEBOUNCE_TIME_MS = 250
 const TAG = 'send/SendConfirmation'
 
 export const sendConfirmationScreenNavOptions = noHeader
@@ -55,12 +54,8 @@ export default function SendConfirmation(props: Props) {
     transactionData: { recipient, tokenAmount, tokenAddress, tokenId },
   } = props.route.params
 
-  const {
-    prepareTransactionsResult,
-    refreshPreparedTransactions,
-    clearPreparedTransactions,
-    prepareTransactionLoading,
-  } = usePrepareSendTransactions()
+  const { prepareTransactionsResult, refreshPreparedTransactions, prepareTransactionLoading } =
+    usePrepareSendTransactions()
 
   const openedViaDeeplink = !props.route.params.prepareTransactionsResult
   const preparedResult = props.route.params.prepareTransactionsResult ?? prepareTransactionsResult
@@ -94,17 +89,13 @@ export default function SendConfirmation(props: Props) {
       return // should never happen
     }
 
-    clearPreparedTransactions()
-    const debouncedRefreshTransactions = setTimeout(() => {
-      return refreshPreparedTransactions({
-        amount: tokenAmount,
-        token: tokenInfo,
-        recipientAddress: recipient.address,
-        walletAddress,
-        feeCurrencies,
-      })
-    }, DEBOUNCE_TIME_MS)
-    return () => clearTimeout(debouncedRefreshTransactions)
+    refreshPreparedTransactions({
+      amount: tokenAmount,
+      token: tokenInfo,
+      recipientAddress: recipient.address,
+      walletAddress,
+      feeCurrencies,
+    })
   }, [tokenInfo, tokenAmount, recipient, walletAddress, feeCurrencies, openedViaDeeplink])
 
   const disableSend = isSending || !preparedResult || preparedResult.type !== 'possible'
