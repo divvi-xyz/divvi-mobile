@@ -152,7 +152,7 @@ describe('SendConfirmation', () => {
       'reviewTransaction.totalPlusFees'
     )
     expect(getByTestId('SendConfirmationTotal/Value')).toHaveTextContent(
-      'localAmount, {"localAmount":"1.40","localCurrencySymbol":"₱"}'
+      'localAmountApprox, {"localAmount":"1.40","localCurrencySymbol":"₱"}'
     )
 
     // renders confirmation button
