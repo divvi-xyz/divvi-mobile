@@ -77,6 +77,12 @@ describe('SendSelectRecipient', () => {
       }
       return {} as any
     })
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+      experimental: { phoneNumberVerification: true },
+    })
   })
 
   it('shows contacts when send to contacts button is pressed and conditions are satisfied', async () => {
