@@ -18,7 +18,7 @@
     "knip:depcheck": "knip --include dependencies",
     "docs": "yarn --cwd packages/@divvi/mobile docs",
     "postinstall": "patch-package && cp packages/@divvi/mobile/secrets.json.template packages/@divvi/mobile/secrets.json && yarn --cwd packages/@divvi/mobile build:plugin",
-    "release": "multi-semantic-release"
+    "release": "cp README.md packages/@divvi/mobile/ && multi-semantic-release"
   },
   "dependencies": {
     "@anolilab/multi-semantic-release": "^1.1.9",

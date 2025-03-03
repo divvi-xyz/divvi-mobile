@@ -82,6 +82,7 @@ const App = createApp({
     experimental: {
       bidali: true,
       notificationCenter: true,
+      phoneNumberVerification: true,
     },
   }),
 })
