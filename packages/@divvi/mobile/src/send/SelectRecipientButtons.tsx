@@ -11,6 +11,7 @@ import {
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { JumpstartEvents, SendEvents } from 'src/analytics/Events'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
+import { getAppConfig } from 'src/appConfig'
 import Dialog from 'src/components/Dialog'
 import SelectRecipientButton from 'src/components/SelectRecipientButton'
 import MagicWand from 'src/icons/MagicWand'
@@ -36,6 +37,8 @@ export default function SelectRecipientButtons({
   defaultTokenIdOverride,
 }: Props) {
   const { t } = useTranslation()
+
+  const phoneNumberVerificationEnabled = getAppConfig().experimental?.phoneNumberVerification
 
   const phoneNumberVerified = useSelector(phoneNumberVerifiedSelector)
   const jumpstartSendEnabled = getFeatureGate(StatsigFeatureGates.SHOW_JUMPSTART_SEND)
@@ -177,16 +180,18 @@ export default function SelectRecipientButtons({
         onPress={onPressQR}
         icon={<QRCode />}
       />
-      <SelectRecipientButton
-        testID={'SelectRecipient/Contacts'}
-        title={t('sendSelectRecipient.invite.title')}
-        subtitle={t('sendSelectRecipient.invite.subtitle')}
-        onPress={onPressContacts}
-        icon={<Social />}
-        showCheckmark={
-          phoneNumberVerified && contactsPermissionStatus === PERMISSION_RESULTS.GRANTED
-        }
-      />
+      {phoneNumberVerificationEnabled && (
+        <SelectRecipientButton
+          testID={'SelectRecipient/Contacts'}
+          title={t('sendSelectRecipient.invite.title')}
+          subtitle={t('sendSelectRecipient.invite.subtitle')}
+          onPress={onPressContacts}
+          icon={<Social />}
+          showCheckmark={
+            phoneNumberVerified && contactsPermissionStatus === PERMISSION_RESULTS.GRANTED
+          }
+        />
+      )}
       <Dialog
         title={t('sendSelectRecipient.connectPhoneNumberModal.title')}
         isVisible={showConnectPhoneNumberModal}
