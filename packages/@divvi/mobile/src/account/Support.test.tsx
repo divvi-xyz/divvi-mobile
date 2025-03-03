@@ -3,6 +3,7 @@ import * as React from 'react'
 import 'react-native'
 import { Provider } from 'react-redux'
 import Support from 'src/account/Support'
+import { getAppConfig } from 'src/appConfig'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { getDynamicConfigParams } from 'src/statsig'
@@ -37,18 +38,27 @@ describe('Support', () => {
   it('navigates to Web FAQ', () => {
     const contact = renderSupport()
     fireEvent.press(contact.getByTestId('FAQLink'))
-    expect(navigateToURI).toBeCalledWith('https://example.com/faq')
+    expect(navigateToURI).toHaveBeenCalledWith('https://example.com/faq')
   })
 
   it('navigates to Forum', () => {
     const contact = renderSupport()
     fireEvent.press(contact.getByTestId('ForumLink'))
-    expect(navigateToURI).toBeCalledWith('https://example.com/forum')
+    expect(navigateToURI).toHaveBeenCalledWith('https://example.com/forum')
   })
 
   it('navigates to Contact', () => {
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+      experimental: {
+        contactSupport: true,
+      },
+    })
+
     const contact = renderSupport()
     fireEvent.press(contact.getByTestId('SupportContactLink'))
-    expect(navigate).toBeCalledWith(Screens.SupportContact)
+    expect(navigate).toHaveBeenCalledWith(Screens.SupportContact)
   })
 })

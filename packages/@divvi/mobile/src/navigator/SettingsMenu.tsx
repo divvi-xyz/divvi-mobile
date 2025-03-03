@@ -42,8 +42,9 @@ import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { useDispatch, useSelector } from 'src/redux/hooks'
-import { getFeatureGate } from 'src/statsig'
-import { StatsigFeatureGates } from 'src/statsig/types'
+import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
+import { DynamicConfigs } from 'src/statsig/constants'
+import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
@@ -132,7 +133,10 @@ export default function SettingsMenu({ route }: Props) {
   const sessionId = useSelector(sessionIdSelector)
   const devModeActive = useSelector(devModeSelector)
 
-  const inviteFriendsEnabled = getAppConfig().experimental?.inviteFriends
+  const { links } = getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.APP_CONFIG])
+  const experimentalFeatures = getAppConfig().experimental
+  const inviteFriendsEnabled = experimentalFeatures?.inviteFriends
+  const showHelp = !!experimentalFeatures?.contactSupport || !!links?.faq || !!links?.forum
 
   useEffect(() => {
     if (AppAnalytics.getSessionId() !== sessionId) {
@@ -245,14 +249,16 @@ export default function SettingsMenu({ route }: Props) {
             borderless
           />
         )}
-        <SettingsItemTextValue
-          icon={<Help size={24} color={Colors.contentPrimary} />}
-          title={t('help')}
-          onPress={() => navigate(Screens.Support)}
-          testID="SettingsMenu/Help"
-          showChevron
-          borderless
-        />
+        {showHelp && (
+          <SettingsItemTextValue
+            icon={<Help size={24} color={Colors.contentPrimary} />}
+            title={t('help')}
+            onPress={() => navigate(Screens.Support)}
+            testID="SettingsMenu/Help"
+            showChevron
+            borderless
+          />
+        )}
 
         <GradientBlock style={styles.divider} />
 
