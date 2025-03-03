@@ -52,6 +52,7 @@ export const sendConfirmationScreenNavOptions = noHeader
 export default function SendConfirmation(props: Props) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const feesBottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const totalBottomSheetRef = useRef<BottomSheetModalRefType>(null)
 
   const {
@@ -190,10 +191,11 @@ export default function SendConfirmation(props: Props) {
             type="token-amount"
             label={t('networkFee')}
             isLoading={prepareTransactionLoading}
-            tokenAmount={tokenMaxFeeAmount}
-            localAmount={localMaxFeeAmount}
+            tokenAmount={tokenEstimatedFeeAmount}
+            localAmount={localEstimatedFeeAmount}
             tokenInfo={feeTokenInfo}
             localCurrencySymbol={localCurrencySymbol}
+            onInfoPress={() => feesBottomSheetRef.current?.snapToIndex(0)}
           />
 
           <ReviewDetailsItem
@@ -226,6 +228,29 @@ export default function SendConfirmation(props: Props) {
         />
       </ReviewFooter>
 
+      <ReviewTotalBottomSheet forwardedRef={feesBottomSheetRef} title={t('networkFee')}>
+        <ReviewDetailsItem
+          approx
+          fontSize="small"
+          type="token-amount"
+          label={t('estimatedNetworkFee')}
+          tokenAmount={tokenEstimatedFeeAmount}
+          localAmount={localEstimatedFeeAmount}
+          tokenInfo={feeTokenInfo}
+          localCurrencySymbol={localCurrencySymbol}
+        />
+
+        <ReviewDetailsItem
+          fontSize="small"
+          type="token-amount"
+          label={t('maxNetworkFee')}
+          tokenAmount={tokenMaxFeeAmount}
+          localAmount={localMaxFeeAmount}
+          tokenInfo={feeTokenInfo}
+          localCurrencySymbol={localCurrencySymbol}
+        />
+      </ReviewTotalBottomSheet>
+
       <ReviewTotalBottomSheet
         forwardedRef={totalBottomSheetRef}
         title={t('reviewTransaction.totalPlusFees')}
@@ -239,25 +264,18 @@ export default function SendConfirmation(props: Props) {
           tokenInfo={tokenInfo}
           localCurrencySymbol={localCurrencySymbol}
         />
+
         <ReviewDetailsItem
           approx
           fontSize="small"
           type="token-amount"
-          label={t('estimatedNetworkFee')}
+          label={t('fees')}
           tokenAmount={tokenEstimatedFeeAmount}
           localAmount={localEstimatedFeeAmount}
           tokenInfo={feeTokenInfo}
           localCurrencySymbol={localCurrencySymbol}
         />
-        <ReviewDetailsItem
-          fontSize="small"
-          type="token-amount"
-          label={t('maxNetworkFee')}
-          tokenAmount={tokenMaxFeeAmount}
-          localAmount={localMaxFeeAmount}
-          tokenInfo={feeTokenInfo}
-          localCurrencySymbol={localCurrencySymbol}
-        />
+
         <ReviewDetailsItem
           approx
           fontSize="small"

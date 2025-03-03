@@ -2857,6 +2857,7 @@
   },
   "maxNetworkFee": "Max Network Fee",
   "estimatedNetworkFee": "Estimated Network Fee",
+  "fees": "Fees",
   "bottomSheetDismissButton": "Got it",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
