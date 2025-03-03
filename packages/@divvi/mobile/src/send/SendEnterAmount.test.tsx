@@ -129,13 +129,14 @@ describe('SendEnterAmount', () => {
   })
 
   it('should handle navigating to the next step', async () => {
-    jest.mocked(usePrepareSendTransactions).mockReturnValue({
+    const mockedPrepareTransactions = {
       prepareTransactionsResult: mockPrepareTransactionsResultPossible,
       prepareTransactionLoading: false,
       refreshPreparedTransactions: jest.fn(),
       clearPreparedTransactions: jest.fn(),
       prepareTransactionError: undefined,
-    })
+    }
+    jest.mocked(usePrepareSendTransactions).mockReturnValue(mockedPrepareTransactions)
     const { getByTestId, getByText } = render(
       <Provider store={store}>
         <MockedNavigator component={SendEnterAmount} params={params} />
@@ -166,6 +167,7 @@ describe('SendEnterAmount', () => {
     expect(navigate).toHaveBeenCalledWith(Screens.SendConfirmation, {
       origin: params.origin,
       isFromScan: params.isFromScan,
+      prepareTransactionsResult: mockedPrepareTransactions.prepareTransactionsResult,
       transactionData: {
         tokenId: mockCeloTokenId,
         recipient: params.recipient,
