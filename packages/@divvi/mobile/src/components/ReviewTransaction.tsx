@@ -226,21 +226,18 @@ function ReviewDetailsItemTokenValue(props: ReviewDetailsItemTokenValueProps) {
   if (!props.tokenAmount) return null
 
   return (
-    <>
-      {props.approx && `${APPROX_SYMBOL} `}
-      <Trans
-        i18nKey={'tokenAndLocalAmount'}
-        context={props.tokenAmount?.gt(0) ? undefined : 'noFiatPrice'}
-        tOptions={{
-          tokenAmount: formatValueToDisplay(props.tokenAmount),
-          localAmount: props.localAmount ? formatValueToDisplay(props.localAmount) : '',
-          tokenSymbol: props.tokenInfo?.symbol,
-          localCurrencySymbol: props.localCurrencySymbol,
-        }}
-      >
-        {props.children ?? <Text />}
-      </Trans>
-    </>
+    <Trans
+      i18nKey={props.approx ? 'tokenAndLocalAmountApprox' : 'tokenAndLocalAmount'}
+      context={props.tokenAmount?.gt(0) ? undefined : 'noFiatPrice'}
+      tOptions={{
+        tokenAmount: formatValueToDisplay(props.tokenAmount),
+        localAmount: props.localAmount ? formatValueToDisplay(props.localAmount) : '',
+        tokenSymbol: props.tokenInfo?.symbol,
+        localCurrencySymbol: props.localCurrencySymbol,
+      }}
+    >
+      {props.children ?? <Text />}
+    </Trans>
   )
 }
 
@@ -307,11 +304,16 @@ export function ReviewDetailsItemTotalValue({
     }
 
     // otherwise only show token amount
-    const displayTokenAmount = t('tokenAmount', {
-      tokenAmount: formatValueToDisplay(tokenAmount),
-      tokenSymbol: tokenInfo.symbol,
-    })
-    return `${withApprox}${displayTokenAmount}`
+
+    return withApprox
+      ? t('tokenAmountApprox', {
+          tokenAmount: formatValueToDisplay(tokenAmount),
+          tokenSymbol: tokenInfo.symbol,
+        })
+      : t('tokenAmount', {
+          tokenAmount: formatValueToDisplay(tokenAmount),
+          tokenSymbol: tokenInfo.symbol,
+        })
   }
 
   const sameToken = tokenInfo.tokenId === feeTokenInfo.tokenId
@@ -334,20 +336,28 @@ export function ReviewDetailsItemTotalValue({
 
   // if single token but no local price - return token amount
   if (sameToken && !haveLocalPrice) {
-    const displayTokenAmount = t('tokenAmount', {
-      tokenAmount: formatValueToDisplay(tokenAmount.plus(feeTokenAmount)),
-      tokenSymbol: tokenInfo.symbol,
-    })
-    return `${withApprox}${displayTokenAmount}`
+    return withApprox
+      ? t('tokenAmountApprox', {
+          tokenAmount: formatValueToDisplay(tokenAmount.plus(feeTokenAmount)),
+          tokenSymbol: tokenInfo.symbol,
+        })
+      : t('tokenAmount', {
+          tokenAmount: formatValueToDisplay(tokenAmount.plus(feeTokenAmount)),
+          tokenSymbol: tokenInfo.symbol,
+        })
   }
 
   // if multiple tokens and have local price - return local amount
   if (!sameToken && haveLocalPrice) {
-    const displayLocalAmount = t('localAmount', {
-      localAmount: formatValueToDisplay(localAmount.plus(feeLocalAmount)),
-      localCurrencySymbol,
-    })
-    return `${withApprox}${displayLocalAmount}`
+    return withApprox
+      ? t('localAmountApprox', {
+          localAmount: formatValueToDisplay(localAmount.plus(feeLocalAmount)),
+          localCurrencySymbol,
+        })
+      : t('localAmount', {
+          localAmount: formatValueToDisplay(localAmount.plus(feeLocalAmount)),
+          localCurrencySymbol,
+        })
   }
 
   // otherwise there are multiple tokens with no local prices so return multiple token amounts

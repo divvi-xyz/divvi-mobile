@@ -2862,10 +2862,13 @@
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "Price Unavailable",
-  "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
-  "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
-  "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
-  "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount": "$t(tokenAmount) <0>($t(localAmount))</0>",
+  "tokenAndLocalAmount_noFiatPrice": "$t(tokenAmount)",
+  "tokenAmountApprox": "≈ $t(tokenAmount)",
+  "localAmountApprox": "≈ $t(localAmount)",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
+  "tokenAndLocalAmountApprox": "≈ $t(tokenAmount) <0>($t(localAmount))</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ $t(tokenAmount)",
   "demoMode": {
     "confirmEnter": {
       "title": "Demo Mode",
