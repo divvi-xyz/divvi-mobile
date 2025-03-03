@@ -23,6 +23,7 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SettingsEvents } from 'src/analytics/Events'
 import { setSessionId } from 'src/app/actions'
 import { phoneNumberVerifiedSelector, sessionIdSelector } from 'src/app/selectors'
+import { getAppConfig } from 'src/appConfig'
 import ContactCircleSelf from 'src/components/ContactCircleSelf'
 import GradientBlock from 'src/components/GradientBlock'
 import { SettingsItemTextValue } from 'src/components/SettingsItem'
@@ -131,6 +132,8 @@ export default function SettingsMenu({ route }: Props) {
   const sessionId = useSelector(sessionIdSelector)
   const devModeActive = useSelector(devModeSelector)
 
+  const inviteFriendsEnabled = getAppConfig().experimental?.inviteFriends
+
   useEffect(() => {
     if (AppAnalytics.getSessionId() !== sessionId) {
       dispatch(setSessionId(AppAnalytics.getSessionId()))
@@ -202,14 +205,16 @@ export default function SettingsMenu({ route }: Props) {
           showChevron
           borderless
         />
-        <SettingsItemTextValue
-          icon={<Envelope color={Colors.contentPrimary} />}
-          title={t('invite')}
-          onPress={() => navigate(Screens.Invite)}
-          testID="SettingsMenu/Invite"
-          showChevron
-          borderless
-        />
+        {inviteFriendsEnabled && (
+          <SettingsItemTextValue
+            icon={<Envelope color={Colors.contentPrimary} />}
+            title={t('invite')}
+            onPress={() => navigate(Screens.Invite)}
+            testID="SettingsMenu/Invite"
+            showChevron
+            borderless
+          />
+        )}
 
         <GradientBlock style={styles.divider} />
 

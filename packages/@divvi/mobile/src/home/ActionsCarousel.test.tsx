@@ -4,12 +4,14 @@ import { Provider } from 'react-redux'
 import { MockStoreEnhanced } from 'redux-mock-store'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { HomeEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import * as config from 'src/config'
 import { FiatExchangeFlow } from 'src/fiatExchanges/types'
 import ActionsCarousel from 'src/home/ActionsCarousel'
 import { HomeActionName } from 'src/home/types'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+import { PublicAppConfig } from 'src/public'
 import { getDynamicConfigParams } from 'src/statsig'
 import { createMockStore } from 'test/utils'
 
@@ -55,7 +57,12 @@ describe('ActionsCarousel', () => {
     [HomeActionName.Send, 'send', Screens.SendSelectRecipient, undefined],
     [HomeActionName.Receive, 'receive', Screens.QRNavigator, { screen: Screens.QRCode }],
     [HomeActionName.Swap, 'swap', Screens.SwapScreenWithBack, undefined],
-    [HomeActionName.Withdraw, 'withdraw', Screens.WithdrawSpend, undefined],
+    [
+      HomeActionName.Withdraw,
+      'withdraw',
+      Screens.FiatExchangeCurrencyBottomSheet,
+      { flow: FiatExchangeFlow.CashOut },
+    ],
   ])(
     'renders title and navigates to appropriate screen for %s',
     (name, title, screen, screenOptions) => {
@@ -82,6 +89,28 @@ describe('ActionsCarousel', () => {
       })
     }
   )
+  it('navigates to the WithdrawSpend screen on withdraw action if Bidali is enabled', () => {
+    jest.mocked(getAppConfig).mockReturnValue({
+      experimental: {
+        bidali: true,
+      },
+    } as PublicAppConfig)
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <ActionsCarousel />
+      </Provider>
+    )
+
+    expect(
+      within(getByTestId(`HomeAction/Title-Withdraw`)).getByText(`homeActions.withdraw`)
+    ).toBeTruthy()
+
+    fireEvent.press(getByTestId(`HomeActionTouchable-Withdraw`))
+    expect(navigate).toHaveBeenCalledWith(Screens.WithdrawSpend)
+    expect(AppAnalytics.track).toHaveBeenCalledWith(HomeEvents.home_action_pressed, {
+      action: 'Withdraw',
+    })
+  })
   it('renders title and navigates to appropriate screen for add', () => {
     const { getByTestId } = render(
       <Provider store={store}>

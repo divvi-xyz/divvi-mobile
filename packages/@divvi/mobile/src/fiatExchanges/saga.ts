@@ -79,7 +79,7 @@ function* bidaliPaymentRequest({
     tokenAmount: new BigNumber(amount),
   }
 
-  navigate(Screens.SendConfirmationFromExternal, {
+  navigate(Screens.SendConfirmation, {
     transactionData,
     origin: SendOrigin.Bidali,
     isFromScan: false,

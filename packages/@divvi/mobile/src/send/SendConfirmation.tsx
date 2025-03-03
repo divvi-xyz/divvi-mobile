@@ -1,13 +1,13 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import BigNumber from 'bignumber.js'
-import React, { useEffect, useMemo } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
-import { Text } from 'react-native'
+import React, { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { showError } from 'src/alert/actions'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import BackButton from 'src/components/BackButton'
+import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes } from 'src/components/Button'
 import {
   ReviewContent,
@@ -17,7 +17,7 @@ import {
   ReviewSummary,
   ReviewSummaryItem,
   ReviewSummaryItemContact,
-  ReviewTotalValue,
+  ReviewTotalBottomSheet,
   ReviewTransaction,
 } from 'src/components/ReviewTransaction'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
@@ -39,12 +39,8 @@ import { getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
 import { getSerializablePreparedTransaction } from 'src/viem/preparedTransactionSerialization'
 import { walletAddressSelector } from 'src/web3/selectors'
 
-type Props = NativeStackScreenProps<
-  StackParamList,
-  Screens.SendConfirmation | Screens.SendConfirmationFromExternal
->
+type Props = NativeStackScreenProps<StackParamList, Screens.SendConfirmation>
 
-const DEBOUNCE_TIME_MS = 250
 const TAG = 'send/SendConfirmation'
 
 export const sendConfirmationScreenNavOptions = noHeader
@@ -52,20 +48,20 @@ export const sendConfirmationScreenNavOptions = noHeader
 export default function SendConfirmation(props: Props) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const feesBottomSheetRef = useRef<BottomSheetModalRefType>(null)
+  const totalBottomSheetRef = useRef<BottomSheetModalRefType>(null)
 
   const {
     origin,
     transactionData: { recipient, tokenAmount, tokenAddress, tokenId },
   } = props.route.params
 
-  const {
-    prepareTransactionsResult,
-    refreshPreparedTransactions,
-    clearPreparedTransactions,
-    prepareTransactionLoading,
-  } = usePrepareSendTransactions()
+  const { prepareTransactionsResult, refreshPreparedTransactions, prepareTransactionLoading } =
+    usePrepareSendTransactions()
 
-  const fromExternal = props.route.name === Screens.SendConfirmationFromExternal
+  const openedViaDeeplink = !props.route.params.prepareTransactionsResult
+  const preparedResult = props.route.params.prepareTransactionsResult ?? prepareTransactionsResult
+
   const tokenInfo = useTokenInfo(tokenId)
   const isSending = useSelector(isSendingSelector)
   const localCurrencyCode = useSelector(getLocalCurrencyCode)
@@ -74,44 +70,42 @@ export default function SendConfirmation(props: Props) {
   const usdAmount = useAmountAsUsd(tokenAmount, tokenId)
   const walletAddress = useSelector(walletAddressSelector)
   const feeCurrencies = useSelector((state) => feeCurrenciesSelector(state, tokenInfo!.networkId))
-  const { maxFeeAmount, feeCurrency: feeTokenInfo } =
-    getFeeCurrencyAndAmounts(prepareTransactionsResult)
-  const tokenFeeAmount = maxFeeAmount ?? new BigNumber(0)
-  const localFeeAmount = useTokenToLocalAmount(tokenFeeAmount, feeTokenInfo?.tokenId)
-
-  const networkFeeDisplayAmount = useMemo(
-    () => ({
-      token: formatValueToDisplay(tokenFeeAmount),
-      local: localFeeAmount ? formatValueToDisplay(localFeeAmount) : undefined,
-    }),
-    [localFeeAmount, tokenFeeAmount]
+  const {
+    maxFeeAmount,
+    estimatedFeeAmount,
+    feeCurrency: feeTokenInfo,
+  } = getFeeCurrencyAndAmounts(prepareTransactionsResult)
+  const tokenMaxFeeAmount = maxFeeAmount ?? new BigNumber(0)
+  const localMaxFeeAmount = useTokenToLocalAmount(tokenMaxFeeAmount, feeTokenInfo?.tokenId)
+  const tokenEstimatedFeeAmount = estimatedFeeAmount ?? new BigNumber(0)
+  const localEstimatedFeeAmount = useTokenToLocalAmount(
+    tokenEstimatedFeeAmount,
+    feeTokenInfo?.tokenId
   )
 
   useEffect(() => {
+    if (!openedViaDeeplink) {
+      return
+    }
+
     if (!walletAddress || !tokenInfo) {
       return // should never happen
     }
-    clearPreparedTransactions()
-    const debouncedRefreshTransactions = setTimeout(() => {
-      return refreshPreparedTransactions({
-        amount: tokenAmount,
-        token: tokenInfo,
-        recipientAddress: recipient.address,
-        walletAddress,
-        feeCurrencies,
-      })
-    }, DEBOUNCE_TIME_MS)
-    return () => clearTimeout(debouncedRefreshTransactions)
-  }, [tokenInfo, tokenAmount, recipient, walletAddress, feeCurrencies])
 
-  const disableSend =
-    isSending || !prepareTransactionsResult || prepareTransactionsResult.type !== 'possible'
+    void refreshPreparedTransactions({
+      amount: tokenAmount,
+      token: tokenInfo,
+      recipientAddress: recipient.address,
+      walletAddress,
+      feeCurrencies,
+    })
+  }, [tokenInfo, tokenAmount, recipient, walletAddress, feeCurrencies, openedViaDeeplink])
+
+  const disableSend = isSending || !preparedResult || preparedResult.type !== 'possible'
 
   const onSend = () => {
     const preparedTransaction =
-      prepareTransactionsResult &&
-      prepareTransactionsResult.type === 'possible' &&
-      prepareTransactionsResult.transactions[0]
+      preparedResult && preparedResult.type === 'possible' && preparedResult.transactions[0]
     if (!preparedTransaction) {
       // This should never happen because the confirm button is disabled if this happens.
       dispatch(showError(ErrorMessages.SEND_PAYMENT_FAILED))
@@ -139,7 +133,7 @@ export default function SendConfirmation(props: Props) {
         tokenId,
         usdAmount,
         recipient,
-        fromExternal,
+        openedViaDeeplink,
         getSerializablePreparedTransaction(preparedTransaction)
       )
     )
@@ -179,44 +173,37 @@ export default function SendConfirmation(props: Props) {
         <ReviewDetails>
           <ReviewDetailsItem
             testID="SendConfirmationNetwork"
+            type="plain-text"
             label={t('transactionDetails.network')}
             value={NETWORK_NAMES[tokenInfo.networkId]}
           />
           <ReviewDetailsItem
+            approx
             testID="SendConfirmationFee"
+            type="token-amount"
             label={t('networkFee')}
             isLoading={prepareTransactionLoading}
-            value={
-              <Trans
-                i18nKey={'tokenAndLocalAmountApprox'}
-                context={localFeeAmount?.gt(0) ? undefined : 'noFiatPrice'}
-                tOptions={{
-                  tokenAmount: networkFeeDisplayAmount.token,
-                  localAmount: networkFeeDisplayAmount.local,
-                  tokenSymbol: feeTokenInfo?.symbol,
-                  localCurrencySymbol,
-                }}
-              >
-                <Text />
-              </Trans>
-            }
+            tokenAmount={tokenEstimatedFeeAmount}
+            localAmount={localEstimatedFeeAmount}
+            tokenInfo={feeTokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+            onInfoPress={() => feesBottomSheetRef.current?.snapToIndex(0)}
           />
+
           <ReviewDetailsItem
+            approx
             testID="SendConfirmationTotal"
-            variant="bold"
+            type="total-token-amount"
             label={t('reviewTransaction.totalPlusFees')}
             isLoading={prepareTransactionLoading}
-            value={
-              <ReviewTotalValue
-                tokenInfo={tokenInfo}
-                feeTokenInfo={feeTokenInfo}
-                tokenAmount={tokenAmount}
-                localAmount={localAmount}
-                feeTokenAmount={maxFeeAmount}
-                feeLocalAmount={localFeeAmount}
-                localCurrencySymbol={localCurrencySymbol}
-              />
-            }
+            onInfoPress={() => totalBottomSheetRef.current?.snapToIndex(0)}
+            tokenInfo={tokenInfo}
+            feeTokenInfo={feeTokenInfo}
+            tokenAmount={tokenAmount}
+            localAmount={localAmount}
+            feeTokenAmount={maxFeeAmount}
+            feeLocalAmount={localMaxFeeAmount}
+            localCurrencySymbol={localCurrencySymbol}
           />
         </ReviewDetails>
       </ReviewContent>
@@ -232,6 +219,69 @@ export default function SendConfirmation(props: Props) {
           disabled={disableSend}
         />
       </ReviewFooter>
+
+      <ReviewTotalBottomSheet forwardedRef={feesBottomSheetRef} title={t('networkFee')}>
+        <ReviewDetailsItem
+          approx
+          fontSize="small"
+          type="token-amount"
+          label={t('estimatedNetworkFee')}
+          tokenAmount={tokenEstimatedFeeAmount}
+          localAmount={localEstimatedFeeAmount}
+          tokenInfo={feeTokenInfo}
+          localCurrencySymbol={localCurrencySymbol}
+        />
+
+        <ReviewDetailsItem
+          fontSize="small"
+          type="token-amount"
+          label={t('maxNetworkFee')}
+          tokenAmount={tokenMaxFeeAmount}
+          localAmount={localMaxFeeAmount}
+          tokenInfo={feeTokenInfo}
+          localCurrencySymbol={localCurrencySymbol}
+        />
+      </ReviewTotalBottomSheet>
+
+      <ReviewTotalBottomSheet
+        forwardedRef={totalBottomSheetRef}
+        title={t('reviewTransaction.totalPlusFees')}
+      >
+        <ReviewDetailsItem
+          fontSize="small"
+          type="token-amount"
+          label={t('sending')}
+          tokenAmount={tokenAmount}
+          localAmount={localAmount}
+          tokenInfo={tokenInfo}
+          localCurrencySymbol={localCurrencySymbol}
+        />
+
+        <ReviewDetailsItem
+          approx
+          fontSize="small"
+          type="token-amount"
+          label={t('fees')}
+          tokenAmount={tokenEstimatedFeeAmount}
+          localAmount={localEstimatedFeeAmount}
+          tokenInfo={feeTokenInfo}
+          localCurrencySymbol={localCurrencySymbol}
+        />
+
+        <ReviewDetailsItem
+          approx
+          fontSize="small"
+          type="total-token-amount"
+          label={t('reviewTransaction.totalPlusFees')}
+          tokenInfo={tokenInfo}
+          feeTokenInfo={feeTokenInfo}
+          tokenAmount={tokenAmount}
+          localAmount={localAmount}
+          feeTokenAmount={maxFeeAmount}
+          feeLocalAmount={localMaxFeeAmount}
+          localCurrencySymbol={localCurrencySymbol}
+        />
+      </ReviewTotalBottomSheet>
     </ReviewTransaction>
   )
 }
