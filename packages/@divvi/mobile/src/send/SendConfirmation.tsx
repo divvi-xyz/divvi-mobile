@@ -89,7 +89,7 @@ export default function SendConfirmation(props: Props) {
       return // should never happen
     }
 
-    refreshPreparedTransactions({
+    void refreshPreparedTransactions({
       amount: tokenAmount,
       token: tokenInfo,
       recipientAddress: recipient.address,
