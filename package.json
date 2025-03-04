@@ -16,6 +16,7 @@
     "format:check": "prettier --check .",
     "check-licenses": "yarn licenses list --prod | grep '\\(─ GPL\\|─ (GPL-[1-9]\\.[0-9]\\+ OR GPL-[1-9]\\.[0-9]\\+)\\)' && echo 'Found GPL license(s). Use 'yarn licenses list --prod' to look up the offending package' && exit 1 || echo 'No GPL licenses found'",
     "knip:depcheck": "knip --include dependencies",
+    "dep-mismatch-check": "yarn ts-node ./scripts/dep-mismatch-check.ts",
     "docs": "yarn --cwd packages/@divvi/mobile docs",
     "postinstall": "patch-package && cp packages/@divvi/mobile/secrets.json.template packages/@divvi/mobile/secrets.json && yarn --cwd packages/@divvi/mobile build:plugin",
     "release": "cp README.md packages/@divvi/mobile/ && multi-semantic-release"
