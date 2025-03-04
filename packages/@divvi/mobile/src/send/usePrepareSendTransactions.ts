@@ -51,9 +51,7 @@ export async function prepareSendTransactionsCallback({
   }
 }
 
-/**
- * Hook to prepare transactions for sending crypto.
- */
+// Hook to prepare transactions for sending crypto.
 export function usePrepareSendTransactions() {
   const prepareTransactions = useAsyncCallback(prepareSendTransactionsCallback, {
     onError: (error) => {

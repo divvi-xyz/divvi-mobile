@@ -154,7 +154,7 @@ describe('SettingsMenu', () => {
 
     expect(navigate).toHaveBeenCalledTimes(8)
 
-    expect(navigate).toHaveBeenNthCalledWith(1, Screens.ProfileSubmenu)
+    expect(navigate).toHaveBeenNthCalledWith(1, Screens.Profile)
     expect(navigate).toHaveBeenNthCalledWith(2, Screens.QRNavigator, {
       screen: Screens.QRCode,
       params: { showSecureSendStyling: true },
@@ -165,6 +165,22 @@ describe('SettingsMenu', () => {
     expect(navigate).toHaveBeenNthCalledWith(6, Screens.WalletConnectSessions)
     expect(navigate).toHaveBeenNthCalledWith(7, Screens.PreferencesSubmenu)
     expect(navigate).toHaveBeenNthCalledWith(8, Screens.SecuritySubmenu)
+  })
+
+  it('navigates to the profile submenu if phone number verification is enabled', () => {
+    jest
+      .mocked(getAppConfig)
+      .mockReturnValue({ ...defaultAppConfig, experimental: { phoneNumberVerification: true } })
+
+    const { getByTestId } = render(
+      <Provider store={createMockStore()}>
+        <MockedNavigator component={SettingsMenu}></MockedNavigator>
+      </Provider>
+    )
+
+    fireEvent.press(getByTestId('SettingsMenu/Profile'))
+
+    expect(navigate).toHaveBeenCalledWith(Screens.ProfileSubmenu)
   })
 
   it('renders the dev mode menu', () => {

@@ -18,7 +18,7 @@
     "knip:depcheck": "knip --include dependencies",
     "docs": "yarn --cwd packages/@divvi/mobile docs",
     "postinstall": "patch-package && cp packages/@divvi/mobile/secrets.json.template packages/@divvi/mobile/secrets.json && yarn --cwd packages/@divvi/mobile build:plugin",
-    "release": "multi-semantic-release"
+    "release": "cp README.md packages/@divvi/mobile/ && multi-semantic-release"
   },
   "dependencies": {
     "@anolilab/multi-semantic-release": "^1.1.9",
@@ -96,7 +96,7 @@
     "react-native-device-info": "^13.2.0",
     "react-native-exit-app": "^2.0.0",
     "react-native-fast-image": "^8.6.3",
-    "react-native-gesture-handler": "^2.21.2",
+    "react-native-gesture-handler": "^2.23.1",
     "react-native-haptic-feedback": "^2.3.3",
     "react-native-in-app-review": "^4.3.3",
     "react-native-launch-arguments": "^4.0.2",

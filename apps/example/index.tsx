@@ -83,6 +83,7 @@ const App = createApp({
       bidali: true,
       notificationCenter: true,
       contactSupport: true,
+      phoneNumberVerification: true,
     },
   }),
 })

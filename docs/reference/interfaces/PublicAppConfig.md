@@ -170,6 +170,12 @@ optional enableBiometry: boolean;
 optional protectWallet: boolean;
 ```
 
+#### phoneNumberVerification?
+
+```ts
+optional phoneNumberVerification: boolean;
+```
+
 #### transactions?
 
 ```ts

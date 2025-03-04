@@ -58,6 +58,7 @@ import { Statsig } from 'statsig-react-native'
 type Props = NativeStackScreenProps<StackParamList, Screens.SettingsMenu>
 
 function ProfileMenuOption() {
+  const phoneNumberVerificationEnabled = getAppConfig().experimental?.phoneNumberVerification
   const displayName = useSelector(nameSelector)
   const e164PhoneNumber = useSelector(e164NumberSelector)
   const defaultCountryCode = useSelector(defaultCountryCodeSelector)
@@ -103,10 +104,18 @@ function ProfileMenuOption() {
     return null
   }
 
+  const handleNavigateToProfile = () => {
+    if (phoneNumberVerificationEnabled) {
+      navigate(Screens.ProfileSubmenu)
+    } else {
+      navigate(Screens.Profile)
+    }
+  }
+
   return (
     <Touchable
       style={styles.profileTouchable}
-      onPress={() => navigate(Screens.ProfileSubmenu)}
+      onPress={handleNavigateToProfile}
       testID="SettingsMenu/Profile"
     >
       <View style={styles.profileContainer}>
