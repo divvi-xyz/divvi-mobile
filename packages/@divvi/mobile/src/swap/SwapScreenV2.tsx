@@ -221,10 +221,6 @@ export default function SwapScreenV2({ route }: Props) {
     }
   }, [quote, processedAmountsFrom.token.bignum, fromToken])
 
-  console.log('APP FEE', appFee)
-  console.log('NETWORK FEE', networkFee)
-  console.log('CROSS CHAIN FEE', crossChainFee)
-
   const shouldShowSkeletons = useMemo(() => {
     if (fetchingSwapQuote) return true
 
