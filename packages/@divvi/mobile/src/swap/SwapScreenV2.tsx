@@ -12,6 +12,7 @@ import { ErrorMessages } from 'src/app/ErrorMessages'
 import BackButton from 'src/components/BackButton'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
+import FeeInfoBottomSheet from 'src/components/FeeInfoBottomSheet'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
 import Toast from 'src/components/Toast'
 import TokenBottomSheet, { TokenPickerOrigin } from 'src/components/TokenBottomSheet'
@@ -38,7 +39,6 @@ import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
-import FeeInfoBottomSheet from 'src/swap/FeeInfoBottomSheet'
 import SwapTransactionDetails from 'src/swap/SwapTransactionDetails'
 import getCrossChainFee from 'src/swap/getCrossChainFee'
 import { getSwapTxsAnalyticsProperties } from 'src/swap/getSwapTxsAnalyticsProperties'
@@ -220,6 +220,10 @@ export default function SwapScreenV2({ route }: Props) {
       percentage,
     }
   }, [quote, processedAmountsFrom.token.bignum, fromToken])
+
+  console.log('APP FEE', appFee)
+  console.log('NETWORK FEE', networkFee)
+  console.log('CROSS CHAIN FEE', crossChainFee)
 
   const shouldShowSkeletons = useMemo(() => {
     if (fetchingSwapQuote) return true
@@ -1015,7 +1019,6 @@ export default function SwapScreenV2({ route }: Props) {
         crossChainFee={crossChainFee}
         networkFee={networkFee}
         appFee={appFee}
-        fetchingSwapQuote={fetchingSwapQuote}
       />
       <Toast
         withBackdrop
