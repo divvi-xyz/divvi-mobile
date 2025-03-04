@@ -1,54 +1,30 @@
 import { Mento } from '@mento-protocol/mento-sdk'
 import dotenv from 'dotenv'
 // Would be nice to use viem, but mento is using ethers
-import { Contract, providers, utils, Wallet } from 'ethers'
+import { utils, Wallet } from 'ethers'
 import { Address } from 'viem'
 import {
+  CELO,
+  CUSD,
   E2E_TEST_FAUCET,
   E2E_TEST_WALLET,
   E2E_TEST_WALLET_SECURE_SEND,
+  provider,
   REFILL_TOKENS,
+  TOKENS_BY_SYMBOL,
 } from './consts'
-import { checkBalance, getCeloTokensBalance } from './utils'
-
-const provider = new providers.JsonRpcProvider('https://forno.celo.org/')
+import { Token } from './types'
+import { checkBalance, getCeloTokensBalance, transferToken } from './utils'
 
 dotenv.config({ path: `${__dirname}/../.env` })
 
 const valoraTestFaucetSecret = process.env['E2E_TEST_FAUCET_SECRET']!
 
-interface Token {
-  symbol: string
-  address: string // Mento expects address to be in checksum format, or else it won't find the trading pair
-  decimals: number
-}
-
-const CELO: Token = {
-  symbol: 'CELO',
-  address: utils.getAddress('0x471ece3750da237f93b8e339c536989b8978a438'),
-  decimals: 18,
-}
-const CUSD: Token = {
-  symbol: 'cUSD',
-  address: utils.getAddress('0x765de816845861e75a25fca122bb6898b8b1282a'),
-  decimals: 18,
-}
-const CEUR: Token = {
-  symbol: 'cEUR',
-  address: utils.getAddress('0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73'),
-  decimals: 18,
-}
-const TOKENS_BY_SYMBOL: Record<string, Token> = {
-  CELO,
-  cUSD: CUSD,
-  cEUR: CEUR,
-}
-
 ;(async () => {
   const walletsToBeFunded: Address[] = [E2E_TEST_WALLET, E2E_TEST_WALLET_SECURE_SEND]
   const walletBalances = await Promise.all(walletsToBeFunded.map(getCeloTokensBalance))
   for (let i = 0; i < walletsToBeFunded.length; i++) {
-    console.log(`Initial balance for ${walletsToBeFunded[i]}:`)
+    console.log(`Initial balance for wallet at: ${walletsToBeFunded[i]}`)
     console.table(walletBalances[i])
   }
 
@@ -192,40 +168,18 @@ const TOKENS_BY_SYMBOL: Record<string, Token> = {
     }
   }
 
-  async function transferToken(
-    token: Token,
-    amount: string, // in decimal
-    to: string
-  ): Promise<providers.TransactionReceipt> {
-    const abi = ['function transfer(address to, uint256 value) returns (bool)']
-    const contract = new Contract(token.address, abi, signer)
-
-    const amountInSmallestUnit = utils.parseUnits(amount, token.decimals)
-    const txObj = await contract.populateTransaction.transfer(to, amountInSmallestUnit)
-    const tx = await signer.sendTransaction(txObj)
-    const receipt = await tx.wait()
-    console.log(
-      `Received transfer tx hash ${receipt.transactionHash} with status ${receipt.status}`
-    )
-
-    if (receipt.status !== 1) {
-      throw new Error(`Transfer reverted. Tx hash: ${receipt.transactionHash}`)
-    }
-
-    return receipt
-  }
-
   // Set Amount To Send
-  const amountToSend = '10'
+  const amountToSend = '6'
+  const minBalance = 12
 
   for (let i = 0; i < walletsToBeFunded.length; i++) {
     const walletAddress = walletsToBeFunded[i]
     const walletBalance = walletBalances[i]
     for (const tokenSymbol of REFILL_TOKENS) {
       // @ts-ignore
-      if (walletBalance && walletBalance[tokenSymbol] < 20) {
+      if (walletBalance && walletBalance[tokenSymbol] < minBalance) {
         console.log(`Sending ${amountToSend} ${tokenSymbol} to ${walletAddress}`)
-        await transferToken(TOKENS_BY_SYMBOL[tokenSymbol], amountToSend, walletAddress)
+        await transferToken(TOKENS_BY_SYMBOL[tokenSymbol], amountToSend, walletAddress, signer)
       }
     }
   }

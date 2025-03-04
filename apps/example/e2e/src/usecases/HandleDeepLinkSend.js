@@ -21,6 +21,7 @@ const launchDeepLink = async ({ url, newInstance = true }) => {
  * @returns {Promise<string>}
  */
 const getCryptoSymbol = async () => {
+  await waitForElementById('SendConfirmationToken/PrimaryValue')
   const sendAmountCryptoElement = await element(
     by.id('SendConfirmationToken/PrimaryValue')
   ).getAttributes()
