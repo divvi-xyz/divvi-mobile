@@ -20,7 +20,6 @@ export default offRamps = () => {
     })
 
     it('Then should display total balance', async () => {
-      await waitForElementById('ViewBalances')
       await waitForElementById('ViewBalances', { tap: true })
       await waitForElementById('AssetsTokenBalance')
     })
