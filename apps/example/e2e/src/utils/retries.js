@@ -10,7 +10,7 @@ const defaultLaunchArgs = {
     statsigGateOverrides: 'show_zerion_transaction_feed=true,show_positions=false',
     // prettier will remove the regex escaping backslashes
     // prettier-ignore
-    detoxURLBlacklistRegex: '\\("^https://api\.mainnet\.valora\.xyz.*"\\)',
+    detoxURLBlacklistRegex: '\\("^https://api\.mainnet\.valora\.xyz/getWalletTransactions.*"\\)',
   },
 }
 

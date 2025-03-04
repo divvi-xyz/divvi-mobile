@@ -10,6 +10,6 @@ export default RequirePIN = () => {
     // Reload to simulate new app load from background
     await reloadReactNative()
     // Check that PIN is required
-    await expect(element(by.text('Enter PIN'))).toBeVisible()
+    await waitFor(element(by.text('Enter PIN'))).toBeVisible()
   })
 }
