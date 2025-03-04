@@ -16,13 +16,12 @@ export default offRamps = () => {
   describe('When on Withdraw & Spend', () => {
     it('Then should have support link', async () => {
       await element(by.id('FiatExchange/scrollView')).scrollTo('bottom')
-      await expect(element(by.id('otherFundingOptions'))).toBeVisible()
+      await waitForElementById('otherFundingOptions')
     })
 
     it('Then should display total balance', async () => {
-      await waitForElementById('ViewBalances')
-      await element(by.id('ViewBalances')).tap()
-      await expect(element(by.id('AssetsTokenBalance'))).toBeVisible()
+      await waitForElementById('ViewBalances', { tap: true })
+      await waitForElementById('AssetsTokenBalance')
     })
   })
 
