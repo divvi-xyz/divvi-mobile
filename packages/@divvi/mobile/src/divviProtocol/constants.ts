@@ -7,19 +7,10 @@ export const supportedProtocolIds = [
   'allbridge',
   'beefy',
   'celo',
-  'curve',
-  'euler',
-  'farcaster',
   'fonbnk',
   'mento',
-  'morpho',
-  'offchainlabs',
   'somm',
-  'tether',
-  'ubeswap',
   'vana',
-  'velodrome',
-  'yearn',
 ] as const
 
 export type SupportedProtocolId = (typeof supportedProtocolIds)[number]
