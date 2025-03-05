@@ -10,6 +10,7 @@ import { PublicAppConfig } from 'src/public/types'
 import MockedNavigator from 'test/MockedNavigator'
 import { createMockStore } from 'test/utils'
 
+jest.mock('src/transactions/feed/TransactionFeedV2')
 jest.mock('src/appConfig')
 
 const mockGetAppConfig = jest.mocked(getAppConfig)

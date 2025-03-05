@@ -8,6 +8,7 @@ import { isAddressFormat } from 'src/account/utils'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
 import { SendOrigin } from 'src/analytics/types'
+import { getAppConfig } from 'src/appConfig'
 import BackButton from 'src/components/BackButton'
 import Button, { BtnSizes } from 'src/components/Button'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
@@ -24,6 +25,7 @@ import {
   secureSendPhoneNumberMappingSelector,
 } from 'src/identity/selectors'
 import { RecipientVerificationStatus } from 'src/identity/types'
+import { useInviteReward } from 'src/invite/hooks'
 import { noHeader } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
@@ -36,7 +38,6 @@ import PasteAddressButton from 'src/send/PasteAddressButton'
 import SelectRecipientButtons from 'src/send/SelectRecipientButtons'
 import { SendSelectRecipientSearchInput } from 'src/send/SendSelectRecipientSearchInput'
 import { useMergedSearchRecipients, useSendRecipients } from 'src/send/hooks'
-import { inviteRewardsActiveSelector } from 'src/send/selectors'
 import useFetchRecipientVerificationStatus from 'src/send/useFetchRecipientVerificationStatus'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
@@ -47,27 +48,32 @@ type Props = NativeStackScreenProps<StackParamList, Screens.SendSelectRecipient>
 
 function GetStartedSection() {
   const { t } = useTranslation()
+  const phoneNumberVerificationEnabled = getAppConfig().experimental?.phoneNumberVerification
 
   const renderOption = ({
     optionNum,
     title,
     subtitle,
+    showNum,
   }: {
     optionNum: string
     title: string
     subtitle: string
+    showNum: boolean
   }) => {
     return (
       <View key={`getStartedOption-${optionNum}`} style={getStartedStyles.optionWrapper}>
-        <CircledIcon
-          radius={Math.min(24 * getFontScaleSync(), 50)}
-          style={getStartedStyles.optionNum}
-          backgroundColor={colors.backgroundPrimary}
-        >
-          <Text adjustsFontSizeToFit={true} style={getStartedStyles.optionNumText}>
-            {optionNum}
-          </Text>
-        </CircledIcon>
+        {showNum && (
+          <CircledIcon
+            radius={Math.min(24 * getFontScaleSync(), 50)}
+            style={getStartedStyles.optionNum}
+            backgroundColor={colors.backgroundPrimary}
+          >
+            <Text adjustsFontSizeToFit={true} style={getStartedStyles.optionNumText}>
+              {optionNum}
+            </Text>
+          </CircledIcon>
+        )}
         <View style={getStartedStyles.optionText}>
           <Text style={getStartedStyles.optionTitle}>{title}</Text>
           <Text style={getStartedStyles.optionSubtitle}>{subtitle}</Text>
@@ -82,11 +88,15 @@ function GetStartedSection() {
       title: t('sendSelectRecipient.getStarted.options.one.title'),
       subtitle: t('sendSelectRecipient.getStarted.options.one.subtitle'),
     },
-    {
-      optionNum: '2',
-      title: t('sendSelectRecipient.getStarted.options.two.title'),
-      subtitle: t('sendSelectRecipient.getStarted.options.two.subtitle'),
-    },
+    ...(phoneNumberVerificationEnabled
+      ? [
+          {
+            optionNum: '2',
+            title: t('sendSelectRecipient.getStarted.options.two.title'),
+            subtitle: t('sendSelectRecipient.getStarted.options.two.subtitle'),
+          },
+        ]
+      : []),
   ]
 
   return (
@@ -97,7 +107,7 @@ function GetStartedSection() {
         </Text>
         <Text style={getStartedStyles.title}>{t('sendSelectRecipient.getStarted.title')}</Text>
       </View>
-      {options.map((params) => renderOption(params))}
+      {options.map((params) => renderOption({ ...params, showNum: options.length > 1 }))}
     </View>
   )
 }
@@ -120,6 +130,7 @@ const getStartedStyles = StyleSheet.create({
   },
   optionWrapper: {
     flexDirection: 'row',
+    gap: Spacing.Smallest8,
   },
   optionNum: {
     borderWidth: 1,
@@ -129,7 +140,6 @@ const getStartedStyles = StyleSheet.create({
     ...typeScale.labelXSmall,
   },
   optionText: {
-    paddingLeft: Spacing.Smallest8,
     flex: 1,
   },
   optionTitle: {
@@ -152,9 +162,12 @@ function SendOrInviteButton({
   onPress: (shouldInviteRecipient: boolean) => void
 }) {
   const { t } = useTranslation()
+  const inviteFriendsEnabled = getAppConfig().experimental?.inviteFriends
+
   const sendOrInviteButtonDisabled =
     !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN
   const shouldInviteRecipient =
+    !!inviteFriendsEnabled &&
     !sendOrInviteButtonDisabled &&
     recipient?.recipientType === RecipientType.PhoneNumber &&
     recipientVerificationStatus === RecipientVerificationStatus.UNVERIFIED
@@ -181,7 +194,7 @@ enum SelectRecipientView {
 function SendSelectRecipient({ route }: Props) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const inviteRewardsActive = useSelector(inviteRewardsActiveSelector)
+  const inviteReward = useInviteReward()
   const secureSendPhoneNumberMapping = useSelector(secureSendPhoneNumberMappingSelector)
   const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
 
@@ -372,7 +385,7 @@ function SendSelectRecipient({ route }: Props) {
           />
         ) : (
           <>
-            {inviteRewardsActive && <InviteRewardsCard />}
+            {inviteReward.active && <InviteRewardsCard />}
             <SelectRecipientButtons
               defaultTokenIdOverride={defaultTokenIdOverride}
               onContactsPermissionGranted={onContactsPermissionGranted}

@@ -9,10 +9,12 @@ import { HomeEvents } from 'src/analytics/Events'
 import { ScrollDirection } from 'src/analytics/types'
 import { openUrl } from 'src/app/actions'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
+import { getAppConfig } from 'src/appConfig'
 import Pagination from 'src/components/Pagination'
 import SimpleMessagingCard, {
   Props as SimpleMessagingCardProps,
 } from 'src/components/SimpleMessagingCard'
+import { ONBOARDING_FEATURES_ENABLED } from 'src/config'
 import { dismissNotification } from 'src/home/actions'
 import { DEFAULT_PRIORITY } from 'src/home/reducers'
 import { getExtraNotifications } from 'src/home/selectors'
@@ -22,18 +24,16 @@ import GuideKeyIcon from 'src/images/GuideKeyIcon'
 import { getVerified, learnCelo } from 'src/images/Images'
 import { ensurePincode, navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+import { ToggleableOnboardingFeatures } from 'src/onboarding/types'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import variables from 'src/styles/variables'
 import Logger from 'src/utils/Logger'
 import { getContentForCurrentLang } from 'src/utils/contentTranslations'
-import { ONBOARDING_FEATURES_ENABLED } from 'src/config'
-import { ToggleableOnboardingFeatures } from 'src/onboarding/types'
 
 const TAG = 'NotificationBox'
 // Priority of static notifications
 const BACKUP_PRIORITY = 1000
 const VERIFICATION_PRIORITY = 100
-export const CLEVERTAP_PRIORITY = 500
 const CELO_EDUCATION_PRIORITY = 10
 
 interface SimpleAction extends SimpleMessagingCardProps {
@@ -47,20 +47,16 @@ export function useSimpleActions() {
   const { backupCompleted, dismissedGetVerified, dismissedGoldEducation } = useSelector(
     (state) => state.account
   )
-
   const phoneNumberVerified = useSelector(phoneNumberVerifiedSelector)
-
   const celoEducationCompleted = useSelector(celoEducationCompletedSelector)
-
   const extraNotifications = useSelector(getExtraNotifications)
+  const cloudBackupCompleted = useSelector(cloudBackupCompletedSelector)
 
   const { t } = useTranslation()
-
   const dispatch = useDispatch()
 
   const showKeylessBackup = ONBOARDING_FEATURES_ENABLED[ToggleableOnboardingFeatures.CloudBackup]
-
-  const cloudBackupCompleted = useSelector(cloudBackupCompletedSelector)
+  const phoneNumberVerificationEnabled = getAppConfig().experimental?.phoneNumberVerification
 
   const actions: SimpleAction[] = []
   if (!backupCompleted && !cloudBackupCompleted) {
@@ -129,7 +125,7 @@ export function useSimpleActions() {
     }
   }
 
-  if (!dismissedGetVerified && !phoneNumberVerified) {
+  if (phoneNumberVerificationEnabled && !dismissedGetVerified && !phoneNumberVerified) {
     actions.push({
       id: NotificationType.verification_prompt,
       type: NotificationType.verification_prompt,

@@ -1,19 +1,25 @@
+import type { BottomSheetModal } from '@gorhom/bottom-sheet'
 import BigNumber from 'bignumber.js'
 import React, { useMemo, type ReactNode } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, type StyleProp, type TextStyle } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 import BackButton from 'src/components/BackButton'
+import BottomSheet from 'src/components/BottomSheet'
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import ContactCircle from 'src/components/ContactCircle'
 import CustomHeader from 'src/components/header/CustomHeader'
+import SkeletonPlaceholder from 'src/components/SkeletonPlaceholder'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
+import { APPROX_SYMBOL } from 'src/components/TokenEnterAmount'
+import Touchable from 'src/components/Touchable'
+import InfoIcon from 'src/icons/InfoIcon'
 import WalletIcon from 'src/icons/navigator/Wallet'
 import PhoneIcon from 'src/icons/Phone'
 import UserIcon from 'src/icons/User'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { type Recipient } from 'src/recipients/recipient'
-import Colors from 'src/styles/colors'
+import colors, { type ColorValue } from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
@@ -131,8 +137,8 @@ export function ReviewSummaryItemContact({
       icon={
         <ContactCircle
           size={32}
-          backgroundColor={Colors.backgroundTertiary}
-          foregroundColor={Colors.contentPrimary}
+          backgroundColor={colors.backgroundTertiary}
+          foregroundColor={colors.contentPrimary}
           recipient={recipient}
           DefaultIcon={contact.icon}
         />
@@ -145,44 +151,61 @@ export function ReviewDetails(props: { children: ReactNode }) {
   return <View style={styles.reviewDetails}>{props.children}</View>
 }
 
-export function ReviewDetailsItem({
-  label,
-  value,
-  variant = 'default',
-  isLoading,
-  testID,
-}: {
+export type ReviewDetailsItemProps = {
   label: ReactNode
-  value: ReactNode
-  variant?: 'default' | 'bold'
+  fontSize?: 'small' | 'medium'
+  color?: ColorValue
   isLoading?: boolean
   testID?: string
-}) {
-  const textStyle =
-    variant === 'bold' ? styles.reviewDetailsItemTextBold : styles.reviewDetailsItemText
+  onInfoPress?: () => void
+} & ReviewDetailsItemValueProps
+
+export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
+  const {
+    label,
+    fontSize = 'medium',
+    color = colors.contentPrimary,
+    isLoading,
+    testID,
+    onInfoPress,
+    ...valueProps
+  } = props
+
+  const fontStyle = useMemo((): StyleProp<TextStyle> => {
+    const isTotal = props.type === 'total-token-amount'
+    if (fontSize === 'small') {
+      return isTotal ? typeScale.labelSemiBoldSmall : typeScale.bodySmall
+    }
+    return isTotal ? typeScale.labelSemiBoldMedium : typeScale.bodyMedium
+  }, [fontSize])
 
   return (
     <View style={styles.reviewDetailsItem} testID={testID}>
-      <View style={styles.reviewDetailsItemLabel}>
-        <Text style={textStyle} testID={`${testID}/Label`}>
-          {label}
-        </Text>
-        {/* TODO Add <InfoIcon /> for Earn Deposit/Withdrawal */}
-      </View>
-      <View>
+      <Touchable
+        style={styles.reviewDetailsItemLabel}
+        onPress={onInfoPress}
+        disabled={!onInfoPress || isLoading}
+      >
+        <>
+          <Text style={[fontStyle, { color }]} testID={`${testID}/Label`}>
+            {label}
+          </Text>
+          {onInfoPress && <InfoIcon testID={`${testID}/InfoIcon`} />}
+        </>
+      </Touchable>
+      <View style={styles.reviewDetailsItemValue}>
         {isLoading ? (
           <View testID={`${testID}/Loader`} style={styles.loaderContainer}>
-            <SkeletonPlaceholder
-              borderRadius={100}
-              backgroundColor={Colors.skeletonPlaceholderBackground}
-              highlightColor={Colors.skeletonPlaceholderHighlight}
-            >
+            <SkeletonPlaceholder>
               <View style={styles.loader} />
             </SkeletonPlaceholder>
           </View>
         ) : (
-          <Text style={textStyle} testID={`${testID}/Value`}>
-            {value}
+          <Text
+            style={[styles.reviewDetailsItemValueText, fontStyle, { color }]}
+            testID={`${testID}/Value`}
+          >
+            <ReviewDetailsItemValue {...valueProps} />
           </Text>
         )}
       </View>
@@ -190,19 +213,52 @@ export function ReviewDetailsItem({
   )
 }
 
+type ReviewDetailsItemTokenValueProps = {
+  tokenAmount: BigNumber | undefined | null
+  localAmount: BigNumber | undefined | null
+  tokenInfo: TokenBalance | undefined | null
+  localCurrencySymbol: LocalCurrencySymbol
+  approx?: boolean
+  children?: ReactNode
+}
+
+function ReviewDetailsItemTokenValue(props: ReviewDetailsItemTokenValueProps) {
+  if (!props.tokenAmount) return null
+
+  return (
+    <Trans
+      i18nKey={props.approx ? 'tokenAndLocalAmountApprox' : 'tokenAndLocalAmount'}
+      context={props.tokenAmount?.gt(0) ? undefined : 'noFiatPrice'}
+      tOptions={{
+        tokenAmount: formatValueToDisplay(props.tokenAmount),
+        localAmount: props.localAmount ? formatValueToDisplay(props.localAmount) : '',
+        tokenSymbol: props.tokenInfo?.symbol,
+        localCurrencySymbol: props.localCurrencySymbol,
+      }}
+    >
+      {props.children ?? <Text />}
+    </Trans>
+  )
+}
+
+type ReviewDetailsItemValueProps =
+  | { type: 'plain-text'; value: ReactNode }
+  | ({ type: 'token-amount' } & ReviewDetailsItemTokenValueProps)
+  | ({ type: 'total-token-amount' } & ReviewDetailsItemTotalValueProps)
+
+function ReviewDetailsItemValue(props: ReviewDetailsItemValueProps) {
+  if (props.type === 'plain-text') return props.value
+  if (props.type === 'token-amount') return <ReviewDetailsItemTokenValue {...props} />
+  if (props.type === 'total-token-amount') return <ReviewDetailsItemTotalValue {...props} />
+  return null
+}
+
 export function ReviewFooter(props: { children: ReactNode }) {
   return <View style={styles.reviewFooter}>{props.children}</View>
 }
 
-export function ReviewTotalValue({
-  tokenInfo,
-  feeTokenInfo,
-  tokenAmount,
-  localAmount,
-  feeTokenAmount,
-  feeLocalAmount,
-  localCurrencySymbol,
-}: {
+type ReviewDetailsItemTotalValueProps = {
+  approx?: boolean
   tokenInfo: TokenBalance | undefined
   feeTokenInfo: TokenBalance | undefined
   tokenAmount: BigNumber | null
@@ -210,8 +266,20 @@ export function ReviewTotalValue({
   feeTokenAmount: BigNumber | undefined
   feeLocalAmount: BigNumber | null
   localCurrencySymbol: LocalCurrencySymbol
-}) {
+}
+
+export function ReviewDetailsItemTotalValue({
+  approx,
+  tokenInfo,
+  feeTokenInfo,
+  tokenAmount,
+  localAmount,
+  feeTokenAmount,
+  feeLocalAmount,
+  localCurrencySymbol,
+}: ReviewDetailsItemTotalValueProps) {
   const { t } = useTranslation()
+  const withApprox = approx ? `${APPROX_SYMBOL} ` : ''
 
   // if there are not token info or token amount then it should not even be possible to get to the review screen
   if (!tokenInfo || !tokenAmount) {
@@ -220,26 +288,32 @@ export function ReviewTotalValue({
 
   // if there are no fees then just format token amount
   if (!feeTokenInfo || !feeTokenAmount) {
+    // if fiat amount is availabke then show both token and fiat amounts
     if (localAmount) {
       return (
-        <Trans
-          i18nKey={'tokenAndLocalAmountApprox'}
-          tOptions={{
-            tokenAmount: formatValueToDisplay(tokenAmount),
-            localAmount: formatValueToDisplay(localAmount),
-            tokenSymbol: tokenInfo.symbol,
-            localCurrencySymbol,
-          }}
+        <ReviewDetailsItemTokenValue
+          approx={approx}
+          tokenAmount={tokenAmount}
+          localAmount={localAmount}
+          tokenInfo={tokenInfo}
+          localCurrencySymbol={localCurrencySymbol}
         >
           <Text style={styles.totalPlusFeesLocalAmount} />
-        </Trans>
+        </ReviewDetailsItemTokenValue>
       )
     }
 
-    return t('tokenAmountApprox', {
-      tokenAmount: formatValueToDisplay(tokenAmount),
-      tokenSymbol: tokenInfo.symbol,
-    })
+    // otherwise only show token amount
+
+    return withApprox
+      ? t('tokenAmountApprox', {
+          tokenAmount: formatValueToDisplay(tokenAmount),
+          tokenSymbol: tokenInfo.symbol,
+        })
+      : t('tokenAmount', {
+          tokenAmount: formatValueToDisplay(tokenAmount),
+          tokenSymbol: tokenInfo.symbol,
+        })
   }
 
   const sameToken = tokenInfo.tokenId === feeTokenInfo.tokenId
@@ -248,34 +322,42 @@ export function ReviewTotalValue({
   // if single token and have local price - return token and local amounts
   if (sameToken && haveLocalPrice) {
     return (
-      <Trans
-        i18nKey={'tokenAndLocalAmountApprox'}
-        tOptions={{
-          tokenAmount: formatValueToDisplay(tokenAmount.plus(feeTokenAmount)),
-          localAmount: formatValueToDisplay(localAmount.plus(feeLocalAmount)),
-          tokenSymbol: tokenInfo.symbol,
-          localCurrencySymbol,
-        }}
+      <ReviewDetailsItemTokenValue
+        approx={approx}
+        tokenAmount={tokenAmount.plus(feeTokenAmount)}
+        localAmount={localAmount.plus(feeLocalAmount)}
+        tokenInfo={tokenInfo}
+        localCurrencySymbol={localCurrencySymbol}
       >
         <Text style={styles.totalPlusFeesLocalAmount} />
-      </Trans>
+      </ReviewDetailsItemTokenValue>
     )
   }
 
   // if single token but no local price - return token amount
   if (sameToken && !haveLocalPrice) {
-    return t('tokenAmountApprox', {
-      tokenAmount: formatValueToDisplay(tokenAmount.plus(feeTokenAmount)),
-      tokenSymbol: tokenInfo.symbol,
-    })
+    return withApprox
+      ? t('tokenAmountApprox', {
+          tokenAmount: formatValueToDisplay(tokenAmount.plus(feeTokenAmount)),
+          tokenSymbol: tokenInfo.symbol,
+        })
+      : t('tokenAmount', {
+          tokenAmount: formatValueToDisplay(tokenAmount.plus(feeTokenAmount)),
+          tokenSymbol: tokenInfo.symbol,
+        })
   }
 
   // if multiple tokens and have local price - return local amount
   if (!sameToken && haveLocalPrice) {
-    return t('localAmountApprox', {
-      localAmount: formatValueToDisplay(localAmount.plus(feeLocalAmount)),
-      localCurrencySymbol,
-    })
+    return withApprox
+      ? t('localAmountApprox', {
+          localAmount: formatValueToDisplay(localAmount.plus(feeLocalAmount)),
+          localCurrencySymbol,
+        })
+      : t('localAmount', {
+          localAmount: formatValueToDisplay(localAmount.plus(feeLocalAmount)),
+          localCurrencySymbol,
+        })
   }
 
   // otherwise there are multiple tokens with no local prices so return multiple token amounts
@@ -285,6 +367,25 @@ export function ReviewTotalValue({
     amount2: formatValueToDisplay(feeTokenAmount),
     symbol2: feeTokenInfo.symbol,
   })
+}
+
+export function ReviewTotalBottomSheet(props: {
+  forwardedRef: React.RefObject<BottomSheetModal>
+  title: string
+  children: React.ReactNode
+}) {
+  const { t } = useTranslation()
+  return (
+    <BottomSheet forwardedRef={props.forwardedRef} testId="InfoBottomSheet" title={props.title}>
+      <View style={styles.totalBottomSheetContent}>{props.children}</View>
+      <Button
+        type={BtnTypes.SECONDARY}
+        size={BtnSizes.FULL}
+        text={t('bottomSheetDismissButton')}
+        onPress={() => props.forwardedRef.current?.close()}
+      />
+    </BottomSheet>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -305,9 +406,9 @@ const styles = StyleSheet.create({
   },
   reviewSummary: {
     borderWidth: 1,
-    borderColor: Colors.borderPrimary,
+    borderColor: colors.borderPrimary,
     borderRadius: Spacing.Small12,
-    backgroundColor: Colors.backgroundSecondary,
+    backgroundColor: colors.backgroundSecondary,
     padding: Spacing.Regular16,
     gap: Spacing.Regular16,
     flexShrink: 1,
@@ -317,7 +418,7 @@ const styles = StyleSheet.create({
   },
   reviewSummaryItemLabel: {
     ...typeScale.labelSmall,
-    color: Colors.contentSecondary,
+    color: colors.contentSecondary,
   },
   reviewSummaryItemContent: {
     flexDirection: 'row',
@@ -332,7 +433,7 @@ const styles = StyleSheet.create({
   },
   reviewSummaryItemSecondaryValue: {
     ...typeScale.bodySmall,
-    color: Colors.contentSecondary,
+    color: colors.contentSecondary,
   },
   reviewDetails: {
     gap: Spacing.Regular16,
@@ -340,6 +441,7 @@ const styles = StyleSheet.create({
   },
   reviewDetailsItem: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     gap: Spacing.Smallest8,
   },
@@ -348,12 +450,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.Tiny4,
   },
-  reviewDetailsItemText: {
-    ...typeScale.bodyMedium,
-    color: Colors.contentSecondary,
+  reviewDetailsItemValue: {
+    flexShrink: 1,
+    alignItems: 'flex-end',
   },
-  reviewDetailsItemTextBold: {
-    ...typeScale.labelSemiBoldMedium,
+  reviewDetailsItemValueText: {
+    textAlign: 'right',
   },
   reviewFooter: {
     gap: Spacing.Regular16,
@@ -367,6 +469,10 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   totalPlusFeesLocalAmount: {
-    color: Colors.contentSecondary,
+    color: colors.contentSecondary,
+  },
+  totalBottomSheetContent: {
+    gap: Spacing.Smallest8,
+    marginBottom: Spacing.Thick24,
   },
 })

@@ -1,17 +1,11 @@
 import { launchApp } from '../utils/retries'
-import {
-  completeProtectWalletScreen,
-  enterPinUi,
-  navigateToSecurity,
-  quickOnboarding,
-  waitForElementById,
-  sleep,
-} from '../utils/utils'
+import { navigateToSecurity } from '../utils/navigation'
+import { enterPinUi, quickOnboarding, waitForElementById, sleep } from '../utils/utils'
 
 import jestExpect from 'expect'
 
 const startBackupFromNotifications = async () => {
-  await element(by.id('WalletHome/NotificationBell')).tap()
+  await waitForElementById('WalletHome/NotificationBell', { tap: true })
   await element(by.text('Back up now')).tap()
   await enterPinUi()
   await waitForElementById('WalletSecurityPrimer/GetStarted', { tap: true })
@@ -31,6 +25,14 @@ const arriveAtHomeScreen = async () => {
   await waitForElementById('HomeAction-Send')
 }
 
+const completeProtectWalletScreen = async () => {
+  await expect(element(by.id('recoveryPhraseCard'))).toBeVisible()
+  await element(by.id('recoveryPhraseCard')).tap()
+  await enterPinUi()
+  await expect(element(by.id('protectWalletBottomSheetContinue'))).toBeVisible()
+  await element(by.id('protectWalletBottomSheetContinue')).tap()
+}
+
 export default NewAccountOnboarding = () => {
   let testRecoveryPhrase, testAccountAddress
   beforeAll(async () => {
@@ -46,7 +48,7 @@ export default NewAccountOnboarding = () => {
   })
 
   it('Create a new account', async () => {
-    await element(by.id('CreateAccountButton')).tap()
+    await waitForElementById('CreateAccountButton', { tap: true })
 
     // Accept Terms
     await element(by.id('scrollView')).scrollTo('bottom')
@@ -127,7 +129,7 @@ export default NewAccountOnboarding = () => {
   // After quiz completion recovery phrase should only be shown in settings and
   // not in notifications
   it('Recovery phrase only shown in settings', async () => {
-    await element(by.id('WalletHome/NotificationBell')).tap()
+    await waitForElementById('WalletHome/NotificationBell', { tap: true })
     await expect(element(by.text('Back up now'))).not.toExist()
     await element(by.id('BackChevron')).tap()
     await navigateToSecurity()
@@ -140,6 +142,7 @@ export default NewAccountOnboarding = () => {
   // Based off the flag set in src/firebase/remoteConfigValuesDefaults.e2e.ts
   // We can only test one path 12 or 24 words as we cannot flip the flag after the build step
   it('Recovery phrase has 12 words', async () => {
+    await waitForElementById('AccountKeyWordsContainer')
     const recoveryPhraseContainer = await element(by.id('AccountKeyWordsContainer')).getAttributes()
     const recoveryPhraseText = recoveryPhraseContainer.label
     jestExpect(recoveryPhraseText.split(' ').length).toBe(12)

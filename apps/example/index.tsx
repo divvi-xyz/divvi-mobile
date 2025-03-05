@@ -74,8 +74,18 @@ const App = createApp({
   },
   divviProtocol: {
     protocolIds: ['somm'],
-    referrerId: 'some-referrer-id',
+    referrerId: 'ExampleApp',
   },
+
+  // Special cases to cover experimental features with e2e tests
+  ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
+    experimental: {
+      bidali: true,
+      notificationCenter: true,
+      contactSupport: true,
+      phoneNumberVerification: true,
+    },
+  }),
 })
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

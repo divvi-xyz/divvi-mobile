@@ -38,10 +38,10 @@ export default Assets = () => {
       balance: 'non zero',
       tokens: [
         {
-          tokenId: 'celo-mainnet:native',
-          symbol: 'CELO',
-          actions: ['Send', 'Add'],
-          moreActions: ['Send', 'Add', 'Withdraw'],
+          tokenId: 'celo-mainnet:0x765de816845861e75a25fca122bb6898b8b1282a',
+          symbol: 'cUSD',
+          actions: ['Send', 'Swap'],
+          moreActions: ['Send', 'Swap', 'Add', 'Withdraw'],
           learnMore: true,
         },
         {
@@ -57,8 +57,8 @@ export default Assets = () => {
       balance: 'zero',
       tokens: [
         {
-          tokenId: 'celo-mainnet:native',
-          symbol: 'CELO',
+          tokenId: 'celo-mainnet:0x765de816845861e75a25fca122bb6898b8b1282a',
+          symbol: 'cUSD',
           actions: ['Add'],
           moreActions: [],
           learnMore: true,

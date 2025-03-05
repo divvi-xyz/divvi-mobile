@@ -23,6 +23,7 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SettingsEvents } from 'src/analytics/Events'
 import { setSessionId } from 'src/app/actions'
 import { phoneNumberVerifiedSelector, sessionIdSelector } from 'src/app/selectors'
+import { getAppConfig } from 'src/appConfig'
 import ContactCircleSelf from 'src/components/ContactCircleSelf'
 import GradientBlock from 'src/components/GradientBlock'
 import { SettingsItemTextValue } from 'src/components/SettingsItem'
@@ -41,8 +42,9 @@ import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { useDispatch, useSelector } from 'src/redux/hooks'
-import { getFeatureGate } from 'src/statsig'
-import { StatsigFeatureGates } from 'src/statsig/types'
+import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
+import { DynamicConfigs } from 'src/statsig/constants'
+import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
@@ -56,6 +58,7 @@ import { Statsig } from 'statsig-react-native'
 type Props = NativeStackScreenProps<StackParamList, Screens.SettingsMenu>
 
 function ProfileMenuOption() {
+  const phoneNumberVerificationEnabled = getAppConfig().experimental?.phoneNumberVerification
   const displayName = useSelector(nameSelector)
   const e164PhoneNumber = useSelector(e164NumberSelector)
   const defaultCountryCode = useSelector(defaultCountryCodeSelector)
@@ -101,10 +104,18 @@ function ProfileMenuOption() {
     return null
   }
 
+  const handleNavigateToProfile = () => {
+    if (phoneNumberVerificationEnabled) {
+      navigate(Screens.ProfileSubmenu)
+    } else {
+      navigate(Screens.Profile)
+    }
+  }
+
   return (
     <Touchable
       style={styles.profileTouchable}
-      onPress={() => navigate(Screens.ProfileSubmenu)}
+      onPress={handleNavigateToProfile}
       testID="SettingsMenu/Profile"
     >
       <View style={styles.profileContainer}>
@@ -130,6 +141,11 @@ export default function SettingsMenu({ route }: Props) {
 
   const sessionId = useSelector(sessionIdSelector)
   const devModeActive = useSelector(devModeSelector)
+
+  const { links } = getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.APP_CONFIG])
+  const experimentalFeatures = getAppConfig().experimental
+  const inviteFriendsEnabled = experimentalFeatures?.inviteFriends
+  const showHelp = !!experimentalFeatures?.contactSupport || !!links?.faq || !!links?.forum
 
   useEffect(() => {
     if (AppAnalytics.getSessionId() !== sessionId) {
@@ -202,14 +218,16 @@ export default function SettingsMenu({ route }: Props) {
           showChevron
           borderless
         />
-        <SettingsItemTextValue
-          icon={<Envelope color={Colors.contentPrimary} />}
-          title={t('invite')}
-          onPress={() => navigate(Screens.Invite)}
-          testID="SettingsMenu/Invite"
-          showChevron
-          borderless
-        />
+        {inviteFriendsEnabled && (
+          <SettingsItemTextValue
+            icon={<Envelope color={Colors.contentPrimary} />}
+            title={t('invite')}
+            onPress={() => navigate(Screens.Invite)}
+            testID="SettingsMenu/Invite"
+            showChevron
+            borderless
+          />
+        )}
 
         <GradientBlock style={styles.divider} />
 
@@ -240,14 +258,16 @@ export default function SettingsMenu({ route }: Props) {
             borderless
           />
         )}
-        <SettingsItemTextValue
-          icon={<Help size={24} color={Colors.contentPrimary} />}
-          title={t('help')}
-          onPress={() => navigate(Screens.Support)}
-          testID="SettingsMenu/Help"
-          showChevron
-          borderless
-        />
+        {showHelp && (
+          <SettingsItemTextValue
+            icon={<Help size={24} color={Colors.contentPrimary} />}
+            title={t('help')}
+            onPress={() => navigate(Screens.Support)}
+            testID="SettingsMenu/Help"
+            showChevron
+            borderless
+          />
+        )}
 
         <GradientBlock style={styles.divider} />
 

@@ -13,10 +13,11 @@ import { mockCeloTokenId, mockCusdTokenId, mockTokenBalances } from 'test/values
 import {
   ReviewContent,
   ReviewDetailsItem,
+  ReviewDetailsItemTotalValue,
   ReviewSummaryItem,
   ReviewSummaryItemContact,
-  ReviewTotalValue,
   ReviewTransaction,
+  type ReviewDetailsItemProps,
 } from './ReviewTransaction'
 
 jest.mock('src/utils/Logger')
@@ -130,6 +131,7 @@ describe('ReviewDetailsItem', () => {
     const tree = render(
       <ReviewDetailsItem
         isLoading
+        type="plain-text"
         testID="LoadingItem"
         label="Loading Label"
         value="Should not show"
@@ -141,20 +143,40 @@ describe('ReviewDetailsItem', () => {
   })
 
   it('renders value text if isLoading is false', () => {
-    const tree = render(<ReviewDetailsItem testID="DetailsItem" label="Label" value="Value" />)
+    const tree = render(
+      <ReviewDetailsItem type="plain-text" testID="DetailsItem" label="Label" value="Value" />
+    )
     expect(tree.queryByTestId('DetailsItem/Loader')).toBeNull()
     expect(tree.getByTestId('DetailsItem/Value')).toHaveTextContent('Value')
   })
 
-  it('applies bold variant if specified', () => {
-    const tree = render(
-      <ReviewDetailsItem testID="BoldItem" label="Bold Label" value="Bold Value" variant="bold" />
-    )
-    expect(tree.getByTestId('BoldItem/Label')).toHaveStyle(typeScale.labelSemiBoldMedium)
-  })
+  it.each([
+    { fontSize: 'small', type: 'plain-text', font: typeScale.bodySmall },
+    { fontSize: 'medium', type: 'plain-text', font: typeScale.bodyMedium },
+    { fontSize: undefined, type: 'plain-text', font: typeScale.bodyMedium },
+    { fontSize: 'small', type: 'total-token-amount', font: typeScale.labelSemiBoldSmall },
+    { fontSize: 'medium', type: 'total-token-amount', font: typeScale.labelSemiBoldMedium },
+    { fontSize: undefined, type: 'total-token-amount', font: typeScale.labelSemiBoldMedium },
+  ] as (Pick<ReviewDetailsItemProps, 'fontSize' | 'type'> & { font: any })[])(
+    'renders correct font style for $fontSize $type',
+    ({ fontSize, type, font }) => {
+      const tree = render(
+        <ReviewDetailsItem
+          fontSize={fontSize}
+          type={type}
+          testID="DetailsItem"
+          label="Label"
+          {...({} as any)}
+        />
+      )
+
+      expect(tree.getByTestId('DetailsItem/Label')).toHaveStyle(font)
+      expect(tree.getByTestId('DetailsItem/Value')).toHaveStyle(font)
+    }
+  )
 })
 
-describe('ReviewTotalValue', () => {
+describe('ReviewDetailsItemTotalValue', () => {
   const celoToken = mockTokenBalances[mockCeloTokenId] as unknown as TokenBalance
   const cUSDToken = mockTokenBalances[mockCusdTokenId] as unknown as TokenBalance
   it.each([
@@ -168,7 +190,7 @@ describe('ReviewTotalValue', () => {
       title:
         'returns the token and fiat amount when fee info is missing and local price is available',
       result:
-        'tokenAndLocalAmountApprox, {"tokenAmount":"10.00","localAmount":"10.00","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+        'tokenAndLocalAmount, {"tokenAmount":"10.00","localAmount":"10.00","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
     },
     {
       tokenInfo: { ...celoToken, priceUsd: null },
@@ -179,7 +201,7 @@ describe('ReviewTotalValue', () => {
       feeLocalAmount: null,
       title:
         'returns only the token amount when fee info is missing and no local price is available',
-      result: 'tokenAmountApprox, {"tokenAmount":"10.00","tokenSymbol":"CELO"}',
+      result: 'tokenAmount, {"tokenAmount":"10.00","tokenSymbol":"CELO"}',
     },
     {
       tokenInfo: { ...celoToken, priceUsd: new BigNumber(1) },
@@ -191,7 +213,7 @@ describe('ReviewTotalValue', () => {
       title:
         'returns the token and local amount when the token and fee token are the same and local price is available',
       result:
-        'tokenAndLocalAmountApprox, {"tokenAmount":"10.50","localAmount":"10.50","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+        'tokenAndLocalAmount, {"tokenAmount":"10.50","localAmount":"10.50","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
     },
     {
       tokenInfo: { ...celoToken, priceUsd: null },
@@ -202,7 +224,7 @@ describe('ReviewTotalValue', () => {
       feeLocalAmount: null,
       title:
         "returns only the token amount when token and fee token are the same but they don't have local price",
-      result: 'tokenAmountApprox, {"tokenAmount":"10.50","tokenSymbol":"CELO"}',
+      result: 'tokenAmount, {"tokenAmount":"10.50","tokenSymbol":"CELO"}',
     },
     {
       tokenInfo: { ...cUSDToken, priceUsd: new BigNumber(1) },
@@ -213,7 +235,7 @@ describe('ReviewTotalValue', () => {
       feeLocalAmount: new BigNumber(0.5),
       title:
         'returns only the local amount when token and fee token are different but local prices are available for both',
-      result: 'localAmountApprox, {"localAmount":"10.50","localCurrencySymbol":"₱"}',
+      result: 'localAmount, {"localAmount":"10.50","localCurrencySymbol":"₱"}',
     },
     {
       tokenInfo: { ...cUSDToken, priceUsd: null },
@@ -241,7 +263,7 @@ describe('ReviewTotalValue', () => {
       const tree = render(
         <Provider store={createMockStore()}>
           <View testID="Total">
-            <ReviewTotalValue
+            <ReviewDetailsItemTotalValue
               tokenInfo={tokenInfo}
               feeTokenInfo={feeTokenInfo}
               tokenAmount={tokenAmount}

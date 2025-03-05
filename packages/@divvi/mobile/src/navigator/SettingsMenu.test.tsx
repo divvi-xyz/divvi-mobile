@@ -3,10 +3,11 @@ import * as React from 'react'
 import 'react-native'
 import { Provider } from 'react-redux'
 import { clearStoredAccount } from 'src/account/actions'
+import { getAppConfig } from 'src/appConfig'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import SettingsMenu from 'src/navigator/SettingsMenu'
-import { getFeatureGate } from 'src/statsig'
+import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import MockedNavigator from 'test/MockedNavigator'
 import { createMockStore } from 'test/utils'
@@ -19,6 +20,7 @@ jest.mocked(getFeatureGate).mockImplementation((gate) => {
   }
   throw new Error('Unexpected gate')
 })
+jest.mocked(getDynamicConfigParams).mockReturnValue({})
 
 jest.mock('statsig-react-native', () => ({
   Statsig: {
@@ -32,8 +34,20 @@ jest.mock('src/config', () => ({
 }))
 
 describe('SettingsMenu', () => {
+  const defaultAppConfig = {
+    displayName: 'Test App',
+    deepLinkUrlScheme: 'testapp',
+    registryName: 'test',
+  }
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(getAppConfig).mockReturnValue({
+      ...defaultAppConfig,
+      experimental: {
+        inviteFriends: true,
+        contactSupport: true,
+      },
+    })
   })
 
   it('shows the expected menu items', () => {
@@ -52,6 +66,26 @@ describe('SettingsMenu', () => {
     expect(getByTestId('SettingsMenu/Help')).toBeTruthy()
     expect(getByTestId('SettingsMenu/Legal')).toBeTruthy()
     expect(getByTestId('SettingsMenu/Version')).toBeTruthy()
+  })
+  it('does not show the invite item if the feature is disabled', () => {
+    jest.mocked(getAppConfig).mockReturnValue(defaultAppConfig)
+    const store = createMockStore()
+    const { queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator component={SettingsMenu}></MockedNavigator>
+      </Provider>
+    )
+    expect(queryByTestId('SettingsMenu/Invite')).toBeFalsy()
+  })
+  it('does not show the help item if help links are not set and contact support is disabled', () => {
+    jest.mocked(getAppConfig).mockReturnValue(defaultAppConfig)
+    const store = createMockStore()
+    const { queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator component={SettingsMenu}></MockedNavigator>
+      </Provider>
+    )
+    expect(queryByTestId('SettingsMenu/Help')).toBeFalsy()
   })
   it('does not show username if not set', () => {
     const store = createMockStore({
@@ -120,7 +154,7 @@ describe('SettingsMenu', () => {
 
     expect(navigate).toHaveBeenCalledTimes(8)
 
-    expect(navigate).toHaveBeenNthCalledWith(1, Screens.ProfileSubmenu)
+    expect(navigate).toHaveBeenNthCalledWith(1, Screens.Profile)
     expect(navigate).toHaveBeenNthCalledWith(2, Screens.QRNavigator, {
       screen: Screens.QRCode,
       params: { showSecureSendStyling: true },
@@ -131,6 +165,22 @@ describe('SettingsMenu', () => {
     expect(navigate).toHaveBeenNthCalledWith(6, Screens.WalletConnectSessions)
     expect(navigate).toHaveBeenNthCalledWith(7, Screens.PreferencesSubmenu)
     expect(navigate).toHaveBeenNthCalledWith(8, Screens.SecuritySubmenu)
+  })
+
+  it('navigates to the profile submenu if phone number verification is enabled', () => {
+    jest
+      .mocked(getAppConfig)
+      .mockReturnValue({ ...defaultAppConfig, experimental: { phoneNumberVerification: true } })
+
+    const { getByTestId } = render(
+      <Provider store={createMockStore()}>
+        <MockedNavigator component={SettingsMenu}></MockedNavigator>
+      </Provider>
+    )
+
+    fireEvent.press(getByTestId('SettingsMenu/Profile'))
+
+    expect(navigate).toHaveBeenCalledWith(Screens.ProfileSubmenu)
   })
 
   it('renders the dev mode menu', () => {
