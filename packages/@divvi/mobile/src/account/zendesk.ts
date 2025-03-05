@@ -1,4 +1,5 @@
-import { APP_NAME, ZENDESK_API_KEY, ZENDESK_PROJECT_NAME } from 'src/config'
+import { getAppConfig } from 'src/appConfig'
+import { APP_NAME } from 'src/config'
 import Logger from 'src/utils/Logger'
 
 export interface SupportRequestUserProperties {
@@ -37,9 +38,15 @@ export async function sendSupportRequest({
   userName: string
   subject: string
 }) {
+  const zendeskConfig = getAppConfig().experimental?.zendeskConfig
+  if (!zendeskConfig) {
+    Logger.error(TAG, 'No zendesk config found')
+    return
+  }
+
   Logger.info(TAG, 'Sending support request')
   const uploadTokens = await Promise.all(
-    logFiles.map((fileInfo) => _uploadFile(fileInfo, userEmail))
+    logFiles.map((fileInfo) => _uploadFile(fileInfo, userEmail, zendeskConfig))
   )
   const customFields = _generateCustomFields(userProperties)
   await _createRequest({
@@ -52,6 +59,7 @@ export async function sendSupportRequest({
     uploadTokens,
     subject,
     customFields,
+    zendeskConfig,
   })
 }
 
@@ -109,6 +117,7 @@ async function _createRequest({
   uploadTokens,
   subject,
   customFields,
+  zendeskConfig,
 }: {
   message: string
   userEmail: string
@@ -116,12 +125,16 @@ async function _createRequest({
   uploadTokens: string[]
   subject: string
   customFields: { id: number; value: string }[]
+  zendeskConfig: {
+    apiKey: string
+    projectName: string
+  }
 }) {
-  const resp = await fetch(`https://${ZENDESK_PROJECT_NAME}.zendesk.com/api/v2/requests`, {
+  const resp = await fetch(`https://${zendeskConfig.projectName}.zendesk.com/api/v2/requests`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Basic ${Buffer.from(`${userEmail}/token:${ZENDESK_API_KEY}`).toString(
+      Authorization: `Basic ${Buffer.from(`${userEmail}/token:${zendeskConfig.apiKey}`).toString(
         'base64'
       )}`,
     },
@@ -152,18 +165,22 @@ async function _createRequest({
 
 async function _uploadFile(
   { path, name }: { path: string; type: string; name: string },
-  userEmail: string
+  userEmail: string,
+  zendeskConfig: {
+    apiKey: string
+    projectName: string
+  }
 ) {
   // This reads the file into a blob, the actual data is kept on the native side
   // and is not copied into JS memory, which is good for large files.
   const blob = await fetch(`file://${path}`).then((r) => r.blob())
   const uploadFileResponse = await fetch(
-    `https://${ZENDESK_PROJECT_NAME}.zendesk.com/api/v2/uploads.json?filename=${name}&binary=false`,
+    `https://${zendeskConfig.projectName}.zendesk.com/api/v2/uploads.json?filename=${name}&binary=false`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
-        Authorization: `Basic ${Buffer.from(`${userEmail}/token:${ZENDESK_API_KEY}`).toString(
+        Authorization: `Basic ${Buffer.from(`${userEmail}/token:${zendeskConfig.apiKey}`).toString(
           'base64'
         )}`,
       },

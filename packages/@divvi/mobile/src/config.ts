@@ -128,12 +128,10 @@ export const ALCHEMY_BASE_API_KEY = keyOrUndefined(
   'ALCHEMY_BASE_API_KEY'
 )
 
-export const ZENDESK_API_KEY = keyOrUndefined(secretsFile, DEFAULT_TESTNET, 'ZENDESK_API_KEY')
 export const STATSIG_API_KEY = appConfig.features?.statsig?.apiKey
 export const STATSIG_ENABLED = !isE2EEnv && !!STATSIG_API_KEY
 export const SEGMENT_API_KEY = appConfig.features?.segment?.apiKey
 export const SENTRY_CLIENT_URL = keyOrUndefined(secretsFile, DEFAULT_TESTNET, 'SENTRY_CLIENT_URL')
-export const BIDALI_URL = keyOrUndefined(secretsFile, DEFAULT_TESTNET, 'BIDALI_URL')
 export const WALLET_CONNECT_PROJECT_ID =
   keyOrUndefined(secretsFile, DEFAULT_TESTNET, 'WALLET_CONNECT_PROJECT_ID') ??
   // valora-e2e-client project in the WC project dashboard
@@ -176,8 +174,6 @@ export const OTA_TRANSLATIONS_FILEPATH = `file://${CachesDirectoryPath}/translat
 export const FETCH_TIMEOUT_DURATION = 15000 // 15 seconds
 
 export const DEFAULT_APP_LANGUAGE = 'en-US'
-
-export const ZENDESK_PROJECT_NAME = 'valoraapp'
 
 // Logging and monitoring
 export const DEFAULT_SENTRY_TRACES_SAMPLE_RATE = 0.2

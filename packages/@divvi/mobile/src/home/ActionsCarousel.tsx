@@ -72,7 +72,7 @@ function ActionsCarousel() {
       title: t('homeActions.withdraw'),
       icon: <QuickActionsWithdraw color={Colors.buttonQuickActionContent} />,
       onPress: () => {
-        if (bidaliEnabled) {
+        if (!!bidaliEnabled) {
           navigate(Screens.WithdrawSpend)
         } else {
           navigate(Screens.FiatExchangeCurrencyBottomSheet, { flow: FiatExchangeFlow.CashOut })
