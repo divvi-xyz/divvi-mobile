@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:219](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L219)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:220](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L220)
 
 #### protocolIds
 
@@ -50,19 +50,10 @@ protocolIds: (
   | "allbridge"
   | "beefy"
   | "celo"
-  | "curve"
-  | "euler"
-  | "farcaster"
   | "fonbnk"
   | "mento"
-  | "morpho"
-  | "offchainlabs"
   | "somm"
-  | "tether"
-  | "ubeswap"
-  | "vana"
-  | "velodrome"
-  | "yearn")[];
+  | "vana")[];
 ```
 
 #### referrerId
@@ -108,6 +99,12 @@ optional alchemyKeys: Record<string, string>;
 
 ```ts
 optional bidali: boolean;
+```
+
+#### contactSupport?
+
+```ts
+optional contactSupport: boolean;
 ```
 
 #### earn?
