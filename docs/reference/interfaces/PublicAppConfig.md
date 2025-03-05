@@ -50,19 +50,10 @@ protocolIds: (
   | "allbridge"
   | "beefy"
   | "celo"
-  | "curve"
-  | "euler"
-  | "farcaster"
   | "fonbnk"
   | "mento"
-  | "morpho"
-  | "offchainlabs"
   | "somm"
-  | "tether"
-  | "ubeswap"
-  | "vana"
-  | "velodrome"
-  | "yearn")[];
+  | "vana")[];
 ```
 
 #### referrerId
