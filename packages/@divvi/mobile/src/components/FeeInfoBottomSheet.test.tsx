@@ -12,6 +12,8 @@ import {
   mockTokenBalances,
 } from 'test/values'
 
+jest.mock('src/utils/Logger')
+
 const mockNetworkFee = {
   amount: new BigNumber(0.01),
   token: mockCusdTokenBalance,
@@ -36,6 +38,21 @@ const mockAppFee = {
 // expectedAppFeeInLocalCurrency = 0.07 * 0.5 * 1.33 = 0.04655
 
 describe('FeeInfoBottomSheet', () => {
+  it('should not render anything if there are no fees passed to component', () => {
+    const tree = render(
+      <Provider store={createMockStore()}>
+        <FeeInfoBottomSheet
+          forwardedRef={{ current: null }}
+          appFee={undefined}
+          crossChainFee={undefined}
+          networkFee={undefined}
+        />
+      </Provider>
+    )
+
+    expect(tree.toJSON()).toBeNull()
+  })
+
   it('should display the expected fees information in both fiat and token units', () => {
     const { getByText, getByTestId } = render(
       <Provider
@@ -159,5 +176,67 @@ describe('FeeInfoBottomSheet', () => {
     )
     expect(getByText('appFee, {"appName":"Test App"}')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/AppFee')).toHaveTextContent('free')
+  })
+
+  it.each([
+    {
+      title: 'networkFee',
+      networkFee: mockNetworkFee,
+      appFee: undefined,
+      crossChainFee: undefined,
+    },
+    {
+      title: 'fees',
+      networkFee: mockNetworkFee,
+      appFee: mockAppFee,
+      crossChainFee: undefined,
+    },
+    {
+      title: 'fees',
+      networkFee: mockNetworkFee,
+      appFee: undefined,
+      crossChainFee: mockCrossChainFee,
+    },
+    {
+      title: 'fees',
+      networkFee: mockNetworkFee,
+      appFee: mockAppFee,
+      crossChainFee: mockCrossChainFee,
+    },
+  ])('renders proper structure based on the present fees', (item) => {
+    const { getByText, getByTestId } = render(
+      <Provider
+        store={createMockStore({
+          tokens: {
+            tokenBalances: {
+              [mockCusdTokenId]: { ...mockTokenBalances[mockCusdTokenId], priceUsd: '1.001' },
+              [mockCeloTokenId]: { ...mockTokenBalances[mockCeloTokenId], priceUsd: '0.5' },
+            },
+          },
+        })}
+      >
+        <FeeInfoBottomSheet
+          forwardedRef={{ current: null }}
+          networkFee={item.networkFee}
+          appFee={item.appFee}
+          crossChainFee={item.crossChainFee}
+        />
+      </Provider>
+    )
+
+    expect(getByText(item.title)).toBeTruthy()
+    expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee')).toBeTruthy()
+    expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee')).toBeTruthy()
+
+    if (item.appFee) {
+      expect(getByTestId('FeeInfoBottomSheet/Divider/AppFee')).toBeTruthy()
+      expect(getByTestId('FeeInfoBottomSheet/AppFee')).toBeTruthy()
+    }
+
+    if (item.crossChainFee) {
+      expect(getByTestId('FeeInfoBottomSheet/Divider/CrossChainFee')).toBeTruthy()
+      expect(getByTestId('FeeInfoBottomSheet/EstimatedCrossChainFee')).toBeTruthy()
+      expect(getByTestId('FeeInfoBottomSheet/MaxCrossChainFee')).toBeTruthy()
+    }
   })
 })

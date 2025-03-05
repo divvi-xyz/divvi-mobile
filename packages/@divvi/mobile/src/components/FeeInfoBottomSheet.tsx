@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 import { useSelector } from 'react-redux'
@@ -64,21 +64,23 @@ export default function FeeInfoBottomSheet(props: Props) {
 
   const hasNetworkFee = !!(networkFee || networkMaxFee)
   const hasCrossChainFee = !!(crossChainFee || crossChainMaxFee)
-  const appFeePresent = !!props.appFee
-  const appFeeIsNotZero = appFeePresent && !!appFee && !!appFee?.tokenAmount.gt(0)
+  const hasAppFee = !!props.appFee
+  const appFeeIsNotZero = hasAppFee && !!appFee && !!appFee.tokenAmount.gt(0)
 
-  const moreThanOneFee = useMemo(
-    () => [hasNetworkFee, appFeeIsNotZero, hasCrossChainFee].filter(Boolean).length > 1,
-    [hasNetworkFee, appFeeIsNotZero, hasCrossChainFee]
-  )
+  // network fee always has to be available in order to render fees info sheet
+  if (!hasNetworkFee) {
+    return null
+  }
 
   return (
     <InfoBottomSheet
       forwardedRef={props.forwardedRef}
-      title={moreThanOneFee ? t('fees') : t('networkFee')}
+      title={hasNetworkFee && (hasAppFee || hasCrossChainFee) ? t('fees') : t('networkFee')}
       testID="FeeInfoBottomSheet"
     >
-      <Text style={styles.label}>{t('breakdown')}</Text>
+      <Text style={styles.label}>
+        <Trans i18nKey="breakdown" />
+      </Text>
 
       {networkFee && (
         <ReviewDetailsItem
@@ -106,15 +108,9 @@ export default function FeeInfoBottomSheet(props: Props) {
         />
       )}
 
-      {/**
-       * We need to show a divider if we have any info about app fee but only if we also have
-       * network fee present. Otherwise, this is the first fee in the breakdown and we don't
-       * need this divider at all.
-       */}
-      {appFeeIsNotZero && hasNetworkFee && <Divider />}
-
-      {appFeePresent && (
+      {hasAppFee && (
         <>
+          <Divider testID="FeeInfoBottomSheet/Divider/AppFee" />
           {appFeeIsNotZero ? (
             <ReviewDetailsItem
               fontSize="small"
@@ -138,12 +134,7 @@ export default function FeeInfoBottomSheet(props: Props) {
         </>
       )}
 
-      {/**
-       * We need to show a divider if we have any info about cross-chain fee (est or max) but only
-       * if we also have app fee or network fee present. Otherwise, this is the first fee in the
-       * breakdown and we don't need this divider at all.
-       */}
-      {hasCrossChainFee && (appFeePresent || hasNetworkFee) && <Divider />}
+      {hasCrossChainFee && <Divider testID="FeeInfoBottomSheet/Divider/CrossChainFee" />}
 
       {crossChainFee && (
         <ReviewDetailsItem
@@ -194,8 +185,8 @@ export default function FeeInfoBottomSheet(props: Props) {
   )
 }
 
-function Divider() {
-  return <View style={styles.divider} />
+function Divider(props: { testID?: string }) {
+  return <View style={styles.divider} testID={props.testID} />
 }
 
 const styles = StyleSheet.create({
