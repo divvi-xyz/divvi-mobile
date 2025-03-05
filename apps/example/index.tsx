@@ -24,7 +24,9 @@ const App = createApp({
   features: {
     // Special case for e2e tests as it doesn't handle cloud backup
     ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
-      cloudBackup: false,
+      walletConnect: {
+        projectId: '8f6f2517f4485c013849d38717ec90d1', // valora-e2e-client project
+      },
     }),
   },
   locales: {

@@ -13,7 +13,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import AppInitGate from 'src/app/AppInitGate'
 import ErrorBoundary from 'src/app/ErrorBoundary'
 import { getAppConfig } from 'src/appConfig'
-import { AUTH0_CLIENT_ID, AUTH0_DOMAIN, isE2EEnv } from 'src/config'
+import { isE2EEnv } from 'src/config'
 import i18n from 'src/i18n'
 import NavigatorWrapper from 'src/navigator/NavigatorWrapper'
 import { persistor, store } from 'src/redux/store'
@@ -65,6 +65,7 @@ export class App extends React.Component<Props> {
   isConsumingInitialLink = false
   // TODO: add support for changing themes dynamically, here we are getting only the default theme colors.
   isDarkTheme = getAppConfig().themes?.default?.isDark
+  cloudBackupConfig = getAppConfig().features?.cloudBackup
 
   async componentDidMount() {
     if (isE2EEnv) {
@@ -72,30 +73,43 @@ export class App extends React.Component<Props> {
     }
   }
 
+  renderAppContent() {
+    return (
+      <AppInitGate
+        appStartedMillis={this.props.appStartedMillis}
+        reactLoadTime={this.reactLoadTime}
+      >
+        <StatusBar
+          backgroundColor="transparent"
+          barStyle={this.isDarkTheme ? 'light-content' : 'dark-content'}
+          translucent
+        />
+        <ErrorBoundary>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <BottomSheetModalProvider>
+              <NavigatorWrapper />
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </ErrorBoundary>
+      </AppInitGate>
+    )
+  }
+
   render() {
     return (
       <SafeAreaProvider>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
-            <Auth0Provider domain={AUTH0_DOMAIN} clientId={AUTH0_CLIENT_ID}>
-              <AppInitGate
-                appStartedMillis={this.props.appStartedMillis}
-                reactLoadTime={this.reactLoadTime}
+            {!!this.cloudBackupConfig ? (
+              <Auth0Provider
+                domain={this.cloudBackupConfig.auth0Domain}
+                clientId={this.cloudBackupConfig.auth0ClientId}
               >
-                <StatusBar
-                  backgroundColor="transparent"
-                  barStyle={this.isDarkTheme ? 'light-content' : 'dark-content'}
-                  translucent
-                />
-                <ErrorBoundary>
-                  <GestureHandlerRootView style={{ flex: 1 }}>
-                    <BottomSheetModalProvider>
-                      <NavigatorWrapper />
-                    </BottomSheetModalProvider>
-                  </GestureHandlerRootView>
-                </ErrorBoundary>
-              </AppInitGate>
-            </Auth0Provider>
+                {this.renderAppContent()}
+              </Auth0Provider>
+            ) : (
+              this.renderAppContent()
+            )}
           </PersistGate>
         </Provider>
       </SafeAreaProvider>

@@ -144,7 +144,11 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
       clientUrl: string
     }
     // TODO: what's the marketing name for this?
-    cloudBackup?: boolean
+    cloudBackup?: {
+      auth0Domain: string
+      auth0ClientId: string
+      web3AuthClientId: string
+    }
     walletConnect?: {
       projectId: string
     }

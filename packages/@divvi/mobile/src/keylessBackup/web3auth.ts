@@ -1,12 +1,18 @@
 import { NodeDetailManager } from '@toruslabs/fetch-node-details'
 import { Torus } from '@toruslabs/torus.js'
 import { jwtDecode } from 'jwt-decode'
-import { TORUS_NETWORK, WEB3AUTH_CLIENT_ID } from 'src/config'
+import { getAppConfig } from 'src/appConfig'
+import { TORUS_NETWORK } from 'src/config'
 import Logger from 'src/utils/Logger'
 
 const TAG = 'keylessBackup/torus'
 
 export async function getTorusPrivateKey({ verifier, jwt }: { verifier: string; jwt: string }) {
+  const web3AuthClientId = getAppConfig().features?.cloudBackup?.web3AuthClientId
+  if (!web3AuthClientId) {
+    throw new Error('web3AuthClientId not set in app config')
+  }
+
   // largely copied from CustomAuth triggerLogin
   Logger.debug(TAG, `decoding jwt ${jwt}`)
   const sub = jwtDecode<{ sub: string }>(jwt).sub
@@ -15,7 +21,7 @@ export async function getTorusPrivateKey({ verifier, jwt }: { verifier: string; 
   })
   const torus = new Torus({
     network: TORUS_NETWORK,
-    clientId: WEB3AUTH_CLIENT_ID,
+    clientId: web3AuthClientId,
   })
   Logger.debug(TAG, `getting node details for verifier ${verifier} and sub ${sub}`)
   const { torusNodeEndpoints, torusNodePub, torusIndexes } = await nodeDetailManager.getNodeDetails(

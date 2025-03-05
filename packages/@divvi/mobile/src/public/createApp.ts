@@ -48,7 +48,7 @@ export function createApp<const tabScreenConfigs extends TabScreenConfig[]>(
   Config.APP_STORE_ID = config.ios?.appStoreId
   Config.APP_DISPLAY_NAME = config.displayName
   Config.SENTRY_ENABLED = config.features?.sentry?.clientUrl ? 'true' : 'false'
-  Config.AUTH0_DOMAIN = 'auth.valora.xyz' // TODO: also set auth0ClientId and web3AuthClientId that are needed for cloud backup
+  Config.AUTH0_DOMAIN = config.features?.cloudBackup?.auth0Domain // Note that this needs to go through react-native-config as it is needed for the android build
   Config.ONBOARDING_FEATURES_ENABLED = getOnboardingFeatures(config)
   Config.DEEP_LINK_URL_SCHEME = config.deepLinkUrlScheme
   Config.APP_REGISTRY_NAME = config.registryName

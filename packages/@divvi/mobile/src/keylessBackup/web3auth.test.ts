@@ -1,4 +1,5 @@
 import { Torus } from '@toruslabs/torus.js'
+import { getAppConfig } from 'src/appConfig'
 import { getTorusPrivateKey } from './web3auth'
 
 jest.mock('@toruslabs/torus.js')
@@ -42,6 +43,18 @@ describe('getTorusPrivateKey', () => {
       getPublicAddress: mockGetPublicAddress,
       retrieveShares: mockRetrieveShares,
     } as any)
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+      features: {
+        cloudBackup: {
+          auth0Domain: 'auth0Domain',
+          auth0ClientId: 'auth0ClientId',
+          web3AuthClientId: 'web3AuthClientId',
+        },
+      },
+    })
   })
 
   it('should retrun private key successfully', async () => {
