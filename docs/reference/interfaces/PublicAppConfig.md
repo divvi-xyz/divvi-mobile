@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:220](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L220)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:224](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L224)
 
 #### protocolIds
 
@@ -70,7 +70,7 @@ referrerId: string
 optional experimental: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:190](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L190)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:194](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L194)
 
 Experimental features that may change or be removed in future versions.
 These features are not part of the stable configuration API and should be used with caution.
@@ -210,7 +210,25 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:142](https://github.com
 #### cloudBackup?
 
 ```ts
-optional cloudBackup: boolean;
+optional cloudBackup: object;
+```
+
+##### cloudBackup.auth0ClientId
+
+```ts
+auth0ClientId: string
+```
+
+##### cloudBackup.auth0Domain
+
+```ts
+auth0Domain: string
+```
+
+##### cloudBackup.web3AuthClientId
+
+```ts
+web3AuthClientId: string
 ```
 
 #### segment?
@@ -299,7 +317,7 @@ optional locales: Partial<{
 }>;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:163](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L163)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:167](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L167)
 
 Optional copies overwrite. This field should contain the same language keys as @interxyz/mobile.
 TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
@@ -312,7 +330,7 @@ TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
 optional networks: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:180](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L180)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:184](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L184)
 
 ---
 
