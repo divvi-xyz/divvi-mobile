@@ -252,7 +252,6 @@ describe('FeeInfoBottomSheet', () => {
     expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee')).toBeTruthy()
 
-    // eslint-disable-next-line jest/no-conditional-expect
     if (item.appFee) {
       // eslint-disable-next-line jest/no-conditional-expect
       expect(getByTestId('FeeInfoBottomSheet/Divider/AppFee')).toBeTruthy()
@@ -260,7 +259,6 @@ describe('FeeInfoBottomSheet', () => {
       expect(getByTestId('FeeInfoBottomSheet/AppFee')).toBeTruthy()
     }
 
-    // eslint-disable-next-line jest/no-conditional-expect
     if (item.crossChainFee) {
       // eslint-disable-next-line jest/no-conditional-expect
       expect(getByTestId('FeeInfoBottomSheet/Divider/CrossChainFee')).toBeTruthy()
