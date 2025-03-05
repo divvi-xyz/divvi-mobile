@@ -100,7 +100,7 @@ export class App extends React.Component<Props> {
       <SafeAreaProvider>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
-            {!!this.cloudBackupConfig ? (
+            {this.cloudBackupConfig ? (
               <Auth0Provider
                 domain={this.cloudBackupConfig.auth0Domain}
                 clientId={this.cloudBackupConfig.auth0ClientId}
