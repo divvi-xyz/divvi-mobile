@@ -846,7 +846,7 @@ export function isWalletConnectEnabled(uri: string) {
   const walletConnectV2Disabled = getFeatureGate(StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2)
   const walletConnectProjectId = getAppConfig().features?.walletConnect?.projectId
 
-  return walletConnectProjectId && !walletConnectV2Disabled && version === 2
+  return !!walletConnectProjectId && !walletConnectV2Disabled && version === 2
 }
 
 export function* initialiseWalletConnect(uri: string, origin: WalletConnectPairingOrigin) {
