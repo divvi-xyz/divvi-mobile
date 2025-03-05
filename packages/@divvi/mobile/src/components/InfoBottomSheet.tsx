@@ -16,12 +16,15 @@ export default function InfoBottomSheet(props: {
 
   return (
     <BottomSheet forwardedRef={props.forwardedRef} title={props.title} testId={props.testID}>
-      <View style={styles.content}>{props.children}</View>
+      <View style={styles.content} testID={`${props.testID}/Content`}>
+        {props.children}
+      </View>
       <Button
         type={BtnTypes.SECONDARY}
         size={BtnSizes.FULL}
         text={t('bottomSheetDismissButton')}
         onPress={() => props.forwardedRef.current?.close()}
+        testID={`${props.testID}/DismissButton`}
       />
     </BottomSheet>
   )
