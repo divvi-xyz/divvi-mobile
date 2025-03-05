@@ -7,14 +7,17 @@ import type { StackParamList } from 'src/navigator/types'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnDepositConfirmationScreen>
 
-function useDepositTokenAmount(params: Props['route']['params']) {
+export function useDepositTokenAmount(params: Props['route']['params']) {
   const { inputAmount, mode, swapTransaction } = params
   return mode === 'swap-deposit' && swapTransaction
     ? getSwapToAmountInDecimals({ swapTransaction, fromAmount: inputAmount })
     : inputAmount
 }
 
-function useCommonAnalyticsProperties(params: Props['route']['params'], depositAmount: BigNumber) {
+export function useCommonAnalyticsProperties(
+  params: Props['route']['params'],
+  depositAmount: BigNumber
+) {
   const { pool, preparedTransaction, inputAmount, swapTransaction, inputTokenId, mode } = params
   return {
     providerId: pool.appId,
