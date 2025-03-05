@@ -9,6 +9,7 @@ import { ErrorMessages } from 'src/app/ErrorMessages'
 import BackButton from 'src/components/BackButton'
 import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes } from 'src/components/Button'
+import InfoBottomSheet from 'src/components/InfoBottomSheet'
 import {
   ReviewContent,
   ReviewDetails,
@@ -17,7 +18,6 @@ import {
   ReviewSummary,
   ReviewSummaryItem,
   ReviewSummaryItemContact,
-  ReviewTotalBottomSheet,
   ReviewTransaction,
 } from 'src/components/ReviewTransaction'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
@@ -220,7 +220,7 @@ export default function SendConfirmation(props: Props) {
         />
       </ReviewFooter>
 
-      <ReviewTotalBottomSheet forwardedRef={feesBottomSheetRef} title={t('networkFee')}>
+      <InfoBottomSheet forwardedRef={feesBottomSheetRef} title={t('networkFee')}>
         <ReviewDetailsItem
           approx
           fontSize="small"
@@ -241,9 +241,9 @@ export default function SendConfirmation(props: Props) {
           tokenInfo={feeTokenInfo}
           localCurrencySymbol={localCurrencySymbol}
         />
-      </ReviewTotalBottomSheet>
+      </InfoBottomSheet>
 
-      <ReviewTotalBottomSheet
+      <InfoBottomSheet
         forwardedRef={totalBottomSheetRef}
         title={t('reviewTransaction.totalPlusFees')}
       >
@@ -281,7 +281,7 @@ export default function SendConfirmation(props: Props) {
           feeLocalAmount={localMaxFeeAmount}
           localCurrencySymbol={localCurrencySymbol}
         />
-      </ReviewTotalBottomSheet>
+      </InfoBottomSheet>
     </ReviewTransaction>
   )
 }
