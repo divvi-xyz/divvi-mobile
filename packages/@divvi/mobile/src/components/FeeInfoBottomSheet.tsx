@@ -15,6 +15,9 @@ import { Spacing } from 'src/styles/styles'
 import type { AppFeeAmount, SwapFeeAmount } from 'src/swap/types'
 import { useTokenToLocalAmount } from 'src/tokens/hooks'
 import type { TokenBalance } from 'src/tokens/slice'
+import Logger from 'src/utils/Logger'
+
+const TAG = 'components/FeeInfoBottomSheet'
 
 interface Props {
   forwardedRef: React.RefObject<BottomSheetModalRefType>
@@ -67,8 +70,8 @@ export default function FeeInfoBottomSheet(props: Props) {
   const hasAppFee = !!props.appFee
   const appFeeIsNotZero = hasAppFee && !!appFee && !!appFee.tokenAmount.gt(0)
 
-  // network fee always has to be available in order to render fees info sheet
-  if (!hasNetworkFee) {
+  if (!hasNetworkFee && !hasAppFee && !hasCrossChainFee) {
+    Logger.error(TAG, 'No fees provided to the component')
     return null
   }
 
@@ -82,7 +85,7 @@ export default function FeeInfoBottomSheet(props: Props) {
         <Trans i18nKey="breakdown" />
       </Text>
 
-      {networkFee && (
+      {networkFee ? (
         <ReviewDetailsItem
           approx
           fontSize="small"
@@ -94,8 +97,16 @@ export default function FeeInfoBottomSheet(props: Props) {
           tokenInfo={networkFee.tokenInfo}
           localCurrencySymbol={localCurrencySymbol}
         />
+      ) : (
+        <ReviewDetailsItem
+          fontSize="small"
+          label={t('estimatedNetworkFee')}
+          testID="FeeInfoBottomSheet/EstimatedNetworkFee"
+          type="plain-text"
+          value={t('unknown')}
+        />
       )}
-      {networkMaxFee && (
+      {networkMaxFee ? (
         <ReviewDetailsItem
           fontSize="small"
           label={t('maxNetworkFee')}
@@ -105,6 +116,14 @@ export default function FeeInfoBottomSheet(props: Props) {
           localAmount={networkMaxFee.localAmount}
           tokenInfo={networkMaxFee.tokenInfo}
           localCurrencySymbol={localCurrencySymbol}
+        />
+      ) : (
+        <ReviewDetailsItem
+          fontSize="small"
+          label={t('maxNetworkFee')}
+          testID="FeeInfoBottomSheet/MaxNetworkFee"
+          type="plain-text"
+          value={t('unknown')}
         />
       )}
 

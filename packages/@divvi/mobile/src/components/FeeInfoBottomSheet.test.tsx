@@ -178,6 +178,30 @@ describe('FeeInfoBottomSheet', () => {
     expect(getByTestId('FeeInfoBottomSheet/AppFee')).toHaveTextContent('free')
   })
 
+  it('should display unknown values if the token info is missing', () => {
+    const { getByTestId } = render(
+      <Provider
+        store={createMockStore({
+          tokens: {
+            tokenBalances: {
+              [mockCusdTokenId]: undefined,
+            },
+          },
+        })}
+      >
+        <FeeInfoBottomSheet
+          forwardedRef={{ current: null }}
+          appFee={mockAppFee}
+          crossChainFee={mockCrossChainFee}
+          networkFee={{ ...mockNetworkFee, token: undefined }}
+        />
+      </Provider>
+    )
+
+    expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee')).toHaveTextContent('unknown')
+    expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee')).toHaveTextContent('unknown')
+  })
+
   it.each([
     {
       title: 'networkFee',
