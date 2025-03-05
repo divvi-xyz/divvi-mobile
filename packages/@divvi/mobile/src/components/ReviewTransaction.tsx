@@ -155,7 +155,7 @@ export function ReviewDetails(props: { children: ReactNode }) {
   return <View style={styles.reviewDetails}>{props.children}</View>
 }
 
-export type ReviewDetailsItemProps<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>> = {
+type ReviewDetailsItemProps<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>> = {
   label: ReactNode
   fontSize?: 'small' | 'medium'
   color?: ColorValue
