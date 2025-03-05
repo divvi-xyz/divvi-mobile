@@ -11,7 +11,8 @@ import { WalletConnectEvents } from 'src/analytics/Events'
 import { WalletConnect2Properties } from 'src/analytics/Properties'
 import { DappRequestOrigin, WalletConnectPairingOrigin } from 'src/analytics/types'
 import { getDappRequestOrigin } from 'src/app/utils'
-import { APP_NAME, DEEP_LINK_URL_SCHEME, WALLET_CONNECT_PROJECT_ID } from 'src/config'
+import { getAppConfig } from 'src/appConfig'
+import { APP_NAME, DEEP_LINK_URL_SCHEME } from 'src/config'
 import { activeDappSelector } from 'src/dapps/selectors'
 import { ActiveDapp } from 'src/dapps/types'
 import i18n from 'src/i18n'
@@ -133,9 +134,10 @@ function* createWalletConnectChannel() {
   if (!client) {
     Logger.debug(TAG + '@createWalletConnectChannel', `init start`)
     const { links } = getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.APP_CONFIG])
+    const appConfig = yield* call(getAppConfig)
     client = yield* call([WalletKit, 'init'], {
       core: new Core({
-        projectId: WALLET_CONNECT_PROJECT_ID,
+        projectId: appConfig.features?.walletConnect?.projectId,
         relayUrl: networkConfig.walletConnectEndpoint,
       }),
       metadata: {
@@ -842,8 +844,9 @@ export function* initialiseWalletConnectV2(uri: string, origin: WalletConnectPai
 export function isWalletConnectEnabled(uri: string) {
   const { version } = parseUri(uri)
   const walletConnectV2Disabled = getFeatureGate(StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2)
+  const walletConnectProjectId = getAppConfig().features?.walletConnect?.projectId
 
-  return !walletConnectV2Disabled && version === 2
+  return walletConnectProjectId && !walletConnectV2Disabled && version === 2
 }
 
 export function* initialiseWalletConnect(uri: string, origin: WalletConnectPairingOrigin) {

@@ -6,6 +6,7 @@ import { call, select } from 'redux-saga-test-plan/matchers'
 import { EffectProviders, StaticProvider, throwError } from 'redux-saga-test-plan/providers'
 import { showMessage } from 'src/alert/actions'
 import { DappRequestOrigin, WalletConnectPairingOrigin } from 'src/analytics/types'
+import { getAppConfig } from 'src/appConfig'
 import { activeDappSelector } from 'src/dapps/selectors'
 import i18n from 'src/i18n'
 import { isBottomSheetVisible, navigate } from 'src/navigator/NavigationService'
@@ -689,8 +690,17 @@ const v2ConnectionString =
 
 describe('initialiseWalletConnect', () => {
   const origin = WalletConnectPairingOrigin.Deeplink
-
   it('initializes v2 if enabled', async () => {
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+      features: {
+        walletConnect: {
+          projectId: '123',
+        },
+      },
+    })
     await expectSaga(initialiseWalletConnect, v2ConnectionString, origin)
       .provide([[call(initialiseWalletConnectV2, v2ConnectionString, origin), {}]])
       .call(initialiseWalletConnectV2, v2ConnectionString, origin)
@@ -701,6 +711,23 @@ describe('initialiseWalletConnect', () => {
     jest.mocked(getFeatureGate).mockImplementation((featureGate) => {
       if (featureGate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2) {
         return true
+      }
+      throw new Error(`Unexpected feature gate: ${featureGate}`)
+    })
+    await expectSaga(initialiseWalletConnect, v2ConnectionString, origin)
+      .not.call(initialiseWalletConnectV2, v2ConnectionString, origin)
+      .run()
+  })
+
+  it('doesnt initialize v2 if there is no wallet connect project id', async () => {
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+    })
+    jest.mocked(getFeatureGate).mockImplementation((featureGate) => {
+      if (featureGate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2) {
+        return false
       }
       throw new Error(`Unexpected feature gate: ${featureGate}`)
     })
