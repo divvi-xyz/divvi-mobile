@@ -690,7 +690,7 @@ const v2ConnectionString =
 
 describe('initialiseWalletConnect', () => {
   const origin = WalletConnectPairingOrigin.Deeplink
-  it('initializes v2 if enabled', async () => {
+  it('initializes v2 if enabled and there is a wallet connect project id', async () => {
     jest.mocked(getAppConfig).mockReturnValue({
       displayName: 'Test App',
       deepLinkUrlScheme: 'testapp',
