@@ -18,6 +18,8 @@ import type { AppFeeAmount, SwapFeeAmount } from 'src/swap/types'
 import { useTokenToLocalAmount } from 'src/tokens/hooks'
 import type { TokenBalance } from 'src/tokens/slice'
 
+const TAG = 'components/FeeInfoBottomSheet'
+
 interface Props {
   forwardedRef: React.RefObject<BottomSheetModalRefType>
   appFee?: AppFeeAmount
