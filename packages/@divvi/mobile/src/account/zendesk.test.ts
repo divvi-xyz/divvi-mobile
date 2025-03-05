@@ -41,8 +41,8 @@ describe('Zendesk', () => {
       registryName: 'test',
       experimental: {
         zendeskConfig: {
-          apiKey: 'zendeskApiKey',
-          projectName: 'zendeskProjectName',
+          apiKey: 'some-api-key',
+          projectName: 'someprojectname',
         },
       },
     })
@@ -81,11 +81,11 @@ describe('Zendesk', () => {
           return 'path1 contents'
         case 'file://path2/':
           return 'path2 contents'
-        case `https://zendeskProjectName.zendesk.com/api/v2/uploads.json?filename=name1&binary=false`:
+        case `https://someprojectname.zendesk.com/api/v2/uploads.json?filename=name1&binary=false`:
           return { status: 201, body: JSON.stringify({ upload: { token: 'uploadToken' } }) }
-        case `https://zendeskProjectName.zendesk.com/api/v2/uploads.json?filename=name2&binary=false`:
+        case `https://someprojectname.zendesk.com/api/v2/uploads.json?filename=name2&binary=false`:
           return { status: 201, body: JSON.stringify({ upload: { token: 'uploadToken2' } }) }
-        case `https://zendeskProjectName.zendesk.com/api/v2/requests`:
+        case `https://someprojectname.zendesk.com/api/v2/requests`:
           return JSON.stringify({ request: { id: 1234 } })
         default:
           throw new Error(`unexpected url: ${req.url}`)
@@ -95,12 +95,12 @@ describe('Zendesk', () => {
     await sendSupportRequest(args)
     expect(mockFetch.mock.calls.length).toEqual(5)
     expect(mockFetch).toHaveBeenCalledWith(
-      `https://zendeskProjectName.zendesk.com/api/v2/uploads.json?filename=name1&binary=false`,
+      `https://someprojectname.zendesk.com/api/v2/uploads.json?filename=name1&binary=false`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain',
-          Authorization: `Basic ${Buffer.from(`${args.userEmail}/token:zendeskApiKey`).toString(
+          Authorization: `Basic ${Buffer.from(`${args.userEmail}/token:some-api-key`).toString(
             'base64'
           )}`,
         },
@@ -111,17 +111,17 @@ describe('Zendesk', () => {
     const callName1 = mockFetch.mock.calls.find(
       (call) =>
         call[0] ===
-        `https://zendeskProjectName.zendesk.com/api/v2/uploads.json?filename=name1&binary=false`
+        `https://someprojectname.zendesk.com/api/v2/uploads.json?filename=name1&binary=false`
     )
     expect(callName1?.[1]?.body).toEqualBlob(new Blob(['path1 contents']))
 
     expect(mockFetch).toHaveBeenCalledWith(
-      `https://zendeskProjectName.zendesk.com/api/v2/uploads.json?filename=name2&binary=false`,
+      `https://someprojectname.zendesk.com/api/v2/uploads.json?filename=name2&binary=false`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain',
-          Authorization: `Basic ${Buffer.from(`${args.userEmail}/token:zendeskApiKey`).toString(
+          Authorization: `Basic ${Buffer.from(`${args.userEmail}/token:some-api-key`).toString(
             'base64'
           )}`,
         },
@@ -132,38 +132,35 @@ describe('Zendesk', () => {
     const callName2 = mockFetch.mock.calls.find(
       (call) =>
         call[0] ===
-        `https://zendeskProjectName.zendesk.com/api/v2/uploads.json?filename=name2&binary=false`
+        `https://someprojectname.zendesk.com/api/v2/uploads.json?filename=name2&binary=false`
     )
     expect(callName2?.[1]?.body).toEqualBlob(new Blob(['path2 contents']))
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      `https://zendeskProjectName.zendesk.com/api/v2/requests`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Basic ${Buffer.from(`${args.userEmail}/token:zendeskApiKey`).toString(
-            'base64'
-          )}`,
-        },
-        body: JSON.stringify({
-          request: {
-            subject: args.subject,
-            custom_fields: _generateCustomFields(args.userProperties),
-            comment: {
-              body: `${args.message}
+    expect(mockFetch).toHaveBeenCalledWith(`https://someprojectname.zendesk.com/api/v2/requests`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${Buffer.from(`${args.userEmail}/token:some-api-key`).toString(
+          'base64'
+        )}`,
+      },
+      body: JSON.stringify({
+        request: {
+          subject: args.subject,
+          custom_fields: _generateCustomFields(args.userProperties),
+          comment: {
+            body: `${args.message}
     
     ${JSON.stringify(args.userProperties, null, 2)}
     `,
-              uploads: ['uploadToken', 'uploadToken2'],
-            },
-            requester: {
-              email: args.userEmail,
-              name: args.userName,
-            },
+            uploads: ['uploadToken', 'uploadToken2'],
           },
-        }),
-      }
-    )
+          requester: {
+            email: args.userEmail,
+            name: args.userName,
+          },
+        },
+      }),
+    })
   })
 })
