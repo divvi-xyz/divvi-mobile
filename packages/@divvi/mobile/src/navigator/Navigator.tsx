@@ -32,6 +32,7 @@ import DappShortcutTransactionRequest from 'src/dapps/DappShortcutTransactionReq
 import DappShortcutsRewards from 'src/dapps/DappShortcutsRewards'
 import DappsScreen from 'src/dapps/DappsScreen'
 import EarnConfirmationScreen from 'src/earn/EarnConfirmationScreen'
+import EarnDepositConfirmationScreen from 'src/earn/EarnDepositConfirmationScreen'
 import EarnEnterAmount from 'src/earn/EarnEnterAmount'
 import EarnHome from 'src/earn/EarnHome'
 import EarnInfoScreen from 'src/earn/EarnInfoScreen'
@@ -538,6 +539,11 @@ const earnScreens = (Navigator: typeof Stack) => (
       name={Screens.EarnConfirmationScreen}
       component={EarnConfirmationScreen}
       options={headerWithBackButton}
+    />
+    <Navigator.Screen
+      name={Screens.EarnDepositConfirmationScreen}
+      component={EarnDepositConfirmationScreen}
+      options={noHeader}
     />
     <Navigator.Screen
       name={Screens.EarnEnterAmount}
