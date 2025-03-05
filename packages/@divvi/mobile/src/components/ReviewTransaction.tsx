@@ -64,31 +64,38 @@ export function ReviewSummaryItem(props: {
   primaryValue: string
   secondaryValue?: string
   testID?: string
+  onPress?: () => void
 }) {
   return (
     <View style={styles.reviewSummaryItem} testID={props.testID}>
       <Text style={styles.reviewSummaryItemLabel} testID={`${props.testID}/Label`}>
         {props.label}
       </Text>
-      <View style={styles.reviewSummaryItemContent}>
-        {props.icon}
-        <View style={styles.reviewSummaryItemValuesWrapper}>
-          <Text
-            style={styles.reviewSummaryItemPrimaryValue}
-            testID={`${props.testID}/PrimaryValue`}
-          >
-            {props.primaryValue}
-          </Text>
-          {!!props.secondaryValue && (
+      <Touchable
+        style={styles.reviewSummaryItemContent}
+        onPress={props.onPress}
+        disabled={!props.onPress}
+      >
+        <>
+          {props.icon}
+          <View style={styles.reviewSummaryItemValuesWrapper}>
             <Text
-              style={styles.reviewSummaryItemSecondaryValue}
-              testID={`${props.testID}/SecondaryValue`}
+              style={styles.reviewSummaryItemPrimaryValue}
+              testID={`${props.testID}/PrimaryValue`}
             >
-              {props.secondaryValue}
+              {props.primaryValue}
             </Text>
-          )}
-        </View>
-      </View>
+            {!!props.secondaryValue && (
+              <Text
+                style={styles.reviewSummaryItemSecondaryValue}
+                testID={`${props.testID}/SecondaryValue`}
+              >
+                {props.secondaryValue}
+              </Text>
+            )}
+          </View>
+        </>
+      </Touchable>
     </View>
   )
 }
@@ -148,16 +155,18 @@ export function ReviewDetails(props: { children: ReactNode }) {
   return <View style={styles.reviewDetails}>{props.children}</View>
 }
 
-export type ReviewDetailsItemProps = {
+export type ReviewDetailsItemProps<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>> = {
   label: ReactNode
   fontSize?: 'small' | 'medium'
   color?: ColorValue
   isLoading?: boolean
   testID?: string
   onInfoPress?: () => void
-} & ReviewDetailsItemValueProps
+} & ReviewDetailsItemValueProps<T>
 
-export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
+export function ReviewDetailsItem<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>>(
+  props: ReviewDetailsItemProps<T>
+) {
   const {
     label,
     fontSize = 'medium',
@@ -187,7 +196,7 @@ export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
           <Text style={[fontStyle, { color }]} testID={`${testID}/Label`}>
             {label}
           </Text>
-          {onInfoPress && <InfoIcon testID={`${testID}/InfoIcon`} />}
+          {onInfoPress && <InfoIcon color={color} testID={`${testID}/InfoIcon`} />}
         </>
       </Touchable>
       <View style={styles.reviewDetailsItemValue}>
@@ -210,16 +219,18 @@ export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
   )
 }
 
-type ReviewDetailsItemTokenValueProps = {
+type ReviewDetailsItemTokenValueProps<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>> = {
   tokenAmount: BigNumber | undefined | null
   localAmount: BigNumber | undefined | null
-  tokenInfo: TokenBalance | undefined | null
+  tokenInfo: T | undefined | null
   localCurrencySymbol: LocalCurrencySymbol
   approx?: boolean
   children?: ReactNode
 }
 
-function ReviewDetailsItemTokenValue(props: ReviewDetailsItemTokenValueProps) {
+function ReviewDetailsItemTokenValue<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>>(
+  props: ReviewDetailsItemTokenValueProps<T>
+) {
   if (!props.tokenAmount) return null
 
   return (
@@ -238,12 +249,14 @@ function ReviewDetailsItemTokenValue(props: ReviewDetailsItemTokenValueProps) {
   )
 }
 
-type ReviewDetailsItemValueProps =
+type ReviewDetailsItemValueProps<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>> =
   | { type: 'plain-text'; value: ReactNode }
-  | ({ type: 'token-amount' } & ReviewDetailsItemTokenValueProps)
-  | ({ type: 'total-token-amount' } & ReviewDetailsItemTotalValueProps)
+  | ({ type: 'token-amount' } & ReviewDetailsItemTokenValueProps<T>)
+  | ({ type: 'total-token-amount' } & ReviewDetailsItemTotalValueProps<T>)
 
-function ReviewDetailsItemValue(props: ReviewDetailsItemValueProps) {
+function ReviewDetailsItemValue<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>>(
+  props: ReviewDetailsItemValueProps<T>
+) {
   if (props.type === 'plain-text') return props.value
   if (props.type === 'token-amount') return <ReviewDetailsItemTokenValue {...props} />
   if (props.type === 'total-token-amount') return <ReviewDetailsItemTotalValue {...props} />
@@ -254,10 +267,10 @@ export function ReviewFooter(props: { children: ReactNode }) {
   return <View style={styles.reviewFooter}>{props.children}</View>
 }
 
-type ReviewDetailsItemTotalValueProps = {
+type ReviewDetailsItemTotalValueProps<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>> = {
   approx?: boolean
-  tokenInfo: TokenBalance | undefined
-  feeTokenInfo: TokenBalance | undefined
+  tokenInfo: T | undefined
+  feeTokenInfo: T | undefined
   tokenAmount: BigNumber | null
   localAmount: BigNumber | null
   feeTokenAmount: BigNumber | undefined
@@ -265,7 +278,7 @@ type ReviewDetailsItemTotalValueProps = {
   localCurrencySymbol: LocalCurrencySymbol
 }
 
-export function ReviewDetailsItemTotalValue({
+export function ReviewDetailsItemTotalValue<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>>({
   approx,
   tokenInfo,
   feeTokenInfo,
@@ -274,7 +287,7 @@ export function ReviewDetailsItemTotalValue({
   feeTokenAmount,
   feeLocalAmount,
   localCurrencySymbol,
-}: ReviewDetailsItemTotalValueProps) {
+}: ReviewDetailsItemTotalValueProps<T>) {
   const { t } = useTranslation()
   const withApprox = approx ? `${APPROX_SYMBOL} ` : ''
 

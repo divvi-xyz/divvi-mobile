@@ -17,7 +17,6 @@ import {
   ReviewSummaryItem,
   ReviewSummaryItemContact,
   ReviewTransaction,
-  type ReviewDetailsItemProps,
 } from './ReviewTransaction'
 
 jest.mock('src/utils/Logger')
@@ -157,23 +156,20 @@ describe('ReviewDetailsItem', () => {
     { fontSize: 'small', type: 'total-token-amount', font: typeScale.labelSemiBoldSmall },
     { fontSize: 'medium', type: 'total-token-amount', font: typeScale.labelSemiBoldMedium },
     { fontSize: undefined, type: 'total-token-amount', font: typeScale.labelSemiBoldMedium },
-  ] as (Pick<ReviewDetailsItemProps, 'fontSize' | 'type'> & { font: any })[])(
-    'renders correct font style for $fontSize $type',
-    ({ fontSize, type, font }) => {
-      const tree = render(
-        <ReviewDetailsItem
-          fontSize={fontSize}
-          type={type}
-          testID="DetailsItem"
-          label="Label"
-          {...({} as any)}
-        />
-      )
+  ])('renders correct font style for $fontSize $type', ({ fontSize, type, font }) => {
+    const tree = render(
+      <ReviewDetailsItem
+        fontSize={fontSize}
+        type={type}
+        testID="DetailsItem"
+        label="Label"
+        {...({} as any)}
+      />
+    )
 
-      expect(tree.getByTestId('DetailsItem/Label')).toHaveStyle(font)
-      expect(tree.getByTestId('DetailsItem/Value')).toHaveStyle(font)
-    }
-  )
+    expect(tree.getByTestId('DetailsItem/Label')).toHaveStyle(font)
+    expect(tree.getByTestId('DetailsItem/Value')).toHaveStyle(font)
+  })
 })
 
 describe('ReviewDetailsItemTotalValue', () => {
