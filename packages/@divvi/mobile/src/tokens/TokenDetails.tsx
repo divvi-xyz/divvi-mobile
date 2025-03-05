@@ -161,9 +161,7 @@ function PriceInfo({ token }: { token: TokenBalance }) {
 export const useActions = (token: TokenBalance) => {
   const { t } = useTranslation()
   const supportedNetworkIdsForSend = getSupportedNetworkIds()
-  const sendableTokensWithBalance = useSelector((state) =>
-    sortedTokensWithBalanceSelector(state, supportedNetworkIdsForSend)
-  )
+  const sendableTokensWithBalance = useSelector(sortedTokensWithBalanceSelector)
   const { swappableFromTokens } = useSwappableTokens()
   const cashInTokens = useCashInTokens()
   const cashOutTokens = useCashOutTokens()

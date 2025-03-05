@@ -12,7 +12,6 @@ import { RootState } from 'src/redux/reducers'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import { tokensByIdSelector } from 'src/tokens/selectors'
-import { NetworkId } from 'src/transactions/types'
 import { isPresent } from 'src/utils/typescript'
 import networkConfig from 'src/web3/networkConfig'
 import { getPositionBalanceUsd } from './getPositionBalanceUsd'
@@ -55,10 +54,7 @@ export const earnPositionsSelector = createSelector(
 )
 
 export const totalPositionsBalanceUsdSelector = createSelector(
-  [
-    positionsWithBalanceSelector,
-    (state: RootState) => tokensByIdSelector(state, Object.values(NetworkId)),
-  ],
+  [positionsWithBalanceSelector, tokensByIdSelector],
   (positions, tokensById) => {
     if (positions.length === 0) {
       return null

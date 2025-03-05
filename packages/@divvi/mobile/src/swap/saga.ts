@@ -29,7 +29,7 @@ import { safely } from 'src/utils/safely'
 import { publicClient } from 'src/viem'
 import { getPreparedTransactions } from 'src/viem/preparedTransactionSerialization'
 import { sendPreparedTransactions } from 'src/viem/saga'
-import { getNetworkFromNetworkId, getSupportedNetworkIds } from 'src/web3/utils'
+import { getNetworkFromNetworkId } from 'src/web3/utils'
 import { call, put, select, takeEvery } from 'typed-redux-saga'
 import { decodeFunctionData, erc20Abi } from 'viem'
 
@@ -92,7 +92,7 @@ export function* swapSubmitSaga(action: PayloadAction<SwapInfo>) {
     serializablePreparedTransactions.filter((tx) => !isRegistrationTransaction(tx))
   )
 
-  const tokensById = yield* select((state) => tokensByIdSelector(state, getSupportedNetworkIds()))
+  const tokensById = yield* select(tokensByIdSelector)
   const fromToken = tokensById[fromTokenId]
   const toToken = tokensById[toTokenId]
 

@@ -121,7 +121,7 @@ export function* sendPreparedTransactions(
       hash
     )
 
-    const tokensById = yield* select((state) => tokensByIdSelector(state, [networkId]))
+    const tokensById = yield* select(tokensByIdSelector)
     const feeCurrencyId = getFeeCurrencyToken([preparedTransaction], networkId, tokensById)?.tokenId
 
     const standByTx = createBaseStandbyTransaction(hash, feeCurrencyId)

@@ -2031,7 +2031,7 @@ describe('Fiatconnect saga', () => {
         await expectSaga(handleCreateFiatConnectTransfer, action)
           .provide([
             [call(_initiateTransferWithProvider, action), { transferAddress, transferId }],
-            [select(tokensByIdSelector, [networkId]), { [mockCusdTokenId]: mockCusdTokenBalance }],
+            [select(tokensByIdSelector), { [mockCusdTokenId]: mockCusdTokenBalance }],
             [
               call(_initiateSendTxToProvider, {
                 transferAddress,
@@ -2081,7 +2081,7 @@ describe('Fiatconnect saga', () => {
         await expectSaga(handleCreateFiatConnectTransfer, action)
           .provide([
             [call(_initiateTransferWithProvider, action), { transferAddress }],
-            [select(tokensByIdSelector, [networkId]), { [mockCusdTokenId]: mockCusdTokenBalance }],
+            [select(tokensByIdSelector), { [mockCusdTokenId]: mockCusdTokenBalance }],
             [
               call(_initiateSendTxToProvider, {
                 transferAddress,
@@ -2119,7 +2119,7 @@ describe('Fiatconnect saga', () => {
         await expectSaga(handleCreateFiatConnectTransfer, action)
           .provide([
             [call(_initiateTransferWithProvider, action), { transferAddress }],
-            [select(tokensByIdSelector, [networkId]), { [mockCusdTokenId]: mockCusdTokenBalance }],
+            [select(tokensByIdSelector), { [mockCusdTokenId]: mockCusdTokenBalance }],
             [
               call(_initiateSendTxToProvider, {
                 transferAddress,

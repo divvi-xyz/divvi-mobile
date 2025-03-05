@@ -4,7 +4,6 @@ import { select } from 'redux-saga/effects'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { updateUserTraits } from 'src/analytics/saga'
 import { getCurrentUserTraits } from 'src/analytics/selectors'
-import networkConfig from 'src/web3/networkConfig'
 
 jest.mock('src/config', () => ({
   ...jest.requireActual('src/config'),
@@ -34,7 +33,7 @@ describe(updateUserTraits, () => {
     }
 
     await expectSaga(updateUserTraits)
-      .provide([[select(getCurrentUserTraits, [networkConfig.defaultNetworkId]), dynamic(traits)]])
+      .provide([[select(getCurrentUserTraits), dynamic(traits)]])
       // dispatch 3 times, so select is called 4 times (see implementation)
       .dispatch({ type: 'TEST_ACTION_TYPE' })
       .dispatch({ type: 'TEST_ACTION_TYPE' })

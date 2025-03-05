@@ -3,17 +3,17 @@ import { LocalCurrencyCode } from 'src/localCurrency/consts'
 import { getFeatureGate } from 'src/statsig'
 import {
   _feeCurrenciesByNetworkIdSelector,
-  cashInTokensByNetworkIdSelector,
-  cashOutTokensByNetworkIdSelector,
+  cashInTokensSelector,
+  cashOutTokensSelector,
   feeCurrenciesSelector,
   feeCurrenciesWithPositiveBalancesSelector,
   importedTokensSelector,
   lastKnownTokenBalancesSelector,
   sortedTokensWithBalanceOrShowZeroBalanceSelector,
   sortedTokensWithBalanceSelector,
-  spendTokensByNetworkIdSelector,
-  swappableFromTokensByNetworkIdSelector,
-  swappableToTokensByNetworkIdSelector,
+  spendTokensSelector,
+  swappableFromTokensSelector,
+  swappableToTokensSelector,
   tokensByAddressSelector,
   tokensByIdSelector,
   tokensByUsdBalanceSelector,
@@ -101,6 +101,7 @@ const state: any = {
         isCashOutEligible: true,
       },
       ['celo-alfajores:0x2']: {
+        // always excluded because balance is null
         tokenId: 'celo-alfajores:0x2',
         networkId: NetworkId['celo-alfajores'],
         name: '0x2 token',
@@ -157,6 +158,15 @@ const state: any = {
         priceFetchedAt: mockDate,
         showZeroBalance: true,
         isNative: true,
+        minimumAppVersionToSwap: '1.10.0',
+      },
+      ['unsupported-network:0x8']: {
+        name: '0x8 token',
+        tokenId: 'unsupported-network:0x8',
+        networkId: 'unsupported-network',
+        balance: '0',
+        priceUsd: '1',
+        priceFetchedAt: mockDate,
         minimumAppVersionToSwap: '1.10.0',
       },
     },
@@ -247,46 +257,7 @@ const stateWithPositions = {
 describe(tokensByIdSelector, () => {
   describe('when fetching tokens by id', () => {
     it('returns the right tokens', () => {
-      const tokensById = tokensByIdSelector(state, [NetworkId['celo-alfajores']])
-      expect(Object.keys(tokensById).length).toEqual(6)
-      expect(tokensById['celo-alfajores:0xusd']?.symbol).toEqual('cUSD')
-      expect(tokensById['celo-alfajores:0xeur']?.symbol).toEqual('cEUR')
-      expect(tokensById['celo-alfajores:0x4']?.symbol).toEqual('TT')
-      expect(tokensById['celo-alfajores:0x1']?.name).toEqual('0x1 token')
-      expect(tokensById['celo-alfajores:0x5']?.name).toEqual('0x5 token')
-      expect(tokensById['celo-alfajores:0x6']?.name).toEqual('0x6 token')
-
-      expect(tokensById['celo-alfajores:0x6']?.priceUsd).toEqual(null)
-    })
-    it('avoids unnecessary recomputation', () => {
-      const tokensById = tokensByIdSelector(state, [NetworkId['celo-alfajores']])
-      const tokensByIdSepolia = tokensByIdSelector(state, [NetworkId['ethereum-sepolia']])
-      const tokensById2 = tokensByIdSelector(state, [NetworkId['celo-alfajores']])
-
-      expect(tokensByIdSepolia).not.toEqual(tokensById)
-      expect(tokensById).toEqual(tokensById2)
-      expect(tokensByIdSelector.recomputations()).toEqual(2) // once for each different networkId
-    })
-    it('enriches the tokens with priceUsd coming from positions', () => {
-      const tokensById = tokensByIdSelector(stateWithPositions, [NetworkId['celo-alfajores']])
-      expect(Object.keys(tokensById).length).toEqual(6)
-      expect(tokensById['celo-alfajores:0xusd']?.symbol).toEqual('cUSD')
-      expect(tokensById['celo-alfajores:0xeur']?.symbol).toEqual('cEUR')
-      expect(tokensById['celo-alfajores:0x4']?.symbol).toEqual('TT')
-      expect(tokensById['celo-alfajores:0x1']?.name).toEqual('0x1 token')
-      expect(tokensById['celo-alfajores:0x5']?.name).toEqual('0x5 token')
-      expect(tokensById['celo-alfajores:0x6']?.name).toEqual('0x6 token')
-
-      // This is the token that was enriched with the price from the position
-      expect(tokensById['celo-alfajores:0x6']?.priceUsd).toEqual(new BigNumber('60'))
-      // Still has the original balance
-      expect(tokensById['celo-alfajores:0x6']?.balance).toEqual(new BigNumber('0'))
-    })
-    it('includes positions token when asked', () => {
-      const tokensById = tokensByIdSelector(stateWithPositions, {
-        networkIds: [NetworkId['celo-alfajores']],
-        includePositionTokens: true,
-      })
+      const tokensById = tokensByIdSelector(state)
       expect(Object.keys(tokensById).length).toEqual(8)
       expect(tokensById['celo-alfajores:0xusd']?.symbol).toEqual('cUSD')
       expect(tokensById['celo-alfajores:0xeur']?.symbol).toEqual('cEUR')
@@ -294,6 +265,39 @@ describe(tokensByIdSelector, () => {
       expect(tokensById['celo-alfajores:0x1']?.name).toEqual('0x1 token')
       expect(tokensById['celo-alfajores:0x5']?.name).toEqual('0x5 token')
       expect(tokensById['celo-alfajores:0x6']?.name).toEqual('0x6 token')
+      expect(tokensById['ethereum-sepolia:0x7']?.name).toEqual('0x7 token')
+      expect(tokensById[mockEthTokenId]?.name).toEqual('Ether')
+
+      expect(tokensById['celo-alfajores:0x6']?.priceUsd).toEqual(null)
+    })
+    it('enriches the tokens with priceUsd coming from positions', () => {
+      const tokensById = tokensByIdSelector(stateWithPositions)
+      expect(Object.keys(tokensById).length).toEqual(8)
+      expect(tokensById['celo-alfajores:0xusd']?.symbol).toEqual('cUSD')
+      expect(tokensById['celo-alfajores:0xeur']?.symbol).toEqual('cEUR')
+      expect(tokensById['celo-alfajores:0x4']?.symbol).toEqual('TT')
+      expect(tokensById['celo-alfajores:0x1']?.name).toEqual('0x1 token')
+      expect(tokensById['celo-alfajores:0x5']?.name).toEqual('0x5 token')
+      expect(tokensById['celo-alfajores:0x6']?.name).toEqual('0x6 token')
+      expect(tokensById['ethereum-sepolia:0x7']?.name).toEqual('0x7 token')
+      expect(tokensById[mockEthTokenId]?.name).toEqual('Ether')
+
+      // This is the token that was enriched with the price from the position
+      expect(tokensById['celo-alfajores:0x6']?.priceUsd).toEqual(new BigNumber('60'))
+      // Still has the original balance
+      expect(tokensById['celo-alfajores:0x6']?.balance).toEqual(new BigNumber('0'))
+    })
+    it('includes positions token when asked', () => {
+      const tokensById = tokensByIdSelector(stateWithPositions, true)
+      expect(Object.keys(tokensById).length).toEqual(10)
+      expect(tokensById['celo-alfajores:0xusd']?.symbol).toEqual('cUSD')
+      expect(tokensById['celo-alfajores:0xeur']?.symbol).toEqual('cEUR')
+      expect(tokensById['celo-alfajores:0x4']?.symbol).toEqual('TT')
+      expect(tokensById['celo-alfajores:0x1']?.name).toEqual('0x1 token')
+      expect(tokensById['celo-alfajores:0x5']?.name).toEqual('0x5 token')
+      expect(tokensById['celo-alfajores:0x6']?.name).toEqual('0x6 token')
+      expect(tokensById['ethereum-sepolia:0x7']?.name).toEqual('0x7 token')
+      expect(tokensById[mockEthTokenId]?.name).toEqual('Ether')
 
       // These are the tokens coming from positions
       expect(tokensById['celo-alfajores:0xa']?.symbol).toEqual('0xa token')
@@ -329,10 +333,7 @@ describe(tokensByAddressSelector, () => {
 describe(tokensListSelector, () => {
   describe('when fetching tokens with id as a list', () => {
     it('returns the right tokens', () => {
-      const tokens = tokensListSelector(state, [
-        NetworkId['celo-alfajores'],
-        NetworkId['ethereum-sepolia'],
-      ])
+      const tokens = tokensListSelector(state)
       expect(tokens.length).toEqual(8)
       expect(tokens.find((t) => t.tokenId === 'celo-alfajores:0xusd')?.symbol).toEqual('cUSD')
       expect(tokens.find((t) => t.tokenId === 'celo-alfajores:0xeur')?.symbol).toEqual('cEUR')
@@ -436,7 +437,7 @@ describe('tokensByUsdBalanceSelector', () => {
 
 describe('tokensWithUsdValueSelector', () => {
   it('returns only the tokens that have a USD balance', () => {
-    const tokens = tokensWithUsdValueSelector(state, [NetworkId['celo-alfajores']])
+    const tokens = tokensWithUsdValueSelector(state)
     expect(tokens).toMatchInlineSnapshot(`
       [
         {
@@ -475,14 +476,10 @@ describe('tokensWithUsdValueSelector', () => {
 describe(totalTokenBalanceSelector, () => {
   describe('when fetching the total token balance', () => {
     it('returns the right amount', () => {
-      expect(totalTokenBalanceSelector(state, [NetworkId['celo-alfajores']])).toEqual(
-        new BigNumber(107.5)
-      )
+      expect(totalTokenBalanceSelector(state)).toEqual(new BigNumber(107.5))
     })
     it('returns the right amount when positions are present', () => {
-      expect(totalTokenBalanceSelector(stateWithPositions, [NetworkId['celo-alfajores']])).toEqual(
-        new BigNumber(107.5)
-      )
+      expect(totalTokenBalanceSelector(stateWithPositions)).toEqual(new BigNumber(107.5))
     })
 
     it('returns null if there was an error fetching and theres no cached info', () => {
@@ -494,17 +491,14 @@ describe(totalTokenBalanceSelector, () => {
           loading: false,
         },
       } as any
-      expect(totalTokenBalanceSelector(errorState, [NetworkId['celo-alfajores']])).toBeNull()
+      expect(totalTokenBalanceSelector(errorState)).toBeNull()
     })
   })
 })
 
 describe('sortedTokensWithBalanceSelector', () => {
   it('returns expected tokens in the correct order without zero balances', () => {
-    const tokens = sortedTokensWithBalanceSelector(state, [
-      NetworkId['celo-alfajores'],
-      NetworkId['ethereum-sepolia'],
-    ])
+    const tokens = sortedTokensWithBalanceSelector(state)
 
     expect(tokens.map((token) => token.tokenId)).toEqual([
       'celo-alfajores:0x1',
@@ -514,24 +508,11 @@ describe('sortedTokensWithBalanceSelector', () => {
       'ethereum-sepolia:0x7',
     ])
   })
-
-  it('avoids unnecessary recomputation', () => {
-    const prevComputations = sortedTokensWithBalanceSelector.recomputations()
-    const tokens = sortedTokensWithBalanceSelector(state, [NetworkId['celo-alfajores']])
-    const tokens2 = sortedTokensWithBalanceSelector(state, [NetworkId['celo-alfajores']])
-    expect(tokens).toEqual(tokens2)
-    expect(sortedTokensWithBalanceOrShowZeroBalanceSelector.recomputations()).toEqual(
-      prevComputations + 1
-    )
-  })
 })
 
 describe('sortedTokensWithBalanceOrShowZeroBalanceSelector', () => {
   it('returns expected tokens in the correct order including show zero balances', () => {
-    const tokens = sortedTokensWithBalanceOrShowZeroBalanceSelector(state, [
-      NetworkId['celo-alfajores'],
-      NetworkId['ethereum-sepolia'],
-    ])
+    const tokens = sortedTokensWithBalanceOrShowZeroBalanceSelector(state)
 
     expect(tokens.map((token) => token.tokenId)).toEqual([
       'celo-alfajores:0x1',
@@ -543,29 +524,12 @@ describe('sortedTokensWithBalanceOrShowZeroBalanceSelector', () => {
       'celo-alfajores:0xusd',
     ])
   })
-
-  it('avoids unnecessary recomputation', () => {
-    const prevComputations = sortedTokensWithBalanceOrShowZeroBalanceSelector.recomputations()
-    const tokens = sortedTokensWithBalanceOrShowZeroBalanceSelector(state, [
-      NetworkId['celo-alfajores'],
-    ])
-    const tokens2 = sortedTokensWithBalanceOrShowZeroBalanceSelector(state, [
-      NetworkId['celo-alfajores'],
-    ])
-    expect(tokens).toEqual(tokens2)
-    expect(sortedTokensWithBalanceOrShowZeroBalanceSelector.recomputations()).toEqual(
-      prevComputations + 1
-    )
-  })
 })
 
-describe(cashInTokensByNetworkIdSelector, () => {
+describe(cashInTokensSelector, () => {
   describe('when fetching cash in tokens', () => {
     it('returns the right tokens when isCicoToken check not used', () => {
-      const tokens = cashInTokensByNetworkIdSelector(state, [
-        NetworkId['celo-alfajores'],
-        NetworkId['ethereum-sepolia'],
-      ])
+      const tokens = cashInTokensSelector(state)
       expect(tokens.length).toEqual(3)
       expect(tokens.find((t) => t.tokenId === 'celo-alfajores:0xusd')?.symbol).toEqual('cUSD')
       expect(tokens.find((t) => t.tokenId === 'celo-alfajores:0xeur')?.symbol).toEqual('cEUR')
@@ -574,24 +538,16 @@ describe(cashInTokensByNetworkIdSelector, () => {
   })
 })
 
-describe(cashOutTokensByNetworkIdSelector, () => {
+describe(cashOutTokensSelector, () => {
   describe('when fetching cash out tokens', () => {
     it('returns the right tokens without zero balance included when isCicoToken check not used', () => {
-      const tokens = cashOutTokensByNetworkIdSelector(
-        state,
-        [NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']],
-        false
-      )
+      const tokens = cashOutTokensSelector(state, false)
       expect(tokens.length).toEqual(2)
       expect(tokens.find((t) => t.tokenId === 'celo-alfajores:0xeur')?.symbol).toEqual('cEUR')
       expect(tokens.find((t) => t.tokenId === 'celo-alfajores:0x1')?.name).toEqual('0x1 token')
     })
     it('returns the right tokens with zero balance included when isCicoToken check not used', () => {
-      const tokens = cashOutTokensByNetworkIdSelector(
-        state,
-        [NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']],
-        true
-      )
+      const tokens = cashOutTokensSelector(state, true)
       expect(tokens.length).toEqual(3)
       expect(tokens.find((t) => t.tokenId === 'celo-alfajores:0xusd')?.symbol).toEqual('cUSD')
       expect(tokens.find((t) => t.tokenId === 'celo-alfajores:0xeur')?.symbol).toEqual('cEUR')
@@ -600,13 +556,10 @@ describe(cashOutTokensByNetworkIdSelector, () => {
   })
 })
 
-describe(spendTokensByNetworkIdSelector, () => {
+describe(spendTokensSelector, () => {
   describe('when fetching spend tokens', () => {
     it('returns the right tokens', () => {
-      const tokens = spendTokensByNetworkIdSelector(state, [
-        NetworkId['celo-alfajores'],
-        NetworkId['ethereum-sepolia'],
-      ])
+      const tokens = spendTokensSelector(state)
       expect(tokens.length).toEqual(2)
       expect(tokens.find((t) => t.tokenId === 'celo-alfajores:0xusd')?.symbol).toEqual('cUSD')
       expect(tokens.find((t) => t.tokenId === 'celo-alfajores:0xeur')?.symbol).toEqual('cEUR')
@@ -806,18 +759,8 @@ describe('lastKnownTokenBalancesSelector', () => {
     },
   }
 
-  it('returns the correct last known total balance when one network given', () => {
-    const lastKnownTokenBalances = lastKnownTokenBalancesSelector(mockState, [
-      NetworkId['celo-alfajores'],
-    ])
-    expect(lastKnownTokenBalances).toEqual(new BigNumber(193.5))
-  })
-
-  it('returns the correct last known total balance when multiple networks given', () => {
-    const lastKnownTokenBalances = lastKnownTokenBalancesSelector(mockState, [
-      NetworkId['celo-alfajores'],
-      NetworkId['ethereum-sepolia'],
-    ])
+  it('returns the correct last known total balance', () => {
+    const lastKnownTokenBalances = lastKnownTokenBalancesSelector(mockState)
     expect(lastKnownTokenBalances).toEqual(new BigNumber(623.5))
   })
 })
@@ -866,10 +809,7 @@ describe('swappable tokens selectors', () => {
   ]
 
   it('returns the swappable to tokens in the correct order', () => {
-    const tokens = swappableToTokensByNetworkIdSelector(state, [
-      NetworkId['celo-alfajores'],
-      NetworkId['ethereum-sepolia'],
-    ])
+    const tokens = swappableToTokensSelector(state)
     // we only need to check some of the details
     const tokenDetails = tokens.map(({ priceUsd, balance, name }) => ({
       priceUsd: priceUsd ? priceUsd.toString() : null,
@@ -881,10 +821,7 @@ describe('swappable tokens selectors', () => {
   })
 
   it('returns the swappable from tokens in the correct order', () => {
-    const tokens = swappableFromTokensByNetworkIdSelector(state, [
-      NetworkId['celo-alfajores'],
-      NetworkId['ethereum-sepolia'],
-    ])
+    const tokens = swappableFromTokensSelector(state)
     // we only need to check some of the details
     const tokenDetails = tokens.map(({ priceUsd, balance, name }) => ({
       priceUsd: priceUsd ? priceUsd.toString() : null,
@@ -934,10 +871,7 @@ describe('swappable tokens selectors', () => {
     }
 
     it('returns all the imported tokens', () => {
-      const importedTokens = importedTokensSelector(mockState, [
-        NetworkId['celo-alfajores'],
-        NetworkId['ethereum-sepolia'],
-      ])
+      const importedTokens = importedTokensSelector(mockState)
 
       expect(importedTokens).toMatchObject([
         {
@@ -947,17 +881,6 @@ describe('swappable tokens selectors', () => {
         {
           ...mockState.tokens.tokenBalances['ethereum-sepolia:importedToken'],
           balance: new BigNumber(20),
-        },
-      ])
-    })
-
-    it('return the imported tokens for the selected networks', () => {
-      const importedTokens = importedTokensSelector(mockState, [NetworkId['celo-alfajores']])
-
-      expect(importedTokens).toMatchObject([
-        {
-          ...mockState.tokens.tokenBalances['celo-alfajores:importedToken'],
-          balance: new BigNumber(10000),
         },
       ])
     })

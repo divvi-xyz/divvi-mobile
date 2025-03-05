@@ -189,7 +189,7 @@ function* handleTransactionReceiptReceived({
   feeCurrencyId?: string
   overrideStatus?: TransactionStatus
 }) {
-  const tokensById = yield* select((state) => tokensByIdSelector(state, [networkId]))
+  const tokensById = yield* select(tokensByIdSelector)
 
   const feeTokenInfo = feeCurrencyId && tokensById[feeCurrencyId]
 
@@ -251,7 +251,7 @@ function trackCompletionOfCrossChainTxs(
   state: RootState,
   transactions: (TokenExchange | DepositOrWithdraw)[]
 ) {
-  const tokensById = tokensByIdSelector(state, getSupportedNetworkIds())
+  const tokensById = tokensByIdSelector(state)
 
   for (const tx of transactions) {
     const networkFee = tx.fees.find((fee) => fee.type === FeeType.SecurityFee)

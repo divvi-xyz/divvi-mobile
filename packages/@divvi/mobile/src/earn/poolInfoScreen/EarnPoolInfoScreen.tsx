@@ -179,7 +179,7 @@ type Props = NativeStackScreenProps<StackParamList, Screens.EarnPoolInfoScreen>
 export default function EarnPoolInfoScreen({ route, navigation }: Props) {
   const { pool } = route.params
   const { networkId, tokens, displayProps, appName, dataProps, appId, positionId, balance } = pool
-  const allTokens = useSelector((state) => tokensByIdSelector(state, [networkId]))
+  const allTokens = useSelector(tokensByIdSelector)
   const tokensInfo = useMemo(() => {
     return tokens
       .map((token) => allTokens[token.tokenId])

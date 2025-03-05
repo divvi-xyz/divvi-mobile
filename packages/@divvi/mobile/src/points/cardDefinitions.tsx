@@ -14,7 +14,6 @@ import colors from 'src/styles/colors'
 import { tokensByIdSelector } from 'src/tokens/selectors'
 import { TokenBalances } from 'src/tokens/slice'
 import Logger from 'src/utils/Logger'
-import { getSupportedNetworkIds } from 'src/web3/utils'
 
 const TAG = 'Points/cardDefinitions'
 
@@ -55,7 +54,7 @@ export function useGetHistoryDefinition(): (
   history: ClaimHistoryCardItem
 ) => HistoryCardMetadata | undefined {
   const { t } = useTranslation()
-  const tokensById = useSelector((state) => tokensByIdSelector(state, getSupportedNetworkIds()))
+  const tokensById = useSelector(tokensByIdSelector)
 
   return (history: ClaimHistoryCardItem) => {
     switch (history.activityId) {
