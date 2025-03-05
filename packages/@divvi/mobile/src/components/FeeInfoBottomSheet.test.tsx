@@ -228,16 +228,19 @@ describe('FeeInfoBottomSheet', () => {
     expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee')).toBeTruthy()
 
-    // eslint-disable-next-line jest/no-conditional-expect
     if (item.appFee) {
+      // eslint-disable-next-line jest/no-conditional-expect
       expect(getByTestId('FeeInfoBottomSheet/Divider/AppFee')).toBeTruthy()
+      // eslint-disable-next-line jest/no-conditional-expect
       expect(getByTestId('FeeInfoBottomSheet/AppFee')).toBeTruthy()
     }
 
-    // eslint-disable-next-line jest/no-conditional-expect
     if (item.crossChainFee) {
+      // eslint-disable-next-line jest/no-conditional-expect
       expect(getByTestId('FeeInfoBottomSheet/Divider/CrossChainFee')).toBeTruthy()
+      // eslint-disable-next-line jest/no-conditional-expect
       expect(getByTestId('FeeInfoBottomSheet/EstimatedCrossChainFee')).toBeTruthy()
+      // eslint-disable-next-line jest/no-conditional-expect
       expect(getByTestId('FeeInfoBottomSheet/MaxCrossChainFee')).toBeTruthy()
     }
   })
