@@ -131,11 +131,6 @@ export const ALCHEMY_BASE_API_KEY = keyOrUndefined(
 export const STATSIG_API_KEY = appConfig.features?.statsig?.apiKey
 export const STATSIG_ENABLED = !isE2EEnv && !!STATSIG_API_KEY
 export const SEGMENT_API_KEY = appConfig.features?.segment?.apiKey
-export const SENTRY_CLIENT_URL = keyOrUndefined(secretsFile, DEFAULT_TESTNET, 'SENTRY_CLIENT_URL')
-export const WALLET_CONNECT_PROJECT_ID =
-  keyOrUndefined(secretsFile, DEFAULT_TESTNET, 'WALLET_CONNECT_PROJECT_ID') ??
-  // valora-e2e-client project in the WC project dashboard
-  '8f6f2517f4485c013849d38717ec90d1'
 export const AUTH0_CLIENT_ID =
   DEFAULT_TESTNET === 'mainnet'
     ? 'FS2sPfMvDBKy0udOoCbc4ao8HakvAR6b'
