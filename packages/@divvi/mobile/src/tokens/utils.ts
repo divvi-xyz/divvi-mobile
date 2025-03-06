@@ -8,7 +8,6 @@ import { Network, NetworkId } from 'src/transactions/types'
 import { Currency } from 'src/utils/currencies'
 import { ONE_DAY_IN_MILLIS, ONE_HOUR_IN_MILLIS } from 'src/utils/time'
 import networkConfig from 'src/web3/networkConfig'
-import { getSupportedNetworkIds } from 'src/web3/utils'
 import { TokenBalance } from './slice'
 
 export function getHigherBalanceCurrency(
@@ -164,11 +163,6 @@ export function getTokenId(networkId: NetworkId, tokenAddress?: string): string 
     return `${networkId}:native`
   }
   return `${networkId}:${tokenAddress}`
-}
-
-export type GetSupportedNetworkIdsForSend = typeof getSupportedNetworkIdsForSend
-export function getSupportedNetworkIdsForSend(): NetworkId[] {
-  return getSupportedNetworkIds()
 }
 
 export function getTokenAnalyticsProps(token: TokenBalance): TokenProperties {

@@ -57,7 +57,7 @@ function getNetworkFee(
 export default function EstimatedNetworkFee({ isLoading, networkId, transactions }: Props) {
   const { t } = useTranslation()
 
-  const tokensById = useSelector((state) => tokensByIdSelector(state, [networkId]))
+  const tokensById = useSelector(tokensByIdSelector)
   const networkFee = getNetworkFee(transactions, networkId, tokensById)
 
   const networkName = NETWORK_NAMES[networkId]

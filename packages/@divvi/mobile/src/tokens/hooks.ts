@@ -5,11 +5,11 @@ import { useSelector } from 'src/redux/hooks'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import {
-  cashInTokensByNetworkIdSelector,
-  cashOutTokensByNetworkIdSelector,
-  spendTokensByNetworkIdSelector,
-  swappableFromTokensByNetworkIdSelector,
-  swappableToTokensByNetworkIdSelector,
+  cashInTokensSelector,
+  cashOutTokensSelector,
+  spendTokensSelector,
+  swappableFromTokensSelector,
+  swappableToTokensSelector,
   tokensByAddressSelector,
   tokensByCurrencySelector,
   tokensByIdSelector,
@@ -21,12 +21,9 @@ import {
 } from 'src/tokens/selectors'
 import { TokenBalance } from 'src/tokens/slice'
 import { convertLocalToTokenAmount, convertTokenToLocalAmount } from 'src/tokens/utils'
-import { NetworkId } from 'src/transactions/types'
 import { Currency } from 'src/utils/currencies'
 import { deterministicShuffle } from 'src/utils/random'
-import networkConfig from 'src/web3/networkConfig'
 import { walletAddressSelector } from 'src/web3/selectors'
-import { getSupportedNetworkIds } from 'src/web3/utils'
 
 /**
  * @deprecated use useTokenInfo and select using tokenId
@@ -36,32 +33,29 @@ export function useTokenInfoByAddress(tokenAddress?: string | null) {
   return tokenAddress ? tokens[tokenAddress] : undefined
 }
 
-export function useTokensWithUsdValue(networkIds: NetworkId[]) {
-  return useSelector((state) => tokensWithUsdValueSelector(state, networkIds))
+export function useTokensWithUsdValue() {
+  return useSelector(tokensWithUsdValueSelector)
 }
 
 export function useTotalTokenBalance() {
-  const supportedNetworkIds = getSupportedNetworkIds()
-  return useSelector((state) => totalTokenBalanceSelector(state, supportedNetworkIds))
+  return useSelector(totalTokenBalanceSelector)
 }
 
 export function useTokensWithTokenBalance() {
-  const supportedNetworkIds = getSupportedNetworkIds()
-  return useSelector((state) => tokensWithTokenBalanceSelector(state, supportedNetworkIds))
+  return useSelector(tokensWithTokenBalanceSelector)
 }
 
-export function useTokensInfoUnavailable(networkIds: NetworkId[]) {
-  const totalBalance = useSelector((state) => totalTokenBalanceSelector(state, networkIds))
+export function useTokensInfoUnavailable() {
+  const totalBalance = useSelector(totalTokenBalanceSelector)
   return totalBalance === null
 }
 
 export function useTokensList() {
-  const networkIds = Object.values(networkConfig.networkToNetworkId)
-  return useSelector((state) => tokensListSelector(state, networkIds))
+  return useSelector(tokensListSelector)
 }
 
-export function useTokenPricesAreStale(networkIds: NetworkId[]) {
-  const tokens = useSelector((state) => tokensListSelector(state, networkIds))
+export function useTokenPricesAreStale() {
+  const tokens = useSelector(tokensListSelector)
   // If no tokens then prices cannot be stale
   if (tokens.length === 0) return false
   // Put tokens with priceUsd into an array
@@ -79,16 +73,11 @@ export function useTokenPricesAreStale(networkIds: NetworkId[]) {
 }
 
 export function useSwappableTokens() {
-  const networkIdsForSwap = getSupportedNetworkIds()
   const shouldShuffleTokens = getFeatureGate(StatsigFeatureGates.SHUFFLE_SWAP_TOKENS_ORDER)
 
   const walletAddress = useSelector(walletAddressSelector)
-  const swappableFromTokens = useSelector((state) =>
-    swappableFromTokensByNetworkIdSelector(state, networkIdsForSwap)
-  )
-  const swappableToTokens = useSelector((state) =>
-    swappableToTokensByNetworkIdSelector(state, networkIdsForSwap)
-  )
+  const swappableFromTokens = useSelector(swappableFromTokensSelector)
+  const swappableToTokens = useSelector(swappableToTokensSelector)
 
   if (shouldShuffleTokens && walletAddress) {
     return {
@@ -106,35 +95,24 @@ export function useSwappableTokens() {
 }
 
 export function useCashInTokens() {
-  const networkIdsForCico = getSupportedNetworkIds()
-  return useSelector((state) => cashInTokensByNetworkIdSelector(state, networkIdsForCico))
+  return useSelector(cashInTokensSelector)
 }
 
 export function useCashOutTokens(showZeroBalanceTokens: boolean = false) {
-  const networkIdsForCico = getSupportedNetworkIds()
-  return useSelector((state) =>
-    cashOutTokensByNetworkIdSelector(state, networkIdsForCico, showZeroBalanceTokens)
-  )
+  return useSelector((state) => cashOutTokensSelector(state, showZeroBalanceTokens))
 }
 
 export function useSpendTokens() {
-  const networkIdsForCico = getSupportedNetworkIds()
-  return useSelector((state) => spendTokensByNetworkIdSelector(state, networkIdsForCico))
+  return useSelector(spendTokensSelector)
 }
 
 export function useTokenInfo(tokenId?: string): TokenBalance | undefined {
-  const networkIds = Object.values(networkConfig.networkToNetworkId)
-  const tokens = useSelector((state) =>
-    tokensByIdSelector(state, { networkIds, includePositionTokens: true })
-  )
+  const tokens = useSelector((state) => tokensByIdSelector(state, { includePositionTokens: true }))
   return tokenId ? tokens[tokenId] : undefined
 }
 
 export function useTokensInfo(tokenIds: string[]): (TokenBalance | undefined)[] {
-  const networkIds = Object.values(networkConfig.networkToNetworkId)
-  const tokens = useSelector((state) =>
-    tokensByIdSelector(state, { networkIds, includePositionTokens: true })
-  )
+  const tokens = useSelector((state) => tokensByIdSelector(state, { includePositionTokens: true }))
   return tokenIds.map((tokenId) => tokens[tokenId])
 }
 

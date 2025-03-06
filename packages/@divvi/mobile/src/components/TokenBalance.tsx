@@ -47,7 +47,6 @@ import {
   useTotalTokenBalance,
 } from 'src/tokens/hooks'
 import { tokenFetchErrorSelector } from 'src/tokens/selectors'
-import { getSupportedNetworkIds } from 'src/web3/utils'
 
 function TokenBalance({
   style = styles.balance,
@@ -58,12 +57,11 @@ function TokenBalance({
   singleTokenViewEnabled?: boolean
   showBalanceToggle?: boolean
 }) {
-  const supportedNetworkIds = getSupportedNetworkIds()
-  const tokensWithUsdValue = useTokensWithUsdValue(supportedNetworkIds)
+  const tokensWithUsdValue = useTokensWithUsdValue()
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol)
   const totalTokenBalanceLocal = useTotalTokenBalance()
   const tokenFetchError = useSelector(tokenFetchErrorSelector)
-  const tokensAreStale = useTokenPricesAreStale(supportedNetworkIds)
+  const tokensAreStale = useTokenPricesAreStale()
   // TODO(ACT-1095): Update these to filter out unsupported networks once positions support non-Celo chains
   const totalPositionsBalanceUsd = useSelector(totalPositionsBalanceUsdSelector)
   const totalPositionsBalanceLocal = useDollarsToLocalAmount(totalPositionsBalanceUsd)
@@ -136,8 +134,7 @@ function HideBalanceButton({ hideBalance }: { hideBalance: boolean }) {
 function useErrorMessageWithRefresh() {
   const { t } = useTranslation()
 
-  const supportedNetworkIds = getSupportedNetworkIds()
-  const tokensInfoUnavailable = useTokensInfoUnavailable(supportedNetworkIds)
+  const tokensInfoUnavailable = useTokensInfoUnavailable()
   const tokenFetchError = useSelector(tokenFetchErrorSelector)
   const localCurrencyError = useSelector(localCurrencyExchangeRateErrorSelector)
 

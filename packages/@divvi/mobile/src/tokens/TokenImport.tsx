@@ -81,7 +81,7 @@ export default function TokenImportScreen(_: Props) {
     networkShouldBeEditable ? null : supportedNetworkIds[0]
   )
   const walletAddress = useSelector(walletAddressSelector)
-  const supportedTokens = useSelector((state) => tokensByIdSelector(state, supportedNetworkIds))
+  const supportedTokens = useSelector(tokensByIdSelector)
 
   const networkIconByNetworkId = useSelector(networksIconSelector)
 

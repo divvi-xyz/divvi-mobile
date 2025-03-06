@@ -13,6 +13,11 @@ import { NetworkId } from 'src/transactions/types'
 import { mockPositions, mockShortcuts } from 'test/values'
 
 jest.mock('src/statsig')
+jest.mock('src/web3/utils', () => ({
+  ...jest.requireActual('src/web3/utils'),
+  // some tests use mainnet and some testnet
+  getSupportedNetworkIds: jest.fn(() => ['celo-mainnet', 'celo-alfajores']),
+}))
 
 beforeEach(() => {
   jest.clearAllMocks()

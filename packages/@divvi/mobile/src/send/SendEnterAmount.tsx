@@ -15,7 +15,6 @@ import { sortedTokensWithBalanceOrShowZeroBalanceSelector } from 'src/tokens/sel
 import { TokenBalance } from 'src/tokens/slice'
 import Logger from 'src/utils/Logger'
 import { walletAddressSelector } from 'src/web3/selectors'
-import { getSupportedNetworkIds } from 'src/web3/utils'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SendEnterAmount>
 
@@ -23,12 +22,9 @@ const TAG = 'SendEnterAmount'
 
 function SendEnterAmount({ route }: Props) {
   const { defaultTokenIdOverride, origin, recipient, isFromScan, forceTokenId } = route.params
-  const supportedNetworkIds = getSupportedNetworkIds()
   // explicitly allow zero state tokens to be shown for exploration purposes for
   // new users with no balance
-  const tokens = useSelector((state) =>
-    sortedTokensWithBalanceOrShowZeroBalanceSelector(state, supportedNetworkIds)
-  )
+  const tokens = useSelector(sortedTokensWithBalanceOrShowZeroBalanceSelector)
   const lastUsedTokenId = useSelector(lastUsedTokenIdSelector)
 
   const defaultToken = useMemo(() => {

@@ -8,7 +8,6 @@ import type { Store } from '../redux/store'
 import type { TokensByIdSelector } from '../tokens/selectors'
 import type { NetworkId as InternalNetworkId } from '../transactions/types'
 import type { LoggerType } from '../utils/Logger'
-import type { NetworkConfig } from '../web3/networkConfig'
 import type { NetworkId } from './types'
 
 const TAG = 'public/navigate'
@@ -64,7 +63,6 @@ export function navigate(...args: NavigateArgs): void {
   const Logger = require('../utils/Logger').default as LoggerType
   const store = require('../redux/store').store as Store
   const tokensByIdSelector = require('../tokens/selectors').tokensByIdSelector as TokensByIdSelector
-  const networkConfig = require('../web3/networkConfig').default as NetworkConfig
   const Screens = require('../navigator/Screens').Screens as ScreensType
   const FiatExchangeFlow = require('../fiatExchanges/types')
     .FiatExchangeFlow as FiatExchangeFlowType
@@ -96,10 +94,7 @@ export function navigate(...args: NavigateArgs): void {
       break
     case 'Add':
       if (params?.tokenId) {
-        const networkIds = Object.values(networkConfig.networkToNetworkId)
-        const tokens = tokensByIdSelector(store.getState(), {
-          networkIds,
-        })
+        const tokens = tokensByIdSelector(store.getState())
         const tokenInfo = params ? tokens[params.tokenId] : undefined
         if (tokenInfo && tokenInfo.isCashInEligible) {
           // TODO: we should refactor FiatExchangeAmount so it can accept just a tokenId, without the need for the tokenSymbol

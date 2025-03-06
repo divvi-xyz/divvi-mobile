@@ -171,7 +171,7 @@ describe(fetchTokenBalancesSaga, () => {
 
     await expectSaga(fetchTokenBalancesSaga)
       .provide([
-        [select(importedTokensSelector, supportedNetworks), []],
+        [select(importedTokensSelector), []],
         [select(networksIconSelector), {}],
         [call(getTokensInfo, supportedNetworks), mockBlockchainApiTokenInfo],
         [select(walletAddressSelector), mockAccount],
@@ -199,7 +199,7 @@ describe(fetchTokenBalancesSaga, () => {
 
     await expectSaga(fetchTokenBalancesSaga)
       .provide([
-        [select(importedTokensSelector, supportedNetworks), []],
+        [select(importedTokensSelector), []],
         [select(networksIconSelector), {}],
         [call(getTokensInfo, supportedNetworks), mockBlockchainApiTokenInfo],
         [select(walletAddressSelector), mockAccount],
@@ -239,7 +239,7 @@ describe(fetchTokenBalancesSaga, () => {
     await expectSaga(fetchTokenBalancesSaga)
       .provide([
         [call(getTokensInfo, supportedNetworks), mockBlockchainApiTokenInfo],
-        [select(importedTokensSelector, supportedNetworks), importedTokens],
+        [select(importedTokensSelector), importedTokens],
         [
           select(networksIconSelector),
           {
@@ -458,7 +458,7 @@ describe('watchAccountFundedOrLiquidated', () => {
     await expectSaga(watchAccountFundedOrLiquidated)
       .provide([
         [
-          select(lastKnownTokenBalancesSelector, [NetworkId['celo-alfajores']]),
+          select(lastKnownTokenBalancesSelector),
           dynamic(balances(new BigNumber(0), new BigNumber(10))),
         ],
       ])
@@ -475,7 +475,7 @@ describe('watchAccountFundedOrLiquidated', () => {
     await expectSaga(watchAccountFundedOrLiquidated)
       .provide([
         [
-          select(lastKnownTokenBalancesSelector, [NetworkId['celo-alfajores']]),
+          select(lastKnownTokenBalancesSelector),
           dynamic(balances(new BigNumber(10), new BigNumber(0))),
         ],
       ])
@@ -491,10 +491,7 @@ describe('watchAccountFundedOrLiquidated', () => {
     jest.mocked(getSupportedNetworkIds).mockReturnValue([NetworkId['celo-alfajores']])
     await expectSaga(watchAccountFundedOrLiquidated)
       .provide([
-        [
-          select(lastKnownTokenBalancesSelector, [NetworkId['celo-alfajores']]),
-          dynamic(balances(null, new BigNumber(10))),
-        ],
+        [select(lastKnownTokenBalancesSelector), dynamic(balances(null, new BigNumber(10)))],
       ])
       .dispatch({ type: 'TEST_ACTION_TYPE' })
       .dispatch({ type: 'TEST_ACTION_TYPE' })
