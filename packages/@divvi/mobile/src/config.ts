@@ -17,8 +17,6 @@ export interface ExpectedLaunchArgs {
   onboardingOverrides?: string // same format as ONBOARDING_FEATURES_ENABLED env var
 }
 
-// TODO: remove the secrets file and inject secrets another way
-const secretsFile = {}
 const appConfig = getAppConfig()
 const experimentalConfig = appConfig.experimental ?? {}
 const keyOrUndefined = (file: any, secretsKey: any, attribute: any) => {
