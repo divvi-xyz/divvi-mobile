@@ -87,7 +87,7 @@ const App = createApp({
       phoneNumberVerification: true,
       zendeskConfig: {
         apiKey: 'dummyApiKey',
-        projectName: 'valoraapp',
+        projectName: 'divviapp',
       },
     },
   }),

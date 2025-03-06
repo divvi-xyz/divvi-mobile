@@ -142,7 +142,7 @@ function BidaliScreen({ route, navigation }: Props) {
 
   const bidaliUrl = getAppConfig().experimental?.bidali?.url
   if (!bidaliUrl) {
-    // should not happen
+    // should not happen because the only way to navigate to this screen is gated by the same config
     return null
   }
 
