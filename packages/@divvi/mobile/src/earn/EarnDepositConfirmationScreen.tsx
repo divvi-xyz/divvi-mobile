@@ -315,8 +315,8 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
 
           <ReviewDetailsItem
             approx
-            caption={t('gasSubsidized')}
-            captionColor={themeColors.accent}
+            caption={isGasSubsidized ? t('gasSubsidized') : undefined}
+            captionColor={isGasSubsidized ? themeColors.accent : undefined}
             strikeThrough={true}
             testID="EarnDepositConfirmationFee"
             type="token-amount"
@@ -395,17 +395,17 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
         crossChainFee={crossChainFee}
         footerDisclaimer={
           <Trans
-            i18nKey={'earnFlow.depositConfirmation.description'}
-            tOptions={{
-              context: swapAppFee
+            i18nKey="earnFlow.depositConfirmation.description"
+            context={
+              swapAppFee
                 ? crossChainFee
                   ? 'depositCrossChainWithSwapFee'
                   : 'depositSwapFee'
                 : crossChainFee
                   ? 'depositCrossChain'
-                  : 'deposit',
-              appFeePercentage: swapTransaction?.appFeePercentageIncludedInPrice,
-            }}
+                  : 'deposit'
+            }
+            tOptions={{ appFeePercentage: swapTransaction?.appFeePercentageIncludedInPrice }}
           />
         }
       />

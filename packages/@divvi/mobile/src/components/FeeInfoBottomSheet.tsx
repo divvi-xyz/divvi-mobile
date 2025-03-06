@@ -199,7 +199,7 @@ export default function FeeInfoBottomSheet(props: Props) {
         <InfoBottomSheetParagraph>
           {props.footerDisclaimer ?? (
             <Trans
-              i18nKey={'feeInfoBottomSheet.feesInfo'}
+              i18nKey="feeInfoBottomSheet.feesInfo"
               context={
                 hasCrossChainFee && props.appFee?.percentage.gt(0)
                   ? 'crossChainWithAppFee'
