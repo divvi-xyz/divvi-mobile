@@ -1,11 +1,7 @@
 import * as Sentry from '@sentry/react-native'
 import DeviceInfo from 'react-native-device-info'
-import {
-  APP_BUNDLE_ID,
-  DEFAULT_SENTRY_TRACES_SAMPLE_RATE,
-  SENTRY_CLIENT_URL,
-  SENTRY_ENABLED,
-} from 'src/config'
+import { getAppConfig } from 'src/appConfig'
+import { APP_BUNDLE_ID, DEFAULT_SENTRY_TRACES_SAMPLE_RATE, SENTRY_ENABLED } from 'src/config'
 import Logger from 'src/utils/Logger'
 import networkConfig from 'src/web3/networkConfig'
 import { currentAccountSelector } from 'src/web3/selectors'
@@ -23,7 +19,8 @@ export function initializeSentry() {
     return
   }
 
-  if (!SENTRY_CLIENT_URL) {
+  const sentryClientUrl = getAppConfig().features?.sentry?.clientUrl
+  if (!sentryClientUrl) {
     Logger.info(TAG, 'installSentry', 'Sentry URL not found, skipping installation')
     return
   }
@@ -49,7 +46,7 @@ export function initializeSentry() {
   })
 
   Sentry.init({
-    dsn: SENTRY_CLIENT_URL,
+    dsn: sentryClientUrl,
     environment: DeviceInfo.getBundleId(),
     enableAutoSessionTracking: true,
     integrations: [

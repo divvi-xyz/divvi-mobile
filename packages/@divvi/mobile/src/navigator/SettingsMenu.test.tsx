@@ -45,7 +45,10 @@ describe('SettingsMenu', () => {
       ...defaultAppConfig,
       experimental: {
         inviteFriends: true,
-        contactSupport: true,
+        zendeskConfig: {
+          apiKey: 'some-key',
+          projectName: 'test',
+        },
       },
     })
   })

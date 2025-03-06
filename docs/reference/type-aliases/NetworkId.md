@@ -22,4 +22,4 @@ type NetworkId =
   | 'base-sepolia'
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:227](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L227)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:232](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L232)

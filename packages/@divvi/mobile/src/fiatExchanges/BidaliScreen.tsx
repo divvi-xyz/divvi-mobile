@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { createSelector } from 'reselect'
 import { e164NumberSelector } from 'src/account/selectors'
 import { openUrl } from 'src/app/actions'
+import { getAppConfig } from 'src/appConfig'
 import WebView, { WebViewRef } from 'src/components/WebView'
 import { bidaliPaymentRequested } from 'src/fiatExchanges/actions'
 import i18n from 'src/i18n'
@@ -19,7 +20,6 @@ import colors from 'src/styles/colors'
 import { tokensByCurrencySelector } from 'src/tokens/selectors'
 import { getHigherBalanceCurrency } from 'src/tokens/utils'
 import { Currency } from 'src/utils/currencies'
-import networkConfig from 'src/web3/networkConfig'
 
 // Note for later when adding CELO: make sure that Currency.Celo maps to CELO and not cGLD
 export const BIDALI_CURRENCIES = [Currency.Dollar, Currency.Euro]
@@ -140,12 +140,19 @@ function BidaliScreen({ route, navigation }: Props) {
     `)
   }, [jsonBalances])
 
+  const bidaliUrl = getAppConfig().experimental?.bidali?.url
+  if (!bidaliUrl) {
+    // should not happen because the only ways to navigate to this screen are
+    // gated by the same config
+    return null
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {!!initialJavaScript && (
         <WebView
           ref={webViewRef}
-          source={{ uri: networkConfig.bidaliUrl }}
+          source={{ uri: bidaliUrl }}
           onLoadEnd={onLoadEnd}
           onMessage={onMessage}
           injectedJavaScriptBeforeContentLoaded={initialJavaScript}
