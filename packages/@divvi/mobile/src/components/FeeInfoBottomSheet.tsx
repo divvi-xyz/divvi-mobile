@@ -5,14 +5,15 @@ import { useSelector } from 'react-redux'
 import { type BottomSheetModalRefType } from 'src/components/BottomSheet'
 import InfoBottomSheet, {
   InfoBottomSheetContentBlock,
-  InfoBottomSheetDivider,
   InfoBottomSheetHeading,
   InfoBottomSheetParagraph,
 } from 'src/components/InfoBottomSheet'
 import { ReviewDetailsItem } from 'src/components/ReviewTransaction'
+import RowDivider from 'src/components/RowDivider'
 import { APP_NAME } from 'src/config'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { getLocalCurrencySymbol } from 'src/localCurrency/selectors'
+import { Spacing } from 'src/styles/styles'
 import type { AppFeeAmount, SwapFeeAmount } from 'src/swap/types'
 import { useTokenToLocalAmount } from 'src/tokens/hooks'
 import type { TokenBalance } from 'src/tokens/slice'
@@ -127,7 +128,7 @@ export default function FeeInfoBottomSheet(props: Props) {
 
         {hasAppFee && (
           <>
-            <InfoBottomSheetDivider testID="FeeInfoBottomSheet/Divider/AppFee" />
+            <RowDivider testID="FeeInfoBottomSheet/Divider/AppFee" spacing={Spacing.Smallest8} />
             {appFeeIsNotZero ? (
               <ReviewDetailsItem
                 fontSize="small"
@@ -152,7 +153,10 @@ export default function FeeInfoBottomSheet(props: Props) {
         )}
 
         {hasCrossChainFee && (
-          <InfoBottomSheetDivider testID="FeeInfoBottomSheet/Divider/CrossChainFee" />
+          <RowDivider
+            testID="FeeInfoBottomSheet/Divider/CrossChainFee"
+            spacing={Spacing.Smallest8}
+          />
         )}
 
         {crossChainFee && (

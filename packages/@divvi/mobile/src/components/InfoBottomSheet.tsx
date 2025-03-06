@@ -4,7 +4,6 @@ import { StyleSheet, Text, View } from 'react-native'
 import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import BottomSheet from 'src/components/BottomSheet'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
-import themeColors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 
@@ -44,9 +43,6 @@ export function InfoBottomSheetContentBlock(props: { children: ReactNode }) {
   return <View style={styles.contentBlock}>{props.children}</View>
 }
 
-export function InfoBottomSheetDivider(props: { testID?: string }) {
-  return <View style={styles.divider} testID={props.testID} />
-}
 const styles = StyleSheet.create({
   content: {
     gap: Spacing.Thick24,
@@ -60,11 +56,5 @@ const styles = StyleSheet.create({
   },
   contentBlock: {
     gap: Spacing.Smallest8,
-  },
-  divider: {
-    marginVertical: Spacing.Smallest8,
-    height: 1,
-    backgroundColor: themeColors.borderPrimary,
-    width: '100%',
   },
 })
