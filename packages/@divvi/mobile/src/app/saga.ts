@@ -28,6 +28,7 @@ import {
   huaweiMobileServicesAvailableSelector,
   inAppReviewLastInteractionTimestampSelector,
 } from 'src/app/selectors'
+import { getAppConfig } from 'src/appConfig'
 import {
   DEFAULT_APP_LANGUAGE,
   DEFAULT_SENTRY_NETWORK_ERRORS,
@@ -230,7 +231,12 @@ export function* handleDeepLink(action: OpenDeepLink) {
     } else if (rawParams.path === '/cashIn') {
       navigate(Screens.FiatExchangeCurrencyBottomSheet, { flow: FiatExchangeFlow.CashIn })
     } else if (rawParams.pathname === '/bidali') {
-      navigate(Screens.BidaliScreen, { currency: undefined })
+      const appConfig = yield* call(getAppConfig)
+      if (appConfig.experimental?.bidali?.url) {
+        navigate(Screens.BidaliScreen, { currency: undefined })
+      } else {
+        Logger.warn(TAG, 'Unable to open Bidali deep link as bidali url is not found in app config')
+      }
     } else if (rawParams.path.startsWith('/cash-in-success')) {
       // Some providers append transaction information to the redirect links so can't check for strict equality
       const cicoSuccessParam = (rawParams.pathname?.match(/cash-in-success\/(.+)/) || [])[1]

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { Environment as PersonaEnvironment } from 'react-native-persona'
-import { APP_REGISTRY_NAME, BIDALI_URL, DEFAULT_FORNO_URL, DEFAULT_TESTNET } from 'src/config'
+import { APP_REGISTRY_NAME, DEFAULT_FORNO_URL, DEFAULT_TESTNET } from 'src/config'
 import { Network, NetworkId } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
 import { Address, TypedDataDefinition } from 'viem'
@@ -29,7 +29,6 @@ export interface NetworkConfig {
   blockchainApiUrl: string
   hooksApiUrl: string
   sentryTracingUrls: string[]
-  bidaliUrl: string
   getFiatConnectProvidersUrl: string
   getFiatConnectQuotesUrl: string
   simplexApiUrl: string
@@ -310,7 +309,6 @@ const networkConfigs: { [testnet: string]: NetworkConfig } = {
       CLOUD_FUNCTIONS_STAGING,
       'https://liquidity-dot-celo-mobile-alfajores.appspot.com',
     ],
-    bidaliUrl: BIDALI_URL,
     getFiatConnectProvidersUrl: GET_FIAT_CONNECT_PROVIDERS_ALFAJORES,
     getFiatConnectQuotesUrl: GET_FIAT_CONNECT_QUOTES_ALFAJORES,
     simplexApiUrl: SIMPLEX_API_URL_STAGING,
@@ -398,7 +396,6 @@ const networkConfigs: { [testnet: string]: NetworkConfig } = {
       CLOUD_FUNCTIONS_MAINNET,
       'https://liquidity-dot-celo-mobile-mainnet.appspot.com',
     ],
-    bidaliUrl: BIDALI_URL,
     getFiatConnectProvidersUrl: GET_FIAT_CONNECT_PROVIDERS_MAINNET,
     getFiatConnectQuotesUrl: GET_FIAT_CONNECT_QUOTES_MAINNET,
     simplexApiUrl: SIMPLEX_API_URL_PROD,

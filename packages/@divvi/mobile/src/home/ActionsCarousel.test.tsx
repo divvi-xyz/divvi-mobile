@@ -92,7 +92,9 @@ describe('ActionsCarousel', () => {
   it('navigates to the WithdrawSpend screen on withdraw action if Bidali is enabled', () => {
     jest.mocked(getAppConfig).mockReturnValue({
       experimental: {
-        bidali: true,
+        bidali: {
+          url: 'https://bidali.com',
+        },
       },
     } as PublicAppConfig)
     const { getByTestId } = render(
