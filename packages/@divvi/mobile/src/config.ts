@@ -17,8 +17,6 @@ export interface ExpectedLaunchArgs {
   onboardingOverrides?: string // same format as ONBOARDING_FEATURES_ENABLED env var
 }
 
-// TODO: remove the secrets file and inject secrets another way
-const secretsFile = {}
 const appConfig = getAppConfig()
 const experimentalConfig = appConfig.experimental ?? {}
 const keyOrUndefined = (file: any, secretsKey: any, attribute: any) => {
@@ -128,11 +126,9 @@ export const ALCHEMY_BASE_API_KEY = keyOrUndefined(
   'ALCHEMY_BASE_API_KEY'
 )
 
-export const ZENDESK_API_KEY = keyOrUndefined(secretsFile, DEFAULT_TESTNET, 'ZENDESK_API_KEY')
 export const STATSIG_API_KEY = appConfig.features?.statsig?.apiKey
 export const STATSIG_ENABLED = !isE2EEnv && !!STATSIG_API_KEY
 export const SEGMENT_API_KEY = appConfig.features?.segment?.apiKey
-export const BIDALI_URL = keyOrUndefined(secretsFile, DEFAULT_TESTNET, 'BIDALI_URL')
 export const AUTH0_CLIENT_ID =
   DEFAULT_TESTNET === 'mainnet'
     ? 'FS2sPfMvDBKy0udOoCbc4ao8HakvAR6b'
@@ -171,8 +167,6 @@ export const OTA_TRANSLATIONS_FILEPATH = `file://${CachesDirectoryPath}/translat
 export const FETCH_TIMEOUT_DURATION = 15000 // 15 seconds
 
 export const DEFAULT_APP_LANGUAGE = 'en-US'
-
-export const ZENDESK_PROJECT_NAME = 'valoraapp'
 
 // Logging and monitoring
 export const DEFAULT_SENTRY_TRACES_SAMPLE_RATE = 0.2

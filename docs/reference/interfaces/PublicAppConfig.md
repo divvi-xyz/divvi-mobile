@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:220](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L220)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:225](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L225)
 
 #### protocolIds
 
@@ -98,13 +98,13 @@ optional alchemyKeys: Record<string, string>;
 #### bidali?
 
 ```ts
-optional bidali: boolean;
+optional bidali: object;
 ```
 
-#### contactSupport?
+##### bidali.url
 
 ```ts
-optional contactSupport: boolean;
+url: string
 ```
 
 #### earn?
@@ -195,6 +195,24 @@ optional emptyState: ReactElement<any, string | JSXElementConstructor<any>>;
 
 ```ts
 optional showActionsCarousel: boolean;
+```
+
+#### zendeskConfig?
+
+```ts
+optional zendeskConfig: object;
+```
+
+##### zendeskConfig.apiKey
+
+```ts
+apiKey: string
+```
+
+##### zendeskConfig.projectName
+
+```ts
+projectName: string
 ```
 
 ---

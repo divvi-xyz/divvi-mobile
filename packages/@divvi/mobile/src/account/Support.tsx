@@ -23,7 +23,7 @@ const onPressContact = () => {
 const Support = () => {
   const { t } = useTranslation()
   const { links } = getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.APP_CONFIG])
-  const showContactSupport = getAppConfig().experimental?.contactSupport
+  const showContactSupport = !!getAppConfig().experimental?.zendeskConfig
 
   return (
     <SafeAreaView>
@@ -46,7 +46,7 @@ const Support = () => {
           />
         )}
 
-        {!!showContactSupport && (
+        {showContactSupport && (
           <SettingsItemTextValue
             testID="SupportContactLink"
             title={t('contact')}

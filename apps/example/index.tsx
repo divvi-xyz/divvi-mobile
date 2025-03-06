@@ -83,10 +83,15 @@ const App = createApp({
   // Special cases to cover experimental features with e2e tests
   ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
     experimental: {
-      bidali: true,
+      bidali: {
+        url: 'https://commerce.bidali.com',
+      },
       notificationCenter: true,
-      contactSupport: true,
       phoneNumberVerification: true,
+      zendeskConfig: {
+        apiKey: 'dummyApiKey',
+        projectName: 'divviapp',
+      },
     },
   }),
 })
