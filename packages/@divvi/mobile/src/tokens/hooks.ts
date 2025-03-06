@@ -107,12 +107,12 @@ export function useSpendTokens() {
 }
 
 export function useTokenInfo(tokenId?: string): TokenBalance | undefined {
-  const tokens = useSelector((state) => tokensByIdSelector(state, true))
+  const tokens = useSelector((state) => tokensByIdSelector(state, { includePositionTokens: true }))
   return tokenId ? tokens[tokenId] : undefined
 }
 
 export function useTokensInfo(tokenIds: string[]): (TokenBalance | undefined)[] {
-  const tokens = useSelector((state) => tokensByIdSelector(state, true))
+  const tokens = useSelector((state) => tokensByIdSelector(state, { includePositionTokens: true }))
   return tokenIds.map((tokenId) => tokens[tokenId])
 }
 

@@ -88,10 +88,14 @@ export const tokensByIdSelector = createSelector(
     (state: RootState) => state.tokens.tokenBalances,
     positionTokensSelector,
     positionsFetchedAtSelector,
-    (_state: RootState, includePositionTokens?: boolean) => !!includePositionTokens,
+    (_state: RootState, { includePositionTokens }: { includePositionTokens?: boolean } = {}) =>
+      !!includePositionTokens,
   ],
   (storedBalances, positionTokens, positionsFetchedAt, includePositionTokens) => {
     const allStoredBalances = { ...storedBalances }
+    // networkId check isn't strictly required because both the getTokens and
+    // getPositions calls only fetch tokens and positions for supported
+    // networks. This is just an extra guardrail.
     const networkIds = getSupportedNetworkIds()
 
     // Enrich with position tokens
@@ -474,7 +478,7 @@ export const _feeCurrenciesByNetworkIdSelector = feeCurrenciesByNetworkIdSelecto
 
 export type FeeCurrenciesSelector = typeof feeCurrenciesSelector
 export const feeCurrenciesSelector = createSelector(
-  (state: RootState, _networkId: NetworkId) => feeCurrenciesByNetworkIdSelector(state),
+  feeCurrenciesByNetworkIdSelector,
   (_state: RootState, networkId: NetworkId) => networkId,
   (feeCurrencies, networkId) => {
     return feeCurrencies[networkId] ?? []
@@ -518,13 +522,17 @@ const getJumpstartEnabledNetworkIds = () =>
       .jumpstartContracts
   ) as NetworkId[]
 
-export const jumpstartSendTokensSelector = createSelector(
-  sortedTokensWithBalanceSelector,
-  (tokensWithBalance) => {
-    return tokensWithBalance.filter((token) => {
-      // the jumpstart contract currently requires a token address for the
-      // depositERC20 method
-      return getJumpstartEnabledNetworkIds().includes(token.networkId) && !!token.address
-    })
-  }
-)
+// can't use a createSelector because we want to call
+// getJumpstartEnabledNetworkIds every time. If we use createSelector, result
+// will be memoized and will always return cached results, ignoring the changes
+// to getJumpstartEnabledNetworkIds.
+export const jumpstartSendTokensSelector = (state: RootState) => {
+  const tokensWithBalance = sortedTokensWithBalanceSelector(state)
+  const jumpstartEnabledNetworkIds = getJumpstartEnabledNetworkIds()
+
+  return tokensWithBalance.filter((token) => {
+    // the jumpstart contract currently requires a token address for the
+    // depositERC20 method
+    return jumpstartEnabledNetworkIds.includes(token.networkId) && !!token.address
+  })
+}

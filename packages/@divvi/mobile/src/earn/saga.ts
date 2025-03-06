@@ -96,7 +96,9 @@ export function* depositSubmitSaga(action: PayloadAction<DepositInfo>) {
     return
   }
 
-  const tokensById = yield* select((state) => tokensByIdSelector(state, true))
+  const tokensById = yield* select((state) =>
+    tokensByIdSelector(state, { includePositionTokens: true })
+  )
 
   const trackedTxs: TrackedTx[] = []
   const poolNetworkId = pool.networkId

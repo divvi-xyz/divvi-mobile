@@ -146,7 +146,9 @@ export function tokenAmountInSmallestUnit(amount: BigNumber, decimals: number): 
 }
 
 export function* getTokenInfo(tokenId: string) {
-  const tokens = yield* select((state) => tokensByIdSelector(state, true))
+  const tokens = yield* select((state) =>
+    tokensByIdSelector(state, { includePositionTokens: true })
+  )
   return tokens[tokenId]
 }
 

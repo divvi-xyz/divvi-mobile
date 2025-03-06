@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { LocalCurrencyCode } from 'src/localCurrency/consts'
-import { getFeatureGate } from 'src/statsig'
+import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import {
   _feeCurrenciesByNetworkIdSelector,
   cashInTokensSelector,
@@ -8,6 +8,7 @@ import {
   feeCurrenciesSelector,
   feeCurrenciesWithPositiveBalancesSelector,
   importedTokensSelector,
+  jumpstartSendTokensSelector,
   lastKnownTokenBalancesSelector,
   sortedTokensWithBalanceOrShowZeroBalanceSelector,
   sortedTokensWithBalanceSelector,
@@ -45,9 +46,7 @@ jest.mock('react-native-device-info', () => ({
   getVersion: () => '1.10.0',
 }))
 
-jest.mock('src/statsig', () => ({
-  getFeatureGate: jest.fn(),
-}))
+jest.mock('src/statsig')
 
 beforeAll(() => {
   jest.useFakeTimers({ now: mockDate })
@@ -148,6 +147,7 @@ const state: any = {
         priceUsd: '500',
         priceFetchedAt: mockDate - 2 * ONE_DAY_IN_MILLIS, // stale price
         minimumAppVersionToSwap: '1.10.0',
+        address: '0x7',
       },
       [mockEthTokenId]: {
         name: 'Ether',
@@ -161,6 +161,7 @@ const state: any = {
         minimumAppVersionToSwap: '1.10.0',
       },
       ['unsupported-network:0x8']: {
+        // always excluded because this is an unsupported network
         name: '0x8 token',
         tokenId: 'unsupported-network:0x8',
         networkId: 'unsupported-network',
@@ -288,7 +289,7 @@ describe(tokensByIdSelector, () => {
       expect(tokensById['celo-alfajores:0x6']?.balance).toEqual(new BigNumber('0'))
     })
     it('includes positions token when asked', () => {
-      const tokensById = tokensByIdSelector(stateWithPositions, true)
+      const tokensById = tokensByIdSelector(stateWithPositions, { includePositionTokens: true })
       expect(Object.keys(tokensById).length).toEqual(10)
       expect(tokensById['celo-alfajores:0xusd']?.symbol).toEqual('cUSD')
       expect(tokensById['celo-alfajores:0xeur']?.symbol).toEqual('cEUR')
@@ -839,50 +840,83 @@ describe('swappable tokens selectors', () => {
       ...expectedSwappableToTokens,
     ])
   })
+})
 
-  describe('importedTokensSelector', () => {
-    const mockState: any = {
-      tokens: {
-        tokenBalances: {
-          ...state.tokens.tokenBalances,
-          ['celo-alfajores:importedToken']: {
-            name: 'importedToken',
-            tokenId: 'celo-alfajores:importedToken',
-            networkId: NetworkId['celo-alfajores'],
-            balance: '10000',
-            priceFetchedAt: mockDate,
-            minimumAppVersionToSwap: '1.10.0',
-            isManuallyImported: true,
-          },
-          ['ethereum-sepolia:importedToken']: {
-            name: 'importedToken',
-            tokenId: 'ethereum-sepolia:importedToken',
-            networkId: NetworkId['ethereum-sepolia'],
-            balance: '20',
-            priceFetchedAt: mockDate,
-            minimumAppVersionToSwap: '1.10.0',
-            isManuallyImported: true,
-          },
+describe('importedTokensSelector', () => {
+  const mockState: any = {
+    tokens: {
+      tokenBalances: {
+        ...state.tokens.tokenBalances,
+        ['celo-alfajores:importedToken']: {
+          name: 'importedToken',
+          tokenId: 'celo-alfajores:importedToken',
+          networkId: NetworkId['celo-alfajores'],
+          balance: '10000',
+          priceFetchedAt: mockDate,
+          minimumAppVersionToSwap: '1.10.0',
+          isManuallyImported: true,
+        },
+        ['ethereum-sepolia:importedToken']: {
+          name: 'importedToken',
+          tokenId: 'ethereum-sepolia:importedToken',
+          networkId: NetworkId['ethereum-sepolia'],
+          balance: '20',
+          priceFetchedAt: mockDate,
+          minimumAppVersionToSwap: '1.10.0',
+          isManuallyImported: true,
         },
       },
-      positions: {
-        positions: [],
+    },
+    positions: {
+      positions: [],
+    },
+  }
+
+  it('returns all the imported tokens', () => {
+    const importedTokens = importedTokensSelector(mockState)
+
+    expect(importedTokens).toMatchObject([
+      {
+        ...mockState.tokens.tokenBalances['celo-alfajores:importedToken'],
+        balance: new BigNumber(10000),
       },
-    }
+      {
+        ...mockState.tokens.tokenBalances['ethereum-sepolia:importedToken'],
+        balance: new BigNumber(20),
+      },
+    ])
+  })
+})
 
-    it('returns all the imported tokens', () => {
-      const importedTokens = importedTokensSelector(mockState)
-
-      expect(importedTokens).toMatchObject([
-        {
-          ...mockState.tokens.tokenBalances['celo-alfajores:importedToken'],
-          balance: new BigNumber(10000),
-        },
-        {
-          ...mockState.tokens.tokenBalances['ethereum-sepolia:importedToken'],
-          balance: new BigNumber(20),
-        },
-      ])
+describe('jumpstartSendTokensSelector', () => {
+  beforeEach(() => {
+    jest.mocked(getDynamicConfigParams).mockReturnValue({
+      jumpstartContracts: { 'celo-alfajores': {} },
     })
+  })
+
+  it('returns expected tokens', () => {
+    const tokens = jumpstartSendTokensSelector(state)
+    expect(tokens).toHaveLength(4)
+    expect(tokens.map((t) => t.tokenId)).toEqual(
+      expect.arrayContaining([
+        'celo-alfajores:0xeur',
+        'celo-alfajores:0x1',
+        'celo-alfajores:0x4',
+        'celo-alfajores:0x5',
+      ])
+    )
+  })
+
+  it('recomputes when the dynamic config changes', () => {
+    const tokens1 = jumpstartSendTokensSelector(state)
+    expect(tokens1).toHaveLength(4)
+
+    jest.mocked(getDynamicConfigParams).mockReturnValue({
+      jumpstartContracts: { 'celo-alfajores': {}, 'ethereum-sepolia': {} },
+    })
+
+    const tokens2 = jumpstartSendTokensSelector(state)
+    expect(tokens2).toHaveLength(5)
   })
 })
