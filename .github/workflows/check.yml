@@ -41,6 +41,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/yarn-install
       - run: git diff --exit-code
+  dep-mismatch-check:
+    name: Dependency Mismatch Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/yarn-install
+      - run: yarn ts-node ./scripts/dep-mismatch-check.ts
   docs:
     name: Docs
     runs-on: ubuntu-latest
