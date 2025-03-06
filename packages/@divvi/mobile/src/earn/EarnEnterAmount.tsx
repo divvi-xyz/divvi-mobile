@@ -24,7 +24,6 @@ import TokenEnterAmount, {
   useEnterAmount,
 } from 'src/components/TokenEnterAmount'
 import CustomHeader from 'src/components/header/CustomHeader'
-import EarnDepositBottomSheet from 'src/earn/EarnDepositBottomSheet'
 import { usePrepareEnterAmountTransactionsCallback } from 'src/earn/hooks'
 import { depositStatusSelector } from 'src/earn/selectors'
 import { getSwapToAmountInDecimals } from 'src/earn/utils'
@@ -149,7 +148,6 @@ export default function EarnEnterAmount({ route }: Props) {
 
   const inputRef = useRef<RNTextInput>(null)
   const tokenBottomSheetRef = useRef<BottomSheetModalRefType>(null)
-  const reviewBottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const feeDetailsBottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const swapDetailsBottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const estimatedDurationBottomSheetRef = useRef<BottomSheetModalRefType>(null)
@@ -349,15 +347,27 @@ export default function EarnEnterAmount({ route }: Props) {
     })
 
     if (isWithdrawal) {
-      navigate(Screens.EarnConfirmationScreen, {
+      return navigate(Screens.EarnConfirmationScreen, {
         pool,
         mode,
         inputAmount: processedAmounts.token.bignum.toString(),
         useMax: selectedPercentage === 1,
       })
-    } else {
-      reviewBottomSheetRef.current?.snapToIndex(0)
     }
+
+    if (prepareTransactionsResult?.type === 'possible') {
+      return navigate(Screens.EarnDepositConfirmationScreen, {
+        pool,
+        mode,
+        swapTransaction,
+        preparedTransaction: prepareTransactionsResult as any,
+        inputTokenAmount: processedAmounts.token.bignum,
+        inputTokenInfo: inputToken,
+      })
+    }
+
+    // should not happen
+    Logger.error(TAG, 'Prepared transaction for deposit is not possible')
   }
 
   const dropdownEnabled = availableInputTokens.length > 1
@@ -499,17 +509,6 @@ export default function EarnEnterAmount({ route }: Props) {
       )}
       {swapTransaction?.swapType === 'cross-chain' && processedAmounts.token.bignum && (
         <EstimatedDurationBottomSheet forwardedRef={estimatedDurationBottomSheetRef} />
-      )}
-      {processedAmounts.token.bignum && prepareTransactionsResult?.type === 'possible' && (
-        <EarnDepositBottomSheet
-          forwardedRef={reviewBottomSheetRef}
-          preparedTransaction={prepareTransactionsResult}
-          inputAmount={processedAmounts.token.bignum}
-          pool={pool}
-          mode={mode}
-          swapTransaction={swapTransaction}
-          inputTokenId={inputToken.tokenId}
-        />
       )}
       <TokenBottomSheet
         forwardedRef={tokenBottomSheetRef}

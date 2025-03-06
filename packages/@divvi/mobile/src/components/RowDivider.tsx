@@ -5,7 +5,7 @@ import { Spacing } from 'src/styles/styles'
 
 export interface Props {
   backgroundColor?: ColorValue
-  marginVertical?: Spacing
+  marginVertical?: Spacing | null
   testID?: string
 }
 
@@ -14,7 +14,12 @@ export default function RowDivider({
   marginVertical = Spacing.Regular16,
   testID,
 }: Props) {
-  return <View testID={testID} style={[styles.container, { backgroundColor, marginVertical }]} />
+  return (
+    <View
+      testID={testID}
+      style={[styles.container, { backgroundColor, marginVertical: marginVertical ?? undefined }]}
+    />
+  )
 }
 
 const styles = StyleSheet.create({

@@ -15,6 +15,7 @@ import type { PreparedTransactionsPossible, PreparedTransactionsResult } from 's
 import { Recipient } from 'src/recipients/recipient'
 import { QrCode, TransactionDataInput } from 'src/send/types'
 import type { SwapTransaction } from 'src/swap/types'
+import type { TokenBalance } from 'src/tokens/slice'
 import { AssetTabType } from 'src/tokens/types'
 import { NetworkId, TokenTransaction, TokenTransfer } from 'src/transactions/types'
 import { Countries } from 'src/utils/Countries'
@@ -94,8 +95,8 @@ export type StackParamList = {
   }
   [Screens.EarnDepositConfirmationScreen]: {
     preparedTransaction: PreparedTransactionsPossible
-    inputTokenId: string
-    inputAmount: BigNumber
+    inputTokenInfo: TokenBalance
+    inputTokenAmount: BigNumber
     pool: EarnPosition
     mode: EarnActiveMode
     swapTransaction?: SwapTransaction

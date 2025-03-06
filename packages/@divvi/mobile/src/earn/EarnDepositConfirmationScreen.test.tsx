@@ -1,12 +1,17 @@
 import { renderHook } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
+import React from 'react'
+import { Provider } from 'react-redux'
 import {
   useCommonAnalyticsProperties,
-  useDepositTokenAmount,
+  useDepositAmount,
 } from 'src/earn/EarnDepositConfirmationScreen'
 import type { EarnActiveMode } from 'src/earn/types'
+import type { Screens } from 'src/navigator/Screens'
+import type { StackParamList } from 'src/navigator/types'
 import type { PreparedTransactionsPossible } from 'src/public'
 import { NetworkId } from 'src/transactions/types'
+import { createMockStore } from 'test/utils'
 import {
   mockAccount,
   mockArbEthTokenId,
@@ -57,20 +62,30 @@ const mockPreparedTransaction: PreparedTransactionsPossible = {
   },
 }
 
-const mockDepositProps = {
-  forwardedRef: { current: null },
-  inputAmount: new BigNumber(100),
+const mockDepositProps: StackParamList[Screens.EarnDepositConfirmationScreen] = {
+  inputTokenAmount: new BigNumber(100),
   preparedTransaction: mockPreparedTransaction,
   pool: mockEarnPositions[0],
   mode: 'deposit' as EarnActiveMode,
-  inputTokenId: mockArbUsdcTokenId,
+  inputTokenInfo: {
+    ...mockTokenBalances[mockArbUsdcTokenId],
+    balance: new BigNumber(10),
+    priceUsd: new BigNumber(1),
+    lastKnownPriceUsd: new BigNumber(1),
+  },
 }
 
-const mockSwapDepositProps = {
+const mockSwapDepositProps: StackParamList[Screens.EarnDepositConfirmationScreen] = {
   ...mockDepositProps,
   mode: 'swap-deposit' as EarnActiveMode,
-  inputTokenId: mockArbEthTokenId,
-  inputAmount: new BigNumber(0.041),
+  inputTokenInfo: {
+    ...mockTokenBalances[mockArbEthTokenId],
+    isNative: true,
+    balance: new BigNumber(10),
+    priceUsd: new BigNumber(1),
+    lastKnownPriceUsd: new BigNumber(1),
+  },
+  inputTokenAmount: new BigNumber(0.041),
   swapTransaction: {
     swapType: 'same-chain' as const,
     chainId: 42161,
@@ -92,7 +107,7 @@ const mockSwapDepositProps = {
   },
 }
 
-const mockCrossChainProps = {
+const mockCrossChainProps: StackParamList[Screens.EarnDepositConfirmationScreen] = {
   ...mockSwapDepositProps,
   preparedTransaction: {
     ...mockPreparedTransaction,
@@ -104,15 +119,27 @@ const mockCrossChainProps = {
       lastKnownPriceUsd: new BigNumber(1),
     },
   },
-  inputTokenId: mockCeloTokenId,
+  inputTokenInfo: {
+    ...mockTokenBalances[mockCeloTokenId],
+    isNative: true,
+    balance: new BigNumber(10),
+    priceUsd: new BigNumber(1),
+    lastKnownPriceUsd: new BigNumber(1),
+  },
   swapTransaction: {
     ...mockSwapDepositProps.swapTransaction,
     swapType: 'cross-chain' as const,
     estimatedDuration: 300,
     maxCrossChainFee: '0.1',
     estimatedCrossChainFee: '0.05',
-  },
+  } as any,
 }
+
+const HookWrapper = (component: any) => (
+  <Provider store={createMockStore()}>
+    {component?.children ? component.children : component}
+  </Provider>
+)
 
 describe('EarnDepositConfirmationScreen', () => {
   beforeEach(() => {
@@ -160,15 +187,18 @@ describe('EarnDepositConfirmationScreen', () => {
       fromNetworkId,
     }
 
-    it(`useDepositTokenAmount properly calculates deposit amount for${swapType ? ` ${swapType}` : ''} ${mode}`, () => {
-      const { result } = renderHook(() => useDepositTokenAmount(props))
-      expect(result.current.toString()).toEqual(depositTokenAmount)
+    it(`useDepositAmount properly calculates deposit amount for${swapType ? ` ${swapType}` : ''} ${mode}`, () => {
+      const { result } = renderHook(() => useDepositAmount(props), { wrapper: HookWrapper })
+      expect(result.current.tokenAmount.toString()).toEqual(depositTokenAmount)
     })
 
     it('useCommonAnalyticsProperties properly formats common analytics properties', () => {
-      const { result: depositTokenAmount } = renderHook(() => useDepositTokenAmount(props))
-      const { result } = renderHook(() =>
-        useCommonAnalyticsProperties(props, depositTokenAmount.current)
+      const { result: depositTokenAmount } = renderHook(() => useDepositAmount(props), {
+        wrapper: HookWrapper,
+      })
+      const { result } = renderHook(
+        () => useCommonAnalyticsProperties(props, depositTokenAmount.current.tokenAmount),
+        { wrapper: HookWrapper }
       )
       expect(result.current).toEqual(expectedAnalyticsProperties)
     })

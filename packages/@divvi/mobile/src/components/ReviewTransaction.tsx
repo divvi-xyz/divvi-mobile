@@ -155,14 +155,23 @@ export function ReviewDetails(props: { children: ReactNode }) {
   return <View style={styles.reviewDetails}>{props.children}</View>
 }
 
+type WithCaption =
+  | { caption: ReactNode; captionColor?: ColorValue }
+  | {
+      caption?: never
+      captionColor?: never
+    }
+
 type ReviewDetailsItemProps<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>> = {
   label: ReactNode
   fontSize?: 'small' | 'medium'
   color?: ColorValue
   isLoading?: boolean
   testID?: string
+  strikeThrough?: boolean
   onInfoPress?: () => void
-} & ReviewDetailsItemValueProps<T>
+} & ReviewDetailsItemValueProps<T> &
+  WithCaption
 
 export function ReviewDetailsItem<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>>(
   props: ReviewDetailsItemProps<T>
@@ -173,6 +182,9 @@ export function ReviewDetailsItem<T extends Pick<TokenBalance, 'symbol' | 'token
     color = colors.contentPrimary,
     isLoading,
     testID,
+    strikeThrough,
+    caption,
+    captionColor,
     onInfoPress,
     ...valueProps
   } = props
@@ -186,35 +198,47 @@ export function ReviewDetailsItem<T extends Pick<TokenBalance, 'symbol' | 'token
   }, [fontSize])
 
   return (
-    <View style={styles.reviewDetailsItem} testID={testID}>
-      <Touchable
-        style={styles.reviewDetailsItemLabel}
-        onPress={onInfoPress}
-        disabled={!onInfoPress || isLoading}
-      >
-        <>
-          <Text style={[fontStyle, { color }]} testID={`${testID}/Label`}>
-            {label}
-          </Text>
-          {onInfoPress && <InfoIcon color={color} testID={`${testID}/InfoIcon`} />}
-        </>
-      </Touchable>
-      <View style={styles.reviewDetailsItemValue}>
-        {isLoading ? (
-          <View testID={`${testID}/Loader`} style={styles.loaderContainer}>
-            <SkeletonPlaceholder>
-              <View style={styles.loader} />
-            </SkeletonPlaceholder>
-          </View>
-        ) : (
-          <Text
-            style={[styles.reviewDetailsItemValueText, fontStyle, { color }]}
-            testID={`${testID}/Value`}
-          >
-            <ReviewDetailsItemValue {...valueProps} />
-          </Text>
-        )}
+    <View testID={testID}>
+      <View style={styles.reviewDetailsItem}>
+        <Touchable
+          style={styles.reviewDetailsItemLabel}
+          onPress={onInfoPress}
+          disabled={!onInfoPress || isLoading}
+        >
+          <>
+            <Text style={[fontStyle, { color }]} testID={`${testID}/Label`}>
+              {label}
+            </Text>
+            {onInfoPress && <InfoIcon color={color} testID={`${testID}/InfoIcon`} />}
+          </>
+        </Touchable>
+        <View style={styles.reviewDetailsItemValue}>
+          {isLoading ? (
+            <View testID={`${testID}/Loader`} style={styles.loaderContainer}>
+              <SkeletonPlaceholder>
+                <View style={styles.loader} />
+              </SkeletonPlaceholder>
+            </View>
+          ) : (
+            <Text
+              style={[
+                styles.reviewDetailsItemValueText,
+                fontStyle,
+                { color, textDecorationLine: strikeThrough ? 'line-through' : undefined },
+              ]}
+              testID={`${testID}/Value`}
+            >
+              <ReviewDetailsItemValue {...valueProps} />
+            </Text>
+          )}
+        </View>
       </View>
+
+      {!!caption && (
+        <Text style={[styles.reviewDetailsItemCaption, { color: captionColor || color }]}>
+          {caption}
+        </Text>
+      )}
     </View>
   )
 }
@@ -379,6 +403,10 @@ export function ReviewDetailsItemTotalValue<T extends Pick<TokenBalance, 'symbol
   })
 }
 
+export function ReviewParagraph(props: { children: ReactNode }) {
+  return <Text style={styles.paragraph}>{props.children}</Text>
+}
+
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
@@ -448,6 +476,10 @@ const styles = StyleSheet.create({
   reviewDetailsItemValueText: {
     textAlign: 'right',
   },
+  reviewDetailsItemCaption: {
+    ...typeScale.labelSmall,
+    textAlign: 'right',
+  },
   reviewFooter: {
     gap: Spacing.Regular16,
   },
@@ -461,5 +493,10 @@ const styles = StyleSheet.create({
   },
   totalPlusFeesLocalAmount: {
     color: colors.contentSecondary,
+  },
+  paragraph: {
+    ...typeScale.bodyXSmall,
+    color: colors.contentSecondary,
+    textAlign: 'center',
   },
 })
