@@ -3,7 +3,7 @@ import * as RNLocalize from 'react-native-localize'
 import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { EffectProviders, StaticProvider } from 'redux-saga-test-plan/providers'
-import { select } from 'redux-saga/effects'
+import { call, select } from 'redux-saga/effects'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { AppEvents, InviteEvents } from 'src/analytics/Events'
 import { HooksEnablePreviewOrigin, WalletConnectPairingOrigin } from 'src/analytics/types'
@@ -125,19 +125,21 @@ describe('handleDeepLink', () => {
   })
 
   it('Handles Bidali deep link if it is enabled', async () => {
-    jest.mocked(getAppConfig).mockReturnValueOnce({
-      displayName: 'Test App',
-      deepLinkUrlScheme: 'testapp',
-      registryName: 'test',
-      experimental: {
-        bidali: {
-          url: 'https://example.com',
-        },
-      },
-    })
     const deepLink = `${DEEP_LINK_URL_SCHEME}://wallet/bidali`
     await expectSaga(handleDeepLink, openDeepLink(deepLink))
-      .provide([[select(walletAddressSelector), mockAccount]])
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [
+          call(getAppConfig),
+          {
+            experimental: {
+              bidali: {
+                url: 'https://example.com',
+              },
+            },
+          },
+        ],
+      ])
       .run()
     expect(navigate).toHaveBeenCalledWith(Screens.BidaliScreen, { currency: undefined })
     expect(AppAnalytics.track).toHaveBeenCalledWith(AppEvents.handle_deeplink, {

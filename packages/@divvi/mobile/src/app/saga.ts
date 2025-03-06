@@ -234,6 +234,8 @@ export function* handleDeepLink(action: OpenDeepLink) {
       const appConfig = yield* call(getAppConfig)
       if (appConfig.experimental?.bidali?.url) {
         navigate(Screens.BidaliScreen, { currency: undefined })
+      } else {
+        Logger.warn(TAG, 'Unable to open Bidali deep link as bidali url is not found in app config')
       }
     } else if (rawParams.path.startsWith('/cash-in-success')) {
       // Some providers append transaction information to the redirect links so can't check for strict equality
