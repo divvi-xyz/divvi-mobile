@@ -1,4 +1,5 @@
 import { KycSchema } from '@fiatconnect/fiatconnect-types'
+import type BigNumber from 'bignumber.js'
 import { SendOrigin, WalletConnectPairingOrigin } from 'src/analytics/types'
 import { EarnActiveMode, EarnTabType } from 'src/earn/types'
 import { ExternalExchangeProvider } from 'src/fiatExchanges/ExternalExchanges'
@@ -10,9 +11,11 @@ import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
 import { Screens } from 'src/navigator/Screens'
 import { Nft } from 'src/nfts/types'
 import { EarnPosition } from 'src/positions/types'
-import type { PreparedTransactionsResult } from 'src/public'
+import type { PreparedTransactionsPossible, PreparedTransactionsResult } from 'src/public'
 import { Recipient } from 'src/recipients/recipient'
 import { QrCode, TransactionDataInput } from 'src/send/types'
+import type { SwapTransaction } from 'src/swap/types'
+import type { TokenBalance } from 'src/tokens/slice'
 import { AssetTabType } from 'src/tokens/types'
 import { NetworkId, TokenTransaction, TokenTransfer } from 'src/transactions/types'
 import { Countries } from 'src/utils/Countries'
@@ -89,6 +92,14 @@ export type StackParamList = {
     mode: Extract<EarnActiveMode, 'claim-rewards' | 'exit' | 'withdraw'>
     inputAmount?: string
     useMax: boolean
+  }
+  [Screens.EarnDepositConfirmationScreen]: {
+    preparedTransaction: PreparedTransactionsPossible
+    inputTokenInfo: TokenBalance
+    inputTokenAmount: BigNumber
+    pool: EarnPosition
+    mode: EarnActiveMode
+    swapTransaction?: SwapTransaction
   }
   [Screens.EarnHome]: { activeEarnTab?: EarnTabType } | undefined
   [Screens.TabEarn]: { activeEarnTab?: EarnTabType } | undefined
