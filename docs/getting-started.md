@@ -30,6 +30,11 @@ cd my-app
 yarn install
 ```
 
+3. Generate native source code:
+```bash
+yarn prebuild
+```
+
 ## Setting Up Your Development Environment
 
 Before running your app, you'll need to set up your development environment. While we use Expo's build tools, Divvi Mobile requires a native development environment (it cannot run in Expo Go).
