@@ -31,6 +31,7 @@ yarn install
 ```
 
 3. Generate native source code:
+
 ```bash
 yarn prebuild
 ```
