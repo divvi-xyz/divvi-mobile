@@ -20,7 +20,7 @@ import colors, { type ColorValue } from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
-import { TokenBalance } from 'src/tokens/slice'
+import type { TokenBalance } from 'src/tokens/slice'
 import Logger from 'src/utils/Logger'
 
 export function ReviewTransaction(props: {
@@ -155,18 +155,16 @@ export function ReviewDetails(props: { children: ReactNode }) {
   return <View style={styles.reviewDetails}>{props.children}</View>
 }
 
-type ReviewDetailsItemProps<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>> = {
+type ReviewDetailsItemProps = {
   label: ReactNode
   fontSize?: 'small' | 'medium'
   color?: ColorValue
   isLoading?: boolean
   testID?: string
   onInfoPress?: () => void
-} & ReviewDetailsItemValueProps<T>
+} & ReviewDetailsItemValueProps
 
-export function ReviewDetailsItem<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>>(
-  props: ReviewDetailsItemProps<T>
-) {
+export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
   const {
     label,
     fontSize = 'medium',
@@ -219,18 +217,16 @@ export function ReviewDetailsItem<T extends Pick<TokenBalance, 'symbol' | 'token
   )
 }
 
-type ReviewDetailsItemTokenValueProps<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>> = {
+type ReviewDetailsItemTokenValueProps = {
   tokenAmount: BigNumber | undefined | null
   localAmount: BigNumber | undefined | null
-  tokenInfo: T | undefined | null
+  tokenInfo: TokenBalance | undefined | null
   localCurrencySymbol: LocalCurrencySymbol
   approx?: boolean
   children?: ReactNode
 }
 
-function ReviewDetailsItemTokenValue<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>>(
-  props: ReviewDetailsItemTokenValueProps<T>
-) {
+function ReviewDetailsItemTokenValue(props: ReviewDetailsItemTokenValueProps) {
   if (!props.tokenAmount) return null
 
   return (
@@ -249,14 +245,12 @@ function ReviewDetailsItemTokenValue<T extends Pick<TokenBalance, 'symbol' | 'to
   )
 }
 
-type ReviewDetailsItemValueProps<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>> =
+type ReviewDetailsItemValueProps =
   | { type: 'plain-text'; value: ReactNode }
-  | ({ type: 'token-amount' } & ReviewDetailsItemTokenValueProps<T>)
-  | ({ type: 'total-token-amount' } & ReviewDetailsItemTotalValueProps<T>)
+  | ({ type: 'token-amount' } & ReviewDetailsItemTokenValueProps)
+  | ({ type: 'total-token-amount' } & ReviewDetailsItemTotalValueProps)
 
-function ReviewDetailsItemValue<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>>(
-  props: ReviewDetailsItemValueProps<T>
-) {
+function ReviewDetailsItemValue(props: ReviewDetailsItemValueProps) {
   if (props.type === 'plain-text') return props.value
   if (props.type === 'token-amount') return <ReviewDetailsItemTokenValue {...props} />
   if (props.type === 'total-token-amount') return <ReviewDetailsItemTotalValue {...props} />
@@ -267,10 +261,10 @@ export function ReviewFooter(props: { children: ReactNode }) {
   return <View style={styles.reviewFooter}>{props.children}</View>
 }
 
-type ReviewDetailsItemTotalValueProps<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>> = {
+type ReviewDetailsItemTotalValueProps = {
   approx?: boolean
-  tokenInfo: T | undefined
-  feeTokenInfo: T | undefined
+  tokenInfo: TokenBalance | undefined
+  feeTokenInfo: TokenBalance | undefined
   tokenAmount: BigNumber | null
   localAmount: BigNumber | null
   feeTokenAmount: BigNumber | undefined
@@ -278,7 +272,7 @@ type ReviewDetailsItemTotalValueProps<T extends Pick<TokenBalance, 'symbol' | 't
   localCurrencySymbol: LocalCurrencySymbol
 }
 
-export function ReviewDetailsItemTotalValue<T extends Pick<TokenBalance, 'symbol' | 'tokenId'>>({
+export function ReviewDetailsItemTotalValue({
   approx,
   tokenInfo,
   feeTokenInfo,
@@ -287,7 +281,7 @@ export function ReviewDetailsItemTotalValue<T extends Pick<TokenBalance, 'symbol
   feeTokenAmount,
   feeLocalAmount,
   localCurrencySymbol,
-}: ReviewDetailsItemTotalValueProps<T>) {
+}: ReviewDetailsItemTotalValueProps) {
   const { t } = useTranslation()
   const withApprox = approx ? `${APPROX_SYMBOL} ` : ''
 
