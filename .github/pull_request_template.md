@@ -11,14 +11,8 @@ Example: add any manual testing steps or scenarios (if not obvious), screenshots
 
 ### Related issues
 
-- Fixes #[issue number here]
+- Related to #[issue number here]
 
-### Backwards compatibility
+### Semantic versioning
 
-<!-- Brief explanation of why these changes are/are not backwards compatible. -->
-
-### Network scalability
-
-If a new NetworkId and/or Network are added in the future, the changes in this PR will:
-
-- [ ] Continue to work without code changes, OR trigger a compilation error (guaranteeing we find it when a new network is added)
+<!-- Packages in this repo are automatically released when merged into main. Detail any breaking changes here and ensure the PR title follows conventional commits and reflect the type of changes made. See https://www.conventionalcommits.org/ -->
