@@ -1,23 +1,22 @@
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { StyleSheet, Text, View } from 'react-native'
 import { useSelector } from 'react-redux'
 import { type BottomSheetModalRefType } from 'src/components/BottomSheet'
-import InfoBottomSheet from 'src/components/InfoBottomSheet'
+import InfoBottomSheet, {
+  InfoBottomSheetContentBlock,
+  InfoBottomSheetHeading,
+  InfoBottomSheetParagraph,
+} from 'src/components/InfoBottomSheet'
 import { ReviewDetailsItem } from 'src/components/ReviewTransaction'
+import RowDivider from 'src/components/RowDivider'
 import { APP_NAME } from 'src/config'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { getLocalCurrencySymbol } from 'src/localCurrency/selectors'
-import Colors from 'src/styles/colors'
-import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import type { AppFeeAmount, SwapFeeAmount } from 'src/swap/types'
 import { useTokenToLocalAmount } from 'src/tokens/hooks'
 import type { TokenBalance } from 'src/tokens/slice'
-import Logger from 'src/utils/Logger'
-
-const TAG = 'components/FeeInfoBottomSheet'
 
 interface Props {
   forwardedRef: React.RefObject<BottomSheetModalRefType>
@@ -71,7 +70,6 @@ export default function FeeInfoBottomSheet(props: Props) {
   const appFeeIsNotZero = hasAppFee && !!appFee && !!appFee.tokenAmount.gt(0)
 
   if (!hasNetworkFee && !hasAppFee && !hasCrossChainFee) {
-    Logger.error(TAG, 'No fees provided to the component')
     return null
   }
 
@@ -81,110 +79,123 @@ export default function FeeInfoBottomSheet(props: Props) {
       title={hasNetworkFee && (hasAppFee || hasCrossChainFee) ? t('fees') : t('networkFee')}
       testID="FeeInfoBottomSheet"
     >
-      <Text style={styles.label}>
-        <Trans i18nKey="breakdown" />
-      </Text>
+      <InfoBottomSheetContentBlock>
+        <InfoBottomSheetHeading>
+          <Trans i18nKey="breakdown" />
+        </InfoBottomSheetHeading>
 
-      {networkFee ? (
-        <ReviewDetailsItem
-          approx
-          fontSize="small"
-          label={t('estimatedNetworkFee')}
-          testID="FeeInfoBottomSheet/EstimatedNetworkFee"
-          type="token-amount"
-          tokenAmount={networkFee.tokenAmount}
-          localAmount={networkFee.localAmount}
-          tokenInfo={networkFee.tokenInfo}
-          localCurrencySymbol={localCurrencySymbol}
-        />
-      ) : (
-        <ReviewDetailsItem
-          fontSize="small"
-          label={t('estimatedNetworkFee')}
-          testID="FeeInfoBottomSheet/EstimatedNetworkFee"
-          type="plain-text"
-          value={t('unknown')}
-        />
-      )}
-      {networkMaxFee ? (
-        <ReviewDetailsItem
-          fontSize="small"
-          label={t('maxNetworkFee')}
-          testID="FeeInfoBottomSheet/MaxNetworkFee"
-          type="token-amount"
-          tokenAmount={networkMaxFee.tokenAmount}
-          localAmount={networkMaxFee.localAmount}
-          tokenInfo={networkMaxFee.tokenInfo}
-          localCurrencySymbol={localCurrencySymbol}
-        />
-      ) : (
-        <ReviewDetailsItem
-          fontSize="small"
-          label={t('maxNetworkFee')}
-          testID="FeeInfoBottomSheet/MaxNetworkFee"
-          type="plain-text"
-          value={t('unknown')}
-        />
-      )}
+        {networkFee ? (
+          <ReviewDetailsItem
+            approx
+            fontSize="small"
+            label={t('estimatedNetworkFee')}
+            testID="FeeInfoBottomSheet/EstimatedNetworkFee"
+            type="token-amount"
+            tokenAmount={networkFee.tokenAmount}
+            localAmount={networkFee.localAmount}
+            tokenInfo={networkFee.tokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+        ) : (
+          <ReviewDetailsItem
+            fontSize="small"
+            label={t('estimatedNetworkFee')}
+            testID="FeeInfoBottomSheet/EstimatedNetworkFee"
+            type="plain-text"
+            value={t('unknown')}
+          />
+        )}
+        {networkMaxFee ? (
+          <ReviewDetailsItem
+            fontSize="small"
+            label={t('maxNetworkFee')}
+            testID="FeeInfoBottomSheet/MaxNetworkFee"
+            type="token-amount"
+            tokenAmount={networkMaxFee.tokenAmount}
+            localAmount={networkMaxFee.localAmount}
+            tokenInfo={networkMaxFee.tokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+        ) : (
+          <ReviewDetailsItem
+            fontSize="small"
+            label={t('maxNetworkFee')}
+            testID="FeeInfoBottomSheet/MaxNetworkFee"
+            type="plain-text"
+            value={t('unknown')}
+          />
+        )}
 
-      {hasAppFee && (
-        <>
-          <Divider testID="FeeInfoBottomSheet/Divider/AppFee" />
-          {appFeeIsNotZero ? (
-            <ReviewDetailsItem
-              fontSize="small"
-              label={t('appFee', { appName: APP_NAME })}
-              type="token-amount"
-              testID="FeeInfoBottomSheet/AppFee"
-              tokenAmount={appFee.tokenAmount}
-              localAmount={appFee.localAmount}
-              tokenInfo={appFee.tokenInfo}
-              localCurrencySymbol={localCurrencySymbol}
+        {hasAppFee && (
+          <>
+            <RowDivider
+              testID="FeeInfoBottomSheet/Divider/AppFee"
+              marginVertical={Spacing.Smallest8}
             />
-          ) : (
-            <ReviewDetailsItem
-              fontSize="small"
-              label={t('appFee', { appName: APP_NAME })}
-              type="plain-text"
-              testID="FeeInfoBottomSheet/AppFee"
-              value={t('free')}
-            />
-          )}
-        </>
-      )}
+            {appFeeIsNotZero ? (
+              <ReviewDetailsItem
+                fontSize="small"
+                label={t('appFee', { appName: APP_NAME })}
+                type="token-amount"
+                testID="FeeInfoBottomSheet/AppFee"
+                tokenAmount={appFee.tokenAmount}
+                localAmount={appFee.localAmount}
+                tokenInfo={appFee.tokenInfo}
+                localCurrencySymbol={localCurrencySymbol}
+              />
+            ) : (
+              <ReviewDetailsItem
+                fontSize="small"
+                label={t('appFee', { appName: APP_NAME })}
+                type="plain-text"
+                testID="FeeInfoBottomSheet/AppFee"
+                value={t('free')}
+              />
+            )}
+          </>
+        )}
 
-      {hasCrossChainFee && <Divider testID="FeeInfoBottomSheet/Divider/CrossChainFee" />}
+        {hasCrossChainFee && (
+          <RowDivider
+            testID="FeeInfoBottomSheet/Divider/CrossChainFee"
+            marginVertical={Spacing.Smallest8}
+          />
+        )}
 
-      {crossChainFee && (
-        <ReviewDetailsItem
-          approx
-          fontSize="small"
-          label={t('estimatedCrossChainFee')}
-          type="token-amount"
-          testID="FeeInfoBottomSheet/EstimatedCrossChainFee"
-          tokenAmount={crossChainFee.tokenAmount}
-          localAmount={crossChainFee.localAmount}
-          tokenInfo={crossChainFee.tokenInfo}
-          localCurrencySymbol={localCurrencySymbol}
-        />
-      )}
+        {crossChainFee && (
+          <ReviewDetailsItem
+            approx
+            fontSize="small"
+            label={t('estimatedCrossChainFee')}
+            type="token-amount"
+            testID="FeeInfoBottomSheet/EstimatedCrossChainFee"
+            tokenAmount={crossChainFee.tokenAmount}
+            localAmount={crossChainFee.localAmount}
+            tokenInfo={crossChainFee.tokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+        )}
 
-      {crossChainMaxFee && (
-        <ReviewDetailsItem
-          fontSize="small"
-          label={t('maxCrossChainFee')}
-          type="token-amount"
-          testID="FeeInfoBottomSheet/MaxCrossChainFee"
-          tokenAmount={crossChainMaxFee.tokenAmount}
-          localAmount={crossChainMaxFee.localAmount}
-          tokenInfo={crossChainMaxFee.tokenInfo}
-          localCurrencySymbol={localCurrencySymbol}
-        />
-      )}
+        {crossChainMaxFee && (
+          <ReviewDetailsItem
+            fontSize="small"
+            label={t('maxCrossChainFee')}
+            type="token-amount"
+            testID="FeeInfoBottomSheet/MaxCrossChainFee"
+            tokenAmount={crossChainMaxFee.tokenAmount}
+            localAmount={crossChainMaxFee.localAmount}
+            tokenInfo={crossChainMaxFee.tokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+        )}
+      </InfoBottomSheetContentBlock>
 
-      <View style={styles.moreInfoContainer}>
-        <Text style={styles.label}>{t('moreInformation')}</Text>
-        <Text style={styles.infoText}>
+      <InfoBottomSheetContentBlock>
+        <InfoBottomSheetHeading>
+          <Trans i18nKey="moreInformation" />
+        </InfoBottomSheetHeading>
+
+        <InfoBottomSheetParagraph>
           <Trans
             i18nKey={'feeInfoBottomSheet.feesInfo'}
             context={
@@ -198,32 +209,8 @@ export default function FeeInfoBottomSheet(props: Props) {
             }
             tOptions={{ appFeePercentage: props.appFee?.percentage.toFormat() }}
           />
-        </Text>
-      </View>
+        </InfoBottomSheetParagraph>
+      </InfoBottomSheetContentBlock>
     </InfoBottomSheet>
   )
 }
-
-function Divider(props: { testID?: string }) {
-  return <View style={styles.divider} testID={props.testID} />
-}
-
-const styles = StyleSheet.create({
-  divider: {
-    marginVertical: Spacing.Smallest8,
-    height: 1,
-    backgroundColor: Colors.borderPrimary,
-    width: '100%',
-  },
-  label: {
-    ...typeScale.labelSemiBoldSmall,
-  },
-  infoText: {
-    ...typeScale.bodySmall,
-    color: Colors.contentSecondary,
-  },
-  moreInfoContainer: {
-    marginTop: Spacing.Regular16,
-    gap: Spacing.Smallest8,
-  },
-})
