@@ -18,7 +18,6 @@ import { TokenBalance } from 'src/tokens/slice'
 import { convertLocalToTokenAmount } from 'src/tokens/utils'
 import { Currency } from 'src/utils/currencies'
 import Logger from 'src/utils/Logger'
-import { getSupportedNetworkIds } from 'src/web3/utils'
 import { call, put, select } from 'typed-redux-saga'
 
 const TAG = 'send/utils'
@@ -49,10 +48,7 @@ export function* handleSendPaymentData({
     })
   )
 
-  const supportedNetworkIds = yield* call(getSupportedNetworkIds)
-  const tokens: TokenBalance[] = yield* select((state) =>
-    tokensListSelector(state, supportedNetworkIds)
-  )
+  const tokens: TokenBalance[] = yield* select(tokensListSelector)
   const tokenInfo = tokens.find((token) => token?.symbol === (data.token ?? Currency.Dollar))
 
   if (!tokenInfo?.priceUsd) {

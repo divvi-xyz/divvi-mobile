@@ -59,7 +59,6 @@ import { parseInputAmount } from 'src/utils/parsing'
 import { getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
 import { getSerializablePreparedTransactions } from 'src/viem/preparedTransactionSerialization'
 import networkConfig from 'src/web3/networkConfig'
-import { getSupportedNetworkIds } from 'src/web3/utils'
 import { v4 as uuidv4 } from 'uuid'
 
 const TAG = 'SwapScreen'
@@ -251,7 +250,7 @@ export function SwapScreen({ route }: Props) {
 
   const { swappableFromTokens, swappableToTokens, areSwapTokensShuffled } = useSwappableTokens()
 
-  const tokensById = useSelector((state) => tokensByIdSelector(state, getSupportedNetworkIds()))
+  const tokensById = useSelector(tokensByIdSelector)
 
   const initialFromTokenId = route.params?.fromTokenId
   const initialToTokenId = route.params?.toTokenId

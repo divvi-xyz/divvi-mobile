@@ -18,7 +18,6 @@ import {
 } from 'src/tokens/hooks'
 import { TokenBalance } from 'src/tokens/slice'
 import { NetworkId } from 'src/transactions/types'
-import { getSupportedNetworkIds } from 'src/web3/utils'
 import { createMockStore } from 'test/utils'
 import {
   mockAccount,
@@ -32,15 +31,10 @@ import {
 } from 'test/values'
 
 jest.mock('src/statsig')
-jest.mock('src/web3/utils', () => ({
-  ...jest.requireActual('src/web3/utils'),
-  getSupportedNetworkIds: jest.fn(),
-}))
 
 beforeEach(() => {
   jest.clearAllMocks()
   jest.mocked(getFeatureGate).mockReturnValue(true)
-  jest.mocked(getSupportedNetworkIds).mockReturnValue([NetworkId['celo-alfajores']])
 })
 
 const tokenAddressWithPriceAndBalance = '0x001'
@@ -53,7 +47,7 @@ function TestComponent({ tokenId }: { tokenId: string }) {
   const tokenAmount = useLocalToTokenAmount(new BigNumber(1), tokenId)
   const localAmount = useTokenToLocalAmount(new BigNumber(1), tokenId)
   const usdAmount = useAmountAsUsd(new BigNumber(1), tokenId)
-  const tokenPricesAreStale = useTokenPricesAreStale([NetworkId['celo-alfajores']])
+  const tokenPricesAreStale = useTokenPricesAreStale()
 
   return (
     <View>
@@ -246,41 +240,12 @@ describe('token to fiat exchanges', () => {
 })
 
 describe('useSwappableTokens', () => {
-  it('returns sorted swappable tokens for the non-holdout group', () => {
+  it('returns sorted tokens with balance for the non-holdout group', () => {
     jest
       .mocked(getFeatureGate)
       .mockImplementation(
         (featureGate) => featureGate !== StatsigFeatureGates.SHUFFLE_SWAP_TOKENS_ORDER
       )
-
-    const { result } = renderHook(() => useSwappableTokens(), {
-      wrapper: (component) => (
-        <Provider store={storeWithMultipleNetworkTokens()}>
-          {component?.children ? component.children : component}
-        </Provider>
-      ),
-    })
-
-    expect(result.current.swappableToTokens.map((token) => token.tokenId)).toEqual([
-      mockCeloTokenId,
-    ])
-    expect(result.current.swappableFromTokens.map((token) => token.tokenId)).toEqual([
-      mockCeloTokenId,
-      mockPoofTokenId,
-      mockCrealTokenId,
-    ])
-    expect(result.current.areSwapTokensShuffled).toBe(false)
-  })
-
-  it('returns sorted tokens with balance for multiple networks for the non-holdout group', () => {
-    jest
-      .mocked(getFeatureGate)
-      .mockImplementation(
-        (featureGate) => featureGate !== StatsigFeatureGates.SHUFFLE_SWAP_TOKENS_ORDER
-      )
-    jest
-      .mocked(getSupportedNetworkIds)
-      .mockReturnValue([NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']])
     const { result } = renderHook(() => useSwappableTokens(), {
       wrapper: (component) => (
         <Provider store={storeWithMultipleNetworkTokens()}>
@@ -302,10 +267,6 @@ describe('useSwappableTokens', () => {
   })
 
   it('returns deterministically shuffled tokens for each user in the holdout group', () => {
-    jest
-      .mocked(getSupportedNetworkIds)
-      .mockReturnValue([NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']])
-
     const expectedToTokens1 = [mockCeloTokenId, ethTokenId]
     const expectedFromTokens1 = [mockPoofTokenId, mockCeloTokenId, ethTokenId, mockCrealTokenId]
 
@@ -358,24 +319,6 @@ describe('useCashInTokens', () => {
       mockCusdTokenId,
       mockCeloTokenId,
       mockCrealTokenId,
-    ])
-  })
-
-  it('returns tokens eligible for cash in for multiple networks', () => {
-    jest
-      .mocked(getSupportedNetworkIds)
-      .mockReturnValue([NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']])
-    const { getByTestId } = render(
-      <Provider store={storeWithMultipleNetworkTokens()}>
-        <TokenHookTestComponent hook={useCashInTokens} />
-      </Provider>
-    )
-
-    expect(getByTestId('tokenIDs').props.children).toEqual([
-      mockCeurTokenId,
-      mockCusdTokenId,
-      mockCeloTokenId,
-      mockCrealTokenId,
       ethTokenId,
       mockUSDCTokenId,
     ])
@@ -383,20 +326,7 @@ describe('useCashInTokens', () => {
 })
 
 describe('useCashOutTokens', () => {
-  it('returns tokens for eligible for cash out', () => {
-    const { getByTestId } = render(
-      <Provider store={storeWithMultipleNetworkTokens()}>
-        <TokenHookTestComponent hook={useCashOutTokens} />
-      </Provider>
-    )
-
-    expect(getByTestId('tokenIDs').props.children).toEqual([mockCeloTokenId])
-  })
-
-  it('returns tokens eligible for cash out for multiple networks', () => {
-    jest
-      .mocked(getSupportedNetworkIds)
-      .mockReturnValue([NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']])
+  it('returns tokens eligible for cash out', () => {
     const { getByTestId } = render(
       <Provider store={storeWithMultipleNetworkTokens()}>
         <TokenHookTestComponent hook={useCashOutTokens} />

@@ -87,7 +87,7 @@ export function* fetchTokenBalancesSaga() {
     SentryTransactionHub.startTransaction(SentryTransaction.fetch_balances)
 
     const supportedNetworks = getSupportedNetworkIds()
-    const importedTokens = yield* select(importedTokensSelector, supportedNetworks)
+    const importedTokens = yield* select(importedTokensSelector)
     const networkIconByNetworkId = yield* select(networksIconSelector)
 
     const supportedTokens = yield* call(getTokensInfo, supportedNetworks)
@@ -146,9 +146,8 @@ export function tokenAmountInSmallestUnit(amount: BigNumber, decimals: number): 
 }
 
 export function* getTokenInfo(tokenId: string) {
-  const networkIds = Object.values(networkConfig.networkToNetworkId)
   const tokens = yield* select((state) =>
-    tokensByIdSelector(state, { networkIds, includePositionTokens: true })
+    tokensByIdSelector(state, { includePositionTokens: true })
   )
   return tokens[tokenId]
 }
@@ -159,10 +158,8 @@ export function* watchAccountFundedOrLiquidated() {
     // we reset the usd value of all token balances to 0 if the exchange rate is
     // stale, so it is okay to use stale token prices to monitor the account
     // funded / liquidated status in this case
-    const supportedNetworkIds = getSupportedNetworkIds()
     const tokenBalance: ReturnType<typeof lastKnownTokenBalancesSelector> = yield* select(
-      lastKnownTokenBalancesSelector,
-      supportedNetworkIds
+      lastKnownTokenBalancesSelector
     )
 
     if (tokenBalance !== null && tokenBalance !== prevTokenBalance) {
