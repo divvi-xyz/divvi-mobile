@@ -66,8 +66,7 @@ function TabHome({ navigation, route }: Props) {
 
   const insets = useSafeAreaInsets()
 
-  const supportedNetworkIds = [...new Set(pools.map((pool) => pool.networkId))]
-  const allTokens = useSelector((state) => tokensByIdSelector(state, supportedNetworkIds))
+  const allTokens = useSelector(tokensByIdSelector)
 
   // Scroll Aware Header
   const scrollPosition = useSharedValue(0)

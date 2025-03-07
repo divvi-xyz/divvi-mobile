@@ -345,20 +345,24 @@ const expectedTraitsForAllNetworks = {
   totalBalanceUsd: 20831.636783945,
   totalCeloAlfajoresBalanceUsd: 5681.606783945,
   totalEthereumSepoliaBalanceUsd: 15150.03,
+  totalArbitrumSepoliaBalanceUsd: 0,
+  totalOpSepoliaBalanceUsd: 0,
+  totalBaseSepoliaBalanceUsd: 0,
   totalPositionsBalanceUsd: 83.34234,
   walletAddress: '0x0000000000000000000000000000000000007e57',
   hasTokenBalance: true,
   hasCeloAlfajoresTokenBalance: true,
   hasEthereumSepoliaTokenBalance: true,
+  hasArbitrumSepoliaTokenBalance: false,
+  hasOpSepoliaTokenBalance: false,
+  hasBaseSepoliaTokenBalance: false,
   pointsBalance: '50',
 }
 
 describe('getCurrentUserTraits', () => {
   it('returns the current user traits with tokens from multiple networks', () => {
     const state = getMockStoreData(mockState)
-    expect(
-      getCurrentUserTraits(state, [NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']])
-    ).toStrictEqual(expectedTraitsForAllNetworks)
+    expect(getCurrentUserTraits(state)).toStrictEqual(expectedTraitsForAllNetworks)
   })
   it('sets correct hasTokenBalance fields if all tokens in one network have no balance', () => {
     const mockTokenBalances = {
@@ -373,9 +377,7 @@ describe('getCurrentUserTraits', () => {
       },
     }
     const state = getMockStoreData({ ...mockState, tokens: { tokenBalances: mockTokenBalances } })
-    expect(
-      getCurrentUserTraits(state, [NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']])
-    ).toStrictEqual({
+    expect(getCurrentUserTraits(state)).toStrictEqual({
       ...expectedTraitsForAllNetworks,
       ethBalance: 0,
       netWorthUsd: 5764.949123945,

@@ -31,7 +31,6 @@ import AssetList from 'src/tokens/AssetList'
 import AssetTabBar from 'src/tokens/AssetTabBar'
 import { sortedTokensWithBalanceSelector } from 'src/tokens/selectors'
 import { AssetTabType } from 'src/tokens/types'
-import { getSupportedNetworkIds } from 'src/web3/utils'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.TabWallet>
 
@@ -159,9 +158,7 @@ function TabWallet({ navigation, route }: Props) {
 
   const configuredEmptyState = getAppConfig().experimental?.wallet?.emptyState
 
-  const supportedNetworkIds = getSupportedNetworkIds()
-  const hasTokens =
-    useSelector((state) => sortedTokensWithBalanceSelector(state, supportedNetworkIds)).length > 0
+  const hasTokens = useSelector(sortedTokensWithBalanceSelector).length > 0
 
   return (
     // Transparency issue on Android present when a fragment is used - Nested Animated.View prevents it
