@@ -4,22 +4,17 @@ import themeColors, { type ColorValue } from 'src/styles/colors'
 import { Spacing } from 'src/styles/styles'
 
 export interface Props {
-  color?: ColorValue
-  spacing?: Spacing
+  backgroundColor?: ColorValue
+  marginVertical?: Spacing
   testID?: string
 }
 
 export default function RowDivider({
-  color = themeColors.borderPrimary,
-  spacing = Spacing.Regular16,
+  backgroundColor = themeColors.borderPrimary,
+  marginVertical = Spacing.Regular16,
   testID,
 }: Props) {
-  return (
-    <View
-      testID={testID}
-      style={[styles.container, { backgroundColor: color, marginVertical: spacing }]}
-    />
-  )
+  return <View testID={testID} style={[styles.container, { backgroundColor, marginVertical }]} />
 }
 
 const styles = StyleSheet.create({

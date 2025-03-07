@@ -128,7 +128,10 @@ export default function FeeInfoBottomSheet(props: Props) {
 
         {hasAppFee && (
           <>
-            <RowDivider testID="FeeInfoBottomSheet/Divider/AppFee" spacing={Spacing.Smallest8} />
+            <RowDivider
+              testID="FeeInfoBottomSheet/Divider/AppFee"
+              marginVertical={Spacing.Smallest8}
+            />
             {appFeeIsNotZero ? (
               <ReviewDetailsItem
                 fontSize="small"
@@ -155,7 +158,7 @@ export default function FeeInfoBottomSheet(props: Props) {
         {hasCrossChainFee && (
           <RowDivider
             testID="FeeInfoBottomSheet/Divider/CrossChainFee"
-            spacing={Spacing.Smallest8}
+            marginVertical={Spacing.Smallest8}
           />
         )}
 
