@@ -1,8 +1,8 @@
 import { renderHook } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import {
-  useCommonAnalyticsProperties,
-  useDepositTokenAmount,
+  getCommonAnalyticsProperties,
+  getDepositTokenAmount,
 } from 'src/earn/EarnDepositConfirmationScreen'
 import type { EarnActiveMode } from 'src/earn/types'
 import type { PreparedTransactionsPossible } from 'src/public'
@@ -160,16 +160,13 @@ describe('EarnDepositConfirmationScreen', () => {
       fromNetworkId,
     }
 
-    it(`useDepositTokenAmount properly calculates deposit amount for${swapType ? ` ${swapType}` : ''} ${mode}`, () => {
-      const { result } = renderHook(() => useDepositTokenAmount(props))
-      expect(result.current.toString()).toEqual(depositTokenAmount)
+    it(`getDepositTokenAmount properly calculates deposit amount for${swapType ? ` ${swapType}` : ''} ${mode}`, () => {
+      expect(getDepositTokenAmount(props).toString()).toEqual(depositTokenAmount)
     })
 
-    it('useCommonAnalyticsProperties properly formats common analytics properties', () => {
-      const { result: depositTokenAmount } = renderHook(() => useDepositTokenAmount(props))
-      const { result } = renderHook(() =>
-        useCommonAnalyticsProperties(props, depositTokenAmount.current)
-      )
+    it('getCommonAnalyticsProperties properly formats common analytics properties', () => {
+      const depositTokenAmount = getDepositTokenAmount(props)
+      const { result } = renderHook(() => getCommonAnalyticsProperties(props, depositTokenAmount))
       expect(result.current).toEqual(expectedAnalyticsProperties)
     })
   })

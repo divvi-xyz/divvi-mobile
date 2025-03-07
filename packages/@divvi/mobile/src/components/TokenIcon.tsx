@@ -14,7 +14,7 @@ export enum IconSize {
   XLARGE = 'xlarge',
 }
 
-export const IconSizeToStyle = {
+const IconSizeToStyle = {
   [IconSize.XXSMALL]: {
     tokenImageSize: 16,
     networkImageSize: 8,
@@ -101,7 +101,7 @@ export default function TokenIcon({
           testID={testID ? `${testID}/DefaultTokenIcon` : 'DefaultTokenIcon'}
         >
           <Text style={[styles.tokenText, { fontSize: tokenTextSize }]} allowFontScaling={false}>
-            {token.symbol?.substring(0, 4) ?? ''}
+            {token.symbol.substring(0, 4)}
           </Text>
         </View>
       )}
