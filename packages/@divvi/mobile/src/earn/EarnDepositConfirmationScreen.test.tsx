@@ -1,7 +1,10 @@
-import { render, renderHook, within } from '@testing-library/react-native'
+import { fireEvent, render, renderHook, within } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { Provider } from 'react-redux'
+import AppAnalytics from 'src/analytics/AppAnalytics'
+import { EarnEvents } from 'src/analytics/Events'
+import { openUrl } from 'src/app/actions'
 import EarnDepositConfirmationScreen, {
   useCommonAnalyticsProperties,
   useDepositAmount,
@@ -134,10 +137,10 @@ const mockCrossChainProps: StackParamList[Screens.EarnDepositConfirmationScreen]
   } as any,
 }
 
-const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
-
 const HookWrapper = (component: any) => (
-  <Provider store={mockStore}>{component?.children ? component.children : component}</Provider>
+  <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
+    {component?.children ? component.children : component}
+  </Provider>
 )
 
 describe('EarnDepositConfirmationScreen', () => {
@@ -147,7 +150,7 @@ describe('EarnDepositConfirmationScreen', () => {
 
   it('renders proper structure for deposit', () => {
     const { getByTestId } = render(
-      <Provider store={mockStore}>
+      <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
         <EarnDepositConfirmationScreen
           {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, mockDepositProps)}
         />
@@ -254,6 +257,59 @@ describe('EarnDepositConfirmationScreen', () => {
           { wrapper: HookWrapper }
         )
         expect(result.current).toEqual(expectedAnalyticsProperties)
+      })
+
+      it('pressing cancel fires analytics event', () => {
+        const { getByTestId } = render(
+          <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, props)}
+            />
+          </Provider>
+        )
+
+        fireEvent.press(getByTestId('BackChevron'))
+        expect(AppAnalytics.track).toHaveBeenCalledWith(
+          EarnEvents.earn_deposit_cancel,
+          expectedAnalyticsProperties
+        )
+      })
+
+      it.each([
+        {
+          title: 'pressing provider pool name opens manageUrl if available',
+          manageUrl: props.pool.dataProps.manageUrl!,
+          termsUrl: props.pool.dataProps.termsUrl!,
+          result: props.pool.dataProps.manageUrl!,
+        },
+        {
+          title: 'pressing provider pool name opens termsUrl if manageUrl is not available',
+          manageUrl: undefined,
+          termsUrl: props.pool.dataProps.termsUrl!,
+          result: props.pool.dataProps.termsUrl!,
+        },
+      ])('$title', ({ manageUrl, termsUrl, result }) => {
+        const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
+        const { getByTestId } = render(
+          <Provider store={mockStore}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, {
+                ...props,
+                pool: {
+                  ...props.pool,
+                  dataProps: { ...props.pool.dataProps, manageUrl, termsUrl },
+                },
+              })}
+            />
+          </Provider>
+        )
+
+        fireEvent.press(getByTestId('EarnDepositConfirmationPool'))
+        expect(AppAnalytics.track).toHaveBeenCalledWith(
+          EarnEvents.earn_deposit_provider_info_press,
+          expectedAnalyticsProperties
+        )
+        expect(mockStore.getActions()).toEqual([openUrl(result, true)])
       })
     }
   )
