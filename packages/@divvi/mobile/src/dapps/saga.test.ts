@@ -1,6 +1,7 @@
 import { FetchMock } from 'jest-fetch-mock/types'
 import { expectSaga } from 'redux-saga-test-plan'
-import { select } from 'redux-saga/effects'
+import { call, select } from 'redux-saga/effects'
+import { getAppConfig } from 'src/appConfig'
 import { DEEP_LINK_URL_SCHEME } from 'src/config'
 import { handleFetchDappsList, handleOpenDapp } from 'src/dapps/saga'
 import { dappSelected, fetchDappsListCompleted, fetchDappsListFailed } from 'src/dapps/slice'
@@ -42,7 +43,7 @@ describe('Dapps saga', () => {
       })
     })
 
-    it('opens a deep link', async () => {
+    it('opens a deep link for bidali if it is enabled', async () => {
       await expectSaga(
         handleOpenDapp,
         dappSelected({
@@ -53,7 +54,19 @@ describe('Dapps saga', () => {
           },
         })
       )
-        .provide([[select(walletAddressSelector), mockAccount]])
+        .provide([
+          [select(walletAddressSelector), mockAccount],
+          [
+            call(getAppConfig),
+            {
+              experimental: {
+                bidali: {
+                  url: 'https://example.com',
+                },
+              },
+            },
+          ],
+        ])
         .run()
 
       expect(navigate).toHaveBeenCalledWith(Screens.BidaliScreen, { currency: undefined })

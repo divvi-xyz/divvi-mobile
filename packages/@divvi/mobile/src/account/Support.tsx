@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { getAppConfig } from 'src/appConfig'
 import BackButton from 'src/components/BackButton'
 import { SettingsItemTextValue } from 'src/components/SettingsItem'
 import CustomHeader from 'src/components/header/CustomHeader'
@@ -22,6 +23,7 @@ const onPressContact = () => {
 const Support = () => {
   const { t } = useTranslation()
   const { links } = getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.APP_CONFIG])
+  const showContactSupport = !!getAppConfig().experimental?.zendeskConfig
 
   return (
     <SafeAreaView>
@@ -44,13 +46,15 @@ const Support = () => {
           />
         )}
 
-        <SettingsItemTextValue
-          testID="SupportContactLink"
-          title={t('contact')}
-          onPress={onPressContact}
-          borderless
-          showChevron
-        />
+        {showContactSupport && (
+          <SettingsItemTextValue
+            testID="SupportContactLink"
+            title={t('contact')}
+            onPress={onPressContact}
+            borderless
+            showChevron
+          />
+        )}
       </ScrollView>
     </SafeAreaView>
   )

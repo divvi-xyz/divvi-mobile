@@ -1,12 +1,9 @@
-import type { BottomSheetModal } from '@gorhom/bottom-sheet'
 import BigNumber from 'bignumber.js'
 import React, { useMemo, type ReactNode } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, Text, View, type StyleProp, type TextStyle } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import BackButton from 'src/components/BackButton'
-import BottomSheet from 'src/components/BottomSheet'
-import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import ContactCircle from 'src/components/ContactCircle'
 import CustomHeader from 'src/components/header/CustomHeader'
 import SkeletonPlaceholder from 'src/components/SkeletonPlaceholder'
@@ -228,7 +225,7 @@ function ReviewDetailsItemTokenValue(props: ReviewDetailsItemTokenValueProps) {
   return (
     <Trans
       i18nKey={props.approx ? 'tokenAndLocalAmountApprox' : 'tokenAndLocalAmount'}
-      context={props.tokenAmount?.gt(0) ? undefined : 'noFiatPrice'}
+      context={props.localAmount?.gt(0) ? undefined : 'noFiatPrice'}
       tOptions={{
         tokenAmount: formatValueToDisplay(props.tokenAmount),
         localAmount: props.localAmount ? formatValueToDisplay(props.localAmount) : '',
@@ -369,25 +366,6 @@ export function ReviewDetailsItemTotalValue({
   })
 }
 
-export function ReviewTotalBottomSheet(props: {
-  forwardedRef: React.RefObject<BottomSheetModal>
-  title: string
-  children: React.ReactNode
-}) {
-  const { t } = useTranslation()
-  return (
-    <BottomSheet forwardedRef={props.forwardedRef} testId="InfoBottomSheet" title={props.title}>
-      <View style={styles.totalBottomSheetContent}>{props.children}</View>
-      <Button
-        type={BtnTypes.SECONDARY}
-        size={BtnSizes.FULL}
-        text={t('bottomSheetDismissButton')}
-        onPress={() => props.forwardedRef.current?.close()}
-      />
-    </BottomSheet>
-  )
-}
-
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
@@ -470,9 +448,5 @@ const styles = StyleSheet.create({
   },
   totalPlusFeesLocalAmount: {
     color: colors.contentSecondary,
-  },
-  totalBottomSheetContent: {
-    gap: Spacing.Smallest8,
-    marginBottom: Spacing.Thick24,
   },
 })

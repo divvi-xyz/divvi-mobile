@@ -34,7 +34,7 @@ function ActionsCarousel() {
   const shouldShowSwapAction = getDynamicConfigParams(
     DynamicConfigs[StatsigDynamicConfigs.SWAP_CONFIG]
   ).enabled
-  const bidaliEnabled = getAppConfig().experimental?.bidali
+  const bidaliConfig = getAppConfig().experimental?.bidali
 
   const actions: Actions = {
     [HomeActionName.Send]: {
@@ -72,7 +72,7 @@ function ActionsCarousel() {
       title: t('homeActions.withdraw'),
       icon: <QuickActionsWithdraw color={Colors.buttonQuickActionContent} />,
       onPress: () => {
-        if (bidaliEnabled) {
+        if (bidaliConfig !== undefined) {
           navigate(Screens.WithdrawSpend)
         } else {
           navigate(Screens.FiatExchangeCurrencyBottomSheet, { flow: FiatExchangeFlow.CashOut })

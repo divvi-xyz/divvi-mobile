@@ -1021,7 +1021,7 @@ export function* handleCreateFiatConnectTransfer(
         throw new Error('Missing networkId for cash out')
       }
 
-      const tokenList = yield* select(tokensByIdSelector, [networkId])
+      const tokenList = yield* select(tokensByIdSelector)
       const tokenId = fiatConnectQuote.getTokenId()
       const tokenInfo = tokenList[tokenId]
       if (!tokenInfo) {

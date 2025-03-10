@@ -7,7 +7,7 @@ import { getAppConfig } from 'src/appConfig'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import SettingsMenu from 'src/navigator/SettingsMenu'
-import { getFeatureGate } from 'src/statsig'
+import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import MockedNavigator from 'test/MockedNavigator'
 import { createMockStore } from 'test/utils'
@@ -20,6 +20,7 @@ jest.mocked(getFeatureGate).mockImplementation((gate) => {
   }
   throw new Error('Unexpected gate')
 })
+jest.mocked(getDynamicConfigParams).mockReturnValue({})
 
 jest.mock('statsig-react-native', () => ({
   Statsig: {
@@ -44,6 +45,10 @@ describe('SettingsMenu', () => {
       ...defaultAppConfig,
       experimental: {
         inviteFriends: true,
+        zendeskConfig: {
+          apiKey: 'some-key',
+          projectName: 'test',
+        },
       },
     })
   })
@@ -74,6 +79,16 @@ describe('SettingsMenu', () => {
       </Provider>
     )
     expect(queryByTestId('SettingsMenu/Invite')).toBeFalsy()
+  })
+  it('does not show the help item if help links are not set and contact support is disabled', () => {
+    jest.mocked(getAppConfig).mockReturnValue(defaultAppConfig)
+    const store = createMockStore()
+    const { queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator component={SettingsMenu}></MockedNavigator>
+      </Provider>
+    )
+    expect(queryByTestId('SettingsMenu/Help')).toBeFalsy()
   })
   it('does not show username if not set', () => {
     const store = createMockStore({

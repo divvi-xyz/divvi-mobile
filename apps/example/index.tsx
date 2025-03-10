@@ -22,9 +22,12 @@ const App = createApp({
       : expoConfig.scheme
     : 'example',
   features: {
-    // Special case for e2e tests as it doesn't handle cloud backup
+    // Special cases to cover experimental features with e2e tests
     ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
       cloudBackup: false,
+      walletConnect: {
+        projectId: '8f6f2517f4485c013849d38717ec90d1', // valora-e2e-client project
+      },
     }),
   },
   locales: {
@@ -80,9 +83,15 @@ const App = createApp({
   // Special cases to cover experimental features with e2e tests
   ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
     experimental: {
-      bidali: true,
+      bidali: {
+        url: 'https://commerce.bidali.com',
+      },
       notificationCenter: true,
       phoneNumberVerification: true,
+      zendeskConfig: {
+        apiKey: 'dummyApiKey',
+        projectName: 'divviapp',
+      },
     },
   }),
 })

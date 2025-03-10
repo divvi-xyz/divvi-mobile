@@ -43,7 +43,7 @@ export default function PoolCard({
   } = pool
   const { t } = useTranslation()
   const appConfig = getAppConfig()
-  const allTokens = useSelector((state) => tokensByIdSelector(state, [networkId]))
+  const allTokens = useSelector(tokensByIdSelector)
   const tokensInfo = useMemo(() => {
     return tokens
       .map((token) => allTokens[token.tokenId])

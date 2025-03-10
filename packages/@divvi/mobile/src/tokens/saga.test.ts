@@ -171,7 +171,7 @@ describe(fetchTokenBalancesSaga, () => {
 
     await expectSaga(fetchTokenBalancesSaga)
       .provide([
-        [select(importedTokensSelector, supportedNetworks), []],
+        [select(importedTokensSelector), []],
         [select(networksIconSelector), {}],
         [call(getTokensInfo, supportedNetworks), mockBlockchainApiTokenInfo],
         [select(walletAddressSelector), mockAccount],
@@ -199,7 +199,7 @@ describe(fetchTokenBalancesSaga, () => {
 
     await expectSaga(fetchTokenBalancesSaga)
       .provide([
-        [select(importedTokensSelector, supportedNetworks), []],
+        [select(importedTokensSelector), []],
         [select(networksIconSelector), {}],
         [call(getTokensInfo, supportedNetworks), mockBlockchainApiTokenInfo],
         [select(walletAddressSelector), mockAccount],
@@ -239,7 +239,7 @@ describe(fetchTokenBalancesSaga, () => {
     await expectSaga(fetchTokenBalancesSaga)
       .provide([
         [call(getTokensInfo, supportedNetworks), mockBlockchainApiTokenInfo],
-        [select(importedTokensSelector, supportedNetworks), importedTokens],
+        [select(importedTokensSelector), importedTokens],
         [
           select(networksIconSelector),
           {
@@ -458,7 +458,7 @@ describe('watchAccountFundedOrLiquidated', () => {
     await expectSaga(watchAccountFundedOrLiquidated)
       .provide([
         [
-          select(lastKnownTokenBalancesSelector, [NetworkId['celo-alfajores']]),
+          select(lastKnownTokenBalancesSelector),
           dynamic(balances(new BigNumber(0), new BigNumber(10))),
         ],
       ])
@@ -475,7 +475,7 @@ describe('watchAccountFundedOrLiquidated', () => {
     await expectSaga(watchAccountFundedOrLiquidated)
       .provide([
         [
-          select(lastKnownTokenBalancesSelector, [NetworkId['celo-alfajores']]),
+          select(lastKnownTokenBalancesSelector),
           dynamic(balances(new BigNumber(10), new BigNumber(0))),
         ],
       ])
@@ -491,109 +491,12 @@ describe('watchAccountFundedOrLiquidated', () => {
     jest.mocked(getSupportedNetworkIds).mockReturnValue([NetworkId['celo-alfajores']])
     await expectSaga(watchAccountFundedOrLiquidated)
       .provide([
-        [
-          select(lastKnownTokenBalancesSelector, [NetworkId['celo-alfajores']]),
-          dynamic(balances(null, new BigNumber(10))),
-        ],
+        [select(lastKnownTokenBalancesSelector), dynamic(balances(null, new BigNumber(10)))],
       ])
       .dispatch({ type: 'TEST_ACTION_TYPE' })
       .dispatch({ type: 'TEST_ACTION_TYPE' })
       .run()
 
     expect(AppAnalytics.track).toHaveBeenCalledTimes(0)
-  })
-
-  it('does not dispatch the account funded event when network ID added', async () => {
-    jest
-      .mocked(getSupportedNetworkIds)
-      .mockReturnValueOnce([NetworkId['celo-alfajores']])
-      .mockReturnValueOnce([NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']])
-    await expectSaga(watchAccountFundedOrLiquidated)
-      .provide([
-        [select(lastKnownTokenBalancesSelector, [NetworkId['celo-alfajores']]), new BigNumber(0)],
-        [
-          select(lastKnownTokenBalancesSelector, [
-            NetworkId['celo-alfajores'],
-            NetworkId['ethereum-sepolia'],
-          ]),
-          new BigNumber(10),
-        ],
-      ])
-      .dispatch({ type: 'TEST_ACTION_TYPE' })
-      .dispatch({ type: 'TEST_ACTION_TYPE' })
-      .run()
-
-    expect(AppAnalytics.track).toHaveBeenCalledTimes(0)
-  })
-
-  it('does not dispatch the account liquidated event when network ID removed', async () => {
-    jest
-      .mocked(getSupportedNetworkIds)
-      .mockReturnValueOnce([NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']])
-      .mockReturnValueOnce([NetworkId['celo-alfajores']])
-    await expectSaga(watchAccountFundedOrLiquidated)
-      .provide([
-        [select(lastKnownTokenBalancesSelector, [NetworkId['celo-alfajores']]), new BigNumber(0)],
-        [
-          select(lastKnownTokenBalancesSelector, [
-            NetworkId['celo-alfajores'],
-            NetworkId['ethereum-sepolia'],
-          ]),
-          new BigNumber(10),
-        ],
-      ])
-      .dispatch({ type: 'TEST_ACTION_TYPE' })
-      .dispatch({ type: 'TEST_ACTION_TYPE' })
-      .run()
-
-    expect(AppAnalytics.track).toHaveBeenCalledTimes(0)
-  })
-
-  it('account funded event dispatched even if network ID removed', async () => {
-    jest
-      .mocked(getSupportedNetworkIds)
-      .mockReturnValueOnce([NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']])
-      .mockReturnValueOnce([NetworkId['celo-alfajores']])
-    await expectSaga(watchAccountFundedOrLiquidated)
-      .provide([
-        [select(lastKnownTokenBalancesSelector, [NetworkId['celo-alfajores']]), new BigNumber(10)],
-        [
-          select(lastKnownTokenBalancesSelector, [
-            NetworkId['celo-alfajores'],
-            NetworkId['ethereum-sepolia'],
-          ]),
-          new BigNumber(0),
-        ],
-      ])
-      .dispatch({ type: 'TEST_ACTION_TYPE' })
-      .dispatch({ type: 'TEST_ACTION_TYPE' })
-      .run()
-
-    expect(AppAnalytics.track).toHaveBeenCalledTimes(1)
-    expect(AppAnalytics.track).toHaveBeenCalledWith(AppEvents.account_funded)
-  })
-
-  it('account liquidated event dispatched even if network ID added', async () => {
-    jest
-      .mocked(getSupportedNetworkIds)
-      .mockReturnValue([NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']])
-      .mockReturnValueOnce([NetworkId['celo-alfajores']])
-    await expectSaga(watchAccountFundedOrLiquidated)
-      .provide([
-        [select(lastKnownTokenBalancesSelector, [NetworkId['celo-alfajores']]), new BigNumber(10)],
-        [
-          select(lastKnownTokenBalancesSelector, [
-            NetworkId['celo-alfajores'],
-            NetworkId['ethereum-sepolia'],
-          ]),
-          new BigNumber(0),
-        ],
-      ])
-      .dispatch({ type: 'TEST_ACTION_TYPE' })
-      .dispatch({ type: 'TEST_ACTION_TYPE' })
-      .run()
-
-    expect(AppAnalytics.track).toHaveBeenCalledTimes(1)
-    expect(AppAnalytics.track).toHaveBeenCalledWith(AppEvents.account_liquidated)
   })
 })

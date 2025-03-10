@@ -2,6 +2,7 @@ import { WebView } from '@interaxyz/react-native-webview'
 import { render } from '@testing-library/react-native'
 import * as React from 'react'
 import { Provider } from 'react-redux'
+import { getAppConfig } from 'src/appConfig'
 import BidaliScreen from 'src/fiatExchanges/BidaliScreen'
 import { Screens } from 'src/navigator/Screens'
 import { Currency } from 'src/utils/currencies'
@@ -22,6 +23,16 @@ describe(BidaliScreen, () => {
   beforeEach(() => {
     // Reset injected JS effect
     window.valora = undefined
+    jest.mocked(getAppConfig).mockReturnValue({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+      experimental: {
+        bidali: {
+          url: 'https://bidali.com',
+        },
+      },
+    })
   })
 
   it('renders correctly when no phone number is provided', () => {

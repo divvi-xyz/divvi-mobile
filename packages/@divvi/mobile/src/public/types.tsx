@@ -210,9 +210,15 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     transactions?: {
       emptyState?: React.ReactElement
     }
-    bidali?: boolean
+    bidali?: {
+      url: string
+    }
     inviteFriends?: boolean
     notificationCenter?: boolean
+    zendeskConfig?: {
+      apiKey: string
+      projectName: string
+    }
     phoneNumberVerification?: boolean
   }
 

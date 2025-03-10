@@ -9,6 +9,7 @@ import { ErrorMessages } from 'src/app/ErrorMessages'
 import BackButton from 'src/components/BackButton'
 import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes } from 'src/components/Button'
+import InfoBottomSheet, { InfoBottomSheetContentBlock } from 'src/components/InfoBottomSheet'
 import {
   ReviewContent,
   ReviewDetails,
@@ -17,7 +18,6 @@ import {
   ReviewSummary,
   ReviewSummaryItem,
   ReviewSummaryItemContact,
-  ReviewTotalBottomSheet,
   ReviewTransaction,
 } from 'src/components/ReviewTransaction'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
@@ -220,68 +220,72 @@ export default function SendConfirmation(props: Props) {
         />
       </ReviewFooter>
 
-      <ReviewTotalBottomSheet forwardedRef={feesBottomSheetRef} title={t('networkFee')}>
-        <ReviewDetailsItem
-          approx
-          fontSize="small"
-          type="token-amount"
-          label={t('estimatedNetworkFee')}
-          tokenAmount={tokenEstimatedFeeAmount}
-          localAmount={localEstimatedFeeAmount}
-          tokenInfo={feeTokenInfo}
-          localCurrencySymbol={localCurrencySymbol}
-        />
+      <InfoBottomSheet forwardedRef={feesBottomSheetRef} title={t('networkFee')}>
+        <InfoBottomSheetContentBlock>
+          <ReviewDetailsItem
+            approx
+            fontSize="small"
+            type="token-amount"
+            label={t('estimatedNetworkFee')}
+            tokenAmount={tokenEstimatedFeeAmount}
+            localAmount={localEstimatedFeeAmount}
+            tokenInfo={feeTokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
 
-        <ReviewDetailsItem
-          fontSize="small"
-          type="token-amount"
-          label={t('maxNetworkFee')}
-          tokenAmount={tokenMaxFeeAmount}
-          localAmount={localMaxFeeAmount}
-          tokenInfo={feeTokenInfo}
-          localCurrencySymbol={localCurrencySymbol}
-        />
-      </ReviewTotalBottomSheet>
+          <ReviewDetailsItem
+            fontSize="small"
+            type="token-amount"
+            label={t('maxNetworkFee')}
+            tokenAmount={tokenMaxFeeAmount}
+            localAmount={localMaxFeeAmount}
+            tokenInfo={feeTokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+        </InfoBottomSheetContentBlock>
+      </InfoBottomSheet>
 
-      <ReviewTotalBottomSheet
+      <InfoBottomSheet
         forwardedRef={totalBottomSheetRef}
         title={t('reviewTransaction.totalPlusFees')}
       >
-        <ReviewDetailsItem
-          fontSize="small"
-          type="token-amount"
-          label={t('sending')}
-          tokenAmount={tokenAmount}
-          localAmount={localAmount}
-          tokenInfo={tokenInfo}
-          localCurrencySymbol={localCurrencySymbol}
-        />
+        <InfoBottomSheetContentBlock>
+          <ReviewDetailsItem
+            fontSize="small"
+            type="token-amount"
+            label={t('sending')}
+            tokenAmount={tokenAmount}
+            localAmount={localAmount}
+            tokenInfo={tokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
 
-        <ReviewDetailsItem
-          approx
-          fontSize="small"
-          type="token-amount"
-          label={t('fees')}
-          tokenAmount={tokenEstimatedFeeAmount}
-          localAmount={localEstimatedFeeAmount}
-          tokenInfo={feeTokenInfo}
-          localCurrencySymbol={localCurrencySymbol}
-        />
+          <ReviewDetailsItem
+            approx
+            fontSize="small"
+            type="token-amount"
+            label={t('fees')}
+            tokenAmount={tokenEstimatedFeeAmount}
+            localAmount={localEstimatedFeeAmount}
+            tokenInfo={feeTokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
 
-        <ReviewDetailsItem
-          approx
-          fontSize="small"
-          type="total-token-amount"
-          label={t('reviewTransaction.totalPlusFees')}
-          tokenInfo={tokenInfo}
-          feeTokenInfo={feeTokenInfo}
-          tokenAmount={tokenAmount}
-          localAmount={localAmount}
-          feeTokenAmount={maxFeeAmount}
-          feeLocalAmount={localMaxFeeAmount}
-          localCurrencySymbol={localCurrencySymbol}
-        />
-      </ReviewTotalBottomSheet>
+          <ReviewDetailsItem
+            approx
+            fontSize="small"
+            type="total-token-amount"
+            label={t('reviewTransaction.totalPlusFees')}
+            tokenInfo={tokenInfo}
+            feeTokenInfo={feeTokenInfo}
+            tokenAmount={tokenAmount}
+            localAmount={localAmount}
+            feeTokenAmount={maxFeeAmount}
+            feeLocalAmount={localMaxFeeAmount}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+        </InfoBottomSheetContentBlock>
+      </InfoBottomSheet>
     </ReviewTransaction>
   )
 }

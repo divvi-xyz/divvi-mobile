@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:219](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L219)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:225](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L225)
 
 #### protocolIds
 
@@ -50,19 +50,10 @@ protocolIds: (
   | "allbridge"
   | "beefy"
   | "celo"
-  | "curve"
-  | "euler"
-  | "farcaster"
   | "fonbnk"
   | "mento"
-  | "morpho"
-  | "offchainlabs"
   | "somm"
-  | "tether"
-  | "ubeswap"
-  | "vana"
-  | "velodrome"
-  | "yearn")[];
+  | "vana")[];
 ```
 
 #### referrerId
@@ -107,7 +98,13 @@ optional alchemyKeys: Record<string, string>;
 #### bidali?
 
 ```ts
-optional bidali: boolean;
+optional bidali: object;
+```
+
+##### bidali.url
+
+```ts
+url: string
 ```
 
 #### earn?
@@ -198,6 +195,24 @@ optional emptyState: ReactElement<any, string | JSXElementConstructor<any>>;
 
 ```ts
 optional showActionsCarousel: boolean;
+```
+
+#### zendeskConfig?
+
+```ts
+optional zendeskConfig: object;
+```
+
+##### zendeskConfig.apiKey
+
+```ts
+apiKey: string
+```
+
+##### zendeskConfig.projectName
+
+```ts
+projectName: string
 ```
 
 ---
