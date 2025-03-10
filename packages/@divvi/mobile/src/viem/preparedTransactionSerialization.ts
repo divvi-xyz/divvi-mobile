@@ -1,6 +1,8 @@
 // Helper functions making prepared transactions serializable
 // so they can be used in redux actions (or even stores).
-import { TransactionRequest } from 'src/viem/prepareTransactions'
+import type { SerializedTokenBalance } from 'src/tokens/slice'
+import { getDeserializedTokenBalance, getSerializableTokenBalance } from 'src/tokens/utils'
+import type { PreparedTransactionsPossible, TransactionRequest } from 'src/viem/prepareTransactions'
 
 const bigIntProps = [
   'value',
@@ -67,4 +69,32 @@ export function getPreparedTransactions(
   preparedTransactions: SerializableTransactionRequest[]
 ): TransactionRequest[] {
   return preparedTransactions.map(getPreparedTransaction)
+}
+
+export type SerializablePreparedTransactionsPossible = Pick<
+  PreparedTransactionsPossible,
+  'type'
+> & {
+  transactions: SerializableTransactionRequest[]
+  feeCurrency: SerializedTokenBalance
+}
+
+export function getSerializablePossibleTransaction(
+  possibleTransaction: PreparedTransactionsPossible
+): SerializablePreparedTransactionsPossible {
+  return {
+    type: 'possible',
+    transactions: getSerializablePreparedTransactions(possibleTransaction.transactions),
+    feeCurrency: getSerializableTokenBalance(possibleTransaction.feeCurrency),
+  }
+}
+
+export function getDeserializedPossibleTransaction(
+  serializedTransaction: SerializablePreparedTransactionsPossible
+): PreparedTransactionsPossible {
+  return {
+    type: 'possible',
+    transactions: getPreparedTransactions(serializedTransaction.transactions),
+    feeCurrency: getDeserializedTokenBalance(serializedTransaction.feeCurrency),
+  }
 }

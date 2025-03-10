@@ -58,6 +58,11 @@ export interface TokenBalance extends BaseToken {
   historicalPricesUsd?: HistoricalPricesUsd
 }
 
+export type SerializedBigNumber<T> = T extends BigNumber ? string : T
+export type SerializedTokenBalance = BaseToken & {
+  [K in Exclude<keyof TokenBalance, keyof BaseToken>]: SerializedBigNumber<TokenBalance[K]>
+}
+
 // The "WithAddress" suffixed types are legacy types, for places in the wallet
 // that require an address to be present. Many are deprecated because in most places, we should
 // be able to handle tokens without addresses the same way (just use tokenId instead if you need a token identifier).
