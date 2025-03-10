@@ -148,46 +148,6 @@ describe('EarnDepositConfirmationScreen', () => {
     jest.clearAllMocks()
   })
 
-  it('renders proper structure for deposit', () => {
-    const { getByTestId } = render(
-      <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
-        <EarnDepositConfirmationScreen
-          {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, mockDepositProps)}
-        />
-      </Provider>
-    )
-
-    // screen header
-    expect(getByTestId('BackChevron')).toBeTruthy()
-    expect(getByTestId('CustomHeaderTitle')).toHaveTextContent('earnFlow.depositConfirmation.title')
-
-    // summary item for depositing
-    expect(
-      within(getByTestId('EarnDepositConfirmationToken')).getByTestId('TokenIcon')
-    ).toBeTruthy()
-    expect(getByTestId('EarnDepositConfirmationToken/Label')).toHaveTextContent(
-      'earnFlow.depositConfirmation.depositing'
-    )
-    expect(getByTestId('EarnDepositConfirmationToken/PrimaryValue')).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"100.00","tokenSymbol":"USDC"}'
-    )
-    expect(getByTestId('EarnDepositConfirmationToken/SecondaryValue')).toHaveTextContent(
-      'localAmount, {"localAmount":"133.00","localCurrencySymbol":"₱"}'
-    )
-
-    // summary item for pool
-    expect(within(getByTestId('EarnDepositConfirmationPool')).getByTestId('TokenIcon')).toBeTruthy()
-    expect(getByTestId('EarnDepositConfirmationPool/Label')).toHaveTextContent(
-      'earnFlow.depositConfirmation.into'
-    )
-    expect(getByTestId('EarnDepositConfirmationPool/PrimaryValue')).toHaveTextContent(
-      'earnFlow.depositConfirmation.pool, {"providerName":"Aave"}'
-    )
-    expect(getByTestId('EarnDepositConfirmationPool/SecondaryValue')).toHaveTextContent(
-      'earnFlow.depositConfirmation.yieldRate, {"apy":"1.92"}'
-    )
-  })
-
   describe.each([
     {
       testName: 'deposit',
@@ -257,6 +217,50 @@ describe('EarnDepositConfirmationScreen', () => {
           { wrapper: HookWrapper }
         )
         expect(result.current).toEqual(expectedAnalyticsProperties)
+      })
+
+      it('renders proper structure', () => {
+        const { getByTestId } = render(
+          <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, props)}
+            />
+          </Provider>
+        )
+
+        // screen header
+        expect(getByTestId('BackChevron')).toBeTruthy()
+        expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
+          'earnFlow.depositConfirmation.title'
+        )
+
+        // summary item for depositing
+        expect(
+          within(getByTestId('EarnDepositConfirmationToken')).getByTestId('TokenIcon')
+        ).toBeTruthy()
+        expect(getByTestId('EarnDepositConfirmationToken/Label')).toHaveTextContent(
+          'earnFlow.depositConfirmation.depositing'
+        )
+        expect(getByTestId('EarnDepositConfirmationToken/PrimaryValue')).toHaveTextContent(
+          'tokenAmount, {"tokenAmount":"100.00","tokenSymbol":"USDC"}'
+        )
+        expect(getByTestId('EarnDepositConfirmationToken/SecondaryValue')).toHaveTextContent(
+          'localAmount, {"localAmount":"133.00","localCurrencySymbol":"₱"}'
+        )
+
+        // summary item for pool
+        expect(
+          within(getByTestId('EarnDepositConfirmationPool')).getByTestId('TokenIcon')
+        ).toBeTruthy()
+        expect(getByTestId('EarnDepositConfirmationPool/Label')).toHaveTextContent(
+          'earnFlow.depositConfirmation.into'
+        )
+        expect(getByTestId('EarnDepositConfirmationPool/PrimaryValue')).toHaveTextContent(
+          'earnFlow.depositConfirmation.pool, {"providerName":"Aave"}'
+        )
+        expect(getByTestId('EarnDepositConfirmationPool/SecondaryValue')).toHaveTextContent(
+          'earnFlow.depositConfirmation.yieldRate, {"apy":"1.92"}'
+        )
       })
 
       it('pressing cancel fires analytics event', () => {
