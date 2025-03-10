@@ -63,16 +63,16 @@ export function useCommonAnalyticsProperties(
 
 export default function EarnDepositConfirmationScreen({ route: { params } }: Props) {
   const { inputTokenInfo, pool } = params
-  const { termsUrl } = pool.dataProps
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const depositAmount = useDepositAmount(params)
   const commonAnalyticsProperties = useCommonAnalyticsProperties(params, depositAmount.tokenAmount)
+  const providerUrl = pool.dataProps.manageUrl ?? pool.dataProps.termsUrl
 
   function onPressProvider() {
     AppAnalytics.track(EarnEvents.earn_deposit_provider_info_press, commonAnalyticsProperties)
-    termsUrl && dispatch(openUrl(termsUrl, true))
+    providerUrl && dispatch(openUrl(providerUrl, true))
   }
 
   return (
@@ -105,7 +105,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
           <ReviewSummaryItem
             testID="EarnDepositConfirmationPool"
             label={t('earnFlow.depositConfirmation.into')}
-            onPress={termsUrl ? onPressProvider : undefined}
+            onPress={providerUrl ? onPressProvider : undefined}
             icon={<TokenIcon token={pool.displayProps} />}
             primaryValue={t('earnFlow.depositConfirmation.pool', { providerName: pool.appName })}
             secondaryValue={t('earnFlow.depositConfirmation.yieldRate', {
