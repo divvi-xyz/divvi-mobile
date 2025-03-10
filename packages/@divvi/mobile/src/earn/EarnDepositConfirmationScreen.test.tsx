@@ -6,7 +6,6 @@ import {
   useCommonAnalyticsProperties,
   useDepositAmount,
 } from 'src/earn/EarnDepositConfirmationScreen'
-import type { EarnActiveMode } from 'src/earn/types'
 import type { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import type { PreparedTransactionsPossible } from 'src/public'
@@ -67,7 +66,7 @@ const mockDepositProps: StackParamList[Screens.EarnDepositConfirmationScreen] = 
   inputTokenAmount: new BigNumber(100),
   preparedTransaction: mockPreparedTransaction,
   pool: mockEarnPositions[0],
-  mode: 'deposit' as EarnActiveMode,
+  mode: 'deposit',
   inputTokenInfo: {
     ...mockTokenBalances[mockArbUsdcTokenId],
     balance: new BigNumber(10),
@@ -78,7 +77,7 @@ const mockDepositProps: StackParamList[Screens.EarnDepositConfirmationScreen] = 
 
 const mockSwapDepositProps: StackParamList[Screens.EarnDepositConfirmationScreen] = {
   ...mockDepositProps,
-  mode: 'swap-deposit' as EarnActiveMode,
+  mode: 'swap-deposit',
   inputTokenInfo: {
     ...mockTokenBalances[mockArbEthTokenId],
     isNative: true,

@@ -12,7 +12,7 @@ export enum IconSize {
   XLARGE = 'xlarge',
 }
 
-export const IconSizeToStyle = {
+const IconSizeToStyle = {
   [IconSize.XXSMALL]: {
     tokenImageSize: 16,
     networkImageSize: 8,
