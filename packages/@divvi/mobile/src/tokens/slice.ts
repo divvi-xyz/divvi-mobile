@@ -58,7 +58,7 @@ export interface TokenBalance extends BaseToken {
   historicalPricesUsd?: HistoricalPricesUsd
 }
 
-export type SerializedBigNumber<T> = T extends BigNumber ? string : T
+type SerializedBigNumber<T> = T extends BigNumber ? string : T
 export type SerializedTokenBalance = BaseToken & {
   [K in Exclude<keyof TokenBalance, keyof BaseToken>]: SerializedBigNumber<TokenBalance[K]>
 }
