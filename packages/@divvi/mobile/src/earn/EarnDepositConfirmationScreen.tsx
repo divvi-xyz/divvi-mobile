@@ -2,7 +2,6 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 import BigNumber from 'bignumber.js'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import FastImage from 'react-native-fast-image'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
@@ -14,7 +13,7 @@ import {
   ReviewTransaction,
 } from 'src/components/ReviewTransaction'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
-import TokenIcon, { IconSize, IconSizeToStyle } from 'src/components/TokenIcon'
+import TokenIcon from 'src/components/TokenIcon'
 import { getSwapToAmountInDecimals, getTotalYieldRate } from 'src/earn/utils'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { getLocalCurrencySymbol } from 'src/localCurrency/selectors'
@@ -91,7 +90,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
           <ReviewSummaryItem
             testID="EarnDepositConfirmationToken"
             label={t('earnFlow.depositConfirmation.depositing')}
-            icon={<TokenIcon token={inputTokenInfo!} />}
+            icon={<TokenIcon token={inputTokenInfo} />}
             primaryValue={t('tokenAmount', {
               tokenAmount: formatValueToDisplay(depositAmount.tokenAmount),
               tokenSymbol: depositAmount.tokenInfo?.symbol,
@@ -107,21 +106,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             testID="EarnDepositConfirmationPool"
             label={t('earnFlow.depositConfirmation.into')}
             onPress={termsUrl ? onPressProvider : undefined}
-            icon={
-              <FastImage
-                source={{ uri: pool.displayProps.imageUrl }}
-                style={[
-                  {
-                    position: 'relative',
-                    top: 0,
-                    left: 0,
-                    width: IconSizeToStyle[IconSize.MEDIUM].tokenImageSize,
-                    height: IconSizeToStyle[IconSize.MEDIUM].tokenImageSize,
-                    borderRadius: IconSizeToStyle[IconSize.MEDIUM].tokenImageSize / 2,
-                  },
-                ]}
-              />
-            }
+            icon={<TokenIcon token={pool.displayProps} />}
             primaryValue={t('earnFlow.depositConfirmation.pool', { providerName: pool.appName })}
             secondaryValue={t('earnFlow.depositConfirmation.yieldRate', {
               apy: getTotalYieldRate(pool).toFixed(2),

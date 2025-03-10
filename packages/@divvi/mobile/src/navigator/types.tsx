@@ -98,7 +98,7 @@ export type StackParamList = {
     inputTokenInfo: TokenBalance
     inputTokenAmount: BigNumber
     pool: EarnPosition
-    mode: EarnActiveMode
+    mode: Extract<EarnActiveMode, 'deposit' | 'swap-deposit'>
     swapTransaction?: SwapTransaction
   }
   [Screens.EarnHome]: { activeEarnTab?: EarnTabType } | undefined
