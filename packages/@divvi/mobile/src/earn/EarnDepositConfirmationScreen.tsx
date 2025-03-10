@@ -1,26 +1,42 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 import BigNumber from 'bignumber.js'
-import React, { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import React, { useMemo, useRef } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { StyleSheet, Text, View } from 'react-native'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
 import BackButton from 'src/components/BackButton'
+import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
+import InfoBottomSheet, {
+  InfoBottomSheetContentBlock,
+  InfoBottomSheetHeading,
+  InfoBottomSheetParagraph,
+} from 'src/components/InfoBottomSheet'
 import {
   ReviewContent,
+  ReviewDetailsItem,
   ReviewSummary,
   ReviewSummaryItem,
   ReviewTransaction,
 } from 'src/components/ReviewTransaction'
+import RowDivider from 'src/components/RowDivider'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import TokenIcon from 'src/components/TokenIcon'
+import Touchable from 'src/components/Touchable'
 import { getSwapToAmountInDecimals, getTotalYieldRate } from 'src/earn/utils'
+import InfoIcon from 'src/icons/InfoIcon'
+import SwapAndDeposit from 'src/icons/SwapAndDeposit'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { getLocalCurrencySymbol } from 'src/localCurrency/selectors'
 import type { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import { useDispatch, useSelector } from 'src/redux/hooks'
+import themeColors from 'src/styles/colors'
+import { typeScale } from 'src/styles/fonts'
+import { Spacing } from 'src/styles/styles'
 import { useTokenInfo, useTokenToLocalAmount } from 'src/tokens/hooks'
+import type { TokenBalance } from 'src/tokens/slice'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnDepositConfirmationScreen>
 
@@ -62,7 +78,7 @@ export function useCommonAnalyticsProperties(
 }
 
 export default function EarnDepositConfirmationScreen({ route: { params } }: Props) {
-  const { inputTokenInfo, pool } = params
+  const { inputTokenInfo, pool, mode, inputTokenAmount } = params
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
@@ -112,8 +128,144 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
               apy: getTotalYieldRate(pool).toFixed(2),
             })}
           />
+
+          <SwapAndDepositSummaryItem
+            mode={mode}
+            inputTokenAmount={inputTokenAmount}
+            inputTokenInfo={inputTokenInfo}
+            tokenDepositAmount={depositAmount.tokenAmount}
+            localDepositAmount={depositAmount.localAmount}
+            depositTokenInfo={depositAmount.tokenInfo}
+          />
         </ReviewSummary>
       </ReviewContent>
     </ReviewTransaction>
   )
 }
+
+function SwapAndDepositSummaryItem(
+  props: {
+    tokenDepositAmount: BigNumber
+    localDepositAmount: BigNumber | undefined | null
+    depositTokenInfo: TokenBalance | undefined
+  } & Pick<Props['route']['params'], 'mode' | 'inputTokenAmount' | 'inputTokenInfo'>
+) {
+  const {
+    mode,
+    depositTokenInfo,
+    inputTokenAmount,
+    inputTokenInfo,
+    localDepositAmount,
+    tokenDepositAmount,
+  } = props
+  const { t } = useTranslation()
+  const bottomSheetRef = useRef<BottomSheetModalRefType>(null)
+  const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
+  const inputLocalAmount = useTokenToLocalAmount(inputTokenAmount, inputTokenInfo.tokenId)
+
+  if (mode !== 'swap-deposit') {
+    return null
+  }
+
+  return (
+    <>
+      <RowDivider marginVertical={null} testID="SwapAndDeposit/Divider" />
+      <Touchable style={styles.wrapper} onPress={() => bottomSheetRef.current?.snapToIndex(0)}>
+        <>
+          <View style={styles.label} testID="SwapAndDeposit/PrimaryValue">
+            <SwapAndDeposit
+              size={20}
+              color={themeColors.contentSecondary}
+              testID="SwapAndDeposit/Icon"
+            />
+            <Text style={styles.labelText}>
+              <Trans i18nKey="earnFlow.depositConfirmation.swapAndDeposit" />
+            </Text>
+          </View>
+          <View style={styles.value} testID="SwapAndDeposit/SecondaryValue">
+            <Text style={styles.valueText}>
+              <Trans
+                i18nKey="tokenIntoTokenAmount"
+                tOptions={{
+                  tokenAmountFrom: formatValueToDisplay(inputTokenAmount),
+                  tokenSymbolFrom: inputTokenInfo.symbol,
+                  tokenAmountTo: formatValueToDisplay(tokenDepositAmount),
+                  tokenSymbolTo: depositTokenInfo?.symbol,
+                }}
+              />
+            </Text>
+            <InfoIcon
+              size={14}
+              color={themeColors.contentSecondary}
+              testID="SwapAndDeposit/InfoIcon"
+            />
+          </View>
+        </>
+      </Touchable>
+
+      <InfoBottomSheet
+        title={t('earnFlow.depositConfirmation.swapAndDepositInfoSheet.title')}
+        forwardedRef={bottomSheetRef}
+        testID="SwapAndDepositInfoSheet"
+      >
+        <InfoBottomSheetContentBlock>
+          <ReviewDetailsItem
+            testID="SwapAndDepositInfoSheet/SwapFrom"
+            fontSize="small"
+            type="token-amount"
+            label={t('earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapFrom')}
+            tokenAmount={inputTokenAmount}
+            localAmount={inputLocalAmount}
+            tokenInfo={inputTokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+
+          <ReviewDetailsItem
+            testID="SwapAndDepositInfoSheet/SwapTo"
+            fontSize="small"
+            type="token-amount"
+            label={t('earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapTo')}
+            tokenAmount={tokenDepositAmount}
+            localAmount={localDepositAmount}
+            tokenInfo={depositTokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+        </InfoBottomSheetContentBlock>
+
+        <InfoBottomSheetContentBlock testID="SwapAndDepositInfoSheet/Disclaimer">
+          <InfoBottomSheetHeading>
+            <Trans i18nKey="earnFlow.depositConfirmation.swapAndDepositInfoSheet.whySwap" />
+          </InfoBottomSheetHeading>
+
+          <InfoBottomSheetParagraph>
+            <Trans i18nKey="earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapDescription" />
+          </InfoBottomSheetParagraph>
+        </InfoBottomSheetContentBlock>
+      </InfoBottomSheet>
+    </>
+  )
+}
+
+const styles = StyleSheet.create({
+  wrapper: {
+    gap: Spacing.Tiny4,
+  },
+  label: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.Tiny4,
+  },
+  labelText: {
+    ...typeScale.labelSmall,
+    color: themeColors.contentSecondary,
+  },
+  value: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.Smallest8,
+  },
+  valueText: {
+    ...typeScale.bodySmall,
+    color: themeColors.contentSecondary,
+  },
+})

@@ -261,6 +261,40 @@ describe('EarnDepositConfirmationScreen', () => {
         expect(getByTestId('EarnDepositConfirmationPool/SecondaryValue')).toHaveTextContent(
           'earnFlow.depositConfirmation.yieldRate, {"apy":"1.92"}'
         )
+
+        // summary item for swap and deposit
+        if (mode === 'swap-deposit') {
+          expect(getByTestId('SwapAndDeposit/Divider')).toBeTruthy()
+          expect('SwapAndDeposit/Icon').toBeTruthy()
+          expect(getByTestId('SwapAndDeposit/InfoIcon')).toBeTruthy()
+          expect(getByTestId('SwapAndDeposit/PrimaryValue')).toHaveTextContent(
+            'earnFlow.depositConfirmation.swapAndDeposit'
+          )
+          expect(getByTestId('SwapAndDeposit/SecondaryValue')).toHaveTextContent(
+            'tokenIntoTokenAmount'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet')).toHaveTextContent(
+            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.title'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/SwapFrom/Label')).toHaveTextContent(
+            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapFrom'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/SwapFrom/Value')).toHaveTextContent(
+            'tokenAndLocalAmount'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/SwapTo/Label')).toHaveTextContent(
+            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapTo'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/SwapTo/Value')).toHaveTextContent(
+            'tokenAndLocalAmount'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/Disclaimer')).toHaveTextContent(
+            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.whySwap'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/Disclaimer')).toHaveTextContent(
+            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapDescription'
+          )
+        }
       })
 
       it('pressing cancel fires analytics event', () => {

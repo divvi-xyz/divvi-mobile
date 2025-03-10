@@ -39,8 +39,12 @@ export function InfoBottomSheetParagraph(props: { children: ReactNode }) {
   return <Text style={styles.paragraph}>{props.children}</Text>
 }
 
-export function InfoBottomSheetContentBlock(props: { children: ReactNode }) {
-  return <View style={styles.contentBlock}>{props.children}</View>
+export function InfoBottomSheetContentBlock(props: { children: ReactNode; testID?: string }) {
+  return (
+    <View style={styles.contentBlock} testID={props.testID}>
+      {props.children}
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
