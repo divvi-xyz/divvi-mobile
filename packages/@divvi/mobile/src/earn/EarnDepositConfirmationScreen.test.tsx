@@ -1,22 +1,21 @@
-import { renderHook } from '@testing-library/react-native'
+import { render, renderHook, within } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { Provider } from 'react-redux'
-import {
+import EarnDepositConfirmationScreen, {
   useCommonAnalyticsProperties,
   useDepositAmount,
 } from 'src/earn/EarnDepositConfirmationScreen'
-import type { Screens } from 'src/navigator/Screens'
+import { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import type { PreparedTransactionsPossible } from 'src/public'
 import { NetworkId } from 'src/transactions/types'
-import { createMockStore } from 'test/utils'
+import { createMockStore, getMockStackScreenProps } from 'test/utils'
 import {
   mockAccount,
   mockArbEthTokenId,
   mockArbUsdcTokenId,
   mockCeloTokenId,
-  mockCusdTokenId,
   mockEarnPositions,
   mockTokenBalances,
   mockUSDCAddress,
@@ -135,25 +134,55 @@ const mockCrossChainProps: StackParamList[Screens.EarnDepositConfirmationScreen]
   } as any,
 }
 
+const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
+
 const HookWrapper = (component: any) => (
-  <Provider
-    store={createMockStore({
-      tokens: {
-        tokenBalances: {
-          [mockArbUsdcTokenId]: { ...mockTokenBalances[mockArbUsdcTokenId], priceUsd: '1' },
-          [mockCusdTokenId]: { ...mockTokenBalances[mockCusdTokenId], priceUsd: '1.001' },
-          [mockCeloTokenId]: { ...mockTokenBalances[mockCeloTokenId], priceUsd: '0.5' },
-        },
-      },
-    })}
-  >
-    {component?.children ? component.children : component}
-  </Provider>
+  <Provider store={mockStore}>{component?.children ? component.children : component}</Provider>
 )
 
 describe('EarnDepositConfirmationScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+  })
+
+  it('renders proper structure for deposit', () => {
+    const { getByTestId } = render(
+      <Provider store={mockStore}>
+        <EarnDepositConfirmationScreen
+          {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, mockDepositProps)}
+        />
+      </Provider>
+    )
+
+    // screen header
+    expect(getByTestId('BackChevron')).toBeTruthy()
+    expect(getByTestId('CustomHeaderTitle')).toHaveTextContent('earnFlow.depositConfirmation.title')
+
+    // summary item for depositing
+    expect(
+      within(getByTestId('EarnDepositConfirmationToken')).getByTestId('TokenIcon')
+    ).toBeTruthy()
+    expect(getByTestId('EarnDepositConfirmationToken/Label')).toHaveTextContent(
+      'earnFlow.depositConfirmation.depositing'
+    )
+    expect(getByTestId('EarnDepositConfirmationToken/PrimaryValue')).toHaveTextContent(
+      'tokenAmount, {"tokenAmount":"100.00","tokenSymbol":"USDC"}'
+    )
+    expect(getByTestId('EarnDepositConfirmationToken/SecondaryValue')).toHaveTextContent(
+      'localAmount, {"localAmount":"133.00","localCurrencySymbol":"₱"}'
+    )
+
+    // summary item for pool
+    expect(within(getByTestId('EarnDepositConfirmationPool')).getByTestId('TokenIcon')).toBeTruthy()
+    expect(getByTestId('EarnDepositConfirmationPool/Label')).toHaveTextContent(
+      'earnFlow.depositConfirmation.into'
+    )
+    expect(getByTestId('EarnDepositConfirmationPool/PrimaryValue')).toHaveTextContent(
+      'earnFlow.depositConfirmation.pool, {"providerName":"Aave"}'
+    )
+    expect(getByTestId('EarnDepositConfirmationPool/SecondaryValue')).toHaveTextContent(
+      'earnFlow.depositConfirmation.yieldRate, {"apy":"1.92"}'
+    )
   })
 
   describe.each([
