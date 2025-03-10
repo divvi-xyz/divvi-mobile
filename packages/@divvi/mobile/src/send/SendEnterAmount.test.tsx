@@ -10,6 +10,7 @@ import { Screens } from 'src/navigator/Screens'
 import { RecipientType } from 'src/recipients/recipient'
 import SendEnterAmount from 'src/send/SendEnterAmount'
 import { usePrepareSendTransactions } from 'src/send/usePrepareSendTransactions'
+import { getSerializablePossibleTransaction } from 'src/viem/preparedTransactionSerialization'
 import { PreparedTransactionsPossible } from 'src/viem/prepareTransactions'
 import MockedNavigator from 'test/MockedNavigator'
 import { createMockStore, mockStoreBalancesToTokenBalances } from 'test/utils'
@@ -167,7 +168,9 @@ describe('SendEnterAmount', () => {
     expect(navigate).toHaveBeenCalledWith(Screens.SendConfirmation, {
       origin: params.origin,
       isFromScan: params.isFromScan,
-      prepareTransactionsResult: mockedPrepareTransactions.prepareTransactionsResult,
+      prepareTransactionsResult: getSerializablePossibleTransaction(
+        mockedPrepareTransactions.prepareTransactionsResult
+      ),
       transactionData: {
         tokenId: mockCeloTokenId,
         recipient: params.recipient,

@@ -14,6 +14,7 @@ import { usePrepareSendTransactions } from 'src/send/usePrepareSendTransactions'
 import { sortedTokensWithBalanceOrShowZeroBalanceSelector } from 'src/tokens/selectors'
 import { TokenBalance } from 'src/tokens/slice'
 import Logger from 'src/utils/Logger'
+import { getSerializablePossibleTransaction } from 'src/viem/preparedTransactionSerialization'
 import { walletAddressSelector } from 'src/web3/selectors'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SendEnterAmount>
@@ -46,7 +47,7 @@ function SendEnterAmount({ route }: Props) {
     navigate(Screens.SendConfirmation, {
       origin,
       isFromScan,
-      prepareTransactionsResult,
+      prepareTransactionsResult: getSerializablePossibleTransaction(prepareTransactionsResult),
       transactionData: {
         tokenId: token.tokenId,
         recipient,
