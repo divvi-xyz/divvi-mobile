@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 import { fireEvent, render, renderHook, within } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import React from 'react'
