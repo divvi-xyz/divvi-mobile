@@ -10,6 +10,7 @@ This section contains the auto-generated API documentation for the Divvi Mobile 
 
 ## Functions
 
+- [Button](functions/Button.md)
 - [createApp](functions/createApp.md)
 - [getFees](functions/getFees.md)
 - [getPublicClient](functions/getPublicClient.md)
@@ -33,6 +34,9 @@ This section contains the auto-generated API documentation for the Divvi Mobile 
 
 ## Type Aliases
 
+- [ButtonSize](type-aliases/ButtonSize.md)
+- [ButtonTextSize](type-aliases/ButtonTextSize.md)
+- [ButtonType](type-aliases/ButtonType.md)
 - [NetworkId](type-aliases/NetworkId.md)
 - [PreparedTransactionsResult](type-aliases/PreparedTransactionsResult.md)
 - [StackParamList](type-aliases/StackParamList.md)
