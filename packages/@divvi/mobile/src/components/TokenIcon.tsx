@@ -1,9 +1,7 @@
 import React from 'react'
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import FastImage from 'react-native-fast-image'
-import { Token } from 'src/positions/types'
 import colors from 'src/styles/colors'
-import { BaseToken } from 'src/tokens/slice'
 
 export enum IconSize {
   XXSMALL = 'xxsmall',
@@ -53,21 +51,17 @@ const IconSizeToStyle = {
   },
 }
 
-interface Props {
-  token: BaseToken | Token
+interface Props<T extends { imageUrl?: string; symbol?: string | never; networkIconUrl?: string }> {
+  token: T
   viewStyle?: StyleProp<ViewStyle>
   testID?: string
   size?: IconSize
   showNetworkIcon?: boolean
 }
 
-export default function TokenIcon({
-  token,
-  viewStyle,
-  testID,
-  size = IconSize.MEDIUM,
-  showNetworkIcon = true,
-}: Props) {
+export default function TokenIcon<
+  T extends { imageUrl?: string; symbol?: string | never; networkIconUrl?: string },
+>({ token, viewStyle, testID, size = IconSize.MEDIUM, showNetworkIcon = true }: Props<T>) {
   const { tokenImageSize, networkImageSize, networkImagePosition, tokenTextSize } =
     IconSizeToStyle[size]
 
@@ -101,7 +95,7 @@ export default function TokenIcon({
           testID={testID ? `${testID}/DefaultTokenIcon` : 'DefaultTokenIcon'}
         >
           <Text style={[styles.tokenText, { fontSize: tokenTextSize }]} allowFontScaling={false}>
-            {token.symbol.substring(0, 4)}
+            {token.symbol?.substring(0, 4) ?? null}
           </Text>
         </View>
       )}
