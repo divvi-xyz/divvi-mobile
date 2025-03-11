@@ -153,12 +153,6 @@ export function* handleTransactionFeedV2ApiFulfilled(
       pendingStandbyTxs.some((standbyTx) => standbyTx.transactionHash === tx.transactionHash)
   )
 
-  Logger.debug(
-    TAG,
-    'handleTransactionFeedV2ApiFulfilled newlyCompletedCrossChainTxs',
-    newlyCompletedCrossChainTxs.length
-  )
-
   trackCompletionOfCrossChainTxs(state, newlyCompletedCrossChainTxs)
 
   yield* put(transactionsConfirmedFromFeedApi(action.payload.transactions))
@@ -189,7 +183,7 @@ function* handleTransactionReceiptReceived({
   feeCurrencyId?: string
   overrideStatus?: TransactionStatus
 }) {
-  const tokensById = yield* select((state) => tokensByIdSelector(state, [networkId]))
+  const tokensById = yield* select(tokensByIdSelector)
 
   const feeTokenInfo = feeCurrencyId && tokensById[feeCurrencyId]
 
@@ -251,7 +245,7 @@ function trackCompletionOfCrossChainTxs(
   state: RootState,
   transactions: (TokenExchange | DepositOrWithdraw)[]
 ) {
-  const tokensById = tokensByIdSelector(state, getSupportedNetworkIds())
+  const tokensById = tokensByIdSelector(state)
 
   for (const tx of transactions) {
     const networkFee = tx.fees.find((fee) => fee.type === FeeType.SecurityFee)

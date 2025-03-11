@@ -14,6 +14,7 @@ import { ErrorMessages } from 'src/app/ErrorMessages'
 import BackButton from 'src/components/BackButton'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
+import FeeInfoBottomSheet from 'src/components/FeeInfoBottomSheet'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
 import Toast from 'src/components/Toast'
 import TokenBottomSheet, { TokenPickerOrigin } from 'src/components/TokenBottomSheet'
@@ -36,7 +37,6 @@ import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
-import FeeInfoBottomSheet from 'src/swap/FeeInfoBottomSheet'
 import SwapAmountInput from 'src/swap/SwapAmountInput'
 import SwapTransactionDetails from 'src/swap/SwapTransactionDetails'
 import getCrossChainFee from 'src/swap/getCrossChainFee'
@@ -59,7 +59,6 @@ import { parseInputAmount } from 'src/utils/parsing'
 import { getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
 import { getSerializablePreparedTransactions } from 'src/viem/preparedTransactionSerialization'
 import networkConfig from 'src/web3/networkConfig'
-import { getSupportedNetworkIds } from 'src/web3/utils'
 import { v4 as uuidv4 } from 'uuid'
 
 const TAG = 'SwapScreen'
@@ -251,7 +250,7 @@ export function SwapScreen({ route }: Props) {
 
   const { swappableFromTokens, swappableToTokens, areSwapTokensShuffled } = useSwappableTokens()
 
-  const tokensById = useSelector((state) => tokensByIdSelector(state, getSupportedNetworkIds()))
+  const tokensById = useSelector(tokensByIdSelector)
 
   const initialFromTokenId = route.params?.fromTokenId
   const initialToTokenId = route.params?.toTokenId
@@ -1076,7 +1075,6 @@ export function SwapScreen({ route }: Props) {
         crossChainFee={crossChainFee}
         networkFee={networkFee}
         appFee={appFee}
-        fetchingSwapQuote={fetchingSwapQuote}
       />
       <Toast
         withBackdrop

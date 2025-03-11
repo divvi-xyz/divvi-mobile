@@ -53,7 +53,10 @@ describe('Support', () => {
       deepLinkUrlScheme: 'testapp',
       registryName: 'test',
       experimental: {
-        contactSupport: true,
+        zendeskConfig: {
+          apiKey: 'some-key',
+          projectName: 'test',
+        },
       },
     })
 

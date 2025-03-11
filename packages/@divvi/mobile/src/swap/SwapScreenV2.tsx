@@ -12,6 +12,7 @@ import { ErrorMessages } from 'src/app/ErrorMessages'
 import BackButton from 'src/components/BackButton'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
+import FeeInfoBottomSheet from 'src/components/FeeInfoBottomSheet'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
 import Toast from 'src/components/Toast'
 import TokenBottomSheet, { TokenPickerOrigin } from 'src/components/TokenBottomSheet'
@@ -38,7 +39,6 @@ import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
-import FeeInfoBottomSheet from 'src/swap/FeeInfoBottomSheet'
 import SwapTransactionDetails from 'src/swap/SwapTransactionDetails'
 import getCrossChainFee from 'src/swap/getCrossChainFee'
 import { getSwapTxsAnalyticsProperties } from 'src/swap/getSwapTxsAnalyticsProperties'
@@ -59,7 +59,6 @@ import Logger from 'src/utils/Logger'
 import { getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
 import { getSerializablePreparedTransactions } from 'src/viem/preparedTransactionSerialization'
 import networkConfig from 'src/web3/networkConfig'
-import { getSupportedNetworkIds } from 'src/web3/utils'
 import { v4 as uuidv4 } from 'uuid'
 
 const TAG = 'SwapScreen'
@@ -118,7 +117,7 @@ export default function SwapScreenV2({ route }: Props) {
 
   const currentSwap = useSelector(currentSwapSelector)
   const localCurrency = useSelector(getLocalCurrencyCode)
-  const tokensById = useSelector((state) => tokensByIdSelector(state, getSupportedNetworkIds()))
+  const tokensById = useSelector(tokensByIdSelector)
   const crossChainFeeCurrency = useSelector((state) =>
     feeCurrenciesSelector(state, fromToken?.networkId || networkConfig.defaultNetworkId)
   ).find((token) => token.isNative)
@@ -1015,7 +1014,6 @@ export default function SwapScreenV2({ route }: Props) {
         crossChainFee={crossChainFee}
         networkFee={networkFee}
         appFee={appFee}
-        fetchingSwapQuote={fetchingSwapQuote}
       />
       <Toast
         withBackdrop

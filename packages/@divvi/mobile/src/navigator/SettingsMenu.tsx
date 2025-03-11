@@ -145,7 +145,7 @@ export default function SettingsMenu({ route }: Props) {
   const { links } = getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.APP_CONFIG])
   const experimentalFeatures = getAppConfig().experimental
   const inviteFriendsEnabled = experimentalFeatures?.inviteFriends
-  const showHelp = !!experimentalFeatures?.contactSupport || !!links?.faq || !!links?.forum
+  const showHelp = !!experimentalFeatures?.zendeskConfig || !!links?.faq || !!links?.forum
 
   useEffect(() => {
     if (AppAnalytics.getSessionId() !== sessionId) {

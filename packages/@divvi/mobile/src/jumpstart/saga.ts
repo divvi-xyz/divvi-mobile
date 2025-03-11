@@ -97,7 +97,7 @@ export function* dispatchPendingERC20Transactions(
   networkId: NetworkId,
   transactionReceipts: TransactionReceipt[]
 ) {
-  const tokensById = yield* select((state) => tokensByIdSelector(state, [networkId]))
+  const tokensById = yield* select(tokensByIdSelector)
 
   for (const { transactionHash, logs } of transactionReceipts) {
     const parsedLogs = parseEventLogs({

@@ -225,7 +225,7 @@ function ReviewDetailsItemTokenValue(props: ReviewDetailsItemTokenValueProps) {
   return (
     <Trans
       i18nKey={props.approx ? 'tokenAndLocalAmountApprox' : 'tokenAndLocalAmount'}
-      context={props.tokenAmount?.gt(0) ? undefined : 'noFiatPrice'}
+      context={props.localAmount?.gt(0) ? undefined : 'noFiatPrice'}
       tOptions={{
         tokenAmount: formatValueToDisplay(props.tokenAmount),
         localAmount: props.localAmount ? formatValueToDisplay(props.localAmount) : '',

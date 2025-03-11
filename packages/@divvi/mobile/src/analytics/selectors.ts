@@ -19,12 +19,11 @@ import {
   positionsByBalanceUsdSelector,
   totalPositionsBalanceUsdSelector,
 } from 'src/positions/selectors'
-import { RootState } from 'src/redux/reducers'
 import { tokensListSelector, tokensWithTokenBalanceSelector } from 'src/tokens/selectors'
 import { sortByUsdBalance } from 'src/tokens/utils'
-import { NetworkId } from 'src/transactions/types'
 import { getRegionCodeFromCountryCode } from 'src/utils/phoneNumbers'
 import { rawWalletAddressSelector } from 'src/web3/selectors'
+import { getSupportedNetworkIds } from 'src/web3/utils'
 
 function toPascalCase(str: string) {
   const camelCaseStr = camelCase(str)
@@ -94,7 +93,6 @@ export const getCurrentUserTraits = createSelector(
     backupCompletedSelector,
     pincodeTypeSelector,
     pointsBalanceSelector,
-    (_state: RootState, networkIds: NetworkId[]) => networkIds,
   ],
   (
     rawWalletAddress,
@@ -114,11 +112,11 @@ export const getCurrentUserTraits = createSelector(
     numberVerifiedCentralized,
     hasCompletedBackup,
     pincodeType,
-    pointsBalance,
-    networkIds
+    pointsBalance
   ) => {
     const feeTokenIds = new Set(feeTokens.map(({ tokenId }) => tokenId))
     const tokensByUsdBalance = tokensWithBalance.sort(sortByUsdBalance)
+    const networkIds = getSupportedNetworkIds()
 
     let totalBalanceUsd = new BigNumber(0)
     const totalBalanceUsdByNetworkIdBigNumber: Record<string, BigNumber> = Object.fromEntries(

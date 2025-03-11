@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import BottomSheet from 'src/components/BottomSheet'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
+import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 
 export default function InfoBottomSheet(props: {
@@ -30,9 +31,30 @@ export default function InfoBottomSheet(props: {
   )
 }
 
+export function InfoBottomSheetHeading(props: { children: ReactNode }) {
+  return <Text style={styles.heading}>{props.children}</Text>
+}
+
+export function InfoBottomSheetParagraph(props: { children: ReactNode }) {
+  return <Text style={styles.paragraph}>{props.children}</Text>
+}
+
+export function InfoBottomSheetContentBlock(props: { children: ReactNode }) {
+  return <View style={styles.contentBlock}>{props.children}</View>
+}
+
 const styles = StyleSheet.create({
   content: {
-    gap: Spacing.Smallest8,
+    gap: Spacing.Thick24,
     marginBottom: Spacing.Thick24,
+  },
+  heading: {
+    ...typeScale.labelSemiBoldSmall,
+  },
+  paragraph: {
+    ...typeScale.bodySmall,
+  },
+  contentBlock: {
+    gap: Spacing.Smallest8,
   },
 })

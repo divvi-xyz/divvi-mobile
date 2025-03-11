@@ -80,8 +80,7 @@ export default function EarnHome({ navigation, route }: Props) {
     paddingBottom: Math.max(insets.bottom, Spacing.Regular16),
   }
 
-  const supportedNetworkIds = [...new Set(pools.map((pool) => pool.networkId))]
-  const allTokens = useSelector((state) => tokensByIdSelector(state, supportedNetworkIds))
+  const allTokens = useSelector(tokensByIdSelector)
 
   // Scroll Aware Header
   const scrollPosition = useSharedValue(0)

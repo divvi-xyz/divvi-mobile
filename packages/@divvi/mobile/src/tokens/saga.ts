@@ -87,7 +87,7 @@ export function* fetchTokenBalancesSaga() {
     SentryTransactionHub.startTransaction(SentryTransaction.fetch_balances)
 
     const supportedNetworks = getSupportedNetworkIds()
-    const importedTokens = yield* select(importedTokensSelector, supportedNetworks)
+    const importedTokens = yield* select(importedTokensSelector)
     const networkIconByNetworkId = yield* select(networksIconSelector)
 
     const supportedTokens = yield* call(getTokensInfo, supportedNetworks)
@@ -146,25 +146,20 @@ export function tokenAmountInSmallestUnit(amount: BigNumber, decimals: number): 
 }
 
 export function* getTokenInfo(tokenId: string) {
-  const networkIds = Object.values(networkConfig.networkToNetworkId)
   const tokens = yield* select((state) =>
-    tokensByIdSelector(state, { networkIds, includePositionTokens: true })
+    tokensByIdSelector(state, { includePositionTokens: true })
   )
   return tokens[tokenId]
 }
 
 export function* watchAccountFundedOrLiquidated() {
   let prevTokenBalance
-  let prevNetworkIds: Set<NetworkId> = new Set()
   while (true) {
     // we reset the usd value of all token balances to 0 if the exchange rate is
     // stale, so it is okay to use stale token prices to monitor the account
     // funded / liquidated status in this case
-    const supportedNetworkIds = getSupportedNetworkIds()
-    const supportedNetworkIdsSet = new Set(supportedNetworkIds)
     const tokenBalance: ReturnType<typeof lastKnownTokenBalancesSelector> = yield* select(
-      lastKnownTokenBalancesSelector,
-      supportedNetworkIds
+      lastKnownTokenBalancesSelector
     )
 
     if (tokenBalance !== null && tokenBalance !== prevTokenBalance) {
@@ -174,29 +169,14 @@ export function* watchAccountFundedOrLiquidated() {
         const isAccountFundedBefore = prevTokenBalance?.gt(DOLLAR_MIN_AMOUNT_ACCOUNT_FUNDED)
         const isAccountFundedAfter = tokenBalance?.gt(DOLLAR_MIN_AMOUNT_ACCOUNT_FUNDED)
 
-        if (
-          isAccountFundedBefore &&
-          !isAccountFundedAfter &&
-          // check network ID consistency to avoid false positive for liquidated event
-          // if supportedNetworkIds is missing a network ID that is in prevNetworkIds,
-          // tokens from that network are missing from tokenBalance but may not have been liquidated
-          [...prevNetworkIds].every((value) => supportedNetworkIdsSet.has(value))
-        ) {
+        if (isAccountFundedBefore && !isAccountFundedAfter) {
           AppAnalytics.track(AppEvents.account_liquidated)
-        } else if (
-          !isAccountFundedBefore &&
-          isAccountFundedAfter &&
-          // check network ID consistency to avoid false positive for liquidated event
-          // if prevNetworkIds is missing a network ID that is in supportedNetworkIds,
-          // tokens from that added network will now contribute to tokenBalance, even if there wasn't a funding event
-          supportedNetworkIds.every((value) => prevNetworkIds.has(value))
-        ) {
+        } else if (!isAccountFundedBefore && isAccountFundedAfter) {
           AppAnalytics.track(AppEvents.account_funded)
         }
       }
 
       prevTokenBalance = tokenBalance
-      prevNetworkIds = supportedNetworkIdsSet
     }
 
     yield* take()

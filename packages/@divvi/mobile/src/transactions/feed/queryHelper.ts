@@ -449,7 +449,7 @@ async function queryTransactionsFeed({
 }
 
 function trackCrossChainSwapSuccess(tx: TokenExchange) {
-  const tokensById = tokensByIdSelector(store.getState(), getSupportedNetworkIds())
+  const tokensById = tokensByIdSelector(store.getState())
 
   const toTokenPrice = tokensById[tx.inAmount.tokenId]?.priceUsd
   const fromTokenPrice = tokensById[tx.outAmount.tokenId]?.priceUsd
