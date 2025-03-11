@@ -248,6 +248,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             localAmount={networkFee.localAmount}
             tokenInfo={networkFee.token}
             localCurrencySymbol={localCurrencySymbol}
+            onInfoPress={() => feeBottomSheetRef.current?.snapToIndex(0)}
           />
 
           <ReviewDetailsItem
@@ -262,6 +263,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             feeTokenAmount={networkFee.amount}
             feeLocalAmount={networkFee.localAmount}
             localCurrencySymbol={localCurrencySymbol}
+            onInfoPress={() => totalBottomSheetRef.current?.snapToIndex(0)}
           />
         </ReviewDetails>
       </ReviewContent>
@@ -311,6 +313,9 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             type="token-amount"
             testID="TotalInfoBottomSheet/Fees"
             label={t('fees')}
+            caption={isGasSubsidized ? t('gasSubsidized') : undefined}
+            captionColor={isGasSubsidized ? themeColors.accent : undefined}
+            strikeThrough={isGasSubsidized}
             tokenAmount={networkFee.amount}
             localAmount={networkFee.localAmount}
             tokenInfo={networkFee.token}
