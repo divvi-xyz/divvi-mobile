@@ -37,7 +37,7 @@ import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import Logger from 'src/utils/Logger'
 import { getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
 import {
-  getDeserializedPossibleTransaction,
+  getPreparedTransactionsPossible,
   getSerializablePreparedTransaction,
 } from 'src/viem/preparedTransactionSerialization'
 import { walletAddressSelector } from 'src/web3/selectors'
@@ -54,7 +54,7 @@ function usePreparedTransaction(params: Props['route']['params']) {
 
   const deserializedTx = useMemo(() => {
     return params.prepareTransactionsResult
-      ? getDeserializedPossibleTransaction(params.prepareTransactionsResult)
+      ? getPreparedTransactionsPossible(params.prepareTransactionsResult)
       : null
   }, [params.prepareTransactionsResult])
 

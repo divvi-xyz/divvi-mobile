@@ -4,9 +4,9 @@ import { TokenBalance } from 'src/tokens/slice'
 import {
   convertLocalToTokenAmount,
   convertTokenToLocalAmount,
-  getDeserializedTokenBalance,
   getHigherBalanceCurrency,
   getSerializableTokenBalance,
+  getTokenBalance,
   getTokenId,
   isHistoricalPriceUpdated,
   sortFirstStableThenCeloThenOthersByUsdBalance,
@@ -242,7 +242,7 @@ describe(isHistoricalPriceUpdated, () => {
         historicalPricesUsd: {
           lastDay: {
             at: Date.now() - ONE_DAY_IN_MILLIS - 2 * ONE_HOUR_IN_MILLIS,
-            price: new BigNumber(0),
+            price: '0',
           },
         },
       })
@@ -256,7 +256,7 @@ describe(isHistoricalPriceUpdated, () => {
         historicalPricesUsd: {
           lastDay: {
             at: Date.now() - ONE_DAY_IN_MILLIS,
-            price: new BigNumber(0),
+            price: '0',
           },
         },
       })
@@ -270,7 +270,7 @@ describe(isHistoricalPriceUpdated, () => {
         historicalPricesUsd: {
           lastDay: {
             at: Date.now() - ONE_DAY_IN_MILLIS - ONE_HOUR_IN_MILLIS / 2,
-            price: new BigNumber(0),
+            price: '0',
           },
         },
       })
@@ -284,7 +284,7 @@ describe(isHistoricalPriceUpdated, () => {
         historicalPricesUsd: {
           lastDay: {
             at: Date.now() - ONE_DAY_IN_MILLIS + ONE_HOUR_IN_MILLIS / 2,
-            price: new BigNumber(0),
+            price: '0',
           },
         },
       })
@@ -303,9 +303,9 @@ describe(getSerializableTokenBalance, () => {
   })
 })
 
-describe(getDeserializedTokenBalance, () => {
+describe(getTokenBalance, () => {
   it('deserializes TokenBalance correctly', () => {
-    const deserialized = getDeserializedTokenBalance({
+    const deserialized = getTokenBalance({
       address: mockTokenBalance.address,
       tokenId: mockTokenBalance.tokenId,
       networkId: mockTokenBalance.networkId,

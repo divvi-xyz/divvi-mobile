@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import type { PreparedTransactionsPossible } from 'src/public'
-import { getDeserializedTokenBalance, getSerializableTokenBalance } from 'src/tokens/utils'
+import { getSerializableTokenBalance, getTokenBalance } from 'src/tokens/utils'
 import { NetworkId } from 'src/transactions/types'
 import {
-  getDeserializedPossibleTransaction,
   getPreparedTransactions,
+  getPreparedTransactionsPossible,
   getSerializablePreparedTransactions,
   getSerializablePreparedTransactionsPossible,
   type SerializablePreparedTransactionsPossible,
@@ -156,7 +156,7 @@ describe(getSerializablePreparedTransactionsPossible, () => {
   })
 })
 
-describe(getDeserializedPossibleTransaction, () => {
+describe(getPreparedTransactionsPossible, () => {
   const serializedPossibleTransaction: SerializablePreparedTransactionsPossible = {
     type: 'possible',
     transactions: [
@@ -173,7 +173,7 @@ describe(getDeserializedPossibleTransaction, () => {
   }
 
   it('should deserialize possible transaction by converting string fields back to bigint', () => {
-    const deserialized = getDeserializedPossibleTransaction(serializedPossibleTransaction)
+    const deserialized = getPreparedTransactionsPossible(serializedPossibleTransaction)
     expect(deserialized).toEqual({
       type: 'possible',
       transactions: [
@@ -186,7 +186,7 @@ describe(getDeserializedPossibleTransaction, () => {
           maxPriorityFeePerGas: BigInt(1011),
         },
       ],
-      feeCurrency: getDeserializedTokenBalance(serializedPossibleTransaction.feeCurrency),
+      feeCurrency: getTokenBalance(serializedPossibleTransaction.feeCurrency),
     })
   })
 })

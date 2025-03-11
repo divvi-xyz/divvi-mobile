@@ -12,8 +12,8 @@ import { sendPayment } from 'src/send/actions'
 import { usePrepareSendTransactions } from 'src/send/usePrepareSendTransactions'
 import { PreparedTransactionsPossible } from 'src/viem/prepareTransactions'
 import {
-  getSerializablePossibleTransaction,
   getSerializablePreparedTransaction,
+  getSerializablePreparedTransactionsPossible,
 } from 'src/viem/preparedTransactionSerialization'
 import { RecursivePartial, createMockStore, getMockStackScreenProps } from 'test/utils'
 import {
@@ -71,7 +71,7 @@ const mockBaseScreenProps = {
 
 const mockSendConfirmationProps = getMockStackScreenProps(Screens.SendConfirmation, {
   ...mockBaseScreenProps,
-  prepareTransactionsResult: getSerializablePossibleTransaction(
+  prepareTransactionsResult: getSerializablePreparedTransactionsPossible(
     mockPrepareTransactionsResultPossible
   ),
 })
