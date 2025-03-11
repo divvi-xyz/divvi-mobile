@@ -1,6 +1,5 @@
 import OtaClient from '@crowdin/ota-client'
 import i18n from 'i18next'
-import _ from 'lodash'
 import DeviceInfo from 'react-native-device-info'
 import { CROWDIN_DISTRIBUTION_HASH, ENABLE_OTA_TRANSLATIONS } from 'src/config'
 import { saveOtaTranslations } from 'src/i18n/otaTranslations'
@@ -39,13 +38,12 @@ export function* handleFetchOtaTranslations() {
         lastFetchTime !== timestamp ||
         DeviceInfo.getVersion() !== lastFetchAppVersion
       ) {
-        const languageMappings = yield* call([otaClient, otaClient.getLanguageMappings])
-        const customMappedLanguage = _.findKey(languageMappings, { locale: currentLanguage })
+        yield* call([otaClient, otaClient.setCurrentLocale], currentLanguage)
 
         const translations = yield* call(
           [otaClient, otaClient.getStringsByLocale],
           undefined,
-          customMappedLanguage || currentLanguage
+          currentLanguage
         )
         i18n.addResourceBundle(currentLanguage, 'translation', translations, true, true)
 
