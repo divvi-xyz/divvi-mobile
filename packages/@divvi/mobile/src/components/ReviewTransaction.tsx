@@ -85,13 +85,17 @@ export function ReviewSummaryItem(props: {
             >
               {props.primaryValue}
             </Text>
+
             {!!props.secondaryValue && (
-              <Text
-                style={styles.reviewSummaryItemSecondaryValue}
-                testID={`${props.testID}/SecondaryValue`}
-              >
-                {props.secondaryValue}
-              </Text>
+              <View style={styles.reviewSummaryItemSecondaryValueWrapper}>
+                <Text
+                  style={styles.reviewSummaryItemSecondaryValue}
+                  testID={`${props.testID}/SecondaryValue`}
+                >
+                  {props.secondaryValue}
+                </Text>
+                {!!props.onPress && <InfoIcon size={14} color={colors.contentSecondary} />}
+              </View>
             )}
           </View>
         </>
@@ -230,7 +234,10 @@ export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
       </View>
 
       {!!caption && (
-        <Text style={[styles.reviewDetailsItemCaption, { color: captionColor || color }]}>
+        <Text
+          style={[styles.reviewDetailsItemCaption, { color: captionColor || color }]}
+          testID={`${testID}/Caption`}
+        >
           {caption}
         </Text>
       )}
@@ -440,6 +447,11 @@ const styles = StyleSheet.create({
   reviewSummaryItemSecondaryValue: {
     ...typeScale.bodySmall,
     color: colors.contentSecondary,
+  },
+  reviewSummaryItemSecondaryValueWrapper: {
+    flexDirection: 'row',
+    gap: Spacing.Smallest8,
+    alignItems: 'center',
   },
   reviewDetails: {
     gap: Spacing.Regular16,

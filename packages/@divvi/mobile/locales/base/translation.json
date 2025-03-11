@@ -2641,7 +2641,7 @@
     "depositConfirmation": {
       "title": "Review Deposit",
       "depositing": "Depositing",
-      "into": "Into a{n}",
+      "into": "Into",
       "pool": "{{providerName}} Pool",
       "yieldRate": "{{apy}}% est. yield rate",
       "swapAndDeposit": "Swap & Deposit",
@@ -2895,6 +2895,7 @@
   "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "More information",
   "breakdown": "Breakdown",
+  "gasSubsidized": "Fees are covered for a limited time",
   "feeInfoBottomSheet": {
     "feesInfo_sameChain": "The network fee is required by the network to process the transaction.",
     "feesInfo_crossChain": "The network fee is required by the network to process the transaction. The cross-chain fee is charged by the cross-chain provider.",
