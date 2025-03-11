@@ -15,7 +15,7 @@ import { safely } from 'src/utils/safely'
 import { call, put, select, spawn, takeLatest } from 'typed-redux-saga'
 
 const TAG = 'i18n/saga'
-const otaClient = new OtaClient(CROWDIN_DISTRIBUTION_HASH)
+const DEFAULT_LANG_CODE = 'en-US'
 const allowOtaTranslations = ENABLE_OTA_TRANSLATIONS
 
 export function* handleFetchOtaTranslations() {
@@ -28,6 +28,9 @@ export function* handleFetchOtaTranslations() {
         return
       }
 
+      const otaClient = new OtaClient(CROWDIN_DISTRIBUTION_HASH, {
+        languageCode: DEFAULT_LANG_CODE,
+      })
       const lastFetchLanguage = yield* select(otaTranslationsLanguageSelector)
       const lastFetchTime = yield* select(otaTranslationsLastUpdateSelector)
       const timestamp = yield* call([otaClient, otaClient.getManifestTimestamp])
@@ -38,8 +41,6 @@ export function* handleFetchOtaTranslations() {
         lastFetchTime !== timestamp ||
         DeviceInfo.getVersion() !== lastFetchAppVersion
       ) {
-        yield* call([otaClient, otaClient.setCurrentLocale], currentLanguage)
-
         const translations = yield* call(
           [otaClient, otaClient.getStringsByLocale],
           undefined,
