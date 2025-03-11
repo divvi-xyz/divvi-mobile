@@ -153,12 +153,6 @@ export function* handleTransactionFeedV2ApiFulfilled(
       pendingStandbyTxs.some((standbyTx) => standbyTx.transactionHash === tx.transactionHash)
   )
 
-  Logger.debug(
-    TAG,
-    'handleTransactionFeedV2ApiFulfilled newlyCompletedCrossChainTxs',
-    newlyCompletedCrossChainTxs.length
-  )
-
   trackCompletionOfCrossChainTxs(state, newlyCompletedCrossChainTxs)
 
   yield* put(transactionsConfirmedFromFeedApi(action.payload.transactions))
