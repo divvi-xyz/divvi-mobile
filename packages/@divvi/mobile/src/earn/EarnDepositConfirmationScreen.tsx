@@ -233,7 +233,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             strikeThrough={isGasSubsidized}
             testID="EarnDepositConfirmationFee"
             type="token-amount"
-            label={!!(swapAppFee || crossChainFee) ? t('fees') : t('networkFee')}
+            label={swapAppFee || crossChainFee ? t('fees') : t('networkFee')}
             color={themeColors.contentSecondary}
             tokenAmount={networkFee.amount}
             localAmount={networkFee.localAmount}

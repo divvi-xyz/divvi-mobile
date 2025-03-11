@@ -8,11 +8,15 @@ import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
 import EarnDepositConfirmationScreen, {
   useCommonAnalyticsProperties,
+  useCrossChainFee,
   useDepositAmount,
+  useNetworkFee,
+  useSwapAppFee,
 } from 'src/earn/EarnDepositConfirmationScreen'
 import { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import type { PreparedTransactionsPossible } from 'src/public'
+import { NETWORK_NAMES } from 'src/shared/conts'
 import { NetworkId } from 'src/transactions/types'
 import { createMockStore, getMockStackScreenProps } from 'test/utils'
 import {
@@ -159,6 +163,16 @@ describe('EarnDepositConfirmationScreen', () => {
       depositTokenAmount: '100',
       depositLocalAmount: '133',
       swapType: undefined,
+      tokenNetworkFeeAmount: '0.000006',
+      localNetworkFeeAmount: '0.01197',
+      tokenMaxNetworkFeeAmount: '0.000006',
+      swapAppFeeAmount: undefined,
+      crossChainFeeAmount: undefined,
+      crossChainMaxFeeAmount: undefined,
+      feesLabel: 'networkFee',
+      feesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      totalFeesValue: 'localAmountApprox, {"localAmount":"133.01","localCurrencySymbol":"₱"}',
     },
     {
       testName: 'same chain swap & deposit',
@@ -169,6 +183,17 @@ describe('EarnDepositConfirmationScreen', () => {
       depositTokenAmount: '99.999',
       depositLocalAmount: '132.99867',
       swapType: 'same-chain',
+      tokenNetworkFeeAmount: '0.000006',
+      localNetworkFeeAmount: '0.01197',
+      tokenMaxNetworkFeeAmount: '0.000006',
+      swapAppFeeAmount: '0.000246',
+      crossChainFeeAmount: undefined,
+      crossChainMaxFeeAmount: undefined,
+      feesLabel: 'fees',
+      feesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      totalFeesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"100.00","localAmount":"133.01","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
     },
     {
       testName: 'cross chain swap & deposit',
@@ -179,6 +204,17 @@ describe('EarnDepositConfirmationScreen', () => {
       depositTokenAmount: '99.999',
       depositLocalAmount: '132.99867',
       swapType: 'cross-chain',
+      tokenNetworkFeeAmount: '0.000006',
+      localNetworkFeeAmount: '0.0001057418295357891176266032',
+      tokenMaxNetworkFeeAmount: '0.000006',
+      swapAppFeeAmount: '0.000246',
+      crossChainFeeAmount: '5e-20',
+      crossChainMaxFeeAmount: '1e-19',
+      feesLabel: 'fees',
+      feesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.00011","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+      totalFeesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"100.00","localAmount":"133.00","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
     },
   ])(
     '$testName',
@@ -190,6 +226,15 @@ describe('EarnDepositConfirmationScreen', () => {
       depositTokenAmount,
       depositLocalAmount,
       swapType,
+      tokenNetworkFeeAmount,
+      localNetworkFeeAmount,
+      tokenMaxNetworkFeeAmount,
+      swapAppFeeAmount,
+      crossChainFeeAmount,
+      crossChainMaxFeeAmount,
+      feesLabel,
+      feesValue,
+      totalFeesValue,
     }) => {
       const fromNetworkId =
         swapType === 'cross-chain' ? NetworkId['celo-alfajores'] : NetworkId['arbitrum-sepolia']
@@ -207,6 +252,27 @@ describe('EarnDepositConfirmationScreen', () => {
         const { result } = renderHook(() => useDepositAmount(props), { wrapper: HookWrapper })
         expect(result.current.tokenAmount.toString()).toEqual(depositTokenAmount)
         expect(result.current.localAmount?.toString()).toEqual(depositLocalAmount)
+      })
+
+      it('useNetworkFee properly calculates network fee in token and fiat', () => {
+        const { result } = renderHook(() => useNetworkFee(props), { wrapper: HookWrapper })
+        expect(result.current.amount.toString()).toEqual(tokenNetworkFeeAmount)
+        expect(result.current.localAmount?.toString()).toEqual(localNetworkFeeAmount)
+        expect(result.current.maxAmount?.toString()).toEqual(tokenMaxNetworkFeeAmount)
+      })
+
+      it('useSwapAppFee properly calculates swap app fee in token and fiat', () => {
+        const { result } = renderHook(() => useSwapAppFee(props), { wrapper: HookWrapper })
+        expect(result.current?.amount.toString()).toEqual(swapAppFeeAmount)
+        expect(result.current?.percentage?.toString()).toEqual(
+          props.swapTransaction?.appFeePercentageIncludedInPrice
+        )
+      })
+
+      it('useCrossChainFee properly calculates cross chain fee in token and fiat', () => {
+        const { result } = renderHook(() => useCrossChainFee(props), { wrapper: HookWrapper })
+        expect(result.current?.amount.toString()).toEqual(crossChainFeeAmount)
+        expect(result.current?.maxAmount?.toString()).toEqual(crossChainMaxFeeAmount)
       })
 
       it('useCommonAnalyticsProperties properly formats common analytics properties', () => {
@@ -296,6 +362,20 @@ describe('EarnDepositConfirmationScreen', () => {
             'earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapDescription'
           )
         }
+
+        // details items
+        expect(getByTestId('EarnDepositConfirmationNetwork/Label')).toHaveTextContent(
+          'transactionDetails.network'
+        )
+        expect(getByTestId('EarnDepositConfirmationNetwork/Value')).toHaveTextContent(
+          NETWORK_NAMES[props.inputTokenInfo.networkId]
+        )
+        expect(getByTestId('EarnDepositConfirmationFee/Label')).toHaveTextContent(feesLabel)
+        expect(getByTestId('EarnDepositConfirmationFee/Value')).toHaveTextContent(feesValue)
+        expect(getByTestId('EarnDepositConfirmationTotal/Label')).toHaveTextContent(
+          'reviewTransaction.totalPlusFees'
+        )
+        expect(getByTestId('EarnDepositConfirmationTotal/Value')).toHaveTextContent(totalFeesValue)
       })
 
       it('pressing cancel fires analytics event', () => {
