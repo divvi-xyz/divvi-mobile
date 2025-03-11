@@ -208,24 +208,30 @@ describe('FeeInfoBottomSheet', () => {
       networkFee: mockNetworkFee,
       appFee: undefined,
       crossChainFee: undefined,
+      footerDisclaimer: 'feeInfoBottomSheet.feesInfo, {"context":"sameChain"}',
     },
     {
       title: 'fees',
       networkFee: mockNetworkFee,
       appFee: mockAppFee,
       crossChainFee: undefined,
+      footerDisclaimer:
+        'feeInfoBottomSheet.feesInfo, {"context":"sameChainWithAppFee","appFeePercentage":"0.6"}',
     },
     {
       title: 'fees',
       networkFee: mockNetworkFee,
       appFee: undefined,
       crossChainFee: mockCrossChainFee,
+      footerDisclaimer: 'feeInfoBottomSheet.feesInfo, {"context":"crossChain"}',
     },
     {
       title: 'fees',
       networkFee: mockNetworkFee,
       appFee: mockAppFee,
       crossChainFee: mockCrossChainFee,
+      footerDisclaimer:
+        'feeInfoBottomSheet.feesInfo, {"context":"crossChainWithAppFee","appFeePercentage":"0.6"}',
     },
   ])('renders proper structure based on the present fees', (item) => {
     const { getByText, getByTestId } = render(
@@ -249,6 +255,9 @@ describe('FeeInfoBottomSheet', () => {
     )
 
     expect(getByText(item.title)).toBeTruthy()
+    expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
+      item.footerDisclaimer
+    )
     expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee')).toBeTruthy()
 
@@ -267,5 +276,32 @@ describe('FeeInfoBottomSheet', () => {
       // eslint-disable-next-line jest/no-conditional-expect
       expect(getByTestId('FeeInfoBottomSheet/MaxCrossChainFee')).toBeTruthy()
     }
+  })
+
+  it('renders current footer disclaimer', () => {
+    const { getByTestId } = render(
+      <Provider
+        store={createMockStore({
+          tokens: {
+            tokenBalances: {
+              [mockCusdTokenId]: { ...mockTokenBalances[mockCusdTokenId], priceUsd: '1.001' },
+              [mockCeloTokenId]: { ...mockTokenBalances[mockCeloTokenId], priceUsd: '0.5' },
+            },
+          },
+        })}
+      >
+        <FeeInfoBottomSheet
+          forwardedRef={{ current: null }}
+          networkFee={mockNetworkFee}
+          appFee={undefined}
+          crossChainFee={undefined}
+          footerDisclaimer="Custom Footer Disclaimer"
+        />
+      </Provider>
+    )
+
+    expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
+      'Custom Footer Disclaimer'
+    )
   })
 })

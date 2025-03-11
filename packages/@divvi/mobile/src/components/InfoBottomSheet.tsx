@@ -35,8 +35,12 @@ export function InfoBottomSheetHeading(props: { children: ReactNode }) {
   return <Text style={styles.heading}>{props.children}</Text>
 }
 
-export function InfoBottomSheetParagraph(props: { children: ReactNode }) {
-  return <Text style={styles.paragraph}>{props.children}</Text>
+export function InfoBottomSheetParagraph(props: { children: ReactNode; testID?: string }) {
+  return (
+    <Text style={styles.paragraph} testID={props.testID}>
+      {props.children}
+    </Text>
+  )
 }
 
 export function InfoBottomSheetContentBlock(props: { children: ReactNode; testID?: string }) {

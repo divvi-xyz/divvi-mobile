@@ -8,6 +8,7 @@ import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
 import BackButton from 'src/components/BackButton'
 import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
+import FeeInfoBottomSheet from 'src/components/FeeInfoBottomSheet'
 import InfoBottomSheet, {
   InfoBottomSheetContentBlock,
   InfoBottomSheetHeading,
@@ -152,7 +153,8 @@ export function useCommonAnalyticsProperties(
 }
 
 export default function EarnDepositConfirmationScreen({ route: { params } }: Props) {
-  const { inputTokenInfo, pool, mode, inputTokenAmount, preparedTransaction } = params
+  const { inputTokenInfo, pool, mode, inputTokenAmount, preparedTransaction, swapTransaction } =
+    params
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
@@ -163,6 +165,8 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
   const networkFee = useNetworkFee(params)
   const swapAppFee = useSwapAppFee(params)
   const crossChainFee = useCrossChainFee(params)
+  const feeBottomSheetRef = useRef<BottomSheetModalRefType>(null)
+  const totalBottomSheetRef = useRef<BottomSheetModalRefType>(null)
 
   function onPressProvider() {
     AppAnalytics.track(EarnEvents.earn_deposit_provider_info_press, commonAnalyticsProperties)
@@ -261,6 +265,74 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
           />
         </ReviewDetails>
       </ReviewContent>
+
+      <FeeInfoBottomSheet
+        forwardedRef={feeBottomSheetRef}
+        networkFee={networkFee}
+        appFee={swapAppFee}
+        crossChainFee={crossChainFee}
+        footerDisclaimer={
+          <Trans
+            i18nKey="earnFlow.depositConfirmation.description"
+            context={
+              swapAppFee
+                ? crossChainFee
+                  ? 'depositCrossChainWithSwapFee'
+                  : 'depositSwapFee'
+                : crossChainFee
+                  ? 'depositCrossChain'
+                  : 'deposit'
+            }
+            tOptions={{ appFeePercentage: swapTransaction?.appFeePercentageIncludedInPrice }}
+          />
+        }
+      />
+
+      <InfoBottomSheet
+        forwardedRef={totalBottomSheetRef}
+        title={t('reviewTransaction.totalPlusFees')}
+        testID="TotalInfoBottomSheet"
+      >
+        <InfoBottomSheetContentBlock>
+          <ReviewDetailsItem
+            fontSize="small"
+            type="token-amount"
+            testID="TotalInfoBottomSheet/Depositing"
+            label={t('earnFlow.depositConfirmation.depositing')}
+            tokenAmount={depositAmount.tokenAmount}
+            localAmount={depositAmount.localAmount}
+            tokenInfo={depositAmount.tokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+
+          <ReviewDetailsItem
+            approx
+            fontSize="small"
+            type="token-amount"
+            testID="TotalInfoBottomSheet/Fees"
+            label={t('fees')}
+            tokenAmount={networkFee.amount}
+            localAmount={networkFee.localAmount}
+            tokenInfo={networkFee.token}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+
+          <ReviewDetailsItem
+            approx
+            fontSize="small"
+            type="total-token-amount"
+            testID="TotalInfoBottomSheet/Total"
+            label={t('reviewTransaction.totalPlusFees')}
+            tokenInfo={inputTokenInfo}
+            feeTokenInfo={networkFee.token}
+            tokenAmount={depositAmount.tokenAmount}
+            localAmount={depositAmount.localAmount}
+            feeTokenAmount={networkFee.amount}
+            feeLocalAmount={networkFee.localAmount}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+        </InfoBottomSheetContentBlock>
+      </InfoBottomSheet>
     </ReviewTransaction>
   )
 }
