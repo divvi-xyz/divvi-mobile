@@ -638,10 +638,6 @@ function MainStackScreen() {
 
     setInitialRoute(initialRoute)
     Logger.info(`${TAG}@MainStackScreen`, `Initial route: ${initialRoute}`)
-
-    // Wait for next frame to avoid slight gap when hiding the
-    // TODO: make this work with the expo splash screen
-    // requestAnimationFrame(() => SplashScreen.hide())
   }, [])
 
   if (!initialRouteName) {
