@@ -234,7 +234,10 @@ export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
       </View>
 
       {!!caption && (
-        <Text style={[styles.reviewDetailsItemCaption, { color: captionColor || color }]}>
+        <Text
+          style={[styles.reviewDetailsItemCaption, { color: captionColor || color }]}
+          testID={`${testID}/Caption`}
+        >
           {caption}
         </Text>
       )}

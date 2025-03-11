@@ -13,6 +13,7 @@ import EarnDepositConfirmationScreen, {
   useNetworkFee,
   useSwapAppFee,
 } from 'src/earn/EarnDepositConfirmationScreen'
+import * as earnUtils from 'src/earn/utils'
 import { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import type { PreparedTransactionsPossible } from 'src/public'
@@ -429,6 +430,21 @@ describe('EarnDepositConfirmationScreen', () => {
           expectedAnalyticsProperties
         )
         expect(mockStore.getActions()).toEqual([openUrl(result, true)])
+      })
+
+      it('shows gas subsidized copy if feature gate is set', () => {
+        jest.spyOn(earnUtils, 'isGasSubsidizedForNetwork').mockReturnValue(true)
+        const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
+        const { getByTestId } = render(
+          <Provider store={mockStore}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, props)}
+            />
+          </Provider>
+        )
+
+        expect(getByTestId('EarnDepositConfirmationFee/Caption')).toHaveTextContent('gasSubsidized')
+        expect(earnUtils.isGasSubsidizedForNetwork).toHaveBeenCalledWith(fromNetworkId)
       })
     }
   )
