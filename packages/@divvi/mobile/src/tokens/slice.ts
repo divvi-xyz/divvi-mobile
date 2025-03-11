@@ -35,7 +35,7 @@ export interface BaseToken {
 
 interface HistoricalPricesUsd {
   lastDay: {
-    price: BigNumber.Value
+    price: string
     at: number
   }
 }
@@ -59,8 +59,8 @@ export interface TokenBalance extends BaseToken {
 }
 
 type SerializedBigNumber<T> = T extends BigNumber ? string : T
-export type SerializedTokenBalance = BaseToken & {
-  [K in Exclude<keyof TokenBalance, keyof BaseToken>]: SerializedBigNumber<TokenBalance[K]>
+export type SerializedTokenBalance = {
+  [K in keyof TokenBalance]: SerializedBigNumber<TokenBalance[K]>
 }
 
 // The "WithAddress" suffixed types are legacy types, for places in the wallet

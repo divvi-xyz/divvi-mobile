@@ -79,7 +79,7 @@ export type SerializablePreparedTransactionsPossible = Pick<
   feeCurrency: SerializedTokenBalance
 }
 
-export function getSerializablePossibleTransaction(
+export function getSerializablePreparedTransactionsPossible(
   possibleTransaction: PreparedTransactionsPossible
 ): SerializablePreparedTransactionsPossible {
   return {
@@ -89,7 +89,7 @@ export function getSerializablePossibleTransaction(
   }
 }
 
-export function getDeserializedPossibleTransaction(
+export function getPreparedTransactionsPossible(
   serializedTransaction: SerializablePreparedTransactionsPossible
 ): PreparedTransactionsPossible {
   return {

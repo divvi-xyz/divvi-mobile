@@ -5,8 +5,8 @@ import { NetworkId } from 'src/transactions/types'
 import {
   getDeserializedPossibleTransaction,
   getPreparedTransactions,
-  getSerializablePossibleTransaction,
   getSerializablePreparedTransactions,
+  getSerializablePreparedTransactionsPossible,
   type SerializablePreparedTransactionsPossible,
 } from 'src/viem/preparedTransactionSerialization'
 
@@ -122,7 +122,7 @@ describe(getPreparedTransactions, () => {
   })
 })
 
-describe(getSerializablePossibleTransaction, () => {
+describe(getSerializablePreparedTransactionsPossible, () => {
   const possibleTransaction: PreparedTransactionsPossible = {
     type: 'possible',
     transactions: [
@@ -138,7 +138,7 @@ describe(getSerializablePossibleTransaction, () => {
     feeCurrency: mockFeeCurrency,
   }
   it('should serialize possible transaction by converting bigint fields to strings', () => {
-    const serialized = getSerializablePossibleTransaction(possibleTransaction)
+    const serialized = getSerializablePreparedTransactionsPossible(possibleTransaction)
     expect(serialized).toEqual({
       type: 'possible',
       transactions: [

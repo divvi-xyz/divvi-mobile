@@ -196,20 +196,17 @@ export function isFeeCurrency(token: TokenBalance | undefined): token is TokenBa
 }
 
 export function getSerializableTokenBalance(tokenInfo: TokenBalance): SerializedTokenBalance {
-  const { balance, priceUsd, lastKnownPriceUsd, historicalPricesUsd, ...baseToken } = tokenInfo
+  const { balance, priceUsd, lastKnownPriceUsd, ...baseToken } = tokenInfo
 
   return {
     ...baseToken,
-    historicalPricesUsd,
     balance: balance.toString(),
     priceUsd: priceUsd?.toString() ?? null,
     lastKnownPriceUsd: lastKnownPriceUsd?.toString() ?? null,
   }
 }
 
-export function getDeserializedTokenBalance(
-  serializedTokenInfo: SerializedTokenBalance
-): TokenBalance {
+export function getTokenBalance(serializedTokenInfo: SerializedTokenBalance): TokenBalance {
   const { balance, priceUsd, lastKnownPriceUsd, ...baseToken } = serializedTokenInfo
 
   return {
