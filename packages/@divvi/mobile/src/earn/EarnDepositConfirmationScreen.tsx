@@ -169,6 +169,11 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
     providerUrl && dispatch(openUrl(providerUrl, true))
   }
 
+  if (!networkFee.token || !networkFee.amount.gt(0)) {
+    // should never happen since a possible prepared tx should include fee currency and amount
+    return null
+  }
+
   return (
     <ReviewTransaction
       title={t('earnFlow.depositConfirmation.title')}
