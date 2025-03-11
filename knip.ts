@@ -34,7 +34,6 @@ const config: KnipConfig = {
         // See https://github.com/webpro-nl/knip/pull/879
         'expo-build-properties', // used in app.json
         'expo-dev-client', // used in app.json
-        'expo-splash-screen', // used in app.json
         'expo-status-bar', // used in app.json
         '@config-plugins/detox', // used in app.json
         'babel-preset-expo', // not listed in package.json so we use the version used by expo
