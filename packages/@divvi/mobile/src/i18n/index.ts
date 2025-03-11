@@ -47,7 +47,7 @@ export async function initI18n(
   }
   const resources = getAvailableResources(cachedTranslations)
 
-  return i18n.use(initReactI18next).init({
+  const result = i18n.use(initReactI18next).init({
     fallbackLng: {
       default: [DEFAULT_APP_LANGUAGE],
       'es-US': ['es-LA'],
@@ -67,6 +67,16 @@ export async function initI18n(
       },
     },
   })
+
+  i18n.services.formatter?.addCached('getCorrectArticle', (lng) => {
+    if (lng !== 'en-US') return (val: string) => ''
+    return (val: string) => {
+      if (!val) return val
+      return /^[aeiouAEIOU]/.test(val) ? 'an' : 'a'
+    }
+  })
+
+  return result
 }
 
 // Disabling this for now as we have our own language selection within the app

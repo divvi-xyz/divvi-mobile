@@ -104,7 +104,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
 
           <ReviewSummaryItem
             testID="EarnDepositConfirmationPool"
-            label={t('earnFlow.depositConfirmation.into')}
+            label={t('earnFlow.depositConfirmation.into', { providerName: pool.appName })}
             onPress={providerUrl ? onPressProvider : undefined}
             icon={<TokenIcon token={pool.displayProps} />}
             primaryValue={t('earnFlow.depositConfirmation.pool', { providerName: pool.appName })}
