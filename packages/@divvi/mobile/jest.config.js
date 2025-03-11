@@ -38,6 +38,6 @@ module.exports = {
     '^.+\\.(txt)$': require.resolve('react-native/jest/assetFileTransformer.js'),
   },
   transformIgnorePatterns: [
-    'node_modules/(?!@?react-native|@react-navigation|@react-native-community|uuid|statsig-js|@react-native-firebase|react-navigation|redux-persist|date-fns|victory-*|@walletconnect/react-native-compat|react-redux|@segment/analytics-react-native/node_modules/uuid|redux-devtools-expo-dev-plugin|@redux-devtools|nanoid)',
+    'node_modules/(?!@?react-native|@react-navigation|@react-native-community|uuid|statsig-js|@react-native-firebase|react-navigation|redux-persist|date-fns|victory-*|@walletconnect/react-native-compat|react-redux|@segment/analytics-react-native/node_modules/uuid|redux-devtools-expo-dev-plugin|@redux-devtools|nanoid|expo)',
   ],
 }
