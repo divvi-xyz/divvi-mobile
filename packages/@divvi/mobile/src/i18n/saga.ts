@@ -1,11 +1,7 @@
 import OtaClient from '@crowdin/ota-client'
 import i18n from 'i18next'
 import DeviceInfo from 'react-native-device-info'
-import {
-  CROWDIN_DISTRIBUTION_HASH,
-  DEFAULT_APP_LANGUAGE,
-  ENABLE_OTA_TRANSLATIONS,
-} from 'src/config'
+import { CROWDIN_DISTRIBUTION_HASH, ENABLE_OTA_TRANSLATIONS } from 'src/config'
 import { saveOtaTranslations } from 'src/i18n/otaTranslations'
 import {
   currentLanguageSelector,
@@ -21,26 +17,6 @@ import { call, put, select, spawn, takeLatest } from 'typed-redux-saga'
 const TAG = 'i18n/saga'
 const allowOtaTranslations = ENABLE_OTA_TRANSLATIONS
 
-/**
- * List of supported language codes by Crowdin:
- * https://support.crowdin.com/developer/language-codes/
- */
-const CROWDING_LANG_CODE_MAPPINGS: Record<string, { langCode: string; osx_code?: string }> = {
-  'en-US': { langCode: 'en' },
-  'es-419': { langCode: 'es', osx_code: 'es-419.lproj' },
-  'pt-BR': { langCode: 'pt-BR' },
-  de: { langCode: 'de' },
-  'ru-RU': { langCode: 'ru' },
-  'fr-FR': { langCode: 'fr' },
-  'it-IT': { langCode: 'it' },
-  'uk-UA': { langCode: 'uk' },
-  'th-TH': { langCode: 'th' },
-  'tr-TR': { langCode: 'tr' },
-  'pl-PL': { langCode: 'pl' },
-  'vi-VN': { langCode: 'vi' },
-  'zh-CN': { langCode: 'zh-CN' },
-}
-
 export function* handleFetchOtaTranslations() {
   if (allowOtaTranslations) {
     try {
@@ -51,10 +27,26 @@ export function* handleFetchOtaTranslations() {
         return
       }
 
-      const customMappedLanguage = CROWDING_LANG_CODE_MAPPINGS[currentLanguage]?.langCode
-      const otaClient = new OtaClient(CROWDIN_DISTRIBUTION_HASH, {
-        languageCode: customMappedLanguage || currentLanguage || DEFAULT_APP_LANGUAGE,
-      })
+      const otaClient = new OtaClient(CROWDIN_DISTRIBUTION_HASH)
+      const crowdinContent = yield* call([otaClient, otaClient.getContent])
+
+      // note that the Crowdin language codes are different from the app
+      // language codes so we need to map them. unfortunately the mapping is not
+      // publically exposed so it is a little cumbersome, and we derive it from
+      // getContent
+      const translationPathRegex = new RegExp(`main/locales/${currentLanguage}/translation\\.json`)
+      const crowdinLanguageCode = Object.entries(crowdinContent).find(([_, paths]) =>
+        paths.some((path) => translationPathRegex.test(path))
+      )?.[0]
+
+      if (!crowdinLanguageCode) {
+        Logger.error(
+          `${TAG}@handleFetchOtaTranslations`,
+          `Failed to find Crowdin language code for app language ${currentLanguage}`
+        )
+        return
+      }
+
       const lastFetchLanguage = yield* select(otaTranslationsLanguageSelector)
       const lastFetchTime = yield* select(otaTranslationsLastUpdateSelector)
       const timestamp = yield* call([otaClient, otaClient.getManifestTimestamp])
@@ -65,7 +57,10 @@ export function* handleFetchOtaTranslations() {
         lastFetchTime !== timestamp ||
         DeviceInfo.getVersion() !== lastFetchAppVersion
       ) {
-        const translations = yield* call([otaClient, otaClient.getStringsByLocale])
+        const translations = yield* call(
+          [otaClient, otaClient.getStringsByLocale],
+          crowdinLanguageCode
+        )
         i18n.addResourceBundle(currentLanguage, 'translation', translations, true, true)
 
         yield* call(saveOtaTranslations, { [currentLanguage]: translations })
@@ -88,5 +83,6 @@ export function* watchOtaTranslations() {
 }
 
 export function* i18nSaga() {
+  yield* spawn(handleFetchOtaTranslations)
   yield* spawn(watchOtaTranslations)
 }
