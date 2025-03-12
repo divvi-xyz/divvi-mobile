@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:226](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L226)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:236](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L236)
 
 #### protocolIds
 
@@ -165,6 +165,30 @@ optional protectWallet: boolean;
 
 ```ts
 optional phoneNumberVerification: boolean;
+```
+
+#### tokens?
+
+```ts
+optional tokens: object;
+```
+
+##### tokens.enabledTokenIds
+
+```ts
+enabledTokenIds: string[];
+```
+
+##### tokens.overrides?
+
+```ts
+optional overrides: object;
+```
+
+###### Index Signature
+
+```ts
+[tokenId: string]: object
 ```
 
 #### transactions?
