@@ -82,6 +82,7 @@
     "@walletconnect/react-native-compat": "2.18.1",
     "@walletconnect/types": "2.18.1",
     "@walletconnect/utils": "2.18.1",
+    "axios": "^1.8.2",
     "cross-spawn": "^7.0.0",
     "elliptic": "^6.6.1",
     "expo": "52.0.23",
