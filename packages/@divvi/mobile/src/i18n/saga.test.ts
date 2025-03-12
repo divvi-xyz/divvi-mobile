@@ -16,7 +16,6 @@ import { otaTranslationsUpdated } from 'src/i18n/slice'
 jest.mock('@crowdin/ota-client', () => {
   return function () {
     return {
-      setCurrentLocale: jest.fn(),
       getManifestTimestamp: jest.fn(() => 123456),
       getStringsByLocale: jest.fn(() => ({
         someLang: { someNamespace: { someKey: 'someValue ' } },

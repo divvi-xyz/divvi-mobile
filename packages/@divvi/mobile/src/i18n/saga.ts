@@ -1,6 +1,6 @@
 import OtaClient from '@crowdin/ota-client'
 import i18n from 'i18next'
-import _ from 'lodash'
+import locales from 'locales'
 import DeviceInfo from 'react-native-device-info'
 import {
   CROWDIN_DISTRIBUTION_HASH,
@@ -32,22 +32,7 @@ export function* handleFetchOtaTranslations() {
         return
       }
 
-      const response = yield* call(
-        fetch,
-        `${OtaClient.BASE_URL}/${CROWDIN_DISTRIBUTION_HASH}/manifest.json`,
-        { method: 'GET', headers: { 'Content-Type': 'application/json' } }
-      )
-      const result = yield* call([response, 'json'])
-      const customMappedLanguage = _.findKey(
-        result && 'language_mapping' in result
-          ? result.language_mapping
-          : {
-              es: { locale: 'es-419', osx_code: 'es-419.lproj' },
-              de: { locale: 'de' },
-            },
-        { locale: currentLanguage }
-      )
-
+      const customMappedLanguage = locales[currentLanguage]?.crowdinConfig.langCode
       const otaClient = new OtaClient(CROWDIN_DISTRIBUTION_HASH, {
         languageCode: customMappedLanguage || currentLanguage || DEFAULT_APP_LANGUAGE,
       })
@@ -61,11 +46,7 @@ export function* handleFetchOtaTranslations() {
         lastFetchTime !== timestamp ||
         DeviceInfo.getVersion() !== lastFetchAppVersion
       ) {
-        const translations = yield* call(
-          [otaClient, otaClient.getStringsByLocale],
-          undefined,
-          customMappedLanguage || currentLanguage
-        )
+        const translations = yield* call([otaClient, otaClient.getStringsByLocale])
         i18n.addResourceBundle(currentLanguage, 'translation', translations, true, true)
 
         yield* call(saveOtaTranslations, { [currentLanguage]: translations })
