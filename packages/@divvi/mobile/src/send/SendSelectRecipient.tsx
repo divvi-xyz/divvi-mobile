@@ -114,11 +114,13 @@ function GetStartedSection() {
 
 const getStartedStyles = StyleSheet.create({
   container: {
-    backgroundColor: colors.backgroundTertiary,
+    backgroundColor: colors.backgroundSecondary,
     padding: Spacing.Thick24,
     margin: Spacing.Regular16,
     marginTop: Spacing.Large32,
     borderRadius: 10,
+    borderColor: colors.borderPrimary,
+    borderWidth: 1,
     gap: Spacing.Regular16,
   },
   subtitle: {

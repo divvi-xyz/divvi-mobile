@@ -624,8 +624,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 8,
     padding: 16,
-    backgroundColor: colors.backgroundTertiary,
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
+    borderColor: colors.borderPrimary,
+    borderWidth: 1,
   },
   amountSpentInfoText: {
     textAlign: 'center',

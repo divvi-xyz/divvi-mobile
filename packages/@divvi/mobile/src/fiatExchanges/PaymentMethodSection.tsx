@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.borderSecondary,
     paddingVertical: 16,
     paddingHorizontal: 16,
-    backgroundColor: colors.backgroundTertiary,
+    backgroundColor: colors.backgroundSecondary,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
