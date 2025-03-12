@@ -5,6 +5,8 @@ import {
   convertLocalToTokenAmount,
   convertTokenToLocalAmount,
   getHigherBalanceCurrency,
+  getSerializableTokenBalance,
+  getTokenBalance,
   getTokenId,
   isHistoricalPriceUpdated,
   sortFirstStableThenCeloThenOthersByUsdBalance,
@@ -14,6 +16,13 @@ import { Currency } from 'src/utils/currencies'
 import { ONE_DAY_IN_MILLIS, ONE_HOUR_IN_MILLIS } from 'src/utils/time'
 import networkConfig from 'src/web3/networkConfig'
 import { mockPoofTokenId, mockTokenBalances } from 'test/values'
+
+const mockTokenBalance: TokenBalance = {
+  ...mockTokenBalances[mockPoofTokenId],
+  balance: new BigNumber(0),
+  lastKnownPriceUsd: new BigNumber(0),
+  priceUsd: new BigNumber(0),
+}
 
 describe(getHigherBalanceCurrency, () => {
   const tokens = {
@@ -222,13 +231,6 @@ describe(getTokenId, () => {
 })
 
 describe(isHistoricalPriceUpdated, () => {
-  const mockTokenBalance: TokenBalance = {
-    ...mockTokenBalances[mockPoofTokenId],
-    balance: new BigNumber(0),
-    lastKnownPriceUsd: new BigNumber(0),
-    priceUsd: new BigNumber(0),
-  }
-
   it('returns false if no historical price is set', () => {
     expect(isHistoricalPriceUpdated(mockTokenBalance)).toEqual(false)
   })
@@ -240,7 +242,7 @@ describe(isHistoricalPriceUpdated, () => {
         historicalPricesUsd: {
           lastDay: {
             at: Date.now() - ONE_DAY_IN_MILLIS - 2 * ONE_HOUR_IN_MILLIS,
-            price: new BigNumber(0),
+            price: '0',
           },
         },
       })
@@ -254,7 +256,7 @@ describe(isHistoricalPriceUpdated, () => {
         historicalPricesUsd: {
           lastDay: {
             at: Date.now() - ONE_DAY_IN_MILLIS,
-            price: new BigNumber(0),
+            price: '0',
           },
         },
       })
@@ -268,7 +270,7 @@ describe(isHistoricalPriceUpdated, () => {
         historicalPricesUsd: {
           lastDay: {
             at: Date.now() - ONE_DAY_IN_MILLIS - ONE_HOUR_IN_MILLIS / 2,
-            price: new BigNumber(0),
+            price: '0',
           },
         },
       })
@@ -282,10 +284,47 @@ describe(isHistoricalPriceUpdated, () => {
         historicalPricesUsd: {
           lastDay: {
             at: Date.now() - ONE_DAY_IN_MILLIS + ONE_HOUR_IN_MILLIS / 2,
-            price: new BigNumber(0),
+            price: '0',
           },
         },
       })
     ).toEqual(true)
+  })
+})
+
+describe(getSerializableTokenBalance, () => {
+  it('serializes TokenBalance correctly', () => {
+    const serialized = getSerializableTokenBalance(mockTokenBalance)
+
+    expect(serialized.balance).toBe(mockTokenBalance.balance.toString())
+    expect(serialized.priceUsd).toBe(mockTokenBalance.priceUsd?.toString())
+    expect(serialized.lastKnownPriceUsd).toBe(mockTokenBalance.lastKnownPriceUsd?.toString())
+    expect(serialized.historicalPricesUsd).toBeUndefined()
+  })
+})
+
+describe(getTokenBalance, () => {
+  it('deserializes TokenBalance correctly', () => {
+    const deserialized = getTokenBalance({
+      address: mockTokenBalance.address,
+      tokenId: mockTokenBalance.tokenId,
+      networkId: mockTokenBalance.networkId,
+      symbol: mockTokenBalance.symbol,
+      imageUrl: mockTokenBalance.imageUrl,
+      name: mockTokenBalance.name,
+      decimals: mockTokenBalance.decimals,
+      priceFetchedAt: mockTokenBalance.priceFetchedAt,
+      balance: mockTokenBalance.balance.toString(),
+      priceUsd: mockTokenBalance.priceUsd!.toString(),
+      lastKnownPriceUsd: mockTokenBalance.lastKnownPriceUsd!.toString(),
+      historicalPricesUsd: undefined,
+    })
+
+    expect(deserialized.balance.isEqualTo(mockTokenBalance.balance)).toBe(true)
+    expect(deserialized.priceUsd?.isEqualTo(mockTokenBalance.priceUsd!)).toBe(true)
+    expect(deserialized.lastKnownPriceUsd?.isEqualTo(mockTokenBalance.lastKnownPriceUsd!)).toBe(
+      true
+    )
+    expect(deserialized.historicalPricesUsd).toBeUndefined()
   })
 })

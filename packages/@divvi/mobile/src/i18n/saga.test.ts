@@ -17,7 +17,6 @@ jest.mock('@crowdin/ota-client', () => {
   return function () {
     return {
       getManifestTimestamp: jest.fn(() => 123456),
-      getLanguageMappings: jest.fn(),
       getStringsByLocale: jest.fn(() => ({
         someLang: { someNamespace: { someKey: 'someValue ' } },
       })),

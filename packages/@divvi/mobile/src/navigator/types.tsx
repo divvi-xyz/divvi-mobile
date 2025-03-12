@@ -11,7 +11,7 @@ import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
 import { Screens } from 'src/navigator/Screens'
 import { Nft } from 'src/nfts/types'
 import { EarnPosition } from 'src/positions/types'
-import type { PreparedTransactionsPossible, PreparedTransactionsResult } from 'src/public'
+import type { PreparedTransactionsPossible } from 'src/public'
 import { Recipient } from 'src/recipients/recipient'
 import { QrCode, TransactionDataInput } from 'src/send/types'
 import type { SwapTransaction } from 'src/swap/types'
@@ -20,7 +20,10 @@ import { AssetTabType } from 'src/tokens/types'
 import { NetworkId, TokenTransaction, TokenTransfer } from 'src/transactions/types'
 import { Countries } from 'src/utils/Countries'
 import { Currency } from 'src/utils/currencies'
-import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
+import {
+  SerializableTransactionRequest,
+  type SerializablePreparedTransactionsPossible,
+} from 'src/viem/preparedTransactionSerialization'
 import { ActionRequestProps } from 'src/walletConnect/screens/ActionRequest'
 import { SessionRequestProps } from 'src/walletConnect/screens/SessionRequest'
 import { WalletConnectRequestType } from 'src/walletConnect/types'
@@ -37,7 +40,7 @@ interface SendConfirmationParams {
   origin: SendOrigin
   transactionData: TransactionDataInput
   isFromScan: boolean
-  prepareTransactionsResult?: PreparedTransactionsResult
+  prepareTransactionsResult?: SerializablePreparedTransactionsPossible
 }
 
 type SendEnterAmountParams = {
