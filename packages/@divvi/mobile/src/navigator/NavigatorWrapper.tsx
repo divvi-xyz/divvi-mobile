@@ -3,6 +3,7 @@ import { useLogger } from '@react-navigation/devtools'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
 import * as Sentry from '@sentry/react-native'
 import { SeverityLevel } from '@sentry/types'
+import * as SplashScreen from 'expo-splash-screen'
 import * as React from 'react'
 import { StyleSheet, View } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
@@ -37,6 +38,8 @@ import Logger from 'src/utils/Logger'
 import { userInSanctionedCountrySelector } from 'src/utils/countryFeatures'
 import { isVersionBelowMinimum } from 'src/utils/versionCheck'
 import { demoModeEnabledSelector } from 'src/web3/selectors'
+
+SplashScreen.preventAutoHideAsync().catch((e) => Logger.error('SplashSceen', e))
 
 // This uses RN Navigation's experimental nav state persistence
 // to improve the hot reloading experience when in DEV mode
@@ -168,6 +171,9 @@ export const NavigatorWrapper = () => {
   const onReady = () => {
     navigatorIsReadyRef.current = true
     sentryRoutingInstrumentation.registerNavigationContainer(navigationRef)
+    requestAnimationFrame(() =>
+      SplashScreen.hideAsync().catch((e) => Logger.error('SplashSceen', e))
+    )
   }
 
   return (
