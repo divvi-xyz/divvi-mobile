@@ -20,7 +20,7 @@ import TopBarTextButtonOnboarding from 'src/onboarding/TopBarTextButtonOnboardin
 import { useDispatch } from 'src/redux/hooks'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
-import { Shadow, Spacing } from 'src/styles/styles'
+import { Spacing } from 'src/styles/styles'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.ImportSelect>
 
@@ -38,7 +38,7 @@ function ActionCard({
   testID?: string
 }) {
   return (
-    <Card style={styles.card} rounded={true} shadow={Shadow.SoftLight} testID={testID}>
+    <Card style={styles.card} rounded={true} shadow={null} testID={testID}>
       <Touchable borderRadius={8} style={styles.touchable} onPress={onPress}>
         <>
           <View style={styles.topLine}>
@@ -89,7 +89,7 @@ export default function ImportSelect({ navigation }: Props) {
           <ActionCard
             title={t('importSelect.emailAndPhone.title')}
             description={t('importSelect.emailAndPhone.description')}
-            icon={<CloudCheck color={colors.successPrimary} />}
+            icon={<CloudCheck color={colors.contentPrimary} />}
             onPress={() =>
               navigate(Screens.SignInWithEmail, {
                 keylessBackupFlow: KeylessBackupFlow.Restore,
@@ -101,7 +101,7 @@ export default function ImportSelect({ navigation }: Props) {
           <ActionCard
             title={t('importSelect.recoveryPhrase.title')}
             description={t('importSelect.recoveryPhrase.description')}
-            icon={<Lock color={colors.successPrimary} />}
+            icon={<Lock color={colors.contentPrimary} />}
             onPress={() => navigate(Screens.ImportWallet, { clean: true })}
             testID="ImportSelect/Mnemonic"
           />
@@ -123,6 +123,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 0,
     backgroundColor: colors.backgroundSecondary,
+    borderWidth: 1,
+    borderColor: colors.borderPrimary,
   },
   cardDescription: {
     ...typeScale.bodySmall,
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     ...typeScale.labelMedium,
-    color: colors.successPrimary,
+    color: colors.contentPrimary,
     flex: 1,
   },
   safeArea: {
