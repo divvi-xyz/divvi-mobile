@@ -1,8 +1,11 @@
 import OtaClient from '@crowdin/ota-client'
 import i18n from 'i18next'
-import _ from 'lodash'
 import DeviceInfo from 'react-native-device-info'
-import { CROWDIN_DISTRIBUTION_HASH, ENABLE_OTA_TRANSLATIONS } from 'src/config'
+import {
+  CROWDIN_DISTRIBUTION_HASH,
+  DEFAULT_APP_LANGUAGE,
+  ENABLE_OTA_TRANSLATIONS,
+} from 'src/config'
 import { saveOtaTranslations } from 'src/i18n/otaTranslations'
 import {
   currentLanguageSelector,
@@ -16,8 +19,27 @@ import { safely } from 'src/utils/safely'
 import { call, put, select, spawn, takeLatest } from 'typed-redux-saga'
 
 const TAG = 'i18n/saga'
-const otaClient = new OtaClient(CROWDIN_DISTRIBUTION_HASH)
 const allowOtaTranslations = ENABLE_OTA_TRANSLATIONS
+
+/**
+ * List of supported language codes by Crowdin:
+ * https://support.crowdin.com/developer/language-codes/
+ */
+const CROWDING_LANG_CODE_MAPPINGS: Record<string, { langCode: string; osx_code?: string }> = {
+  'en-US': { langCode: 'en' },
+  'es-419': { langCode: 'es', osx_code: 'es-419.lproj' },
+  'pt-BR': { langCode: 'pt-BR' },
+  de: { langCode: 'de' },
+  'ru-RU': { langCode: 'ru' },
+  'fr-FR': { langCode: 'fr' },
+  'it-IT': { langCode: 'it' },
+  'uk-UA': { langCode: 'uk' },
+  'th-TH': { langCode: 'th' },
+  'tr-TR': { langCode: 'tr' },
+  'pl-PL': { langCode: 'pl' },
+  'vi-VN': { langCode: 'vi' },
+  'zh-CN': { langCode: 'zh-CN' },
+}
 
 export function* handleFetchOtaTranslations() {
   if (allowOtaTranslations) {
@@ -29,6 +51,10 @@ export function* handleFetchOtaTranslations() {
         return
       }
 
+      const customMappedLanguage = CROWDING_LANG_CODE_MAPPINGS[currentLanguage]?.langCode
+      const otaClient = new OtaClient(CROWDIN_DISTRIBUTION_HASH, {
+        languageCode: customMappedLanguage || currentLanguage || DEFAULT_APP_LANGUAGE,
+      })
       const lastFetchLanguage = yield* select(otaTranslationsLanguageSelector)
       const lastFetchTime = yield* select(otaTranslationsLastUpdateSelector)
       const timestamp = yield* call([otaClient, otaClient.getManifestTimestamp])
@@ -39,14 +65,7 @@ export function* handleFetchOtaTranslations() {
         lastFetchTime !== timestamp ||
         DeviceInfo.getVersion() !== lastFetchAppVersion
       ) {
-        const languageMappings = yield* call([otaClient, otaClient.getLanguageMappings])
-        const customMappedLanguage = _.findKey(languageMappings, { locale: currentLanguage })
-
-        const translations = yield* call(
-          [otaClient, otaClient.getStringsByLocale],
-          undefined,
-          customMappedLanguage || currentLanguage
-        )
+        const translations = yield* call([otaClient, otaClient.getStringsByLocale])
         i18n.addResourceBundle(currentLanguage, 'translation', translations, true, true)
 
         yield* call(saveOtaTranslations, { [currentLanguage]: translations })
