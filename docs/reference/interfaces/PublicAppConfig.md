@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:225](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L225)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:226](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L226)
 
 #### protocolIds
 
@@ -70,7 +70,7 @@ referrerId: string
 optional experimental: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:190](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L190)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:191](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L191)
 
 Experimental features that may change or be removed in future versions.
 These features are not part of the stable configuration API and should be used with caution.
@@ -331,6 +331,12 @@ optional networks: object;
 ```
 
 Defined in: [packages/@divvi/mobile/src/public/types.tsx:180](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L180)
+
+#### enabledNetworkIds?
+
+```ts
+optional enabledNetworkIds: NetworkId[];
+```
 
 ---
 
