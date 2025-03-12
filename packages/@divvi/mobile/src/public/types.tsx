@@ -220,6 +220,14 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
       projectName: string
     }
     phoneNumberVerification?: boolean
+    // list of tokens to display.
+    tokens?: string[]
+    // overrides for token metadata.
+    tokenOverrides?: {
+      [tokenId: string]: {
+        showZeroBalance?: boolean
+      }
+    }
   }
 
   divviProtocol?: {

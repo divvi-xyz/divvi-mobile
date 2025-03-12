@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
+import _ from 'lodash'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { AppEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import { DOLLAR_MIN_AMOUNT_ACCOUNT_FUNDED } from 'src/config'
 import { SentryTransactionHub } from 'src/sentry/SentryTransactionHub'
 import { SentryTransaction } from 'src/sentry/SentryTransactions'
@@ -65,6 +67,9 @@ export async function fetchTokenBalancesForAddressByTokenId(address: string) {
 }
 
 export async function getTokensInfo(supportedNetworks: NetworkId[]): Promise<StoredTokenBalances> {
+  const appConfig = getAppConfig()
+  const supportedTokens = appConfig.experimental?.tokens
+  const tokenOverrides = appConfig.experimental?.tokenOverrides ?? {}
   const response = await fetchWithTimeout(
     `${networkConfig.getTokensInfoUrl}?networkIds=${supportedNetworks.join(',')}`
   )
@@ -74,7 +79,15 @@ export async function getTokensInfo(supportedNetworks: NetworkId[]): Promise<Sto
       `Failure response fetching token info. ${response.status}  ${response.statusText}`
     )
   }
-  return await response.json()
+  let tokensInfo: StoredTokenBalances = await response.json()
+
+  if (supportedTokens) {
+    tokensInfo = Object.fromEntries(
+      Object.entries(tokensInfo).filter(([tokenId]) => supportedTokens.includes(tokenId))
+    )
+  }
+
+  return _.merge(tokensInfo, tokenOverrides)
 }
 
 export function* fetchTokenBalancesSaga() {
