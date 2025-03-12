@@ -6,6 +6,10 @@ interface Locales {
         name: string
         strings: any
         dateFns: Locale
+        /**
+         * List of supported language codes by Crowdin:
+         * https://support.crowdin.com/developer/language-codes/
+         */
         crowdinConfig: { langCode: string; osx_code?: string }
       }
     | undefined
