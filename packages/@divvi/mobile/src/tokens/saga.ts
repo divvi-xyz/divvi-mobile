@@ -68,8 +68,8 @@ export async function fetchTokenBalancesForAddressByTokenId(address: string) {
 
 export async function getTokensInfo(supportedNetworks: NetworkId[]): Promise<StoredTokenBalances> {
   const appConfig = getAppConfig()
-  const supportedTokens = appConfig.experimental?.tokens
-  const tokenOverrides = appConfig.experimental?.tokenOverrides ?? {}
+  const enabledTokenIds = appConfig.experimental?.tokens?.enabledTokenIds
+  const tokenOverrides = appConfig.experimental?.tokens?.overrides ?? {}
   const response = await fetchWithTimeout(
     `${networkConfig.getTokensInfoUrl}?networkIds=${supportedNetworks.join(',')}`
   )
@@ -81,9 +81,9 @@ export async function getTokensInfo(supportedNetworks: NetworkId[]): Promise<Sto
   }
   let tokensInfo: StoredTokenBalances = await response.json()
 
-  if (supportedTokens) {
+  if (enabledTokenIds) {
     tokensInfo = Object.fromEntries(
-      Object.entries(tokensInfo).filter(([tokenId]) => supportedTokens.includes(tokenId))
+      Object.entries(tokensInfo).filter(([tokenId]) => enabledTokenIds.includes(tokenId))
     )
   }
 

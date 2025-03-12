@@ -220,12 +220,14 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
       projectName: string
     }
     phoneNumberVerification?: boolean
-    // list of tokens to display.
-    tokens?: string[]
-    // overrides for token metadata.
-    tokenOverrides?: {
-      [tokenId: string]: {
-        showZeroBalance?: boolean
+    tokens?: {
+      // list of tokens to display.
+      enabledTokenIds: string[]
+      // overrides for token metadata.
+      overrides?: {
+        [tokenId: string]: {
+          showZeroBalance?: boolean
+        }
       }
     }
   }
