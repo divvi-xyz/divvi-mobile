@@ -1,6 +1,5 @@
 import OtaClient from '@crowdin/ota-client'
 import i18n from 'i18next'
-import locales from 'locales'
 import DeviceInfo from 'react-native-device-info'
 import {
   CROWDIN_DISTRIBUTION_HASH,
@@ -22,6 +21,26 @@ import { call, put, select, spawn, takeLatest } from 'typed-redux-saga'
 const TAG = 'i18n/saga'
 const allowOtaTranslations = ENABLE_OTA_TRANSLATIONS
 
+/**
+ * List of supported language codes by Crowdin:
+ * https://support.crowdin.com/developer/language-codes/
+ */
+const CROWDING_LANG_CODE_MAPPINGS: Record<string, { langCode: string; osx_code?: string }> = {
+  'en-US': { langCode: 'en' },
+  'es-419': { langCode: 'es', osx_code: 'es-419.lproj' },
+  'pt-BR': { langCode: 'pt-BR' },
+  de: { langCode: 'de' },
+  'ru-RU': { langCode: 'ru' },
+  'fr-FR': { langCode: 'fr' },
+  'it-IT': { langCode: 'it' },
+  'uk-UA': { langCode: 'uk' },
+  'th-TH': { langCode: 'th' },
+  'tr-TR': { langCode: 'tr' },
+  'pl-PL': { langCode: 'pl' },
+  'vi-VN': { langCode: 'vi' },
+  'zh-CN': { langCode: 'zh-CN' },
+}
+
 export function* handleFetchOtaTranslations() {
   if (allowOtaTranslations) {
     try {
@@ -32,7 +51,7 @@ export function* handleFetchOtaTranslations() {
         return
       }
 
-      const customMappedLanguage = locales[currentLanguage]?.crowdinConfig.langCode
+      const customMappedLanguage = CROWDING_LANG_CODE_MAPPINGS[currentLanguage]?.langCode
       const otaClient = new OtaClient(CROWDIN_DISTRIBUTION_HASH, {
         languageCode: customMappedLanguage || currentLanguage || DEFAULT_APP_LANGUAGE,
       })

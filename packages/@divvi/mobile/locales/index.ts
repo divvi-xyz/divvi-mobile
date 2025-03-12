@@ -6,11 +6,6 @@ interface Locales {
         name: string
         strings: any
         dateFns: Locale
-        /**
-         * List of supported language codes by Crowdin:
-         * https://support.crowdin.com/developer/language-codes/
-         */
-        crowdinConfig: { langCode: string; osx_code?: string }
       }
     | undefined
 }
@@ -26,7 +21,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/en-US').enUS
     },
-    crowdinConfig: { langCode: 'en' },
   },
   'es-419': {
     name: 'Español',
@@ -38,7 +32,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/es').es
     },
-    crowdinConfig: { langCode: 'es', osx_code: 'es-419.lproj' },
   },
   'pt-BR': {
     name: 'Português',
@@ -50,7 +43,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/pt-BR').ptBR
     },
-    crowdinConfig: { langCode: 'pt-BR' },
   },
   de: {
     name: 'Deutsch',
@@ -62,7 +54,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/de').de
     },
-    crowdinConfig: { langCode: 'de' },
   },
   'ru-RU': {
     name: 'Pyccкий',
@@ -74,7 +65,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/ru').ru
     },
-    crowdinConfig: { langCode: 'ru' },
   },
   'fr-FR': {
     name: 'Français',
@@ -86,7 +76,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/fr').fr
     },
-    crowdinConfig: { langCode: 'fr' },
   },
   'it-IT': {
     name: 'Italiano',
@@ -98,7 +87,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/it').it
     },
-    crowdinConfig: { langCode: 'it' },
   },
   'uk-UA': {
     name: 'Українська',
@@ -110,7 +98,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/uk').uk
     },
-    crowdinConfig: { langCode: 'uk' },
   },
   'th-TH': {
     name: 'ไทย',
@@ -122,7 +109,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/th').th
     },
-    crowdinConfig: { langCode: 'th' },
   },
   'tr-TR': {
     name: 'Türkçe',
@@ -134,7 +120,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/tr').tr
     },
-    crowdinConfig: { langCode: 'tr' },
   },
   'pl-PL': {
     name: 'Polski',
@@ -146,7 +131,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/pl').pl
     },
-    crowdinConfig: { langCode: 'pl' },
   },
   'vi-VN': {
     name: 'Tiếng Việt',
@@ -158,7 +142,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/vi').vi
     },
-    crowdinConfig: { langCode: 'vi' },
   },
   'zh-CN': {
     name: '简体中文',
@@ -170,7 +153,6 @@ const locales: Locales = {
     get dateFns() {
       return require('date-fns/locale/zh-CN').zhCN
     },
-    crowdinConfig: { langCode: 'zh' },
   },
 }
 
