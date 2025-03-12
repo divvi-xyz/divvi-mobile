@@ -2641,7 +2641,7 @@
     "depositConfirmation": {
       "title": "Review Deposit",
       "depositing": "Depositing",
-      "into": "Into {{providerName, getCorrectArticle}}",
+      "into": "Into",
       "pool": "{{providerName}} Pool",
       "yieldRate": "{{apy}}% est. yield rate"
     },

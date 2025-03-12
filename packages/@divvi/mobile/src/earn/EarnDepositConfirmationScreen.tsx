@@ -21,6 +21,7 @@ import type { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { useTokenInfo, useTokenToLocalAmount } from 'src/tokens/hooks'
+import { getTokenBalance } from 'src/tokens/utils'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnDepositConfirmationScreen>
 
@@ -28,8 +29,8 @@ export function useDepositAmount(params: Props['route']['params']) {
   const { inputTokenAmount, mode, swapTransaction, pool } = params
   const tokenAmount =
     mode === 'swap-deposit' && swapTransaction
-      ? getSwapToAmountInDecimals({ swapTransaction, fromAmount: inputTokenAmount })
-      : inputTokenAmount
+      ? getSwapToAmountInDecimals({ swapTransaction, fromAmount: new BigNumber(inputTokenAmount) })
+      : new BigNumber(inputTokenAmount)
   const tokenInfo = useTokenInfo(pool.dataProps.depositTokenId)
   const localAmount = useTokenToLocalAmount(tokenAmount, pool.dataProps.depositTokenId)
 
@@ -62,7 +63,8 @@ export function useCommonAnalyticsProperties(
 }
 
 export default function EarnDepositConfirmationScreen({ route: { params } }: Props) {
-  const { inputTokenInfo, pool } = params
+  const { pool } = params
+  const inputTokenInfo = getTokenBalance(params.inputTokenInfo)
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
