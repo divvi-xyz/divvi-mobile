@@ -178,10 +178,8 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
 
   //
   networks?: {
-    // For now just allow key names with an empty object, so apps can configure
-    // required networks.
+    enabledIds?: NetworkId[]
     // TODO: we'll pass RPC urls, API urls, etc here
-    [key in NetworkId]?: {}
   }
 
   /**
