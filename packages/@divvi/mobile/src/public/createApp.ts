@@ -53,8 +53,8 @@ export function createApp<const tabScreenConfigs extends TabScreenConfig[]>(
   Config.DEEP_LINK_URL_SCHEME = config.deepLinkUrlScheme
   Config.APP_REGISTRY_NAME = config.registryName
   Config.ENABLED_NETWORK_IDS =
-    config.networks?.enabledIds && config.networks.enabledIds.length > 0
-      ? config.networks?.enabledIds.join(',')
+    config.networks?.enabledNetworkIds && config.networks.enabledNetworkIds.length > 0
+      ? config.networks?.enabledNetworkIds.join(',')
       : 'celo-mainnet,ethereum-mainnet,arbitrum-one,op-mainnet,base-mainnet'
 
   // TODO: map/handle the whole config

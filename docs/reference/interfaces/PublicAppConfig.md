@@ -332,10 +332,10 @@ optional networks: object;
 
 Defined in: [packages/@divvi/mobile/src/public/types.tsx:180](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L180)
 
-#### enabledIds?
+#### enabledNetworkIds?
 
 ```ts
-optional enabledIds: NetworkId[];
+optional enabledNetworkIds: NetworkId[];
 ```
 
 ---
