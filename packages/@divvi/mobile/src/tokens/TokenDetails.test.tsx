@@ -124,7 +124,7 @@ describe('TokenDetails', () => {
             historicalPricesUsd: {
               lastDay: {
                 at: Date.now() - 2 * ONE_DAY_IN_MILLIS,
-                price: 1,
+                price: '1',
               },
             },
           },
@@ -151,7 +151,7 @@ describe('TokenDetails', () => {
             historicalPricesUsd: {
               lastDay: {
                 at: Date.now() - ONE_DAY_IN_MILLIS,
-                price: 1,
+                price: '1',
               },
             },
           },
