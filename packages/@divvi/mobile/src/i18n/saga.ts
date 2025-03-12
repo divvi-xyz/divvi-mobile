@@ -1,7 +1,12 @@
 import OtaClient from '@crowdin/ota-client'
 import i18n from 'i18next'
+import _ from 'lodash'
 import DeviceInfo from 'react-native-device-info'
-import { CROWDIN_DISTRIBUTION_HASH, ENABLE_OTA_TRANSLATIONS } from 'src/config'
+import {
+  CROWDIN_DISTRIBUTION_HASH,
+  DEFAULT_APP_LANGUAGE,
+  ENABLE_OTA_TRANSLATIONS,
+} from 'src/config'
 import { saveOtaTranslations } from 'src/i18n/otaTranslations'
 import {
   currentLanguageSelector,
@@ -15,7 +20,6 @@ import { safely } from 'src/utils/safely'
 import { call, put, select, spawn, takeLatest } from 'typed-redux-saga'
 
 const TAG = 'i18n/saga'
-const DEFAULT_LANG_CODE = 'en-US'
 const allowOtaTranslations = ENABLE_OTA_TRANSLATIONS
 
 export function* handleFetchOtaTranslations() {
@@ -28,8 +32,24 @@ export function* handleFetchOtaTranslations() {
         return
       }
 
+      const response = yield* call(
+        fetch,
+        `${OtaClient.BASE_URL}/${CROWDIN_DISTRIBUTION_HASH}/manifest.json`,
+        { method: 'GET', headers: { 'Content-Type': 'application/json' } }
+      )
+      const result = yield* call([response, 'json'])
+      const customMappedLanguage = _.findKey(
+        result && 'language_mapping' in result
+          ? result.language_mapping
+          : {
+              es: { locale: 'es-419', osx_code: 'es-419.lproj' },
+              de: { locale: 'de' },
+            },
+        { locale: currentLanguage }
+      )
+
       const otaClient = new OtaClient(CROWDIN_DISTRIBUTION_HASH, {
-        languageCode: DEFAULT_LANG_CODE,
+        languageCode: customMappedLanguage || currentLanguage || DEFAULT_APP_LANGUAGE,
       })
       const lastFetchLanguage = yield* select(otaTranslationsLanguageSelector)
       const lastFetchTime = yield* select(otaTranslationsLastUpdateSelector)
@@ -44,7 +64,7 @@ export function* handleFetchOtaTranslations() {
         const translations = yield* call(
           [otaClient, otaClient.getStringsByLocale],
           undefined,
-          currentLanguage
+          customMappedLanguage || currentLanguage
         )
         i18n.addResourceBundle(currentLanguage, 'translation', translations, true, true)
 
