@@ -1,6 +1,6 @@
 module.exports = {
-  preventAutoHideAsync: jest.fn(),
+  preventAutoHideAsync: jest.fn().mockImplementation(() => Promise.resolve()),
   setOptions: jest.fn(),
-  hideAsync: jest.fn(),
   hide: jest.fn(),
+  hideAsync: jest.fn().mockImplementation(() => Promise.resolve()),
 }
