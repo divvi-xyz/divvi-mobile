@@ -63,15 +63,22 @@ export default function RecoveryPhraseInput({
 
   const showInput = status === RecoveryPhraseInputStatus.Inputting
   const showStatus = status === RecoveryPhraseInputStatus.Processing
+  const showPaste = shouldShowClipboardInternal()
   const keyboardType = Platform.OS === 'android' ? 'visible-password' : undefined
 
   return (
     <Card rounded={true} shadow={null} style={styles.container}>
       {/* These views cannot be combined as it will cause the shadow to be clipped on iOS */}
       <View style={styles.containRadius}>
-        <View style={[showInput ? styles.contentActiveLong : styles.contentLong]}>
+        <View
+          style={[
+            styles.content,
+            showInput ? styles.contentActive : styles.contentInactive,
+            showInput && showPaste && styles.contentActiveWithPaste,
+          ]}
+        >
           <View style={styles.innerContent}>
-            <Text style={showInput ? styles.labelActiveLong : styles.labelLong}>
+            <Text style={[styles.label, !showInput && styles.labelInactive]}>
               {t('accountKey')}
             </Text>
             {showInput ? (
@@ -120,7 +127,7 @@ export default function RecoveryPhraseInput({
         {showInput && (
           <ClipboardAwarePasteButton
             getClipboardContent={getFreshClipboardContent}
-            shouldShow={shouldShowClipboardInternal()}
+            shouldShow={showPaste}
             onPress={onInputChange}
           />
         )}
@@ -143,32 +150,32 @@ const styles = StyleSheet.create({
     borderRadius: Spacing.Smallest8,
     overflow: 'hidden',
   },
-  contentLong: {
+  content: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     padding: Spacing.Regular16,
+  },
+  contentInactive: {
     paddingVertical: Spacing.Small12,
   },
-  contentActiveLong: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: Spacing.Regular16,
-    paddingBottom: 4,
+  contentActive: {
+    paddingBottom: Spacing.Tiny4,
+  },
+  contentActiveWithPaste: {
     borderBottomWidth: 1,
     borderColor: colors.borderSecondary,
   },
   innerContent: {
     flex: 1,
   },
-  labelLong: {
+  label: {
     ...typeScale.labelSemiBoldSmall,
+  },
+  labelInactive: {
     color: colors.contentSecondary,
     opacity: 0.5,
     marginBottom: 4,
-  },
-  labelActiveLong: {
-    ...typeScale.labelSemiBoldSmall,
   },
   codeValueLong: {
     ...typeScale.bodyMedium,
