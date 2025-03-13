@@ -18,9 +18,12 @@ import { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import type { PreparedTransactionsPossible } from 'src/public'
 import { NETWORK_NAMES } from 'src/shared/conts'
-import { getSerializableTokenBalance } from 'src/tokens/utils'
+import { getSerializableTokenBalance, getTokenBalance } from 'src/tokens/utils'
 import { NetworkId } from 'src/transactions/types'
-import { getSerializablePreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
+import {
+  getPreparedTransactionsPossible,
+  getSerializablePreparedTransactionsPossible,
+} from 'src/viem/preparedTransactionSerialization'
 import { createMockStore, getMockStackScreenProps } from 'test/utils'
 import {
   mockAccount,
@@ -258,14 +261,25 @@ describe('EarnDepositConfirmationScreen', () => {
       })
 
       it('useNetworkFee properly calculates network fee in token and fiat', () => {
-        const { result } = renderHook(() => useNetworkFee(props), { wrapper: HookWrapper })
+        const { result } = renderHook(
+          () => useNetworkFee(getPreparedTransactionsPossible(props.preparedTransaction)),
+          { wrapper: HookWrapper }
+        )
         expect(result.current.amount.toString()).toEqual(tokenNetworkFeeAmount)
         expect(result.current.localAmount?.toString()).toEqual(localNetworkFeeAmount)
         expect(result.current.maxAmount?.toString()).toEqual(tokenMaxNetworkFeeAmount)
       })
 
       it('useSwapAppFee properly calculates swap app fee in token and fiat', () => {
-        const { result } = renderHook(() => useSwapAppFee(props), { wrapper: HookWrapper })
+        const { result } = renderHook(
+          () =>
+            useSwapAppFee({
+              inputTokenAmount: new BigNumber(props.inputTokenAmount),
+              inputTokenInfo: getTokenBalance(props.inputTokenInfo),
+              swapTransaction: props.swapTransaction,
+            }),
+          { wrapper: HookWrapper }
+        )
         expect(result.current?.amount.toString()).toEqual(swapAppFeeAmount)
         expect(result.current?.percentage?.toString()).toEqual(
           props.swapTransaction?.appFeePercentageIncludedInPrice
@@ -273,7 +287,15 @@ describe('EarnDepositConfirmationScreen', () => {
       })
 
       it('useCrossChainFee properly calculates cross chain fee in token and fiat', () => {
-        const { result } = renderHook(() => useCrossChainFee(props), { wrapper: HookWrapper })
+        const { result } = renderHook(
+          () =>
+            useCrossChainFee({
+              inputTokenInfo: getTokenBalance(props.inputTokenInfo),
+              preparedTransaction: getPreparedTransactionsPossible(props.preparedTransaction),
+              swapTransaction: props.swapTransaction,
+            }),
+          { wrapper: HookWrapper }
+        )
         expect(result.current?.amount.toString()).toEqual(crossChainFeeAmount)
         expect(result.current?.maxAmount?.toString()).toEqual(crossChainMaxFeeAmount)
       })

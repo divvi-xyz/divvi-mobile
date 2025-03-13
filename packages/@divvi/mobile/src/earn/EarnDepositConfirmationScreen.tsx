@@ -42,12 +42,16 @@ import themeColors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import getCrossChainFee from 'src/swap/getCrossChainFee'
-import type { AppFeeAmount, SwapFeeAmount } from 'src/swap/types'
+import type { SwapFeeAmount, SwapTransaction } from 'src/swap/types'
 import { useTokenInfo, useTokenToLocalAmount } from 'src/tokens/hooks'
 import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import type { TokenBalance } from 'src/tokens/slice'
 import { getTokenBalance } from 'src/tokens/utils'
-import { getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
+import { getPreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
+import {
+  getFeeCurrencyAndAmounts,
+  type PreparedTransactionsPossible,
+} from 'src/viem/prepareTransactions'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnDepositConfirmationScreen>
 
@@ -68,9 +72,8 @@ export function useDepositAmount(params: Props['route']['params']) {
 }
 
 export function useNetworkFee(
-  params: Props['route']['params']
+  preparedTransaction: PreparedTransactionsPossible
 ): SwapFeeAmount & { localAmount: BigNumber } {
-  const { preparedTransaction } = params
   const networkFee = getFeeCurrencyAndAmounts(preparedTransaction)
   const estimatedNetworkFee = networkFee.estimatedFeeAmount ?? new BigNumber(0)
   const localAmount = useTokenToLocalAmount(estimatedNetworkFee, networkFee.feeCurrency?.tokenId)
@@ -82,25 +85,36 @@ export function useNetworkFee(
   }
 }
 
-export function useSwapAppFee(params: Props['route']['params']) {
-  const { swapTransaction, inputTokenInfo, inputTokenAmount } = params
+export function useSwapAppFee({
+  swapTransaction,
+  inputTokenInfo,
+  inputTokenAmount,
+}: {
+  swapTransaction: SwapTransaction | undefined
+  inputTokenInfo: TokenBalance
+  inputTokenAmount: BigNumber
+}) {
+  if (!swapTransaction || !swapTransaction.appFeePercentageIncludedInPrice) {
+    return undefined
+  }
 
-  return useMemo((): AppFeeAmount | undefined => {
-    if (!swapTransaction || !swapTransaction.appFeePercentageIncludedInPrice) {
-      return undefined
-    }
-
-    const percentage = new BigNumber(swapTransaction.appFeePercentageIncludedInPrice)
-    return {
-      percentage,
-      token: inputTokenInfo,
-      amount: inputTokenAmount.multipliedBy(percentage.shiftedBy(-2)), // To convert from percentage to decimal
-    }
-  }, [swapTransaction, inputTokenInfo])
+  const percentage = new BigNumber(swapTransaction.appFeePercentageIncludedInPrice)
+  return {
+    percentage,
+    token: inputTokenInfo,
+    amount: inputTokenAmount.multipliedBy(percentage.shiftedBy(-2)), // To convert from percentage to decimal
+  }
 }
 
-export function useCrossChainFee(params: Props['route']['params']) {
-  const { swapTransaction, inputTokenInfo, preparedTransaction } = params
+export function useCrossChainFee({
+  swapTransaction,
+  inputTokenInfo,
+  preparedTransaction,
+}: {
+  swapTransaction: SwapTransaction | undefined
+  inputTokenInfo: TokenBalance
+  preparedTransaction: PreparedTransactionsPossible
+}) {
   const crossChainFeeCurrency = useSelector((state) =>
     feeCurrenciesSelector(state, inputTokenInfo.networkId)
   ).find((token) => token.isNative)
@@ -155,6 +169,7 @@ export function useCommonAnalyticsProperties(
 export default function EarnDepositConfirmationScreen({ route: { params } }: Props) {
   const inputTokenAmount = new BigNumber(params.inputTokenAmount)
   const inputTokenInfo = getTokenBalance(params.inputTokenInfo)
+  const preparedTransaction = getPreparedTransactionsPossible(params.preparedTransaction)
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
@@ -162,9 +177,17 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
   const commonAnalyticsProperties = useCommonAnalyticsProperties(params, depositAmount.tokenAmount)
   const providerUrl = params.pool.dataProps.manageUrl ?? params.pool.dataProps.termsUrl
   const isGasSubsidized = isGasSubsidizedForNetwork(preparedTransaction.feeCurrency.networkId)
-  const networkFee = useNetworkFee(params)
-  const swapAppFee = useSwapAppFee(params)
-  const crossChainFee = useCrossChainFee(params)
+  const networkFee = useNetworkFee(preparedTransaction)
+  const swapAppFee = useSwapAppFee({
+    inputTokenAmount,
+    inputTokenInfo,
+    swapTransaction: params.swapTransaction,
+  })
+  const crossChainFee = useCrossChainFee({
+    inputTokenInfo,
+    preparedTransaction,
+    swapTransaction: params.swapTransaction,
+  })
 
   function onPressProvider() {
     AppAnalytics.track(EarnEvents.earn_deposit_provider_info_press, commonAnalyticsProperties)
