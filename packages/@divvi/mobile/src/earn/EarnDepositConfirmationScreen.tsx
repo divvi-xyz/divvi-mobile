@@ -212,7 +212,10 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
 
   function onPressProvider() {
     AppAnalytics.track(EarnEvents.earn_deposit_provider_info_press, commonAnalyticsProperties)
-    providerUrl && dispatch(openUrl(providerUrl, true))
+
+    if (providerUrl) {
+      dispatch(openUrl(providerUrl, true))
+    }
   }
 
   function onPressTermsAndConditions() {
@@ -220,7 +223,10 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
       type: 'providerTermsAndConditions',
       ...commonAnalyticsProperties,
     })
-    params.pool.dataProps.termsUrl && dispatch(openUrl(params.pool.dataProps.termsUrl, true))
+
+    if (params.pool.dataProps.termsUrl) {
+      dispatch(openUrl(params.pool.dataProps.termsUrl, true))
+    }
   }
 
   function onPressProviderDocuments() {
@@ -228,8 +234,11 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
       type: 'providerDocuments',
       ...commonAnalyticsProperties,
     })
+
     const providerDocumentsUrl = APP_ID_TO_PROVIDER_DOCUMENTS_URL[params.pool.appId]
-    providerDocumentsUrl && dispatch(openUrl(providerDocumentsUrl, true))
+    if (providerDocumentsUrl) {
+      dispatch(openUrl(providerDocumentsUrl, true))
+    }
   }
 
   function onPressAppTermsAndConditions() {
@@ -243,12 +252,12 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
   function onPressComplete() {
     dispatch(
       depositStart({
-        amount: depositAmount.tokenAmount.toString(),
         pool: params.pool,
-        preparedTransactions: getSerializablePreparedTransactions(preparedTransaction.transactions),
         mode: params.mode,
+        amount: depositAmount.tokenAmount.toString(),
         fromTokenId: inputTokenInfo.tokenId,
         fromTokenAmount: inputTokenAmount.toString(),
+        preparedTransactions: getSerializablePreparedTransactions(preparedTransaction.transactions),
       })
     )
     AppAnalytics.track(EarnEvents.earn_deposit_complete, commonAnalyticsProperties)
