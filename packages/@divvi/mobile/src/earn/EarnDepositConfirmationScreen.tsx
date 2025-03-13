@@ -204,7 +204,7 @@ function SwapAndDepositSummaryItem(props: {
       </Touchable>
 
       <InfoBottomSheet
-        title={t('earnFlow.depositConfirmation.swapAndDepositInfoSheet.title')}
+        title={t('earnFlow.swapAndDepositInfoSheet.title')}
         forwardedRef={bottomSheetRef}
         testID="SwapAndDepositInfoSheet"
       >
@@ -213,7 +213,7 @@ function SwapAndDepositSummaryItem(props: {
             testID="SwapAndDepositInfoSheet/SwapFrom"
             fontSize="small"
             type="token-amount"
-            label={t('earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapFrom')}
+            label={t('earnFlow.swapAndDepositInfoSheet.swapFrom')}
             tokenAmount={inputTokenAmount}
             localAmount={inputLocalAmount}
             tokenInfo={inputTokenInfo}
@@ -224,7 +224,7 @@ function SwapAndDepositSummaryItem(props: {
             testID="SwapAndDepositInfoSheet/SwapTo"
             fontSize="small"
             type="token-amount"
-            label={t('earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapTo')}
+            label={t('earnFlow.swapAndDepositInfoSheet.swapTo')}
             tokenAmount={tokenDepositAmount}
             localAmount={localDepositAmount}
             tokenInfo={depositTokenInfo}
@@ -234,11 +234,11 @@ function SwapAndDepositSummaryItem(props: {
 
         <InfoBottomSheetContentBlock testID="SwapAndDepositInfoSheet/Disclaimer">
           <InfoBottomSheetHeading>
-            <Trans i18nKey="earnFlow.depositConfirmation.swapAndDepositInfoSheet.whySwap" />
+            <Trans i18nKey="earnFlow.swapAndDepositInfoSheet.whySwap" />
           </InfoBottomSheetHeading>
 
           <InfoBottomSheetParagraph>
-            <Trans i18nKey="earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapDescription" />
+            <Trans i18nKey="earnFlow.swapAndDepositInfoSheet.swapDescription" />
           </InfoBottomSheetParagraph>
         </InfoBottomSheetContentBlock>
       </InfoBottomSheet>
