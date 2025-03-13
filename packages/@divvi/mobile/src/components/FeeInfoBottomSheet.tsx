@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import React from 'react'
+import React, { type ReactNode } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { type BottomSheetModalRefType } from 'src/components/BottomSheet'
@@ -23,6 +23,7 @@ interface Props {
   appFee?: AppFeeAmount
   crossChainFee?: SwapFeeAmount
   networkFee?: SwapFeeAmount
+  footerDisclaimer?: ReactNode
 }
 
 function useFee(props: {
@@ -195,20 +196,22 @@ export default function FeeInfoBottomSheet(props: Props) {
           <Trans i18nKey="moreInformation" />
         </InfoBottomSheetHeading>
 
-        <InfoBottomSheetParagraph>
-          <Trans
-            i18nKey={'feeInfoBottomSheet.feesInfo'}
-            context={
-              hasCrossChainFee && props.appFee?.percentage.gt(0)
-                ? 'crossChainWithAppFee'
-                : hasCrossChainFee
-                  ? 'crossChain'
-                  : props.appFee?.percentage.gt(0)
-                    ? 'sameChainWithAppFee'
-                    : 'sameChain'
-            }
-            tOptions={{ appFeePercentage: props.appFee?.percentage.toFormat() }}
-          />
+        <InfoBottomSheetParagraph testID="FeeInfoBottomSheet/FooterDisclaimer">
+          {props.footerDisclaimer ?? (
+            <Trans
+              i18nKey="feeInfoBottomSheet.feesInfo"
+              context={
+                hasCrossChainFee && props.appFee?.percentage.gt(0)
+                  ? 'crossChainWithAppFee'
+                  : hasCrossChainFee
+                    ? 'crossChain'
+                    : props.appFee?.percentage.gt(0)
+                      ? 'sameChainWithAppFee'
+                      : 'sameChain'
+              }
+              tOptions={{ appFeePercentage: props.appFee?.percentage.toFormat() }}
+            />
+          )}
         </InfoBottomSheetParagraph>
       </InfoBottomSheetContentBlock>
     </InfoBottomSheet>
