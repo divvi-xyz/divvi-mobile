@@ -401,6 +401,10 @@ export function ReviewDetailsItemTotalValue({
   })
 }
 
+export function ReviewParagraph(props: { children: ReactNode }) {
+  return <Text style={styles.paragraph}>{props.children}</Text>
+}
+
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
@@ -492,5 +496,10 @@ const styles = StyleSheet.create({
   },
   totalPlusFeesLocalAmount: {
     color: colors.contentSecondary,
+  },
+  paragraph: {
+    ...typeScale.bodyXSmall,
+    color: colors.contentSecondary,
+    textAlign: 'center',
   },
 })
