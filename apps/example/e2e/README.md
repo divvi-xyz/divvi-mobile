@@ -1,18 +1,18 @@
 # End-to-End tests
 
-![E2E](https://github.com/valora-inc/wallet/actions/workflows/e2e-main.yml/badge.svg)
+![E2E](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/e2e-main.yml/badge.svg)
 
-These are the End-to-End (e2e) tests for the wallet mobile app. They run an emulator and simulate a user clicking through the app.
+These are the End-to-End (e2e) tests for the example mobile app. They run an emulator and simulate a user clicking through the app.
 
 ## Setting up the VM
 
 ### Android
 
-First install the emulator as described in the [mobile readme](../README.md#optional-install-an-android-emulator).
+First install the emulator as described in the [mobile readme](./WALLET.md#optional-install-an-android-emulator).
 
 By default, the e2e scripts will assume the VM name of `Pixel_API_29_AOSP_x86_64` recommended in the instructions but you can rename the VM as you like.
 
-Next, to improve reliability of the tests, configure the VM as described in the [Setting Up an Android Development & Testing Environment](https://github.com/wix/Detox/blob/master/docs/Introduction.AndroidDevEnv.md).
+Next, to improve reliability of the tests, configure the VM as described in the [Setting Up an Android Development & Testing Environment](https://github.com/wix/Detox/blob/master/docs/guide/android-dev-env.md).
 
 ### iOS
 
@@ -22,35 +22,37 @@ Install [AppleSimulatorUtils](https://github.com/wix/AppleSimulatorUtils#install
 
 ### Setting up secrets for local runs
 
-An `.env` example is present at `e2e/env.example` rename this file to `.env` and populate the secrets from Google Cloud Platform. Do not commit the newly created `e2e/.env` file.
+An `.env` example is present at `apps/example/e2e/.env` rename this file to `.env` and populate the secrets from Google Cloud Platform. Do not commit the newly created `e2e/.env` file.
 
 ## Running the tests
 
 ```sh
-# Create your detox build various options present in the package.json
+# (Android Only) - Run the prebuild command to include Detox in the build
+yarn e2e:prebuild
+
 # Only needs to be built when app code changes - test code can be changed without a new build.
-yarn run e2e:build:android-release
+yarn e2e:build:android-release
 
 # (optional) - When running the e2e tests on a debug build the e2e packager should be run in a separate terminal first.
-yarn run e2e:packager
+yarn e2e:packager
 
-# Run Detox
+# Run the entire Detox test suite
 yarn run e2e:test:android-release
 ```
 
 ### CLI Options
 
-[Detox CLI Options](https://github.com/wix/Detox/blob/master/docs/APIRef.DetoxCLI.md) can be passed directly to yarn.
+[Detox CLI Options](https://github.com/wix/Detox/blob/master/docs/cli/overview.md) can be passed directly to yarn.
 
 ```sh
 # Running a specific test suite
-yarn run e2e:test:android-release Pin.spec.js
+yarn e2e:test:android-release Pin.spec.js
 
 # Running a specific test in a suite
-yarn run e2e:test:android-release Pin.spec.js --testNamePattern "Then should be require PIN on app open"
+yarn e2e:test:android-release Pin.spec.js --testNamePattern "Then should be require PIN on app open"
 
 # Reusing an existing app install
-yarn run e2e:test:android-release --reuse
+yarn e2e:test:android-release --reuse
 ```
 
 ### Retries
@@ -96,7 +98,7 @@ After english was selected, detox will tap the button to submit our language of 
 
 The function needs to be `async`, and you will need to `await` all calls to detox functions.
 
-For more information about Detox, check out the [API reference](https://github.com/wix/Detox/blob/master/docs/README.md#api-reference)
+For more information about Detox, check out the [API reference](https://github.com/wix/Detox/blob/master/docs/api/actions.md)
 
 ## Adding a test
 
@@ -104,7 +106,7 @@ The main test files are on the root of the e2e/src directory. Test suites call t
 
 In the [usecases](./src/usecases) directory, create new `<usecase>.js` or add an it-block to an existing appropriate use case.
 
-If creating a suite of tests, add a new `<TestSuiteName>.spec.js` file following the format of [AccountSupport.spec.js](./src/AccountSupport.spec.js).
+If creating a suite of tests, add a new `<TestSuiteName>.spec.js` file following the format of [AccountManagement.spec.js](./src/AccountManagement.spec.js).
 
 While developing and adding new tests, it's useful to run only the ones we are working on and not go through the onboarding on each run. To do this, use the following strategy.
 
