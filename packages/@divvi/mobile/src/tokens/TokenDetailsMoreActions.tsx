@@ -75,7 +75,10 @@ const styles = StyleSheet.create({
     ...typeScale.labelLarge,
   },
   touchable: {
-    backgroundColor: Colors.buttonSecondaryBackground,
+    backgroundColor: Colors.backgroundSecondary,
+    borderColor: Colors.borderPrimary,
+    borderWidth: 1,
+    borderRadius: 20,
     padding: Spacing.Regular16,
     flexDirection: 'row',
     gap: Spacing.Regular16,
