@@ -1,7 +1,5 @@
 # End-to-End tests
 
-![E2E](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/e2e-main.yml/badge.svg)
-
 These are the End-to-End (e2e) tests for the example mobile app. They run an emulator and simulate a user clicking through the app.
 
 ## Setting up the VM
