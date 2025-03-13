@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 import { fireEvent, render, renderHook, within } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import React from 'react'
@@ -263,6 +264,40 @@ describe('EarnDepositConfirmationScreen', () => {
         expect(getByTestId('EarnDepositConfirmationPool/SecondaryValue')).toHaveTextContent(
           'earnFlow.depositConfirmation.yieldRate, {"apy":"1.92"}'
         )
+
+        // summary item for swap and deposit
+        if (mode === 'swap-deposit') {
+          expect(getByTestId('SwapAndDeposit/Divider')).toBeTruthy()
+          expect('SwapAndDeposit/Icon').toBeTruthy()
+          expect(getByTestId('SwapAndDeposit/InfoIcon')).toBeTruthy()
+          expect(getByTestId('SwapAndDeposit/PrimaryValue')).toHaveTextContent(
+            'earnFlow.depositConfirmation.swapAndDeposit'
+          )
+          expect(getByTestId('SwapAndDeposit/SecondaryValue')).toHaveTextContent(
+            'tokenIntoTokenAmount'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet')).toHaveTextContent(
+            'earnFlow.swapAndDepositInfoSheet.title'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/SwapFrom/Label')).toHaveTextContent(
+            'earnFlow.swapAndDepositInfoSheet.swapFrom'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/SwapFrom/Value')).toHaveTextContent(
+            'tokenAndLocalAmount'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/SwapTo/Label')).toHaveTextContent(
+            'earnFlow.swapAndDepositInfoSheet.swapTo'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/SwapTo/Value')).toHaveTextContent(
+            'tokenAndLocalAmount'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/Disclaimer')).toHaveTextContent(
+            'earnFlow.swapAndDepositInfoSheet.whySwap'
+          )
+          expect(getByTestId('SwapAndDepositInfoSheet/Disclaimer')).toHaveTextContent(
+            'earnFlow.swapAndDepositInfoSheet.swapDescription'
+          )
+        }
       })
 
       it('pressing cancel fires analytics event', () => {
