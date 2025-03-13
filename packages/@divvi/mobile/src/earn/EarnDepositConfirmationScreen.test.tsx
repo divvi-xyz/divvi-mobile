@@ -18,7 +18,12 @@ import { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import type { PreparedTransactionsPossible } from 'src/public'
 import { NETWORK_NAMES } from 'src/shared/conts'
+import { getSerializableTokenBalance, getTokenBalance } from 'src/tokens/utils'
 import { NetworkId } from 'src/transactions/types'
+import {
+  getPreparedTransactionsPossible,
+  getSerializablePreparedTransactionsPossible,
+} from 'src/viem/preparedTransactionSerialization'
 import { createMockStore, getMockStackScreenProps } from 'test/utils'
 import {
   mockAccount,
@@ -71,29 +76,29 @@ const mockPreparedTransaction: PreparedTransactionsPossible = {
 }
 
 const mockDepositProps: StackParamList[Screens.EarnDepositConfirmationScreen] = {
-  inputTokenAmount: new BigNumber(100),
-  preparedTransaction: mockPreparedTransaction,
+  inputTokenAmount: '100',
+  preparedTransaction: getSerializablePreparedTransactionsPossible(mockPreparedTransaction),
   pool: mockEarnPositions[0],
   mode: 'deposit',
-  inputTokenInfo: {
+  inputTokenInfo: getSerializableTokenBalance({
     ...mockTokenBalances[mockArbUsdcTokenId],
     balance: new BigNumber(10),
     priceUsd: new BigNumber(1),
     lastKnownPriceUsd: new BigNumber(1),
-  },
+  }),
 }
 
 const mockSwapDepositProps: StackParamList[Screens.EarnDepositConfirmationScreen] = {
   ...mockDepositProps,
   mode: 'swap-deposit',
-  inputTokenInfo: {
+  inputTokenInfo: getSerializableTokenBalance({
     ...mockTokenBalances[mockArbEthTokenId],
     isNative: true,
     balance: new BigNumber(10),
     priceUsd: new BigNumber(1),
     lastKnownPriceUsd: new BigNumber(1),
-  },
-  inputTokenAmount: new BigNumber(0.041),
+  }),
+  inputTokenAmount: '0.041',
   swapTransaction: {
     swapType: 'same-chain' as const,
     chainId: 42161,
@@ -117,7 +122,7 @@ const mockSwapDepositProps: StackParamList[Screens.EarnDepositConfirmationScreen
 
 const mockCrossChainProps: StackParamList[Screens.EarnDepositConfirmationScreen] = {
   ...mockSwapDepositProps,
-  preparedTransaction: {
+  preparedTransaction: getSerializablePreparedTransactionsPossible({
     ...mockPreparedTransaction,
     feeCurrency: {
       ...mockTokenBalances[mockCeloTokenId],
@@ -126,14 +131,14 @@ const mockCrossChainProps: StackParamList[Screens.EarnDepositConfirmationScreen]
       priceUsd: new BigNumber(1),
       lastKnownPriceUsd: new BigNumber(1),
     },
-  },
-  inputTokenInfo: {
+  }),
+  inputTokenInfo: getSerializableTokenBalance({
     ...mockTokenBalances[mockCeloTokenId],
     isNative: true,
     balance: new BigNumber(10),
     priceUsd: new BigNumber(1),
     lastKnownPriceUsd: new BigNumber(1),
-  },
+  }),
   swapTransaction: {
     ...mockSwapDepositProps.swapTransaction,
     swapType: 'cross-chain' as const,
@@ -256,21 +261,32 @@ describe('EarnDepositConfirmationScreen', () => {
         fromNetworkId,
       }
 
-      it(`useDepositAmount properly calculates deposit amount in token and fiat`, () => {
+      it('useDepositAmount properly calculates deposit amount in token and fiat', () => {
         const { result } = renderHook(() => useDepositAmount(props), { wrapper: HookWrapper })
         expect(result.current.tokenAmount.toString()).toEqual(depositTokenAmount)
         expect(result.current.localAmount?.toString()).toEqual(depositLocalAmount)
       })
 
       it('useNetworkFee properly calculates network fee in token and fiat', () => {
-        const { result } = renderHook(() => useNetworkFee(props), { wrapper: HookWrapper })
+        const { result } = renderHook(
+          () => useNetworkFee(getPreparedTransactionsPossible(props.preparedTransaction)),
+          { wrapper: HookWrapper }
+        )
         expect(result.current.amount.toString()).toEqual(tokenNetworkFeeAmount)
         expect(result.current.localAmount?.toString()).toEqual(localNetworkFeeAmount)
         expect(result.current.maxAmount?.toString()).toEqual(tokenMaxNetworkFeeAmount)
       })
 
       it('useSwapAppFee properly calculates swap app fee in token and fiat', () => {
-        const { result } = renderHook(() => useSwapAppFee(props), { wrapper: HookWrapper })
+        const { result } = renderHook(
+          () =>
+            useSwapAppFee({
+              inputTokenAmount: new BigNumber(props.inputTokenAmount),
+              inputTokenInfo: getTokenBalance(props.inputTokenInfo),
+              swapTransaction: props.swapTransaction,
+            }),
+          { wrapper: HookWrapper }
+        )
         expect(result.current?.amount.toString()).toEqual(swapAppFeeAmount)
         expect(result.current?.percentage?.toString()).toEqual(
           props.swapTransaction?.appFeePercentageIncludedInPrice
@@ -278,7 +294,15 @@ describe('EarnDepositConfirmationScreen', () => {
       })
 
       it('useCrossChainFee properly calculates cross chain fee in token and fiat', () => {
-        const { result } = renderHook(() => useCrossChainFee(props), { wrapper: HookWrapper })
+        const { result } = renderHook(
+          () =>
+            useCrossChainFee({
+              inputTokenInfo: getTokenBalance(props.inputTokenInfo),
+              preparedTransaction: getPreparedTransactionsPossible(props.preparedTransaction),
+              swapTransaction: props.swapTransaction,
+            }),
+          { wrapper: HookWrapper }
+        )
         expect(result.current?.amount.toString()).toEqual(crossChainFeeAmount)
         expect(result.current?.maxAmount?.toString()).toEqual(crossChainMaxFeeAmount)
       })
@@ -349,25 +373,25 @@ describe('EarnDepositConfirmationScreen', () => {
             'tokenIntoTokenAmount'
           )
           expect(getByTestId('SwapAndDepositInfoSheet')).toHaveTextContent(
-            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.title'
+            'earnFlow.swapAndDepositInfoSheet.title'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapFrom/Label')).toHaveTextContent(
-            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapFrom'
+            'earnFlow.swapAndDepositInfoSheet.swapFrom'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapFrom/Value')).toHaveTextContent(
             'tokenAndLocalAmount'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapTo/Label')).toHaveTextContent(
-            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapTo'
+            'earnFlow.swapAndDepositInfoSheet.swapTo'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapTo/Value')).toHaveTextContent(
             'tokenAndLocalAmount'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/Disclaimer')).toHaveTextContent(
-            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.whySwap'
+            'earnFlow.swapAndDepositInfoSheet.whySwap'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/Disclaimer')).toHaveTextContent(
-            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapDescription'
+            'earnFlow.swapAndDepositInfoSheet.swapDescription'
           )
         }
 

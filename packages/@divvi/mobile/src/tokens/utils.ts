@@ -8,7 +8,7 @@ import { Network, NetworkId } from 'src/transactions/types'
 import { Currency } from 'src/utils/currencies'
 import { ONE_DAY_IN_MILLIS, ONE_HOUR_IN_MILLIS } from 'src/utils/time'
 import networkConfig from 'src/web3/networkConfig'
-import { TokenBalance } from './slice'
+import type { SerializedTokenBalance, TokenBalance } from './slice'
 
 export function getHigherBalanceCurrency(
   currencies: Currency[],
@@ -193,4 +193,26 @@ export function isHistoricalPriceUpdated(token: TokenBalance) {
 
 export function isFeeCurrency(token: TokenBalance | undefined): token is TokenBalance {
   return token?.isNative || !!token?.isFeeCurrency || !!token?.feeCurrencyAdapterAddress
+}
+
+export function getSerializableTokenBalance(tokenInfo: TokenBalance): SerializedTokenBalance {
+  const { balance, priceUsd, lastKnownPriceUsd, ...baseToken } = tokenInfo
+
+  return {
+    ...baseToken,
+    balance: balance.toString(),
+    priceUsd: priceUsd?.toString() ?? null,
+    lastKnownPriceUsd: lastKnownPriceUsd?.toString() ?? null,
+  }
+}
+
+export function getTokenBalance(serializedTokenInfo: SerializedTokenBalance): TokenBalance {
+  const { balance, priceUsd, lastKnownPriceUsd, ...baseToken } = serializedTokenInfo
+
+  return {
+    ...baseToken,
+    balance: new BigNumber(balance),
+    priceUsd: priceUsd === null ? null : new BigNumber(priceUsd),
+    lastKnownPriceUsd: lastKnownPriceUsd === null ? null : new BigNumber(lastKnownPriceUsd),
+  }
 }

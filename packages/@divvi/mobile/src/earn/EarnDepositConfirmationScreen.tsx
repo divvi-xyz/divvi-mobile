@@ -43,11 +43,16 @@ import themeColors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import getCrossChainFee from 'src/swap/getCrossChainFee'
-import type { AppFeeAmount, SwapFeeAmount } from 'src/swap/types'
+import type { SwapFeeAmount, SwapTransaction } from 'src/swap/types'
 import { useTokenInfo, useTokenToLocalAmount } from 'src/tokens/hooks'
 import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import type { TokenBalance } from 'src/tokens/slice'
-import { getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
+import { getTokenBalance } from 'src/tokens/utils'
+import { getPreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
+import {
+  getFeeCurrencyAndAmounts,
+  type PreparedTransactionsPossible,
+} from 'src/viem/prepareTransactions'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnDepositConfirmationScreen>
 
@@ -55,8 +60,8 @@ export function useDepositAmount(params: Props['route']['params']) {
   const { inputTokenAmount, mode, swapTransaction, pool } = params
   const tokenAmount =
     mode === 'swap-deposit' && swapTransaction
-      ? getSwapToAmountInDecimals({ swapTransaction, fromAmount: inputTokenAmount })
-      : inputTokenAmount
+      ? getSwapToAmountInDecimals({ swapTransaction, fromAmount: new BigNumber(inputTokenAmount) })
+      : new BigNumber(inputTokenAmount)
   const tokenInfo = useTokenInfo(pool.dataProps.depositTokenId)
   const localAmount = useTokenToLocalAmount(tokenAmount, pool.dataProps.depositTokenId)
 
@@ -68,9 +73,8 @@ export function useDepositAmount(params: Props['route']['params']) {
 }
 
 export function useNetworkFee(
-  params: Props['route']['params']
+  preparedTransaction: PreparedTransactionsPossible
 ): SwapFeeAmount & { localAmount: BigNumber } {
-  const { preparedTransaction } = params
   const networkFee = getFeeCurrencyAndAmounts(preparedTransaction)
   const estimatedNetworkFee = networkFee.estimatedFeeAmount ?? new BigNumber(0)
   const localAmount = useTokenToLocalAmount(estimatedNetworkFee, networkFee.feeCurrency?.tokenId)
@@ -82,25 +86,36 @@ export function useNetworkFee(
   }
 }
 
-export function useSwapAppFee(params: Props['route']['params']) {
-  const { swapTransaction, inputTokenInfo, inputTokenAmount } = params
+export function useSwapAppFee({
+  swapTransaction,
+  inputTokenInfo,
+  inputTokenAmount,
+}: {
+  swapTransaction: SwapTransaction | undefined
+  inputTokenInfo: TokenBalance
+  inputTokenAmount: BigNumber
+}) {
+  if (!swapTransaction || !swapTransaction.appFeePercentageIncludedInPrice) {
+    return undefined
+  }
 
-  return useMemo((): AppFeeAmount | undefined => {
-    if (!swapTransaction || !swapTransaction.appFeePercentageIncludedInPrice) {
-      return undefined
-    }
-
-    const percentage = new BigNumber(swapTransaction.appFeePercentageIncludedInPrice)
-    return {
-      percentage,
-      token: inputTokenInfo,
-      amount: inputTokenAmount.multipliedBy(percentage.shiftedBy(-2)), // To convert from percentage to decimal
-    }
-  }, [swapTransaction, inputTokenInfo])
+  const percentage = new BigNumber(swapTransaction.appFeePercentageIncludedInPrice)
+  return {
+    percentage,
+    token: inputTokenInfo,
+    amount: inputTokenAmount.multipliedBy(percentage.shiftedBy(-2)), // To convert from percentage to decimal
+  }
 }
 
-export function useCrossChainFee(params: Props['route']['params']) {
-  const { swapTransaction, inputTokenInfo, preparedTransaction } = params
+export function useCrossChainFee({
+  swapTransaction,
+  inputTokenInfo,
+  preparedTransaction,
+}: {
+  swapTransaction: SwapTransaction | undefined
+  inputTokenInfo: TokenBalance
+  preparedTransaction: PreparedTransactionsPossible
+}) {
   const crossChainFeeCurrency = useSelector((state) =>
     feeCurrenciesSelector(state, inputTokenInfo.networkId)
   ).find((token) => token.isNative)
@@ -153,18 +168,28 @@ export function useCommonAnalyticsProperties(
 }
 
 export default function EarnDepositConfirmationScreen({ route: { params } }: Props) {
-  const { inputTokenInfo, pool, mode, inputTokenAmount, preparedTransaction, swapTransaction } =
-    params
+  const inputTokenAmount = new BigNumber(params.inputTokenAmount)
+  const inputTokenInfo = getTokenBalance(params.inputTokenInfo)
+  const preparedTransaction = getPreparedTransactionsPossible(params.preparedTransaction)
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const depositAmount = useDepositAmount(params)
   const commonAnalyticsProperties = useCommonAnalyticsProperties(params, depositAmount.tokenAmount)
-  const providerUrl = pool.dataProps.manageUrl ?? pool.dataProps.termsUrl
+  const providerUrl = params.pool.dataProps.manageUrl ?? params.pool.dataProps.termsUrl
   const isGasSubsidized = isGasSubsidizedForNetwork(preparedTransaction.feeCurrency.networkId)
-  const networkFee = useNetworkFee(params)
-  const swapAppFee = useSwapAppFee(params)
-  const crossChainFee = useCrossChainFee(params)
+  const networkFee = useNetworkFee(preparedTransaction)
+  const swapAppFee = useSwapAppFee({
+    inputTokenAmount,
+    inputTokenInfo,
+    swapTransaction: params.swapTransaction,
+  })
+  const crossChainFee = useCrossChainFee({
+    inputTokenInfo,
+    preparedTransaction,
+    swapTransaction: params.swapTransaction,
+  })
+
   const feeBottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const totalBottomSheetRef = useRef<BottomSheetModalRefType>(null)
 
@@ -207,23 +232,26 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
 
           <ReviewSummaryItem
             testID="EarnDepositConfirmationPool"
-            label={t('earnFlow.depositConfirmation.into')}
+            label={t('earnFlow.depositConfirmation.into', { providerName: params.pool.appName })}
             onPress={providerUrl ? onPressProvider : undefined}
-            icon={<TokenIcon token={pool.displayProps} />}
-            primaryValue={t('earnFlow.depositConfirmation.pool', { providerName: pool.appName })}
+            icon={<TokenIcon token={params.pool.displayProps} />}
+            primaryValue={t('earnFlow.depositConfirmation.pool', {
+              providerName: params.pool.appName,
+            })}
             secondaryValue={t('earnFlow.depositConfirmation.yieldRate', {
-              apy: getTotalYieldRate(pool).toFixed(2),
+              apy: getTotalYieldRate(params.pool).toFixed(2),
             })}
           />
 
-          <SwapAndDepositSummaryItem
-            mode={mode}
-            inputTokenAmount={inputTokenAmount}
-            inputTokenInfo={inputTokenInfo}
-            tokenDepositAmount={depositAmount.tokenAmount}
-            localDepositAmount={depositAmount.localAmount}
-            depositTokenInfo={depositAmount.tokenInfo}
-          />
+          {params.mode === 'swap-deposit' && (
+            <SwapAndDepositSummaryItem
+              inputTokenAmount={inputTokenAmount}
+              inputTokenInfo={inputTokenInfo}
+              tokenDepositAmount={depositAmount.tokenAmount}
+              localDepositAmount={depositAmount.localAmount}
+              depositTokenInfo={depositAmount.tokenInfo}
+            />
+          )}
         </ReviewSummary>
 
         <ReviewDetails>
@@ -285,7 +313,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
                   ? 'depositCrossChain'
                   : 'deposit'
             }
-            tOptions={{ appFeePercentage: swapTransaction?.appFeePercentageIncludedInPrice }}
+            tOptions={{ appFeePercentage: params.swapTransaction?.appFeePercentageIncludedInPrice }}
           />
         }
       />
@@ -342,15 +370,14 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
   )
 }
 
-function SwapAndDepositSummaryItem(
-  props: {
-    tokenDepositAmount: BigNumber
-    localDepositAmount: BigNumber | undefined | null
-    depositTokenInfo: TokenBalance | undefined
-  } & Pick<Props['route']['params'], 'mode' | 'inputTokenAmount' | 'inputTokenInfo'>
-) {
+function SwapAndDepositSummaryItem(props: {
+  inputTokenAmount: BigNumber
+  inputTokenInfo: TokenBalance
+  tokenDepositAmount: BigNumber
+  localDepositAmount: BigNumber | undefined | null
+  depositTokenInfo: TokenBalance | undefined
+}) {
   const {
-    mode,
     depositTokenInfo,
     inputTokenAmount,
     inputTokenInfo,
@@ -361,10 +388,6 @@ function SwapAndDepositSummaryItem(
   const bottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const inputLocalAmount = useTokenToLocalAmount(inputTokenAmount, inputTokenInfo.tokenId)
-
-  if (mode !== 'swap-deposit') {
-    return null
-  }
 
   return (
     <>
@@ -403,7 +426,7 @@ function SwapAndDepositSummaryItem(
       </Touchable>
 
       <InfoBottomSheet
-        title={t('earnFlow.depositConfirmation.swapAndDepositInfoSheet.title')}
+        title={t('earnFlow.swapAndDepositInfoSheet.title')}
         forwardedRef={bottomSheetRef}
         testID="SwapAndDepositInfoSheet"
       >
@@ -412,7 +435,7 @@ function SwapAndDepositSummaryItem(
             testID="SwapAndDepositInfoSheet/SwapFrom"
             fontSize="small"
             type="token-amount"
-            label={t('earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapFrom')}
+            label={t('earnFlow.swapAndDepositInfoSheet.swapFrom')}
             tokenAmount={inputTokenAmount}
             localAmount={inputLocalAmount}
             tokenInfo={inputTokenInfo}
@@ -423,7 +446,7 @@ function SwapAndDepositSummaryItem(
             testID="SwapAndDepositInfoSheet/SwapTo"
             fontSize="small"
             type="token-amount"
-            label={t('earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapTo')}
+            label={t('earnFlow.swapAndDepositInfoSheet.swapTo')}
             tokenAmount={tokenDepositAmount}
             localAmount={localDepositAmount}
             tokenInfo={depositTokenInfo}
@@ -433,11 +456,11 @@ function SwapAndDepositSummaryItem(
 
         <InfoBottomSheetContentBlock testID="SwapAndDepositInfoSheet/Disclaimer">
           <InfoBottomSheetHeading>
-            <Trans i18nKey="earnFlow.depositConfirmation.swapAndDepositInfoSheet.whySwap" />
+            <Trans i18nKey="earnFlow.swapAndDepositInfoSheet.whySwap" />
           </InfoBottomSheetHeading>
 
           <InfoBottomSheetParagraph>
-            <Trans i18nKey="earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapDescription" />
+            <Trans i18nKey="earnFlow.swapAndDepositInfoSheet.swapDescription" />
           </InfoBottomSheetParagraph>
         </InfoBottomSheetContentBlock>
       </InfoBottomSheet>
