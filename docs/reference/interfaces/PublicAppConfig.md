@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:226](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L226)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:234](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L234)
 
 #### protocolIds
 
@@ -70,7 +70,7 @@ referrerId: string
 optional experimental: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:191](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L191)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:199](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L199)
 
 Experimental features that may change or be removed in future versions.
 These features are not part of the stable configuration API and should be used with caution.
@@ -223,7 +223,7 @@ projectName: string
 optional features: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:142](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L142)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:150](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L150)
 
 #### cloudBackup?
 
@@ -317,7 +317,7 @@ optional locales: Partial<{
 }>;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:163](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L163)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:171](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L171)
 
 Optional copies overwrite. This field should contain the same language keys as @interxyz/mobile.
 TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
@@ -330,7 +330,7 @@ TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
 optional networks: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:180](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L180)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:188](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L188)
 
 #### enabledNetworkIds?
 
@@ -356,7 +356,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:25](https://github.com/
 optional screens: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:125](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L125)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:133](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L133)
 
 #### custom()?
 
@@ -445,6 +445,48 @@ default: object;
 
 ```ts
 optional assets: object;
+```
+
+##### default.assets.backupAndRecoveryImages?
+
+```ts
+optional backupAndRecoveryImages: object;
+```
+
+##### default.assets.backupAndRecoveryImages.cloudBackupEmail?
+
+```ts
+optional cloudBackupEmail: ImageSourcePropType;
+```
+
+##### default.assets.backupAndRecoveryImages.recoveryPhraseEducation1?
+
+```ts
+optional recoveryPhraseEducation1: ImageSourcePropType;
+```
+
+##### default.assets.backupAndRecoveryImages.recoveryPhraseEducation2?
+
+```ts
+optional recoveryPhraseEducation2: ImageSourcePropType;
+```
+
+##### default.assets.backupAndRecoveryImages.recoveryPhraseEducation3?
+
+```ts
+optional recoveryPhraseEducation3: ImageSourcePropType;
+```
+
+##### default.assets.backupAndRecoveryImages.recoveryPhraseEducation4?
+
+```ts
+optional recoveryPhraseEducation4: ImageSourcePropType;
+```
+
+##### default.assets.backupAndRecoveryImages.walletSafe?
+
+```ts
+optional walletSafe: ImageSourcePropType;
 ```
 
 ##### default.assets.biometryImages?
