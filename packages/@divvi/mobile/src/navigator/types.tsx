@@ -12,6 +12,8 @@ import { Nft } from 'src/nfts/types'
 import { EarnPosition } from 'src/positions/types'
 import { Recipient } from 'src/recipients/recipient'
 import { QrCode, TransactionDataInput } from 'src/send/types'
+import type { SwapTransaction } from 'src/swap/types'
+import type { SerializedTokenBalance } from 'src/tokens/slice'
 import { AssetTabType } from 'src/tokens/types'
 import { NetworkId, TokenTransaction, TokenTransfer } from 'src/transactions/types'
 import { Countries } from 'src/utils/Countries'
@@ -91,6 +93,14 @@ export type StackParamList = {
     mode: Extract<EarnActiveMode, 'claim-rewards' | 'exit' | 'withdraw'>
     inputAmount?: string
     useMax: boolean
+  }
+  [Screens.EarnDepositConfirmationScreen]: {
+    preparedTransaction: SerializablePreparedTransactionsPossible
+    inputTokenInfo: SerializedTokenBalance
+    inputTokenAmount: string
+    pool: EarnPosition
+    mode: Extract<EarnActiveMode, 'deposit' | 'swap-deposit'>
+    swapTransaction?: SwapTransaction
   }
   [Screens.EarnHome]: { activeEarnTab?: EarnTabType } | undefined
   [Screens.TabEarn]: { activeEarnTab?: EarnTabType } | undefined

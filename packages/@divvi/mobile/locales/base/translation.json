@@ -2638,6 +2638,13 @@
       "myPools": "My Pools",
       "explore": "Explore Open"
     },
+    "depositConfirmation": {
+      "title": "Review Deposit",
+      "depositing": "Depositing",
+      "into": "Into",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% est. yield rate"
+    },
     "depositBottomSheet": {
       "title": "Review & Deposit",
       "description": "Before depositing to an Aave pool, please review the transaction details below",
