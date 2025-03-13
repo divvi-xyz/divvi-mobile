@@ -277,25 +277,25 @@ describe('EarnDepositConfirmationScreen', () => {
             'tokenIntoTokenAmount'
           )
           expect(getByTestId('SwapAndDepositInfoSheet')).toHaveTextContent(
-            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.title'
+            'earnFlow.swapAndDepositInfoSheet.title'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapFrom/Label')).toHaveTextContent(
-            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapFrom'
+            'earnFlow.swapAndDepositInfoSheet.swapFrom'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapFrom/Value')).toHaveTextContent(
             'tokenAndLocalAmount'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapTo/Label')).toHaveTextContent(
-            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapTo'
+            'earnFlow.swapAndDepositInfoSheet.swapTo'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapTo/Value')).toHaveTextContent(
             'tokenAndLocalAmount'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/Disclaimer')).toHaveTextContent(
-            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.whySwap'
+            'earnFlow.swapAndDepositInfoSheet.whySwap'
           )
           expect(getByTestId('SwapAndDepositInfoSheet/Disclaimer')).toHaveTextContent(
-            'earnFlow.depositConfirmation.swapAndDepositInfoSheet.swapDescription'
+            'earnFlow.swapAndDepositInfoSheet.swapDescription'
           )
         }
       })
