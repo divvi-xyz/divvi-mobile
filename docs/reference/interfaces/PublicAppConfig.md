@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:225](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L225)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:236](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L236)
 
 #### protocolIds
 
@@ -70,7 +70,7 @@ referrerId: string
 optional experimental: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:190](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L190)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:191](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L191)
 
 Experimental features that may change or be removed in future versions.
 These features are not part of the stable configuration API and should be used with caution.
@@ -165,6 +165,30 @@ optional protectWallet: boolean;
 
 ```ts
 optional phoneNumberVerification: boolean;
+```
+
+#### tokens?
+
+```ts
+optional tokens: object;
+```
+
+##### tokens.enabledTokenIds
+
+```ts
+enabledTokenIds: string[];
+```
+
+##### tokens.overrides?
+
+```ts
+optional overrides: object;
+```
+
+###### Index Signature
+
+```ts
+[tokenId: string]: object
 ```
 
 #### transactions?
@@ -331,6 +355,12 @@ optional networks: object;
 ```
 
 Defined in: [packages/@divvi/mobile/src/public/types.tsx:180](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L180)
+
+#### enabledNetworkIds?
+
+```ts
+optional enabledNetworkIds: NetworkId[];
+```
 
 ---
 
