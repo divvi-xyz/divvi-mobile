@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { configureStore, Middleware } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
+import devToolsEnhancer from 'redux-devtools-expo-dev-plugin'
 import { getStoredState, PersistConfig, persistReducer, persistStore } from 'redux-persist'
 import FSStorage from 'redux-persist-fs-storage'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
@@ -121,6 +122,8 @@ export const setupStore = (initialState?: ReducersRootState, config = persistCon
         immutableCheck: false,
         serializableCheck: false,
       }).concat(...middlewares),
+    devTools: false,
+    enhancers: (getDefaultEnhancers) => getDefaultEnhancers().concat(devToolsEnhancer()),
   })
   const createdPersistor = persistStore(createdStore)
   sagaMiddleware.run(rootSaga)

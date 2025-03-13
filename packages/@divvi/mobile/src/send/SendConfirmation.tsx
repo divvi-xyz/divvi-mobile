@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import BigNumber from 'bignumber.js'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showError } from 'src/alert/actions'
 import AppAnalytics from 'src/analytics/AppAnalytics'
@@ -36,7 +36,10 @@ import { useAmountAsUsd, useTokenInfo, useTokenToLocalAmount } from 'src/tokens/
 import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import Logger from 'src/utils/Logger'
 import { getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
-import { getSerializablePreparedTransaction } from 'src/viem/preparedTransactionSerialization'
+import {
+  getPreparedTransactionsPossible,
+  getSerializablePreparedTransaction,
+} from 'src/viem/preparedTransactionSerialization'
 import { walletAddressSelector } from 'src/web3/selectors'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SendConfirmation>
@@ -45,22 +48,37 @@ const TAG = 'send/SendConfirmation'
 
 export const sendConfirmationScreenNavOptions = noHeader
 
-export default function SendConfirmation(props: Props) {
+function usePreparedTransaction(params: Props['route']['params']) {
+  const { prepareTransactionsResult, refreshPreparedTransactions, prepareTransactionLoading } =
+    usePrepareSendTransactions()
+
+  const deserializedTx = useMemo(() => {
+    return params.prepareTransactionsResult
+      ? getPreparedTransactionsPossible(params.prepareTransactionsResult)
+      : null
+  }, [params.prepareTransactionsResult])
+
+  return {
+    prepareTransactionsResult: deserializedTx ?? prepareTransactionsResult,
+    prepareTransactionLoading: deserializedTx ? false : prepareTransactionLoading,
+    refreshPreparedTransactions,
+  }
+}
+
+export default function SendConfirmation({ route: { params } }: Props) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const feesBottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const totalBottomSheetRef = useRef<BottomSheetModalRefType>(null)
+  const openedViaDeeplink = !params.prepareTransactionsResult
 
   const {
     origin,
     transactionData: { recipient, tokenAmount, tokenAddress, tokenId },
-  } = props.route.params
+  } = params
 
   const { prepareTransactionsResult, refreshPreparedTransactions, prepareTransactionLoading } =
-    usePrepareSendTransactions()
-
-  const openedViaDeeplink = !props.route.params.prepareTransactionsResult
-  const preparedResult = props.route.params.prepareTransactionsResult ?? prepareTransactionsResult
+    usePreparedTransaction(params)
 
   const tokenInfo = useTokenInfo(tokenId)
   const isSending = useSelector(isSendingSelector)
@@ -101,11 +119,14 @@ export default function SendConfirmation(props: Props) {
     })
   }, [tokenInfo, tokenAmount, recipient, walletAddress, feeCurrencies, openedViaDeeplink])
 
-  const disableSend = isSending || !preparedResult || preparedResult.type !== 'possible'
+  const disableSend =
+    isSending || !prepareTransactionsResult || prepareTransactionsResult.type !== 'possible'
 
   const onSend = () => {
     const preparedTransaction =
-      preparedResult && preparedResult.type === 'possible' && preparedResult.transactions[0]
+      prepareTransactionsResult &&
+      prepareTransactionsResult.type === 'possible' &&
+      prepareTransactionsResult.transactions[0]
     if (!preparedTransaction) {
       // This should never happen because the confirm button is disabled if this happens.
       dispatch(showError(ErrorMessages.SEND_PAYMENT_FAILED))
@@ -115,7 +136,7 @@ export default function SendConfirmation(props: Props) {
     AppAnalytics.track(SendEvents.send_confirm_send, {
       origin,
       recipientType: recipient.recipientType,
-      isScan: props.route.params.isFromScan,
+      isScan: params.isFromScan,
       localCurrency: localCurrencyCode,
       usdAmount: usdAmount?.toString() ?? null,
       localCurrencyAmount: localAmount?.toString() ?? null,

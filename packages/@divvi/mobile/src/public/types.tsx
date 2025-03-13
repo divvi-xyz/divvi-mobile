@@ -178,6 +178,7 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
 
   //
   networks?: {
+    enabledNetworkIds?: NetworkId[]
     // TODO: we'll pass RPC urls, API urls, etc here
   }
 
@@ -220,6 +221,16 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
       projectName: string
     }
     phoneNumberVerification?: boolean
+    tokens?: {
+      // list of tokens to display.
+      enabledTokenIds: string[]
+      // overrides for token metadata.
+      overrides?: {
+        [tokenId: string]: {
+          showZeroBalance?: boolean
+        }
+      }
+    }
   }
 
   divviProtocol?: {

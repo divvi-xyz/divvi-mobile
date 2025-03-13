@@ -1,5 +1,4 @@
 import { KycSchema } from '@fiatconnect/fiatconnect-types'
-import type BigNumber from 'bignumber.js'
 import { SendOrigin, WalletConnectPairingOrigin } from 'src/analytics/types'
 import { EarnActiveMode, EarnTabType } from 'src/earn/types'
 import { ExternalExchangeProvider } from 'src/fiatExchanges/ExternalExchanges'
@@ -11,16 +10,18 @@ import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
 import { Screens } from 'src/navigator/Screens'
 import { Nft } from 'src/nfts/types'
 import { EarnPosition } from 'src/positions/types'
-import type { PreparedTransactionsPossible, PreparedTransactionsResult } from 'src/public'
 import { Recipient } from 'src/recipients/recipient'
 import { QrCode, TransactionDataInput } from 'src/send/types'
 import type { SwapTransaction } from 'src/swap/types'
-import type { TokenBalance } from 'src/tokens/slice'
+import type { SerializedTokenBalance } from 'src/tokens/slice'
 import { AssetTabType } from 'src/tokens/types'
 import { NetworkId, TokenTransaction, TokenTransfer } from 'src/transactions/types'
 import { Countries } from 'src/utils/Countries'
 import { Currency } from 'src/utils/currencies'
-import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
+import {
+  SerializableTransactionRequest,
+  type SerializablePreparedTransactionsPossible,
+} from 'src/viem/preparedTransactionSerialization'
 import { ActionRequestProps } from 'src/walletConnect/screens/ActionRequest'
 import { SessionRequestProps } from 'src/walletConnect/screens/SessionRequest'
 import { WalletConnectRequestType } from 'src/walletConnect/types'
@@ -37,7 +38,7 @@ interface SendConfirmationParams {
   origin: SendOrigin
   transactionData: TransactionDataInput
   isFromScan: boolean
-  prepareTransactionsResult?: PreparedTransactionsResult
+  prepareTransactionsResult?: SerializablePreparedTransactionsPossible
 }
 
 type SendEnterAmountParams = {
@@ -94,9 +95,9 @@ export type StackParamList = {
     useMax: boolean
   }
   [Screens.EarnDepositConfirmationScreen]: {
-    preparedTransaction: PreparedTransactionsPossible
-    inputTokenInfo: TokenBalance
-    inputTokenAmount: BigNumber
+    preparedTransaction: SerializablePreparedTransactionsPossible
+    inputTokenInfo: SerializedTokenBalance
+    inputTokenAmount: string
     pool: EarnPosition
     mode: Extract<EarnActiveMode, 'deposit' | 'swap-deposit'>
     swapTransaction?: SwapTransaction

@@ -37,6 +37,7 @@ import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import { useTokenInfo, useTokenToLocalAmount } from 'src/tokens/hooks'
 import type { TokenBalance } from 'src/tokens/slice'
+import { getTokenBalance } from 'src/tokens/utils'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnDepositConfirmationScreen>
 
@@ -44,8 +45,8 @@ export function useDepositAmount(params: Props['route']['params']) {
   const { inputTokenAmount, mode, swapTransaction, pool } = params
   const tokenAmount =
     mode === 'swap-deposit' && swapTransaction
-      ? getSwapToAmountInDecimals({ swapTransaction, fromAmount: inputTokenAmount })
-      : inputTokenAmount
+      ? getSwapToAmountInDecimals({ swapTransaction, fromAmount: new BigNumber(inputTokenAmount) })
+      : new BigNumber(inputTokenAmount)
   const tokenInfo = useTokenInfo(pool.dataProps.depositTokenId)
   const localAmount = useTokenToLocalAmount(tokenAmount, pool.dataProps.depositTokenId)
 
@@ -78,13 +79,14 @@ export function useCommonAnalyticsProperties(
 }
 
 export default function EarnDepositConfirmationScreen({ route: { params } }: Props) {
-  const { inputTokenInfo, pool, mode, inputTokenAmount } = params
+  const inputTokenAmount = new BigNumber(params.inputTokenAmount)
+  const inputTokenInfo = getTokenBalance(params.inputTokenInfo)
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const depositAmount = useDepositAmount(params)
   const commonAnalyticsProperties = useCommonAnalyticsProperties(params, depositAmount.tokenAmount)
-  const providerUrl = pool.dataProps.manageUrl ?? pool.dataProps.termsUrl
+  const providerUrl = params.pool.dataProps.manageUrl ?? params.pool.dataProps.termsUrl
 
   function onPressProvider() {
     AppAnalytics.track(EarnEvents.earn_deposit_provider_info_press, commonAnalyticsProperties)
@@ -120,38 +122,40 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
 
           <ReviewSummaryItem
             testID="EarnDepositConfirmationPool"
-            label={t('earnFlow.depositConfirmation.into')}
+            label={t('earnFlow.depositConfirmation.into', { providerName: params.pool.appName })}
             onPress={providerUrl ? onPressProvider : undefined}
-            icon={<TokenIcon token={pool.displayProps} />}
-            primaryValue={t('earnFlow.depositConfirmation.pool', { providerName: pool.appName })}
+            icon={<TokenIcon token={params.pool.displayProps} />}
+            primaryValue={t('earnFlow.depositConfirmation.pool', {
+              providerName: params.pool.appName,
+            })}
             secondaryValue={t('earnFlow.depositConfirmation.yieldRate', {
-              apy: getTotalYieldRate(pool).toFixed(2),
+              apy: getTotalYieldRate(params.pool).toFixed(2),
             })}
           />
 
-          <SwapAndDepositSummaryItem
-            mode={mode}
-            inputTokenAmount={inputTokenAmount}
-            inputTokenInfo={inputTokenInfo}
-            tokenDepositAmount={depositAmount.tokenAmount}
-            localDepositAmount={depositAmount.localAmount}
-            depositTokenInfo={depositAmount.tokenInfo}
-          />
+          {params.mode === 'swap-deposit' && (
+            <SwapAndDepositSummaryItem
+              inputTokenAmount={inputTokenAmount}
+              inputTokenInfo={inputTokenInfo}
+              tokenDepositAmount={depositAmount.tokenAmount}
+              localDepositAmount={depositAmount.localAmount}
+              depositTokenInfo={depositAmount.tokenInfo}
+            />
+          )}
         </ReviewSummary>
       </ReviewContent>
     </ReviewTransaction>
   )
 }
 
-function SwapAndDepositSummaryItem(
-  props: {
-    tokenDepositAmount: BigNumber
-    localDepositAmount: BigNumber | undefined | null
-    depositTokenInfo: TokenBalance | undefined
-  } & Pick<Props['route']['params'], 'mode' | 'inputTokenAmount' | 'inputTokenInfo'>
-) {
+function SwapAndDepositSummaryItem(props: {
+  inputTokenAmount: BigNumber
+  inputTokenInfo: TokenBalance
+  tokenDepositAmount: BigNumber
+  localDepositAmount: BigNumber | undefined | null
+  depositTokenInfo: TokenBalance | undefined
+}) {
   const {
-    mode,
     depositTokenInfo,
     inputTokenAmount,
     inputTokenInfo,
@@ -162,10 +166,6 @@ function SwapAndDepositSummaryItem(
   const bottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const inputLocalAmount = useTokenToLocalAmount(inputTokenAmount, inputTokenInfo.tokenId)
-
-  if (mode !== 'swap-deposit') {
-    return null
-  }
 
   return (
     <>
