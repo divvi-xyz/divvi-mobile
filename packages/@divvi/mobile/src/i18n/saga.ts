@@ -1,6 +1,5 @@
 import OtaClient from '@crowdin/ota-client'
 import i18n from 'i18next'
-import _ from 'lodash'
 import DeviceInfo from 'react-native-device-info'
 import { CROWDIN_DISTRIBUTION_HASH, ENABLE_OTA_TRANSLATIONS } from 'src/config'
 import { saveOtaTranslations } from 'src/i18n/otaTranslations'
@@ -16,7 +15,6 @@ import { safely } from 'src/utils/safely'
 import { call, put, select, spawn, takeLatest } from 'typed-redux-saga'
 
 const TAG = 'i18n/saga'
-const otaClient = new OtaClient(CROWDIN_DISTRIBUTION_HASH)
 const allowOtaTranslations = ENABLE_OTA_TRANSLATIONS
 
 export function* handleFetchOtaTranslations() {
@@ -26,6 +24,26 @@ export function* handleFetchOtaTranslations() {
       if (!currentLanguage) {
         // this is true on first app install if the language cannot be
         // automatically detected, we should not proceed without a language
+        return
+      }
+
+      const otaClient = new OtaClient(CROWDIN_DISTRIBUTION_HASH)
+      const crowdinContent = yield* call([otaClient, otaClient.getContent])
+
+      // note that the Crowdin language codes are different from the app
+      // language codes so we need to map them. unfortunately the mapping is not
+      // publically exposed so it is a little cumbersome, and we derive it from
+      // getContent
+      const translationPathRegex = new RegExp(`main/locales/${currentLanguage}/translation\\.json`)
+      const crowdinLanguageCode = Object.entries(crowdinContent).find(([_, paths]) =>
+        paths.some((path) => translationPathRegex.test(path))
+      )?.[0]
+
+      if (!crowdinLanguageCode) {
+        Logger.error(
+          `${TAG}@handleFetchOtaTranslations`,
+          `Failed to find Crowdin language code for app language ${currentLanguage}`
+        )
         return
       }
 
@@ -39,13 +57,9 @@ export function* handleFetchOtaTranslations() {
         lastFetchTime !== timestamp ||
         DeviceInfo.getVersion() !== lastFetchAppVersion
       ) {
-        const languageMappings = yield* call([otaClient, otaClient.getLanguageMappings])
-        const customMappedLanguage = _.findKey(languageMappings, { locale: currentLanguage })
-
         const translations = yield* call(
           [otaClient, otaClient.getStringsByLocale],
-          undefined,
-          customMappedLanguage || currentLanguage
+          crowdinLanguageCode
         )
         i18n.addResourceBundle(currentLanguage, 'translation', translations, true, true)
 
@@ -69,5 +83,6 @@ export function* watchOtaTranslations() {
 }
 
 export function* i18nSaga() {
+  yield* spawn(handleFetchOtaTranslations)
   yield* spawn(watchOtaTranslations)
 }

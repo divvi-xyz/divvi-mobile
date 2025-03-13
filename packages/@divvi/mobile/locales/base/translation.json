@@ -2645,13 +2645,6 @@
       "pool": "{{providerName}} Pool",
       "yieldRate": "{{apy}}% est. yield rate",
       "swapAndDeposit": "Swap & Deposit",
-      "swapAndDepositInfoSheet": {
-        "title": "Swap Details",
-        "swapFrom": "Swap From",
-        "swapTo": "Swap To",
-        "whySwap": "Why am I swapping?",
-        "swapDescription": "To deposit funds into the pool, your token is being swapped into a pool token."
-      },
       "description_deposit": "The network fee is required by the network to process the deposit transaction.",
       "description_withdraw": "The network fee is required by the network to process the withdrawal transaction.",
       "description_depositSwapFee": "The network fee is required by the network to process the deposit transactions. The {{appName}} fee of {{appFeePercentage}}% is charged for your use of our product.",
@@ -2659,6 +2652,13 @@
       "description_depositCrossChainWithSwapFee": "The network fee is required by the network to process the deposit transactions. The {{appName}} fee of {{appFeePercentage}}% is charged for your use of our product. The cross-chain fee is charged by the cross-chain provider.",
       "disclaimer": "By depositing crypto into an {{providerName}} pool, you accept the risks associated with using {{providerName}}. <0>Terms & Conditions</0>",
       "noTermsUrlDisclaimer": "You are responsible for your actions in {{appName}}. {{appName}} disclaims all responsibility for your assets or interactions with {{providerName}}. You can review {{providerName}}'s documents <0>here</0> and our Terms & Conditions <1>here</1>."
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Swap Details",
+      "swapFrom": "Swap From",
+      "swapTo": "Swap To",
+      "whySwap": "Why am I swapping?",
+      "swapDescription": "To deposit funds into the pool, your token is being swapped into a pool token."
     },
     "depositBottomSheet": {
       "title": "Review & Deposit",
