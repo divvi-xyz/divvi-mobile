@@ -204,7 +204,7 @@ describe('EarnDepositConfirmationScreen', () => {
         fromNetworkId,
       }
 
-      it(`useDepositAmount properly calculates deposit amount in token and fiat`, () => {
+      it('useDepositAmount properly calculates deposit amount in token and fiat', () => {
         const { result } = renderHook(() => useDepositAmount(props), { wrapper: HookWrapper })
         expect(result.current.tokenAmount.toString()).toEqual(depositTokenAmount)
         expect(result.current.localAmount?.toString()).toEqual(depositLocalAmount)
