@@ -27,12 +27,12 @@ export default function TabBar({
   const { t } = useTranslation()
 
   const items = useMemo(() => {
-    const items = [t('assets.tabBar.tokens')]
+    const items = [{ id: AssetTabType.Tokens, text: t('assets.tabBar.tokens') }]
     if (!getAppConfig().experimental?.disableNfts) {
-      items.push(t('assets.tabBar.collectibles'))
+      items.push({ id: AssetTabType.Collectibles, text: t('assets.tabBar.collectibles') })
     }
     if (displayPositions) {
-      items.push(t('assets.tabBar.dappPositions'))
+      items.push({ id: AssetTabType.Positions, text: t('assets.tabBar.dappPositions') })
     }
     return items
   }, [t, displayPositions])
@@ -41,15 +41,15 @@ export default function TabBar({
     return null
   }
 
-  const handleSelectOption = (index: AssetTabType) => () => {
+  const handleSelectOption = (id: AssetTabType) => () => {
     AppAnalytics.track(
       [
         AssetsEvents.view_wallet_assets,
         AssetsEvents.view_collectibles,
         AssetsEvents.view_dapp_positions,
-      ][index]
+      ][id]
     )
-    onChange(index)
+    onChange(id)
     vibrateInformative()
   }
 
@@ -62,22 +62,22 @@ export default function TabBar({
 
   return (
     <View style={[styles.container, { gap }]} testID="Assets/TabBar">
-      {items.map((value, index) => (
+      {items.map((item) => (
         <Touchable
           testID="Assets/TabBarItem"
-          key={value}
-          onPress={handleSelectOption(index)}
+          key={item.id}
+          onPress={handleSelectOption(item.id)}
           style={styles.touchable}
         >
           <>
             <Text
-              style={[index === activeTab ? styles.itemSelected : styles.item]}
+              style={[item.id === activeTab ? styles.itemSelected : styles.item]}
               numberOfLines={1}
             >
-              {value}
+              {item.text}
             </Text>
 
-            {index === activeTab && <GradientBlock style={styles.activeTabUnderline} />}
+            {item.id === activeTab && <GradientBlock style={styles.activeTabUnderline} />}
           </>
         </Touchable>
       ))}
