@@ -1,6 +1,7 @@
 import { debounce } from 'lodash'
 import React, { ReactElement, ReactNode, useCallback } from 'react'
 import { ActivityIndicator, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 import Touchable from 'src/components/Touchable'
 import Colors, { ColorValue } from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
@@ -81,10 +82,24 @@ export default React.memo(function Button(props: ButtonProps) {
 
   const { contentColor, backgroundColor, opacity, borderColor } = getColors(type, disabled)
 
+  const Wrapper = ({ children }: { children: ReactNode }) =>
+    Array.isArray(backgroundColor) ? (
+      <LinearGradient
+        colors={backgroundColor}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={[styles.containRipple, styles.rounded]}
+      >
+        {children}
+      </LinearGradient>
+    ) : (
+      <View style={[styles.containRipple, styles.rounded]}>{children}</View>
+    )
+
   return (
     <View style={getStyleForWrapper(size, style)}>
       {/* these Views cannot be combined as it will cause ripple to not respect the border radius */}
-      <View style={[styles.containRipple, styles.rounded]}>
+      <Wrapper>
         <Touchable
           onPress={debouncedOnPress}
           disabled={disabled}
@@ -117,7 +132,7 @@ export default React.memo(function Button(props: ButtonProps) {
             </>
           )}
         </Touchable>
-      </View>
+      </Wrapper>
     </View>
   )
 })
@@ -182,7 +197,7 @@ function getColors(type: BtnTypes, disabled: boolean | undefined) {
 
 function getStyle(
   size: BtnSizes | undefined,
-  backgroundColor: ColorValue,
+  backgroundColor: ColorValue | ColorValue[],
   opacity: number | undefined,
   borderColor: ColorValue | undefined,
   iconPositionLeft: boolean
@@ -197,7 +212,7 @@ function getStyle(
   const commonStyles: ViewStyle = {
     ...styles.button,
     ...borderStyles,
-    backgroundColor,
+    backgroundColor: Array.isArray(backgroundColor) ? undefined : backgroundColor,
     opacity,
     flexDirection: iconPositionLeft ? 'row' : 'row-reverse',
   }
