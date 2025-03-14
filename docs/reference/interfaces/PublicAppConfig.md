@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:247](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L247)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:249](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L249)
 
 #### protocolIds
 
@@ -107,6 +107,12 @@ optional bidali: object;
 url: string
 ```
 
+#### disableNfts?
+
+```ts
+optional disableNfts: boolean;
+```
+
 #### earn?
 
 ```ts
@@ -129,6 +135,12 @@ optional showSafetyScoreOnPoolCard: boolean;
 
 ```ts
 optional firebase: boolean;
+```
+
+#### hideCashInTokenFilters?
+
+```ts
+optional hideCashInTokenFilters: boolean;
 ```
 
 #### inviteFriends?
