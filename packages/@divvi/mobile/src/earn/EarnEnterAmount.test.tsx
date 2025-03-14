@@ -16,7 +16,9 @@ import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import { SwapTransaction } from 'src/swap/types'
 import { TokenBalance } from 'src/tokens/slice'
+import { getSerializableTokenBalance } from 'src/tokens/utils'
 import { NetworkId } from 'src/transactions/types'
+import { getSerializablePreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
 import {
   PreparedTransactionsNeedDecreaseSpendAmountForGas,
   PreparedTransactionsNotEnoughBalanceForGas,
@@ -342,7 +344,18 @@ describe('EarnEnterAmount', () => {
         depositTokenAmount: '8',
         mode: 'deposit',
       })
-      await waitFor(() => expect(getByText('earnFlow.depositBottomSheet.title')).toBeVisible())
+      expect(navigate).toHaveBeenCalledWith(Screens.EarnDepositConfirmationScreen, {
+        ...depositParams,
+        swapTransaction: undefined,
+        inputTokenAmount: '8',
+        preparedTransaction: getSerializablePreparedTransactionsPossible(mockPreparedTransaction),
+        inputTokenInfo: getSerializableTokenBalance({
+          ...mockTokenBalances[mockArbUsdcTokenId],
+          priceUsd: new BigNumber(1),
+          lastKnownPriceUsd: new BigNumber(1),
+          balance: new BigNumber(10),
+        }),
+      })
     })
   })
 
@@ -551,7 +564,18 @@ describe('EarnEnterAmount', () => {
         mode: 'swap-deposit',
         swapType: 'same-chain',
       })
-      await waitFor(() => expect(getByText('earnFlow.depositBottomSheet.title')).toBeVisible())
+      expect(navigate).toHaveBeenCalledWith(Screens.EarnDepositConfirmationScreen, {
+        ...swapDepositParams,
+        swapTransaction: mockSwapTransaction,
+        inputTokenAmount: '0.00041',
+        preparedTransaction: getSerializablePreparedTransactionsPossible(mockPreparedTransaction),
+        inputTokenInfo: getSerializableTokenBalance({
+          ...mockTokenBalances[mockArbEthTokenId],
+          priceUsd: new BigNumber(1500),
+          lastKnownPriceUsd: new BigNumber(1500),
+          balance: new BigNumber(1),
+        }),
+      })
     })
 
     it('should show tx details and handle navigating to the deposit bottom sheet for cross-chain swap', async () => {
@@ -619,7 +643,13 @@ describe('EarnEnterAmount', () => {
         mode: 'swap-deposit',
         swapType: 'cross-chain',
       })
-      await waitFor(() => expect(getByText('earnFlow.depositBottomSheet.title')).toBeVisible())
+      expect(navigate).toHaveBeenCalledWith(Screens.EarnDepositConfirmationScreen, {
+        ...swapDepositParams,
+        swapTransaction: mockCrossChainSwapTransaction,
+        inputTokenAmount: '0.25',
+        preparedTransaction: getSerializablePreparedTransactionsPossible(mockPreparedTransaction),
+        inputTokenInfo: getSerializableTokenBalance(mockCeloFeeCurrencies[0]),
+      })
     })
   })
 
