@@ -159,8 +159,6 @@ export enum TokenTransactionTypeV2 {
 export const FEED_V2_INCLUDE_TYPES_NO_NFT = [
   TokenTransactionTypeV2.Received,
   TokenTransactionTypeV2.Sent,
-  TokenTransactionTypeV2.NftReceived,
-  TokenTransactionTypeV2.NftSent,
   TokenTransactionTypeV2.SwapTransaction,
   TokenTransactionTypeV2.CrossChainSwapTransaction,
   TokenTransactionTypeV2.Approval,
