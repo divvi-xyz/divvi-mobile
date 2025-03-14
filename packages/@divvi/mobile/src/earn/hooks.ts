@@ -24,7 +24,7 @@ import Logger from 'src/utils/Logger'
 import { ensureError } from 'src/utils/ensureError'
 import {
   getFeeCurrencyAndAmounts,
-  type PreparedTransactionsPossible,
+  type PreparedTransactionsResult,
 } from 'src/viem/prepareTransactions'
 import { Address } from 'viem'
 
@@ -159,7 +159,7 @@ export function usePrepareEarnConfirmationScreenTransactions(
 }
 
 export function useNetworkFee(
-  preparedTransaction: PreparedTransactionsPossible
+  preparedTransaction: PreparedTransactionsResult
 ): SwapFeeAmount & { localAmount: BigNumber } {
   const networkFee = getFeeCurrencyAndAmounts(preparedTransaction)
   console.log(networkFee)
