@@ -17,9 +17,15 @@ jest.mock('@crowdin/ota-client', () => {
   return function () {
     return {
       getManifestTimestamp: jest.fn(() => 123456),
-      getLanguageMappings: jest.fn(),
-      getStringsByLocale: jest.fn(() => ({
-        someLang: { someNamespace: { someKey: 'someValue ' } },
+      getStringsByLocale: jest.fn((langCode: string) => {
+        if (langCode === 'en' || langCode === 'de') {
+          return { someNamespace: { someKey: 'someValue ' } }
+        }
+        throw new Error('Unsupported language')
+      }),
+      getContent: jest.fn(() => ({
+        en: ['main/locales/en-US/translation.json'],
+        de: ['main/locales/de/translation.json'],
       })),
     }
   }
@@ -37,7 +43,7 @@ describe('i18n sagas', () => {
   })
 
   it('handles fetching over the air translations', async () => {
-    const translations = { someLang: { someNamespace: { someKey: 'someValue ' } } }
+    const translations = { someNamespace: { someKey: 'someValue ' } }
     const timestamp = 123456
     const appVersion = '1.0.0'
     const mockedVersion = DeviceInfo.getVersion as jest.MockedFunction<typeof DeviceInfo.getVersion>

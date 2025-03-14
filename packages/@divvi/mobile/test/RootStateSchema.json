@@ -1949,7 +1949,7 @@
                             "type": "number"
                         },
                         "price": {
-                            "$ref": "#/definitions/BigNumber.Value"
+                            "type": "string"
                         }
                     },
                     "required": [
@@ -3632,6 +3632,7 @@
                 "DebugImages",
                 "DemoModeAuthBlock",
                 "EarnConfirmationScreen",
+                "EarnDepositConfirmationScreen",
                 "EarnEnterAmount",
                 "EarnHome",
                 "EarnInfoScreen",
@@ -5859,6 +5860,7 @@
                         "DebugImages",
                         "DemoModeAuthBlock",
                         "EarnConfirmationScreen",
+                        "EarnDepositConfirmationScreen",
                         "EarnEnterAmount",
                         "EarnHome",
                         "EarnInfoScreen",

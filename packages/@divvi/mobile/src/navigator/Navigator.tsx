@@ -32,6 +32,7 @@ import DappShortcutTransactionRequest from 'src/dapps/DappShortcutTransactionReq
 import DappShortcutsRewards from 'src/dapps/DappShortcutsRewards'
 import DappsScreen from 'src/dapps/DappsScreen'
 import EarnConfirmationScreen from 'src/earn/EarnConfirmationScreen'
+import EarnDepositConfirmationScreen from 'src/earn/EarnDepositConfirmationScreen'
 import EarnEnterAmount from 'src/earn/EarnEnterAmount'
 import EarnHome from 'src/earn/EarnHome'
 import EarnInfoScreen from 'src/earn/EarnInfoScreen'
@@ -540,6 +541,11 @@ const earnScreens = (Navigator: typeof Stack) => (
       options={headerWithBackButton}
     />
     <Navigator.Screen
+      name={Screens.EarnDepositConfirmationScreen}
+      component={EarnDepositConfirmationScreen}
+      options={noHeader}
+    />
+    <Navigator.Screen
       name={Screens.EarnEnterAmount}
       component={EarnEnterAmount}
       options={noHeader}
@@ -638,10 +644,6 @@ function MainStackScreen() {
 
     setInitialRoute(initialRoute)
     Logger.info(`${TAG}@MainStackScreen`, `Initial route: ${initialRoute}`)
-
-    // Wait for next frame to avoid slight gap when hiding the
-    // TODO: make this work with the expo splash screen
-    // requestAnimationFrame(() => SplashScreen.hide())
   }, [])
 
   if (!initialRouteName) {

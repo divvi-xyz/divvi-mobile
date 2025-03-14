@@ -2638,6 +2638,21 @@
       "myPools": "My Pools",
       "explore": "Explore Open"
     },
+    "depositConfirmation": {
+      "title": "Review Deposit",
+      "depositing": "Depositing",
+      "into": "Into",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% est. yield rate",
+      "swapAndDeposit": "Swap & Deposit"
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Swap Details",
+      "swapFrom": "Swap From",
+      "swapTo": "Swap To",
+      "whySwap": "Why am I swapping?",
+      "swapDescription": "To deposit funds into the pool, your token is being swapped into a pool token."
+    },
     "depositBottomSheet": {
       "title": "Review & Deposit",
       "description": "Before depositing to an Aave pool, please review the transaction details below",
@@ -2872,6 +2887,7 @@
   "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ $t(tokenAmount) <0>($t(localAmount))</0>",
   "tokenAndLocalAmountApprox_noFiatPrice": "≈ $t(tokenAmount)",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "More information",
   "breakdown": "Breakdown",
   "feeInfoBottomSheet": {

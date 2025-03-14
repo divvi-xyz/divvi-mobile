@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:225](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L225)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:247](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L247)
 
 #### protocolIds
 
@@ -70,7 +70,7 @@ referrerId: string
 optional experimental: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:190](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L190)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:202](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L202)
 
 Experimental features that may change or be removed in future versions.
 These features are not part of the stable configuration API and should be used with caution.
@@ -167,6 +167,30 @@ optional protectWallet: boolean;
 optional phoneNumberVerification: boolean;
 ```
 
+#### tokens?
+
+```ts
+optional tokens: object;
+```
+
+##### tokens.enabledTokenIds
+
+```ts
+enabledTokenIds: string[];
+```
+
+##### tokens.overrides?
+
+```ts
+optional overrides: object;
+```
+
+###### Index Signature
+
+```ts
+[tokenId: string]: object
+```
+
 #### transactions?
 
 ```ts
@@ -223,7 +247,7 @@ projectName: string
 optional features: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:142](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L142)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:153](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L153)
 
 #### cloudBackup?
 
@@ -317,7 +341,7 @@ optional locales: Partial<{
 }>;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:163](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L163)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:174](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L174)
 
 Optional copies overwrite. This field should contain the same language keys as @interxyz/mobile.
 TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
@@ -330,7 +354,13 @@ TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
 optional networks: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:180](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L180)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:191](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L191)
+
+#### enabledNetworkIds?
+
+```ts
+optional enabledNetworkIds: NetworkId[];
+```
 
 ---
 
@@ -350,7 +380,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:25](https://github.com/
 optional screens: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:125](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L125)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:136](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L136)
 
 #### custom()?
 
@@ -439,6 +469,48 @@ default: object;
 
 ```ts
 optional assets: object;
+```
+
+##### default.assets.backupAndRecoveryImages?
+
+```ts
+optional backupAndRecoveryImages: object;
+```
+
+##### default.assets.backupAndRecoveryImages.cloudBackupEmail?
+
+```ts
+optional cloudBackupEmail: ImageSourcePropType;
+```
+
+##### default.assets.backupAndRecoveryImages.recoveryPhraseEducation1?
+
+```ts
+optional recoveryPhraseEducation1: ImageSourcePropType;
+```
+
+##### default.assets.backupAndRecoveryImages.recoveryPhraseEducation2?
+
+```ts
+optional recoveryPhraseEducation2: ImageSourcePropType;
+```
+
+##### default.assets.backupAndRecoveryImages.recoveryPhraseEducation3?
+
+```ts
+optional recoveryPhraseEducation3: ImageSourcePropType;
+```
+
+##### default.assets.backupAndRecoveryImages.recoveryPhraseEducation4?
+
+```ts
+optional recoveryPhraseEducation4: ImageSourcePropType;
+```
+
+##### default.assets.backupAndRecoveryImages.walletSafe?
+
+```ts
+optional walletSafe: ImageSourcePropType;
 ```
 
 ##### default.assets.biometryImages?
@@ -585,8 +657,10 @@ optional brandGradientRight: string;
 ##### default.colors.buttonPrimaryBackground?
 
 ```ts
-optional buttonPrimaryBackground: string;
+optional buttonPrimaryBackground: string | string[];
 ```
+
+Can be a single color or array of colors for a linear gradient
 
 ##### default.colors.buttonPrimaryBorder?
 
