@@ -27,7 +27,6 @@ jobs:
         uses: google-github-actions/get-secretmanager-secrets@v2.2.2
         with:
           secrets: |-
-            EMERGE_API_TOKEN:projects/1027349420744/secrets/EMERGE_API_TOKEN
             E2E_WALLET_CONNECT_PROJECT_ID:projects/1027349420744/secrets/E2E_WALLET_CONNECT_PROJECT_ID
             E2E_DEFAULT_RECIPIENT_MNEMONIC:projects/1027349420744/secrets/E2E_DEFAULT_RECIPIENT_MNEMONIC
             E2E_DEFAULT_RECIPIENT_PRIVATE_KEY:projects/1027349420744/secrets/E2E_DEFAULT_RECIPIENT_PRIVATE_KEY
@@ -38,13 +37,6 @@ jobs:
             E2E_WALLET_12_WORDS_MNEMONIC:projects/1027349420744/secrets/E2E_WALLET_12_WORDS_MNEMONIC
       - uses: actions/checkout@v4
       - uses: ./.github/actions/yarn-install
-      - name: Install Ruby dependencies
-        run: bundle install --path vendor/bundle
-      - name: Fail if someone forgot to commit "Gemfile.lock"
-        run: git diff --exit-code
-      # This way cocoapods and other installed gems from the Gemfile can be found without using `bundle exec`
-      - name: Add installed Gems binaries to PATH
-        run: echo "$(ruby -e 'puts Gem.bindir')" >> $GITHUB_PATH
       - name: Check E2E wallet balance
         run: NODE_OPTIONS='--unhandled-rejections=strict' yarn ts-node ./e2e/scripts/check-e2e-wallet-balance.ts
         working-directory: apps/example
@@ -54,16 +46,6 @@ jobs:
       - name: Create Detox Build
         run: yarn run e2e:build:ios-release
         working-directory: apps/example
-      - name: Upload Detox Build to Emerge
-        if: |
-          env.SECRETS_AVAILABLE
-            && (github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'merge_group')
-        # This step is not critical, so we continue on error
-        continue-on-error: true
-        run: yarn ts-node .github/scripts/uploadE2eBuildToEmerge.ts
-        env:
-          EMERGE_API_TOKEN: ${{ steps.google-secrets.outputs.EMERGE_API_TOKEN }}
-          DETOX_CONFIG: ios.release
       - name: Run Detox
         run: >
           yarn detox test

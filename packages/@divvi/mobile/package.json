@@ -50,69 +50,14 @@
     "quick-start-app"
   ],
   "scripts": {
-    "lint": "eslint --ext=.tsx,.ts src/",
-    "format": "prettier --loglevel error --write .",
-    "format:check": "prettier --check .",
-    "reset": "yarn reset-modules && yarn reset-cache",
-    "reset-cache": "yarn reset-yarn && yarn reset-rn",
-    "reset-modules": "rm -rf node_modules/",
-    "reset-rn": "watchman watch-del-all; rm -rf $TMPDIR/metro-cache-*; rm -rf $TMPDIR/haste-map-*; rm -rf $TMPDIR/metro-symbolicate*",
-    "reset-yarn": "yarn cache clean",
-    "check-licenses": "yarn licenses list --prod | grep '\\(─ GPL\\|─ (GPL-[1-9]\\.[0-9]\\+ OR GPL-[1-9]\\.[0-9]\\+)\\)' && echo 'Found GPL license(s). Use 'yarn licenses list --prod' to look up the offending package' && exit 1 || echo 'No GPL licenses found'",
-    "build": "yarn run build:ts",
-    "build:ts": "tsc --noEmit",
-    "build:metro": "yarn run react-native bundle --entry-file index.js --bundle-output bundle.js; rm bundle.js",
+    "build": "tsc --noEmit",
     "build:plugin": "rimraf plugin/build && tsc --build plugin",
     "docs": "typedoc",
-    "dev:android": "./scripts/run_app.sh -p android",
-    "dev:ios": "./scripts/run_app.sh -p ios",
-    "dev:ios:mainnet": "yarn dev:ios -e mainnetdev",
-    "dev:android:mainnet": "yarn dev:android -e mainnetdev",
-    "dev:show-menu": "adb devices | grep '\t' | awk '{print $1}' | sed 's/\\s//g' | xargs -I {} adb -s {} shell input keyevent 82",
-    "dev:clear-data": "adb shell pm clear org.celo.mobile.dev",
-    "dev:clean-android": "cd android && ./gradlew clean",
-    "dev:send-text": "adb shell input text",
-    "dev:reload": "adb shell input text \"RR\"",
-    "dev:pidcat": "pidcat org.celo.mobile.dev -t ReactNativeJs -t ReactNativeJS",
-    "dev:emulator:list": "$ANDROID_HOME/emulator/emulator -list-avds",
-    "dev:emulator:run": "$ANDROID_HOME/emulator/emulator -avd",
-    "knip:depcheck": "knip --include dependencies",
     "test": "export TZ=UTC && jest --silent",
-    "test:all": "yarn lint && yarn build:ts && yarn test",
     "test:ci": "yarn test --coverage --maxWorkers=3",
     "test:watch": "yarn test --watch --maxWorkers=4",
     "test:verbose": "export TZ=UTC && jest --verbose",
-    "test:verify-locales": "./scripts/verify_locales.sh",
-    "test:update-root-state-schema": "./scripts/update_root_state_schema.sh",
-    "e2e:packager": "export CELO_TEST_CONFIG=e2e && yarn react-native start",
-    "e2e:build:android-debug": "export CELO_TEST_CONFIG=e2e && yarn detox build -c android.debug",
-    "e2e:build:android-release": "export CELO_TEST_CONFIG=e2e && detox build -c android.release",
-    "e2e:build:ios-debug": "export CELO_TEST_CONFIG=e2e && detox build -c ios.debug",
-    "e2e:build:ios-release": "export CELO_TEST_CONFIG=e2e && detox build -c ios.release",
-    "e2e:test:android-debug": "detox test -c android.debug -l verbose",
-    "e2e:test:android-release": "detox test -c android.release -l verbose",
-    "e2e:test:ios-debug": "detox test -c ios.debug -l verbose",
-    "e2e:test:ios-release": "detox test -c ios.release -l verbose",
-    "pre-deploy": "./scripts/pre-deploy.sh",
-    "generate-release-notes": "ts-node ./scripts/generate-release-notes.ts",
-    "deploy:update-disclaimer": "yarn licenses generate-disclaimer --prod > src/account/LicenseDisclaimer.txt && ./scripts/copy_license_to_android_assets.sh",
-    "//postinstall": "patch-package && yarn keys:decrypt && ./scripts/copy_license_to_android_assets.sh",
-    "keys:decrypt": "bash scripts/key_placer.sh decrypt",
-    "keys:encrypt": "bash scripts/key_placer.sh encrypt"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "node ./scripts/hooks/pre-push.js"
-    }
-  },
-  "lint-staged": {
-    "**/*.+(ts|tsx|js|jsx|json|sol|java|yml|yaml|md)": "prettier --write"
-  },
-  "rnpm": {
-    "assets": [
-      "./fonts"
-    ]
+    "test:update-root-state-schema": "./scripts/update_root_state_schema.sh"
   },
   "peerDependencies": {
     "@divvi/cookies": "^6.2.3",
@@ -242,7 +187,6 @@
     "web3-utils": "^4.3.3"
   },
   "devDependencies": {
-    "@actions/github": "^5.1.1",
     "@sentry/types": "^7.111.0",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^12.7.2",
@@ -257,34 +201,20 @@
     "@walletconnect/types": "^2.18.1",
     "ajv": "^8.10.0",
     "babel-jest": "^29.2.1",
-    "babel-plugin-module-resolver": "^4.1.0",
-    "detox": "^20.34.4",
-    "husky": "^3.0.0",
     "jest": "^29.6.2",
-    "jest-circus": "^29.6.2",
     "jest-fetch-mock": "^3.0.3",
     "jest-html-reporter": "^3.5.0",
     "jest-junit": "^10.0.0",
     "jest-snapshot": "^29.6.2",
-    "knip": "^3.13.1",
-    "lint-staged": "^15.2.0",
-    "lokijs": "^1.5.12",
     "mockdate": "^3.0.5",
-    "patch-package": "^6.2.2",
-    "prettier": "3.3.3",
     "react": "18.3.1",
-    "react-devtools": "^4.26.0",
     "react-native": "0.76.5",
     "react-native-contacts": "https://github.com/valora-inc/react-native-contacts#9940121",
-    "react-native-flipper": "^0.212.0",
     "react-native-kill-packager": "^1.0.0",
     "react-native-svg-mock": "^2.0.0",
-    "react-native-version": "^3.1.0",
     "react-test-renderer": "18.2.0",
-    "redux-flipper": "^1.4.2",
     "redux-mock-store": "^1.5.3",
     "redux-saga-test-plan": "^4.0.6",
-    "remote-redux-devtools": "^0.5.12",
     "rimraf": "^6.0.1",
     "ts-jest": "^29.1.1",
     "ts-node": "10.7.0",
@@ -294,103 +224,6 @@
   "resolutions": {
     "redux": "^5.0.1",
     "set-value": "^4.1.0"
-  },
-  "detox": {
-    "testRunner": {
-      "$0": "jest",
-      "args": {
-        "config": "./e2e/jest.config.js"
-      },
-      "forwardEnv": true
-    },
-    "artifacts": {
-      "rootDir": "./e2e/artifacts"
-    },
-    "apps": {
-      "android.debug": {
-        "binaryPath": "android/app/build/outputs/apk/apptest/debug/app-apptest-debug.apk",
-        "testBinaryPath": "android/app/build/outputs/apk/androidTest/apptest/debug/app-apptest-debug-androidTest.apk",
-        "build": "cd android && ./gradlew assembleApptestDebug assembleApptestDebugAndroidTest -DtestBuildType=debug -PisDetoxBuild=true && cd ..",
-        "type": "android.apk",
-        "__comment": "Pixel_API_29_AOSP_x86_64 is currently hardcoded but it should be the result from $ANDROID_SDK_ROOT/emulator/emulator -list-avds | grep 'x86' | head -n 1`",
-        "__comment2": "Specifying 'testBinaryPath' otherwise detox infers the wrong APK name because we're using split APKs"
-      },
-      "android.release": {
-        "binaryPath": "android/app/build/outputs/apk/apptest/release/app-apptest-release.apk",
-        "testBinaryPath": "android/app/build/outputs/apk/androidTest/apptest/release/app-apptest-release-androidTest.apk",
-        "build": "cd android && ./gradlew assembleApptestRelease assembleApptestReleaseAndroidTest -DtestBuildType=release -PisDetoxBuild=true && cd ..",
-        "type": "android.apk",
-        "__comment": "Pixel_API_29_AOSP_x86_64 is currently hardcoded but it should be the result from $ANDROID_SDK_ROOT/emulator/emulator -list-avds | grep 'x86' | head -n 1`",
-        "__comment2": "Specifying 'testBinaryPath' otherwise detox infers the wrong APK name because we're using split APKs"
-      },
-      "ios.debug": {
-        "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/Valora.app",
-        "build": "unset PREFIX && set -o pipefail && xcodebuild -workspace ios/MobileStack.xcworkspace -scheme MobileStack-test -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build | bundle exec xcpretty",
-        "type": "ios.app"
-      },
-      "ios.release": {
-        "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/Valora.app",
-        "build": "unset PREFIX && set -o pipefail && xcodebuild -workspace ios/MobileStack.xcworkspace -scheme MobileStack-test -configuration Release -sdk iphonesimulator -derivedDataPath ios/build | bundle exec xcpretty",
-        "type": "ios.app"
-      }
-    },
-    "devices": {
-      "simulator": {
-        "type": "ios.simulator",
-        "device": {
-          "type": "iPhone SE (2nd generation)"
-        }
-      },
-      "simulator.15.2": {
-        "type": "ios.simulator",
-        "device": {
-          "type": "iPhone SE (2nd generation)",
-          "os": "iOS 15.2"
-        }
-      },
-      "simulator.17.2": {
-        "type": "ios.simulator",
-        "device": {
-          "type": "iPhone SE (3rd generation)",
-          "os": "iOS 17.2"
-        }
-      },
-      "emulator": {
-        "type": "android.emulator",
-        "device": {
-          "avdName": "Pixel_API_29_AOSP_x86_64"
-        },
-        "utilBinaryPaths": [
-          "./e2e/test-butler-app.apk"
-        ]
-      }
-    },
-    "configurations": {
-      "ios.debug": {
-        "device": "simulator",
-        "app": "ios.debug"
-      },
-      "ios.release": {
-        "device": "simulator",
-        "app": "ios.release"
-      },
-      "ios.release.15.2": {
-        "device": "simulator.15.2",
-        "app": "ios.release"
-      },
-      "ios.release.17.2": {
-        "device": "simulator.17.2",
-        "app": "ios.release"
-      },
-      "android.debug": {
-        "device": "emulator",
-        "app": "android.debug"
-      },
-      "android.release": {
-        "device": "emulator",
-        "app": "android.release"
-      }
-    }
   },
   "persona": {
     "androidTheme": {

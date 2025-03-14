@@ -17,10 +17,11 @@
     "check-licenses": "yarn licenses list --prod | grep '\\(─ GPL\\|─ (GPL-[1-9]\\.[0-9]\\+ OR GPL-[1-9]\\.[0-9]\\+)\\)' && echo 'Found GPL license(s). Use 'yarn licenses list --prod' to look up the offending package' && exit 1 || echo 'No GPL licenses found'",
     "knip:depcheck": "knip --include dependencies",
     "docs": "yarn --cwd packages/@divvi/mobile docs",
-    "postinstall": "patch-package && cp packages/@divvi/mobile/secrets.json.template packages/@divvi/mobile/secrets.json && yarn --cwd packages/@divvi/mobile build:plugin",
+    "postinstall": "patch-package && yarn --cwd packages/@divvi/mobile build:plugin",
     "release": "cp README.md packages/@divvi/mobile/ && multi-semantic-release"
   },
   "dependencies": {
+    "@actions/github": "^5.1.1",
     "@anolilab/multi-semantic-release": "^1.1.9",
     "@jambit/eslint-plugin-typed-redux-saga": "^0.4.0",
     "@types/shelljs": "^0.8.11",
