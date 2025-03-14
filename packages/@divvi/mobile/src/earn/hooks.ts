@@ -162,7 +162,6 @@ export function useNetworkFee(
   preparedTransaction: PreparedTransactionsResult
 ): SwapFeeAmount & { localAmount: BigNumber } {
   const networkFee = getFeeCurrencyAndAmounts(preparedTransaction)
-  console.log(networkFee)
   const estimatedNetworkFee = networkFee.estimatedFeeAmount ?? new BigNumber(0)
   const localAmount = useTokenToLocalAmount(estimatedNetworkFee, networkFee.feeCurrency?.tokenId)
   return {
