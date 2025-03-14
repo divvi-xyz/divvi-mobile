@@ -1,3 +1,4 @@
+import { getAppConfig } from 'src/appConfig'
 import { getMockStoreData } from 'test/utils'
 import { mockAaveArbUsdcTokenId, mockTokenBalances, mockUSDCTokenId } from 'test/values'
 import { CICOFlow, FiatExchangeFlow } from '../fiatExchanges/types'
@@ -101,6 +102,50 @@ describe('navigate', () => {
       expect(internalNavigate).toHaveBeenCalledWith(Screens.FiatExchangeCurrencyBottomSheet, {
         flow: FiatExchangeFlow.CashIn,
       })
+    })
+  })
+
+  describe('Withdraw', () => {
+    it('should navigate to FiatExchangeAmount for cash-out eligible token', () => {
+      const tokenId = mockUSDCTokenId
+      navigate('Withdraw', { tokenId })
+
+      expect(internalNavigate).toHaveBeenCalledWith(Screens.FiatExchangeAmount, {
+        tokenId,
+        flow: CICOFlow.CashOut,
+        tokenSymbol: 'USDC',
+      })
+    })
+
+    it('should navigate to FiatExchangeCurrencyBottomSheet for cash-out ineligible token', () => {
+      const tokenId = mockAaveArbUsdcTokenId
+      navigate('Withdraw', { tokenId })
+
+      expect(internalNavigate).toHaveBeenCalledWith(Screens.FiatExchangeCurrencyBottomSheet, {
+        flow: FiatExchangeFlow.CashOut,
+      })
+    })
+
+    it('should navigate to FiatExchangeCurrencyBottomSheet when no tokenId is provided and bidali is disabled', () => {
+      navigate('Withdraw')
+
+      expect(internalNavigate).toHaveBeenCalledWith(Screens.FiatExchangeCurrencyBottomSheet, {
+        flow: FiatExchangeFlow.CashOut,
+      })
+    })
+
+    it('should navigate to WithdrawSpend when no tokenId is provided and bidali is enabled', () => {
+      jest.mocked(getAppConfig).mockReturnValueOnce({
+        displayName: 'Test App',
+        deepLinkUrlScheme: 'testapp',
+        registryName: 'test',
+        experimental: {
+          bidali: { url: 'bidali' },
+        },
+      })
+      navigate('Withdraw')
+
+      expect(internalNavigate).toHaveBeenCalledWith(Screens.WithdrawSpend)
     })
   })
 

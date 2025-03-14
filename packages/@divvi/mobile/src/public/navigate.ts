@@ -1,6 +1,7 @@
 // See useWallet for why we don't directly import internal modules, except for the types
 import { ParamListBase } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { getAppConfig } from 'src/appConfig'
 import type { CICOFlowType, FiatExchangeFlowType } from '../fiatExchanges/types'
 import type { Navigate } from '../navigator/NavigationService'
 import type { ScreensType } from '../navigator/Screens'
@@ -43,7 +44,11 @@ export type StackParamList = {
         tokenId: string
       }
     | undefined
-  Withdraw: undefined
+  Withdraw:
+    | {
+        tokenId: string
+      }
+    | undefined
   TabWallet: undefined
   TabActivity: undefined
   TabEarn: undefined
@@ -115,7 +120,31 @@ export function navigate(...args: NavigateArgs): void {
       internalNavigate(Screens.FiatExchangeCurrencyBottomSheet, { flow: FiatExchangeFlow.CashIn })
       break
     case 'Withdraw':
-      internalNavigate(Screens.WithdrawSpend)
+      if (params?.tokenId) {
+        const tokens = tokensByIdSelector(store.getState())
+        const tokenInfo = params ? tokens[params.tokenId] : undefined
+        if (tokenInfo && tokenInfo.isCashOutEligible) {
+          internalNavigate(Screens.FiatExchangeAmount, {
+            tokenId: params.tokenId,
+            flow: CICOFlow.CashOut,
+            tokenSymbol: tokenInfo.symbol,
+          })
+          return
+        } else {
+          Logger.warn(
+            TAG,
+            `Unable to find a token eligible for cash out with tokenId: ${params?.tokenId}`
+          )
+        }
+      }
+
+      if (getAppConfig().experimental?.bidali) {
+        internalNavigate(Screens.WithdrawSpend)
+      } else {
+        internalNavigate(Screens.FiatExchangeCurrencyBottomSheet, {
+          flow: FiatExchangeFlow.CashOut,
+        })
+      }
       break
     case 'TabWallet':
       internalNavigate(Screens.TabWallet)
