@@ -3,12 +3,16 @@ import BigNumber from 'bignumber.js'
 import { FetchMock } from 'jest-fetch-mock/types'
 import React from 'react'
 import { Provider } from 'react-redux'
-import { usePrepareEnterAmountTransactionsCallback } from 'src/earn/hooks'
+import { useNetworkFee, usePrepareEnterAmountTransactionsCallback } from 'src/earn/hooks'
 import { RawShortcutTransaction } from 'src/positions/slice'
 import { ShortcutStatus } from 'src/positions/types'
 import { TokenBalance } from 'src/tokens/slice'
 import { NetworkId } from 'src/transactions/types'
-import { prepareTransactions } from 'src/viem/prepareTransactions'
+import {
+  getFeeCurrencyAndAmounts,
+  prepareTransactions,
+  type PreparedTransactionsPossible,
+} from 'src/viem/prepareTransactions'
 import networkConfig from 'src/web3/networkConfig'
 import { createMockStore } from 'test/utils'
 import {
@@ -135,7 +139,9 @@ const mockSwapDepositResponseBody = {
   },
 }
 
-const expectedPrepareTransactionsResult = {
+const expectedPrepareTransactionsResult: {
+  prepareTransactionsResult: PreparedTransactionsPossible
+} = {
   prepareTransactionsResult: {
     type: 'possible',
     transactions: [
@@ -298,5 +304,27 @@ describe('usePrepareEnterAmountTransactionsCallback', () => {
     await expect(result.current.refreshPreparedTransactions(mockRefreshArgs)).rejects.toEqual(
       new Error('Unable to trigger shortcut: 500 Internal Server Error')
     )
+  })
+})
+
+describe('useNetworkFee', () => {
+  jest
+    .mocked(getFeeCurrencyAndAmounts)
+    .mockImplementation(jest.requireActual('src/viem/prepareTransactions').getFeeCurrencyAndAmounts)
+
+  it('properly calculates network fee in token and fiat', () => {
+    const { result } = renderHook(
+      () => useNetworkFee(expectedPrepareTransactionsResult.prepareTransactionsResult),
+      {
+        wrapper: (component) => (
+          <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
+            {component?.children ? component.children : component}
+          </Provider>
+        ),
+      }
+    )
+    expect(result.current.amount.toString()).toEqual('0.0001')
+    expect(result.current.localAmount?.toString()).toEqual('0.1995')
+    expect(result.current.maxAmount?.toString()).toEqual('0.0005')
   })
 })
