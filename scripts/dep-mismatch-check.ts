@@ -51,6 +51,7 @@ function compareAllDependencies(packagePaths: string[]): void {
     mismatches.forEach(([dep, versions]) => {
       console.log(`- ${dep}: ${[...versions].join(' | ')}`)
     })
+    console.log('⚠️  Please ensure all shared dependencies use the same version.')
     throw new Error('Dependency version mismatches found.')
   }
 }
