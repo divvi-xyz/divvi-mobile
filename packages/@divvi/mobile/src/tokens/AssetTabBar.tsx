@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { AssetsEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import GradientBlock from 'src/components/GradientBlock'
 import Touchable from 'src/components/Touchable'
 import Colors from 'src/styles/colors'
@@ -26,12 +27,19 @@ export default function TabBar({
   const { t } = useTranslation()
 
   const items = useMemo(() => {
-    const items = [t('assets.tabBar.tokens'), t('assets.tabBar.collectibles')]
+    const items = [t('assets.tabBar.tokens')]
+    if (!getAppConfig().experimental?.disableNfts) {
+      items.push(t('assets.tabBar.collectibles'))
+    }
     if (displayPositions) {
       items.push(t('assets.tabBar.dappPositions'))
     }
     return items
   }, [t, displayPositions])
+
+  if (items.length <= 1) {
+    return null
+  }
 
   const handleSelectOption = (index: AssetTabType) => () => {
     AppAnalytics.track(

@@ -156,9 +156,7 @@ export enum TokenTransactionTypeV2 {
   EarnClaimReward = 'EARN_CLAIM_REWARD',
 }
 
-// Because the codebase supports both the old and new feed,
-// we need this list. But we can remove it once we delete the old feed.
-export const FEED_V2_INCLUDE_TYPES = [
+export const FEED_V2_INCLUDE_TYPES_NO_NFT = [
   TokenTransactionTypeV2.Received,
   TokenTransactionTypeV2.Sent,
   TokenTransactionTypeV2.NftReceived,
@@ -170,6 +168,14 @@ export const FEED_V2_INCLUDE_TYPES = [
   TokenTransactionTypeV2.Withdraw,
   TokenTransactionTypeV2.ClaimReward,
   TokenTransactionTypeV2.CrossChainDeposit,
+]
+
+// Because the codebase supports both the old and new feed,
+// we need this list. But we can remove it once we delete the old feed.
+export const FEED_V2_INCLUDE_TYPES = [
+  ...FEED_V2_INCLUDE_TYPES_NO_NFT,
+  TokenTransactionTypeV2.NftReceived,
+  TokenTransactionTypeV2.NftSent,
 ]
 
 // Can we optional the fields `transactionHash` and `block`?

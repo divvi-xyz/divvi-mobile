@@ -1,6 +1,7 @@
 import { fireEvent, render, within } from '@testing-library/react-native'
 import React from 'react'
 import { Provider } from 'react-redux'
+import { getAppConfig } from 'src/appConfig'
 import FiatExchangeCurrencyBottomSheet from 'src/fiatExchanges/FiatExchangeCurrencyBottomSheet'
 import { FiatExchangeFlow } from 'src/fiatExchanges/types'
 import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
@@ -149,6 +150,26 @@ describe(FiatExchangeCurrencyBottomSheet, () => {
       expect(queryByTestId('FilterChipsCarousel')).toBeFalsy()
     }
   )
+
+  it('does not show filters if hideCashInTokenFilters is set', () => {
+    jest
+      .mocked(getAppConfig)
+      .mockReturnValueOnce({
+        displayName: 'Test App',
+        deepLinkUrlScheme: 'testapp',
+        registryName: 'test',
+        experimental: { hideCashInTokenFilters: true },
+      })
+    const { queryByTestId } = render(
+      <Provider store={mockStore}>
+        <MockedNavigator
+          component={FiatExchangeCurrencyBottomSheet}
+          params={{ flow: FiatExchangeFlow.CashIn }}
+        />
+      </Provider>
+    )
+    expect(queryByTestId('FilterChipsCarousel')).toBeFalsy()
+  })
 
   it('shows filters for cash in', () => {
     const { getByTestId, getByText } = render(
