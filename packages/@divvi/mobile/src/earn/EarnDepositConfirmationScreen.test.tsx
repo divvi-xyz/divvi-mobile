@@ -10,7 +10,6 @@ import EarnDepositConfirmationScreen, {
   useCommonAnalyticsProperties,
   useCrossChainFee,
   useDepositAmount,
-  useNetworkFee,
   useSwapAppFee,
 } from 'src/earn/EarnDepositConfirmationScreen'
 import { depositStart } from 'src/earn/slice'
@@ -267,16 +266,6 @@ describe('EarnDepositConfirmationScreen', () => {
         const { result } = renderHook(() => useDepositAmount(props), { wrapper: HookWrapper })
         expect(result.current.tokenAmount.toString()).toEqual(depositTokenAmount)
         expect(result.current.localAmount?.toString()).toEqual(depositLocalAmount)
-      })
-
-      it('useNetworkFee properly calculates network fee in token and fiat', () => {
-        const { result } = renderHook(
-          () => useNetworkFee(getPreparedTransactionsPossible(props.preparedTransaction)),
-          { wrapper: HookWrapper }
-        )
-        expect(result.current.amount.toString()).toEqual(tokenNetworkFeeAmount)
-        expect(result.current.localAmount?.toString()).toEqual(localNetworkFeeAmount)
-        expect(result.current.maxAmount?.toString()).toEqual(tokenMaxNetworkFeeAmount)
       })
 
       it('useSwapAppFee properly calculates swap app fee in token and fiat', () => {

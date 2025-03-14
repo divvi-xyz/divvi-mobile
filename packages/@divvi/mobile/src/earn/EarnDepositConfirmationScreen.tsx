@@ -30,6 +30,7 @@ import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import TokenIcon from 'src/components/TokenIcon'
 import Touchable from 'src/components/Touchable'
 import { APP_NAME } from 'src/config'
+import { useNetworkFee } from 'src/earn/hooks'
 import { depositTransactionSubmittedSelector } from 'src/earn/selectors'
 import { depositStart } from 'src/earn/slice'
 import {
@@ -59,10 +60,7 @@ import {
   getPreparedTransactionsPossible,
   getSerializablePreparedTransactions,
 } from 'src/viem/preparedTransactionSerialization'
-import {
-  getFeeCurrencyAndAmounts,
-  type PreparedTransactionsPossible,
-} from 'src/viem/prepareTransactions'
+import { type PreparedTransactionsPossible } from 'src/viem/prepareTransactions'
 
 const TAG = 'send/EarnDepositConfirmationScreen'
 const APP_TERMS_AND_CONDITIONS_URL = 'https://valora.xyz/terms'
@@ -85,20 +83,6 @@ export function useDepositAmount(params: Props['route']['params']) {
     tokenAmount,
     localAmount,
     tokenInfo,
-  }
-}
-
-export function useNetworkFee(
-  preparedTransaction: PreparedTransactionsPossible
-): SwapFeeAmount & { localAmount: BigNumber } {
-  const networkFee = getFeeCurrencyAndAmounts(preparedTransaction)
-  const estimatedNetworkFee = networkFee.estimatedFeeAmount ?? new BigNumber(0)
-  const localAmount = useTokenToLocalAmount(estimatedNetworkFee, networkFee.feeCurrency?.tokenId)
-  return {
-    amount: estimatedNetworkFee,
-    maxAmount: networkFee.maxFeeAmount ?? new BigNumber(0),
-    token: networkFee.feeCurrency,
-    localAmount: localAmount ?? new BigNumber(0),
   }
 }
 

@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import { useAsync, useAsyncCallback } from 'react-async-hook'
 import {
@@ -16,10 +17,15 @@ import { useSelector } from 'src/redux/hooks'
 import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
 import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
-import { useCashInTokens, useSwappableTokens } from 'src/tokens/hooks'
+import type { SwapFeeAmount } from 'src/swap/types'
+import { useCashInTokens, useSwappableTokens, useTokenToLocalAmount } from 'src/tokens/hooks'
 import { TokenBalance, TokenBalances } from 'src/tokens/slice'
 import Logger from 'src/utils/Logger'
 import { ensureError } from 'src/utils/ensureError'
+import {
+  getFeeCurrencyAndAmounts,
+  type PreparedTransactionsPossible,
+} from 'src/viem/prepareTransactions'
 import { Address } from 'viem'
 
 const TAG = 'earn/hooks'
@@ -150,4 +156,19 @@ export function usePrepareEarnConfirmationScreenTransactions(
       },
     }
   )
+}
+
+export function useNetworkFee(
+  preparedTransaction: PreparedTransactionsPossible
+): SwapFeeAmount & { localAmount: BigNumber } {
+  const networkFee = getFeeCurrencyAndAmounts(preparedTransaction)
+  console.log(networkFee)
+  const estimatedNetworkFee = networkFee.estimatedFeeAmount ?? new BigNumber(0)
+  const localAmount = useTokenToLocalAmount(estimatedNetworkFee, networkFee.feeCurrency?.tokenId)
+  return {
+    amount: estimatedNetworkFee,
+    maxAmount: networkFee.maxFeeAmount ?? new BigNumber(0),
+    token: networkFee.feeCurrency,
+    localAmount: localAmount ?? new BigNumber(0),
+  }
 }
