@@ -10,17 +10,26 @@ import { Spacing } from 'src/styles/styles'
 export default function InfoBottomSheet(props: {
   forwardedRef: React.RefObject<BottomSheetModalRefType>
   title: string
-  children: React.ReactNode
+  description?: string
+  children?: React.ReactNode
   testID?: string
 }) {
   const { t } = useTranslation()
 
   return (
-    <BottomSheet forwardedRef={props.forwardedRef} title={props.title} testId={props.testID}>
-      <View style={styles.content} testID={`${props.testID}/Content`}>
-        {props.children}
-      </View>
+    <BottomSheet
+      forwardedRef={props.forwardedRef}
+      title={props.title}
+      description={props.description}
+      testId={props.testID}
+    >
+      {props.children && (
+        <View style={styles.content} testID={`${props.testID}/Content`}>
+          {props.children}
+        </View>
+      )}
       <Button
+        style={styles.dismissButton}
         type={BtnTypes.SECONDARY}
         size={BtnSizes.FULL}
         text={t('bottomSheetDismissButton')}
@@ -54,7 +63,9 @@ export function InfoBottomSheetContentBlock(props: { children: ReactNode; testID
 const styles = StyleSheet.create({
   content: {
     gap: Spacing.Thick24,
-    marginBottom: Spacing.Thick24,
+  },
+  dismissButton: {
+    marginTop: Spacing.Thick24,
   },
   heading: {
     ...typeScale.labelSemiBoldSmall,
