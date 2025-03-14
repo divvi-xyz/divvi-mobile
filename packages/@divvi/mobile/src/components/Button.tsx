@@ -85,7 +85,7 @@ export default React.memo(function Button(props: ButtonProps) {
   return (
     <View style={getStyleForWrapper(size, style)}>
       {/* these Views cannot be combined as it will cause ripple to not respect the border radius */}
-      <Wrapper backgroundColor={backgroundColor}>
+      <BackgroundContainer backgroundColor={backgroundColor}>
         <Touchable
           onPress={debouncedOnPress}
           disabled={disabled}
@@ -118,12 +118,12 @@ export default React.memo(function Button(props: ButtonProps) {
             </>
           )}
         </Touchable>
-      </Wrapper>
+      </BackgroundContainer>
     </View>
   )
 })
 
-function Wrapper({
+function BackgroundContainer({
   children,
   backgroundColor,
 }: {
