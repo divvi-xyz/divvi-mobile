@@ -64,31 +64,42 @@ export function ReviewSummaryItem(props: {
   primaryValue: string
   secondaryValue?: string
   testID?: string
+  onPress?: () => void
 }) {
   return (
     <View style={styles.reviewSummaryItem} testID={props.testID}>
       <Text style={styles.reviewSummaryItemLabel} testID={`${props.testID}/Label`}>
         {props.label}
       </Text>
-      <View style={styles.reviewSummaryItemContent}>
-        {props.icon}
-        <View style={styles.reviewSummaryItemValuesWrapper}>
-          <Text
-            style={styles.reviewSummaryItemPrimaryValue}
-            testID={`${props.testID}/PrimaryValue`}
-          >
-            {props.primaryValue}
-          </Text>
-          {!!props.secondaryValue && (
+      <Touchable
+        style={styles.reviewSummaryItemContent}
+        onPress={props.onPress}
+        disabled={!props.onPress}
+      >
+        <>
+          {props.icon}
+          <View style={styles.reviewSummaryItemValuesWrapper}>
             <Text
-              style={styles.reviewSummaryItemSecondaryValue}
-              testID={`${props.testID}/SecondaryValue`}
+              style={styles.reviewSummaryItemPrimaryValue}
+              testID={`${props.testID}/PrimaryValue`}
             >
-              {props.secondaryValue}
+              {props.primaryValue}
             </Text>
-          )}
-        </View>
-      </View>
+
+            {!!props.secondaryValue && (
+              <View style={styles.reviewSummaryItemSecondaryValueWrapper}>
+                <Text
+                  style={styles.reviewSummaryItemSecondaryValue}
+                  testID={`${props.testID}/SecondaryValue`}
+                >
+                  {props.secondaryValue}
+                </Text>
+                {!!props.onPress && <InfoIcon size={14} color={colors.contentSecondary} />}
+              </View>
+            )}
+          </View>
+        </>
+      </Touchable>
     </View>
   )
 }
@@ -412,6 +423,11 @@ const styles = StyleSheet.create({
   reviewSummaryItemSecondaryValue: {
     ...typeScale.bodySmall,
     color: colors.contentSecondary,
+  },
+  reviewSummaryItemSecondaryValueWrapper: {
+    flexDirection: 'row',
+    gap: Spacing.Smallest8,
+    alignItems: 'center',
   },
   reviewDetails: {
     gap: Spacing.Regular16,

@@ -96,6 +96,10 @@ export default function PlaygroundScreen(_props: RootStackScreenProps<'Playgroun
             onPress: () => navigate('Add', { tokenId: 'celo-mainnet:native' }),
           },
           { label: 'Withdraw', onPress: () => navigate('Withdraw') },
+          {
+            label: 'Withdraw with tokenId',
+            onPress: () => navigate('Withdraw', { tokenId: 'celo-mainnet:native' }),
+          },
           { label: 'Tab Wallet', onPress: () => navigate('TabWallet') },
           {
             label: 'Custom Screen',

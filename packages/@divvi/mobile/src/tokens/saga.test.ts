@@ -5,6 +5,7 @@ import { dynamic, throwError } from 'redux-saga-test-plan/providers'
 import { call, select } from 'redux-saga/effects'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { AppEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import {
   fetchImportedTokenBalances,
   fetchTokenBalancesForAddressByTokenId,
@@ -110,12 +111,10 @@ describe('getTokensInfo', () => {
     mockFetch.resetMocks()
   })
   it('returns payload if response OK', async () => {
-    mockFetch.mockResponseOnce('{"some": "data"}')
+    mockFetch.mockResponseOnce(JSON.stringify(mockTokenBalances))
 
     const result = await getTokensInfo([NetworkId['celo-alfajores']])
-    expect(result).toEqual({
-      some: 'data',
-    })
+    expect(result).toEqual(mockTokenBalances)
   })
   it('throws if request does not complete within timeout', async () => {
     mockFetch.mockResponseOnce('error!', { status: 500, statusText: 'some error' })
@@ -123,6 +122,32 @@ describe('getTokensInfo', () => {
       new Error('Failure response fetching token info. 500  some error')
     )
     expect(Logger.error).toHaveBeenCalledTimes(1)
+  })
+  it('filters tokens and applies overrides', async () => {
+    mockFetch.mockResponseOnce(JSON.stringify(mockTokenBalances))
+    jest.mocked(getAppConfig).mockReturnValueOnce({
+      displayName: 'Test App',
+      deepLinkUrlScheme: 'testapp',
+      registryName: 'test',
+      experimental: {
+        tokens: {
+          enabledTokenIds: [mockPoofTokenId, mockCusdTokenId],
+          overrides: {
+            [mockPoofTokenId]: {
+              showZeroBalance: true,
+            },
+          },
+        },
+      },
+    })
+    const result = await getTokensInfo([NetworkId['celo-alfajores']])
+    expect(result).toEqual({
+      [mockPoofTokenId]: {
+        ...mockTokenBalances[mockPoofTokenId],
+        showZeroBalance: true,
+      },
+      [mockCusdTokenId]: mockTokenBalances[mockCusdTokenId],
+    })
   })
 })
 describe(fetchTokenBalancesSaga, () => {
