@@ -9,6 +9,7 @@ import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
 import MockedNavigator from 'test/MockedNavigator'
 import { createMockStore } from 'test/utils'
 import {
+  mockAppConfig,
   mockCeloTokenId,
   mockCeurTokenId,
   mockCrealTokenId,
@@ -154,12 +155,7 @@ describe(FiatExchangeCurrencyBottomSheet, () => {
   it('does not show filters if hideCashInTokenFilters is set', () => {
     jest
       .mocked(getAppConfig)
-      .mockReturnValueOnce({
-        displayName: 'Test App',
-        deepLinkUrlScheme: 'testapp',
-        registryName: 'test',
-        experimental: { hideCashInTokenFilters: true },
-      })
+      .mockReturnValueOnce({ ...mockAppConfig, experimental: { hideCashInTokenFilters: true } })
     const { queryByTestId } = render(
       <Provider store={mockStore}>
         <MockedNavigator
