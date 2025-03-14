@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:244](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L244)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:247](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L247)
 
 #### protocolIds
 
@@ -70,7 +70,7 @@ referrerId: string
 optional experimental: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:199](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L199)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:202](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L202)
 
 Experimental features that may change or be removed in future versions.
 These features are not part of the stable configuration API and should be used with caution.
@@ -247,7 +247,7 @@ projectName: string
 optional features: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:150](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L150)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:153](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L153)
 
 #### cloudBackup?
 
@@ -341,7 +341,7 @@ optional locales: Partial<{
 }>;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:171](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L171)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:174](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L174)
 
 Optional copies overwrite. This field should contain the same language keys as @interxyz/mobile.
 TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
@@ -354,7 +354,7 @@ TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
 optional networks: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:188](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L188)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:191](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L191)
 
 #### enabledNetworkIds?
 
@@ -380,7 +380,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:25](https://github.com/
 optional screens: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:133](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L133)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:136](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L136)
 
 #### custom()?
 
@@ -657,8 +657,10 @@ optional brandGradientRight: string;
 ##### default.colors.buttonPrimaryBackground?
 
 ```ts
-optional buttonPrimaryBackground: string;
+optional buttonPrimaryBackground: string | string[];
 ```
+
+Can be a single color or array of colors for a linear gradient
 
 ##### default.colors.buttonPrimaryBorder?
 

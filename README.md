@@ -1,7 +1,7 @@
 # Divvi Mobile Framework
 
 [![Checks](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/check.yml/badge.svg)](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/check.yml)
-[![E2E](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/e2e.yml/badge.svg)](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/e2e-main.yml)
+[![E2E](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/e2e-main.yml/badge.svg)](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/e2e-main.yml)
 [![Tests](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/test.yml/badge.svg)](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/test.yml)
 [![Codecov](https://codecov.io/gh/divvi-xyz/divvi-mobile/branch/main/graph/badge.svg)](https://codecov.io/gh/divvi-xyz/divvi-mobile)
 [![GitHub contributors](https://img.shields.io/github/contributors/divvi-xyz/divvi-mobile)](https://github.com/divvi-xyz/divvi-mobile/graphs/contributors)

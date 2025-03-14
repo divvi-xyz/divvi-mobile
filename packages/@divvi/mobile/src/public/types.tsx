@@ -66,7 +66,10 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
         navigationBottomPrimary?: string
         navigationBottomSecondary?: string
         bottomSheetHandle?: string
-        buttonPrimaryBackground?: string
+        /**
+         * Can be a single color or array of colors for a linear gradient
+         */
+        buttonPrimaryBackground?: string | string[]
         buttonPrimaryContent?: string
         buttonPrimaryBorder?: string
         buttonSecondaryBackground?: string
