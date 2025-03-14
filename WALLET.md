@@ -634,7 +634,7 @@ A successful `yarn postinstall` looks like:
 $ yarn postinstall
 yarn run v1.22.17
 $ patch-package && yarn keys:decrypt && yarn run unzipCeloClient && ./scripts/sync_branding.sh && ./scripts/copy_license_to_android_assets.sh
-patch-package 6.2.2
+patch-package 8.0.0
 Applying patches...
 @react-native-community/netinfo@5.8.0 ✔
 bn.js@4.11.9 ✔
