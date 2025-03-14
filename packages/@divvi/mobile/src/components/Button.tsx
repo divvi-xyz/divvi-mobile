@@ -82,24 +82,10 @@ export default React.memo(function Button(props: ButtonProps) {
 
   const { contentColor, backgroundColor, opacity, borderColor } = getColors(type, disabled)
 
-  const Wrapper = ({ children }: { children: ReactNode }) =>
-    Array.isArray(backgroundColor) ? (
-      <LinearGradient
-        colors={backgroundColor}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={[styles.containRipple, styles.rounded]}
-      >
-        {children}
-      </LinearGradient>
-    ) : (
-      <View style={[styles.containRipple, styles.rounded]}>{children}</View>
-    )
-
   return (
     <View style={getStyleForWrapper(size, style)}>
       {/* these Views cannot be combined as it will cause ripple to not respect the border radius */}
-      <Wrapper>
+      <Wrapper backgroundColor={backgroundColor}>
         <Touchable
           onPress={debouncedOnPress}
           disabled={disabled}
@@ -136,6 +122,27 @@ export default React.memo(function Button(props: ButtonProps) {
     </View>
   )
 })
+
+function Wrapper({
+  children,
+  backgroundColor,
+}: {
+  children: ReactNode
+  backgroundColor: ColorValue | ColorValue[]
+}) {
+  return Array.isArray(backgroundColor) ? (
+    <LinearGradient
+      colors={backgroundColor}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={[styles.containRipple, styles.rounded]}
+    >
+      {children}
+    </LinearGradient>
+  ) : (
+    <View style={[styles.containRipple, styles.rounded]}>{children}</View>
+  )
+}
 
 const styles = StyleSheet.create({
   // on android Touchable Provides a ripple effect, by itself it does not respect the border radius on Touchable
