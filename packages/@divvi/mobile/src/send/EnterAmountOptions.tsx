@@ -100,40 +100,36 @@ export default function EnterAmountOptions({
       ]}
     >
       <View style={styles.contentContainer} testID={testID}>
-        {amountOptions.map(({ amount, label }) => (
-          <Touchable borderRadius={100} key={label} onPress={() => onPressAmount(amount)}>
-            <View
-              style={[
-                styles.chip,
-                {
-                  backgroundColor:
-                    selectedAmount === amount
-                      ? Colors.buttonPrimaryBackground
-                      : Colors.buttonSecondaryBackground,
-                  borderColor:
-                    selectedAmount === amount
-                      ? Colors.buttonPrimaryBorder
-                      : Colors.buttonSecondaryBorder,
-                  borderWidth: 1,
-                },
-              ]}
-            >
-              <Text
+        {amountOptions.map(({ amount, label }) => {
+          const { backgroundColor, borderColor, contentColor } =
+            selectedAmount === amount
+              ? {
+                  backgroundColor: Array.isArray(Colors.buttonPrimaryBackground)
+                    ? Colors.buttonPrimaryBackground[0]
+                    : Colors.buttonPrimaryBackground,
+                  borderColor: Colors.buttonPrimaryBorder,
+                  contentColor: Colors.buttonPrimaryContent,
+                }
+              : {
+                  backgroundColor: Colors.buttonSecondaryBackground,
+                  borderColor: Colors.buttonSecondaryBorder,
+                  contentColor: Colors.buttonSecondaryContent,
+                }
+          return (
+            <Touchable borderRadius={100} key={label} onPress={() => onPressAmount(amount)}>
+              <View
                 style={[
-                  styles.chipText,
-                  {
-                    color:
-                      selectedAmount === amount
-                        ? Colors.buttonPrimaryContent
-                        : Colors.buttonSecondaryContent,
-                  },
+                  styles.chip,
+                  // borderColor maybe undefined in some button configurations (e.g.,
+                  // gradients), so we default to backgroundColor
+                  { backgroundColor, borderColor: borderColor ?? backgroundColor },
                 ]}
               >
-                {label}
-              </Text>
-            </View>
-          </Touchable>
-        ))}
+                <Text style={[styles.chipText, { color: contentColor }]}>{label}</Text>
+              </View>
+            </Touchable>
+          )
+        })}
 
         <Touchable
           onPress={() => {
