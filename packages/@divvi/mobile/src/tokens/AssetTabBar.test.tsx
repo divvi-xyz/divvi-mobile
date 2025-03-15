@@ -83,24 +83,16 @@ describe('AssetTabBar', () => {
     { testName: 'collectibles disabled', positions: true, collectibles: false },
     { testName: 'positions disabled', positions: false, collectibles: true },
   ])('$testName', ({ positions, collectibles }) => {
-    const cases = [{ tab: AssetTabType.Tokens, event: AssetsEvents.view_wallet_assets, index: 0 }]
+    const cases = [{ tab: AssetTabType.Tokens, event: AssetsEvents.view_wallet_assets }]
     if (collectibles) {
-      cases.push({
-        tab: AssetTabType.Collectibles,
-        event: AssetsEvents.view_collectibles,
-        index: 1,
-      })
+      cases.push({ tab: AssetTabType.Collectibles, event: AssetsEvents.view_collectibles })
     }
     if (positions) {
-      cases.push({
-        tab: AssetTabType.Positions,
-        event: AssetsEvents.view_dapp_positions,
-        index: collectibles ? 2 : 1,
-      })
+      cases.push({ tab: AssetTabType.Positions, event: AssetsEvents.view_dapp_positions })
     }
     it.each(cases)(
       'selecting tab $tab fires analytics events and invokes on change',
-      ({ tab, event, index }) => {
+      ({ tab, event }) => {
         jest
           .mocked(getAppConfig)
           .mockReturnValue({ ...mockAppConfig, experimental: { disableNfts: !collectibles } })
@@ -112,6 +104,7 @@ describe('AssetTabBar', () => {
           />
         )
 
+        const index = cases.findIndex((c) => c.tab === tab)
         fireEvent.press(getAllByTestId('Assets/TabBarItem')[index])
         expect(AppAnalytics.track).toHaveBeenCalledTimes(1)
         expect(AppAnalytics.track).toHaveBeenCalledWith(event)
