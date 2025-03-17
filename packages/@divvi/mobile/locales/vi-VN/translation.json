@@ -859,7 +859,7 @@
     "onboardingTitle": "Chọn mã PIN 6 chữ số",
     "onboardingConfirm": "Nhập lại mã PIN của bạn",
     "onboardingSubtitle": "Mã PIN là cách bảo mật ví của bạn",
-    "pin": "PIN"
+    "pin": "Mã PIN"
   },
   "inviteCode": {
     "title": "Mã lời mời",
@@ -2359,6 +2359,9 @@
     "discover": {
       "tabName": "Khám phá",
       "title": "Khám phá"
+    },
+    "earn": {
+      "tabName": "Kiếm tiền"
     }
   },
   "jumpstartStatus": {
@@ -2631,6 +2634,21 @@
       "myPools": "Các quỹ của tôi",
       "explore": "Khám phá các quỹ đang mở"
     },
+    "depositConfirmation": {
+      "title": "Review Deposit",
+      "depositing": "Depositing",
+      "into": "Into",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% est. yield rate",
+      "swapAndDeposit": "Trao đổi và nạp"
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Chi tiết về giao dịch trao đổi",
+      "swapFrom": "Trao đổi từ",
+      "swapTo": "Trao đổi sang",
+      "whySwap": "Tại sao tôi nên thực hiện trao đổi?",
+      "swapDescription": "Để nạp được tiền vào bể thì token của bạn cần được đổi sang token bể."
+    },
     "depositBottomSheet": {
       "title": "Xem lại & Nạp tiền",
       "description": "Trước khi nạp tiền vào quỹ Aave, vui lòng xem lại chi tiết giao dịch bên dưới",
@@ -2723,7 +2741,8 @@
       "percentage": "{{percentage}}%",
       "poweredBy": "Do {{providerName}} cung cấp",
       "deposited": "Đã cung cấp",
-      "depositAndEarnings": "Nạp tiền & Thu nhập"
+      "depositAndEarnings": "Nạp tiền & Thu nhập",
+      "safety": "Safety"
     },
     "poolFilters": {
       "allPools": "Tất cả các quỹ",
@@ -2847,13 +2866,33 @@
     "totalPlusFees": "Total Plus Fees",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
+  "maxNetworkFee": "Phí mạng tối đa",
+  "estimatedNetworkFee": "Phí mạng ước tính",
+  "fees": "Phí",
+  "appFee": "Phí {{appName}}",
+  "estimatedCrossChainFee": "Phí trao đổi chuỗi chéo ước tính",
+  "maxCrossChainFee": "Phí trao đổi chuỗi chéo tối đa",
+  "bottomSheetDismissButton": "Đã hiểu",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "Không có giá",
   "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount_noFiatPrice": "$t(tokenAmount)",
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ $t(tokenAmount)",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "moreInformation": "Thông tin bổ sung",
+  "breakdown": "Chi tiết",
+  "gasSubsidized": "Fees are covered for a limited time",
+  "feeInfoBottomSheet": {
+    "feesInfo_sameChain": "Phí mạng là khoản phí bắt buộc để mạng có thể xử lý giao dịch.",
+    "feesInfo_crossChain": "Phí mạng là khoản phí bắt buộc để mạng có thể xử lý giao dịch. Nhà cung cấp chuỗi chéo sẽ thu phí trao đổi chuỗi chéo.",
+    "feesInfo_sameChainWithAppFee": "Phí mạng là khoản phí bắt buộc để mạng có thể xử lý giao dịch. Chúng tôi sẽ thu phí {{appName}} là {{appFeePercentage}}% khi bạn sử dụng sản phẩm của chúng tôi.",
+    "feesInfo_crossChainWithAppFee": "Phí mạng là khoản phí bắt buộc để mạng có thể xử lý giao dịch. Nhà cung cấp chuỗi chéo sẽ thu phí trao đổi chuỗi chéo. Chúng tôi sẽ thu phí {{appName}} là {{appFeePercentage}}% khi bạn sử dụng sản phẩm của chúng tôi."
+  },
   "demoMode": {
     "confirmEnter": {
       "title": "Demo Mode",
