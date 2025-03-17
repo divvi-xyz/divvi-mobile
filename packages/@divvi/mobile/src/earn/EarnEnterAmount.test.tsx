@@ -646,7 +646,7 @@ describe('EarnEnterAmount', () => {
         'earnFlow.enterAmount.estimatedDuration'
       )
       expect(getByTestId('EnterAmountDepositDetails/EstimatedDuration/Value')).toHaveTextContent(
-        'swapScreen.transactionDetails.estimatedTransactionTimeInMinutes, {"minutes":1}'
+        'swapScreen.transactionDetails.estimatedTransactionTimeInMinutes, {"minutes":5}'
       )
 
       fireEvent.press(getByText('earnFlow.enterAmount.continue'))
