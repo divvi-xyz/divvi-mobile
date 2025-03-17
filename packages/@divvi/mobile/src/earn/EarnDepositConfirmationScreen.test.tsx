@@ -157,6 +157,8 @@ describe('EarnDepositConfirmationScreen', () => {
       feesValue:
         'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
       totalFeesValue: 'localAmountApprox, {"localAmount":"133.01","localCurrencySymbol":"₱"}',
+      feesBottomSheetDisclaimerText:
+        'earnFlow.enterAmount.feeBottomSheet.description, {"context":"deposit"}',
     },
     {
       testName: 'same chain swap & deposit',
@@ -171,6 +173,8 @@ describe('EarnDepositConfirmationScreen', () => {
         'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
       totalFeesValue:
         'tokenAndLocalAmountApprox, {"tokenAmount":"100.00","localAmount":"133.01","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      feesBottomSheetDisclaimerText:
+        'earnFlow.enterAmount.feeBottomSheet.description, {"context":"depositSwapFee","appFeePercentage":"0.6"}',
     },
     {
       testName: 'cross chain swap & deposit',
@@ -185,6 +189,8 @@ describe('EarnDepositConfirmationScreen', () => {
         'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.00011","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
       totalFeesValue:
         'tokenAndLocalAmountApprox, {"tokenAmount":"100.00","localAmount":"133.00","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+      feesBottomSheetDisclaimerText:
+        'earnFlow.enterAmount.feeBottomSheet.description, {"context":"depositCrossChainWithSwapFee","appFeePercentage":"0.6"}',
     },
   ])(
     '$testName',
@@ -198,6 +204,7 @@ describe('EarnDepositConfirmationScreen', () => {
       feesLabel,
       feesValue,
       totalFeesValue,
+      feesBottomSheetDisclaimerText,
     }) => {
       const fromNetworkId =
         swapType === 'cross-chain' ? NetworkId['celo-alfajores'] : NetworkId['arbitrum-sepolia']
@@ -301,6 +308,26 @@ describe('EarnDepositConfirmationScreen', () => {
           'reviewTransaction.totalPlusFees'
         )
         expect(getByTestId('EarnDepositConfirmationTotal/Value')).toHaveTextContent(totalFeesValue)
+
+        // fees info bottom sheet
+        expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
+        expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
+          feesBottomSheetDisclaimerText
+        )
+
+        // total plus fees info bottom sheet
+        expect(getByTestId('TotalInfoBottomSheet/Depositing/Label')).toHaveTextContent(
+          'earnFlow.depositConfirmation.depositing'
+        )
+        expect(getByTestId('TotalInfoBottomSheet/Depositing/Value')).toHaveTextContent(
+          'tokenAndLocalAmount, {"tokenAmount":"100.00","localAmount":"133.00","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+        )
+        expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees')
+        expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(feesValue)
+        expect(getByTestId('TotalInfoBottomSheet/Total/Label')).toHaveTextContent(
+          'reviewTransaction.totalPlusFees'
+        )
+        expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(totalFeesValue)
       })
 
       it('pressing cancel fires analytics event', () => {
@@ -368,6 +395,7 @@ describe('EarnDepositConfirmationScreen', () => {
         )
 
         expect(getByTestId('EarnDepositConfirmationFee/Caption')).toHaveTextContent('gasSubsidized')
+        expect(getByTestId('TotalInfoBottomSheet/Fees/Caption')).toHaveTextContent('gasSubsidized')
         expect(earnUtils.isGasSubsidizedForNetwork).toHaveBeenCalledWith(fromNetworkId)
       })
     }

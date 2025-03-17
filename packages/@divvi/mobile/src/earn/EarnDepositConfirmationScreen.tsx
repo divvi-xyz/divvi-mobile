@@ -8,6 +8,7 @@ import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
 import BackButton from 'src/components/BackButton'
 import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
+import FeeInfoBottomSheet from 'src/components/FeeInfoBottomSheet'
 import InfoBottomSheet, {
   InfoBottomSheetContentBlock,
   InfoBottomSheetHeading,
@@ -186,6 +187,9 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
     swapTransaction: params.swapTransaction,
   })
 
+  const feeBottomSheetRef = useRef<BottomSheetModalRefType>(null)
+  const totalBottomSheetRef = useRef<BottomSheetModalRefType>(null)
+
   function onPressProvider() {
     AppAnalytics.track(EarnEvents.earn_deposit_provider_info_press, commonAnalyticsProperties)
     providerUrl && dispatch(openUrl(providerUrl, true))
@@ -269,6 +273,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             localAmount={networkFee.localAmount}
             tokenInfo={networkFee.token}
             localCurrencySymbol={localCurrencySymbol}
+            onInfoPress={() => feeBottomSheetRef.current?.snapToIndex(0)}
           />
 
           <ReviewDetailsItem
@@ -283,9 +288,81 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             feeTokenAmount={networkFee.amount}
             feeLocalAmount={networkFee.localAmount}
             localCurrencySymbol={localCurrencySymbol}
+            onInfoPress={() => totalBottomSheetRef.current?.snapToIndex(0)}
           />
         </ReviewDetails>
       </ReviewContent>
+
+      <FeeInfoBottomSheet
+        forwardedRef={feeBottomSheetRef}
+        networkFee={networkFee}
+        appFee={swapAppFee}
+        crossChainFee={crossChainFee}
+        footerDisclaimer={
+          <Trans
+            i18nKey="earnFlow.enterAmount.feeBottomSheet.description"
+            context={
+              swapAppFee
+                ? crossChainFee
+                  ? 'depositCrossChainWithSwapFee'
+                  : 'depositSwapFee'
+                : crossChainFee
+                  ? 'depositCrossChain'
+                  : 'deposit'
+            }
+            tOptions={{ appFeePercentage: params.swapTransaction?.appFeePercentageIncludedInPrice }}
+          />
+        }
+      />
+
+      <InfoBottomSheet
+        forwardedRef={totalBottomSheetRef}
+        title={t('reviewTransaction.totalPlusFees')}
+        testID="TotalInfoBottomSheet"
+      >
+        <InfoBottomSheetContentBlock>
+          <ReviewDetailsItem
+            fontSize="small"
+            type="token-amount"
+            testID="TotalInfoBottomSheet/Depositing"
+            label={t('earnFlow.depositConfirmation.depositing')}
+            tokenAmount={depositAmount.tokenAmount}
+            localAmount={depositAmount.localAmount}
+            tokenInfo={depositAmount.tokenInfo}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+
+          <ReviewDetailsItem
+            approx
+            fontSize="small"
+            type="token-amount"
+            testID="TotalInfoBottomSheet/Fees"
+            label={t('fees')}
+            caption={isGasSubsidized ? t('gasSubsidized') : undefined}
+            captionColor={isGasSubsidized ? themeColors.accent : undefined}
+            strikeThrough={isGasSubsidized}
+            tokenAmount={networkFee.amount}
+            localAmount={networkFee.localAmount}
+            tokenInfo={networkFee.token}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+
+          <ReviewDetailsItem
+            approx
+            fontSize="small"
+            type="total-token-amount"
+            testID="TotalInfoBottomSheet/Total"
+            label={t('reviewTransaction.totalPlusFees')}
+            tokenInfo={inputTokenInfo}
+            feeTokenInfo={networkFee.token}
+            tokenAmount={depositAmount.tokenAmount}
+            localAmount={depositAmount.localAmount}
+            feeTokenAmount={networkFee.amount}
+            feeLocalAmount={networkFee.localAmount}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+        </InfoBottomSheetContentBlock>
+      </InfoBottomSheet>
     </ReviewTransaction>
   )
 }
