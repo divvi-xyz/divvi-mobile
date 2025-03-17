@@ -795,7 +795,7 @@ function TransactionDepositDetails({
             label={t('earnFlow.enterAmount.estimatedDuration')}
             testID="EnterAmountDepositDetails/EstimatedDuration"
             value={t('swapScreen.transactionDetails.estimatedTransactionTimeInMinutes', {
-              minutes: Math.ceil(30 / 60),
+              minutes: Math.ceil(swapTransaction.estimatedDuration / 60),
             })}
           />
           <InfoBottomSheet
