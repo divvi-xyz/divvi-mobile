@@ -8,6 +8,7 @@ import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
 import BackButton from 'src/components/BackButton'
 import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
+import Button, { BtnSizes } from 'src/components/Button'
 import FeeInfoBottomSheet from 'src/components/FeeInfoBottomSheet'
 import InfoBottomSheet, {
   InfoBottomSheetContentBlock,
@@ -18,6 +19,8 @@ import {
   ReviewContent,
   ReviewDetails,
   ReviewDetailsItem,
+  ReviewFooter,
+  ReviewParagraph,
   ReviewSummary,
   ReviewSummaryItem,
   ReviewTransaction,
@@ -26,6 +29,9 @@ import RowDivider from 'src/components/RowDivider'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import TokenIcon from 'src/components/TokenIcon'
 import Touchable from 'src/components/Touchable'
+import { APP_NAME } from 'src/config'
+import { depositStatusSelector } from 'src/earn/selectors'
+import { depositStart } from 'src/earn/slice'
 import {
   getSwapToAmountInDecimals,
   getTotalYieldRate,
@@ -48,11 +54,21 @@ import { useTokenInfo, useTokenToLocalAmount } from 'src/tokens/hooks'
 import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import type { TokenBalance } from 'src/tokens/slice'
 import { getTokenBalance } from 'src/tokens/utils'
-import { getPreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
+import Logger from 'src/utils/Logger'
+import {
+  getPreparedTransactionsPossible,
+  getSerializablePreparedTransactions,
+} from 'src/viem/preparedTransactionSerialization'
 import {
   getFeeCurrencyAndAmounts,
   type PreparedTransactionsPossible,
 } from 'src/viem/prepareTransactions'
+
+const TAG = 'send/EarnDepositConfirmationScreen'
+const APP_TERMS_AND_CONDITIONS_URL = 'https://valora.xyz/terms'
+const APP_ID_TO_PROVIDER_DOCUMENTS_URL: Record<string, string | undefined> = {
+  beefy: 'https://docs.beefy.finance/',
+}
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnDepositConfirmationScreen>
 
@@ -171,6 +187,8 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
+  const depositStatus = useSelector(depositStatusSelector)
+  const transactionSubmittedAndLoading = depositStatus === 'loading'
   const depositAmount = useDepositAmount(params)
   const commonAnalyticsProperties = useCommonAnalyticsProperties(params, depositAmount.tokenAmount)
   const providerUrl = params.pool.dataProps.manageUrl ?? params.pool.dataProps.termsUrl
@@ -192,11 +210,60 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
 
   function onPressProvider() {
     AppAnalytics.track(EarnEvents.earn_deposit_provider_info_press, commonAnalyticsProperties)
-    providerUrl && dispatch(openUrl(providerUrl, true))
+
+    if (providerUrl) {
+      dispatch(openUrl(providerUrl, true))
+    }
   }
 
+  function onPressTermsAndConditions() {
+    AppAnalytics.track(EarnEvents.earn_deposit_terms_and_conditions_press, {
+      type: 'providerTermsAndConditions',
+      ...commonAnalyticsProperties,
+    })
+
+    if (params.pool.dataProps.termsUrl) {
+      dispatch(openUrl(params.pool.dataProps.termsUrl, true))
+    }
+  }
+
+  function onPressProviderDocuments() {
+    AppAnalytics.track(EarnEvents.earn_deposit_terms_and_conditions_press, {
+      type: 'providerDocuments',
+      ...commonAnalyticsProperties,
+    })
+
+    const providerDocumentsUrl = APP_ID_TO_PROVIDER_DOCUMENTS_URL[params.pool.appId]
+    if (providerDocumentsUrl) {
+      dispatch(openUrl(providerDocumentsUrl, true))
+    }
+  }
+
+  function onPressAppTermsAndConditions() {
+    AppAnalytics.track(EarnEvents.earn_deposit_terms_and_conditions_press, {
+      type: 'appTermsAndConditions',
+      ...commonAnalyticsProperties,
+    })
+    dispatch(openUrl(APP_TERMS_AND_CONDITIONS_URL, true))
+  }
+
+  function onPressComplete() {
+    dispatch(
+      depositStart({
+        pool: params.pool,
+        mode: params.mode,
+        amount: depositAmount.tokenAmount.toString(),
+        fromTokenId: inputTokenInfo.tokenId,
+        fromTokenAmount: inputTokenAmount.toString(),
+        preparedTransactions: getSerializablePreparedTransactions(preparedTransaction.transactions),
+      })
+    )
+    AppAnalytics.track(EarnEvents.earn_deposit_complete, commonAnalyticsProperties)
+  }
+
+  // should never happen since a possible prepared tx should include fee currency and amount
   if (!networkFee.token || !networkFee.amount.gt(0)) {
-    // should never happen since a possible prepared tx should include fee currency and amount
+    Logger.error(TAG, `network fee is missing`)
     return null
   }
 
@@ -292,6 +359,48 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
           />
         </ReviewDetails>
       </ReviewContent>
+
+      <ReviewFooter>
+        <ReviewParagraph>
+          {params.pool.dataProps.termsUrl ? (
+            <Trans
+              i18nKey="earnFlow.depositConfirmation.disclaimer"
+              tOptions={{ providerName: params.pool.appName }}
+            >
+              <Text
+                testID="EarnDepositConfirmation/TermsAndConditions"
+                style={{ textDecorationLine: 'underline' }}
+                onPress={onPressTermsAndConditions}
+              />
+            </Trans>
+          ) : (
+            <Trans
+              i18nKey="earnFlow.depositConfirmation.noTermsUrlDisclaimer"
+              tOptions={{ appName: APP_NAME, providerName: params.pool.appName }}
+            >
+              <Text
+                testID="EarnDepositConfirmation/ProviderDocuments"
+                style={{ textDecorationLine: 'underline' }}
+                onPress={onPressProviderDocuments}
+              />
+              <Text
+                testID="EarnDepositConfirmation/AppTermsAndConditions"
+                style={{ textDecorationLine: 'underline' }}
+                onPress={onPressAppTermsAndConditions}
+              />
+            </Trans>
+          )}
+        </ReviewParagraph>
+        <Button
+          testID="EarnDepositConfirmation/ConfirmButton"
+          size={BtnSizes.FULL}
+          text={t('deposit')}
+          accessibilityLabel={t('deposit')}
+          showLoading={transactionSubmittedAndLoading}
+          onPress={onPressComplete}
+          disabled={transactionSubmittedAndLoading}
+        />
+      </ReviewFooter>
 
       <FeeInfoBottomSheet
         forwardedRef={feeBottomSheetRef}

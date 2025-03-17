@@ -2644,7 +2644,9 @@
       "into": "Into",
       "pool": "{{providerName}} Pool",
       "yieldRate": "{{apy}}% est. yield rate",
-      "swapAndDeposit": "Swap & Deposit"
+      "swapAndDeposit": "Swap & Deposit",
+      "disclaimer": "By depositing crypto into an {{providerName}} pool, you accept the risks associated with using {{providerName}}. <0>Terms & Conditions</0>",
+      "noTermsUrlDisclaimer": "You are responsible for your actions in {{appName}}. {{appName}} disclaims all responsibility for your assets or interactions with {{providerName}}. You can review {{providerName}}'s documents <0>here</0> and our Terms & Conditions <1>here</1>."
     },
     "swapAndDepositInfoSheet": {
       "title": "Swap Details",
@@ -2891,6 +2893,7 @@
   "moreInformation": "More information",
   "breakdown": "Breakdown",
   "gasSubsidized": "Fees are covered for a limited time",
+  "deposit": "Deposit",
   "feeInfoBottomSheet": {
     "feesInfo_sameChain": "The network fee is required by the network to process the transaction.",
     "feesInfo_crossChain": "The network fee is required by the network to process the transaction. The cross-chain fee is charged by the cross-chain provider.",
