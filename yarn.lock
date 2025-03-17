@@ -7335,11 +7335,7 @@ cross-fetch@^4.1.0:
   dependencies:
     node-fetch "^2.7.0"
 
-<<<<<<< HEAD
-cross-spawn@^4.0.2, cross-spawn@^5.0.1, cross-spawn@^6.0.0, cross-spawn@^7.0.0, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
-=======
 cross-spawn@^4.0.2, cross-spawn@^6.0.0, cross-spawn@^7.0.0, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
->>>>>>> main
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.6.tgz#8a58fe78f00dcd70c370451759dfbfaf03e8ee9f"
   integrity sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==
@@ -10062,16 +10058,6 @@ is-callable@^1.1.3, is-callable@^1.1.4, is-callable@^1.2.7:
   resolved "https://registry.yarnpkg.com/is-callable/-/is-callable-1.2.7.tgz#3bc2a85ea742d9e36205dcacdd72ca1fdc51b055"
   integrity sha512-1BC0BVFhS/p0qtw6enp8e+8OD0UrK0oFLztSjNzhcKA3WDuJxxAPXzPuPtKkjEY9UUoEWlX/8fgKeu2S8i9JTA==
 
-<<<<<<< HEAD
-is-ci@^1.0.10:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/is-ci/-/is-ci-1.2.1.tgz#e3779c8ee17fccf428488f6e281187f2e632841c"
-  integrity sha512-s6tfsaQaQi3JNciBH6shVqEDvhGut0SUXr31ag8Pd8BBbVVlcGfWhpPmEOoM6RJ5TFhbypvf5yyRw/VXW1IiWg==
-  dependencies:
-    ci-info "^1.5.0"
-
-=======
->>>>>>> main
 is-cidr@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/is-cidr/-/is-cidr-5.1.0.tgz#36f2d059f43f9b14f132745a2eec18c996df2f35"

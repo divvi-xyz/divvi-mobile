@@ -207,11 +207,6 @@
     "jest-junit": "^10.0.0",
     "jest-snapshot": "^29.6.2",
     "mockdate": "^3.0.5",
-<<<<<<< HEAD
-    "patch-package": "^8.0.0",
-    "prettier": "3.3.3",
-=======
->>>>>>> main
     "react": "18.3.1",
     "react-native": "0.76.5",
     "react-native-contacts": "https://github.com/valora-inc/react-native-contacts#9940121",
