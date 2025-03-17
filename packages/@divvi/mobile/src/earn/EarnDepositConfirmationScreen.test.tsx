@@ -1,18 +1,17 @@
 /* eslint-disable jest/no-conditional-expect */
-import { fireEvent, render, renderHook, within } from '@testing-library/react-native'
+import { fireEvent, render, within } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
-import EarnDepositConfirmationScreen, {
-  useCommonAnalyticsProperties,
-  useDepositAmount,
-} from 'src/earn/EarnDepositConfirmationScreen'
+import EarnDepositConfirmationScreen from 'src/earn/EarnDepositConfirmationScreen'
+import * as earnUtils from 'src/earn/utils'
 import { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import type { PreparedTransactionsPossible } from 'src/public'
+import { NETWORK_NAMES } from 'src/shared/conts'
 import { getSerializableTokenBalance } from 'src/tokens/utils'
 import { NetworkId } from 'src/transactions/types'
 import { getSerializablePreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
@@ -140,12 +139,6 @@ const mockCrossChainProps: StackParamList[Screens.EarnDepositConfirmationScreen]
   } as any,
 }
 
-const HookWrapper = (component: any) => (
-  <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
-    {component?.children ? component.children : component}
-  </Provider>
-)
-
 describe('EarnDepositConfirmationScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -159,8 +152,11 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount: '100',
       fromTokenId: mockArbUsdcTokenId,
       depositTokenAmount: '100',
-      depositLocalAmount: '133',
       swapType: undefined,
+      feesLabel: 'networkFee',
+      feesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      totalFeesValue: 'localAmountApprox, {"localAmount":"133.01","localCurrencySymbol":"₱"}',
     },
     {
       testName: 'same chain swap & deposit',
@@ -169,8 +165,12 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount: '0.041',
       fromTokenId: mockArbEthTokenId,
       depositTokenAmount: '99.999',
-      depositLocalAmount: '132.99867',
       swapType: 'same-chain',
+      feesLabel: 'fees',
+      feesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      totalFeesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"100.00","localAmount":"133.01","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
     },
     {
       testName: 'cross chain swap & deposit',
@@ -179,8 +179,12 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount: '0.041',
       fromTokenId: mockCeloTokenId,
       depositTokenAmount: '99.999',
-      depositLocalAmount: '132.99867',
       swapType: 'cross-chain',
+      feesLabel: 'fees',
+      feesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.00011","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+      totalFeesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"100.00","localAmount":"133.00","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
     },
   ])(
     '$testName',
@@ -190,8 +194,10 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount,
       fromTokenId,
       depositTokenAmount,
-      depositLocalAmount,
       swapType,
+      feesLabel,
+      feesValue,
+      totalFeesValue,
     }) => {
       const fromNetworkId =
         swapType === 'cross-chain' ? NetworkId['celo-alfajores'] : NetworkId['arbitrum-sepolia']
@@ -204,23 +210,6 @@ describe('EarnDepositConfirmationScreen', () => {
         swapType,
         fromNetworkId,
       }
-
-      it('useDepositAmount properly calculates deposit amount in token and fiat', () => {
-        const { result } = renderHook(() => useDepositAmount(props), { wrapper: HookWrapper })
-        expect(result.current.tokenAmount.toString()).toEqual(depositTokenAmount)
-        expect(result.current.localAmount?.toString()).toEqual(depositLocalAmount)
-      })
-
-      it('useCommonAnalyticsProperties properly formats common analytics properties', () => {
-        const { result: depositTokenAmount } = renderHook(() => useDepositAmount(props), {
-          wrapper: HookWrapper,
-        })
-        const { result } = renderHook(
-          () => useCommonAnalyticsProperties(props, depositTokenAmount.current.tokenAmount),
-          { wrapper: HookWrapper }
-        )
-        expect(result.current).toEqual(expectedAnalyticsProperties)
-      })
 
       it('renders proper structure', () => {
         const { getByTestId } = render(
@@ -298,6 +287,20 @@ describe('EarnDepositConfirmationScreen', () => {
             'earnFlow.swapAndDepositInfoSheet.swapDescription'
           )
         }
+
+        // details items
+        expect(getByTestId('EarnDepositConfirmationNetwork/Label')).toHaveTextContent(
+          'transactionDetails.network'
+        )
+        expect(getByTestId('EarnDepositConfirmationNetwork/Value')).toHaveTextContent(
+          NETWORK_NAMES[props.inputTokenInfo.networkId]
+        )
+        expect(getByTestId('EarnDepositConfirmationFee/Label')).toHaveTextContent(feesLabel)
+        expect(getByTestId('EarnDepositConfirmationFee/Value')).toHaveTextContent(feesValue)
+        expect(getByTestId('EarnDepositConfirmationTotal/Label')).toHaveTextContent(
+          'reviewTransaction.totalPlusFees'
+        )
+        expect(getByTestId('EarnDepositConfirmationTotal/Value')).toHaveTextContent(totalFeesValue)
       })
 
       it('pressing cancel fires analytics event', () => {
@@ -351,6 +354,21 @@ describe('EarnDepositConfirmationScreen', () => {
           expectedAnalyticsProperties
         )
         expect(mockStore.getActions()).toEqual([openUrl(result, true)])
+      })
+
+      it('shows gas subsidized copy if feature gate is set', () => {
+        jest.spyOn(earnUtils, 'isGasSubsidizedForNetwork').mockReturnValue(true)
+        const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
+        const { getByTestId } = render(
+          <Provider store={mockStore}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, props)}
+            />
+          </Provider>
+        )
+
+        expect(getByTestId('EarnDepositConfirmationFee/Caption')).toHaveTextContent('gasSubsidized')
+        expect(earnUtils.isGasSubsidizedForNetwork).toHaveBeenCalledWith(fromNetworkId)
       })
     }
   )

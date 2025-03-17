@@ -159,14 +159,20 @@ export function ReviewDetails(props: { children: ReactNode }) {
   return <View style={styles.reviewDetails}>{props.children}</View>
 }
 
+type WithCaption =
+  | { caption: ReactNode; captionColor?: ColorValue }
+  | { caption?: never; captionColor?: never }
+
 export type ReviewDetailsItemProps = {
   label: ReactNode
   fontSize?: 'small' | 'medium'
   color?: ColorValue
   isLoading?: boolean
   testID?: string
+  strikeThrough?: boolean
   onInfoPress?: () => void
-} & ReviewDetailsItemValueProps
+} & ReviewDetailsItemValueProps &
+  WithCaption
 
 export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
   const {
@@ -175,6 +181,9 @@ export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
     color = colors.contentPrimary,
     isLoading,
     testID,
+    strikeThrough,
+    caption,
+    captionColor,
     onInfoPress,
     ...valueProps
   } = props
@@ -188,35 +197,50 @@ export function ReviewDetailsItem(props: ReviewDetailsItemProps) {
   }, [fontSize])
 
   return (
-    <View style={styles.reviewDetailsItem} testID={testID}>
-      <Touchable
-        style={styles.reviewDetailsItemLabel}
-        onPress={onInfoPress}
-        disabled={!onInfoPress || isLoading}
-      >
-        <>
-          <Text style={[fontStyle, { color }]} testID={`${testID}/Label`}>
-            {label}
-          </Text>
-          {onInfoPress && <InfoIcon testID={`${testID}/InfoIcon`} />}
-        </>
-      </Touchable>
-      <View style={styles.reviewDetailsItemValue}>
-        {isLoading ? (
-          <View testID={`${testID}/Loader`} style={styles.loaderContainer}>
-            <SkeletonPlaceholder>
-              <View style={styles.loader} />
-            </SkeletonPlaceholder>
-          </View>
-        ) : (
-          <Text
-            style={[styles.reviewDetailsItemValueText, fontStyle, { color }]}
-            testID={`${testID}/Value`}
-          >
-            <ReviewDetailsItemValue {...valueProps} />
-          </Text>
-        )}
+    <View testID={testID}>
+      <View style={styles.reviewDetailsItem}>
+        <Touchable
+          style={styles.reviewDetailsItemLabel}
+          onPress={onInfoPress}
+          disabled={!onInfoPress || isLoading}
+        >
+          <>
+            <Text style={[fontStyle, { color }]} testID={`${testID}/Label`}>
+              {label}
+            </Text>
+            {onInfoPress && <InfoIcon color={color} testID={`${testID}/InfoIcon`} />}
+          </>
+        </Touchable>
+        <View style={styles.reviewDetailsItemValue}>
+          {isLoading ? (
+            <View testID={`${testID}/Loader`} style={styles.loaderContainer}>
+              <SkeletonPlaceholder>
+                <View style={styles.loader} />
+              </SkeletonPlaceholder>
+            </View>
+          ) : (
+            <Text
+              style={[
+                styles.reviewDetailsItemValueText,
+                fontStyle,
+                { color, textDecorationLine: strikeThrough ? 'line-through' : undefined },
+              ]}
+              testID={`${testID}/Value`}
+            >
+              <ReviewDetailsItemValue {...valueProps} />
+            </Text>
+          )}
+        </View>
       </View>
+
+      {!!caption && (
+        <Text
+          style={[styles.reviewDetailsItemCaption, { color: captionColor || color }]}
+          testID={`${testID}/Caption`}
+        >
+          {caption}
+        </Text>
+      )}
     </View>
   )
 }
@@ -449,6 +473,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   reviewDetailsItemValueText: {
+    textAlign: 'right',
+  },
+  reviewDetailsItemCaption: {
+    ...typeScale.labelSmall,
     textAlign: 'right',
   },
   reviewFooter: {

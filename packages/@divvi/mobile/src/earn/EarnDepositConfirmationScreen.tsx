@@ -15,6 +15,7 @@ import InfoBottomSheet, {
 } from 'src/components/InfoBottomSheet'
 import {
   ReviewContent,
+  ReviewDetails,
   ReviewDetailsItem,
   ReviewSummary,
   ReviewSummaryItem,
@@ -24,7 +25,11 @@ import RowDivider from 'src/components/RowDivider'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import TokenIcon from 'src/components/TokenIcon'
 import Touchable from 'src/components/Touchable'
-import { getSwapToAmountInDecimals, getTotalYieldRate } from 'src/earn/utils'
+import {
+  getSwapToAmountInDecimals,
+  getTotalYieldRate,
+  isGasSubsidizedForNetwork,
+} from 'src/earn/utils'
 import InfoIcon from 'src/icons/InfoIcon'
 import SwapAndDeposit from 'src/icons/SwapAndDeposit'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
@@ -32,16 +37,25 @@ import { getLocalCurrencySymbol } from 'src/localCurrency/selectors'
 import type { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import { useDispatch, useSelector } from 'src/redux/hooks'
+import { NETWORK_NAMES } from 'src/shared/conts'
 import themeColors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
+import getCrossChainFee from 'src/swap/getCrossChainFee'
+import type { SwapFeeAmount, SwapTransaction } from 'src/swap/types'
 import { useTokenInfo, useTokenToLocalAmount } from 'src/tokens/hooks'
+import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import type { TokenBalance } from 'src/tokens/slice'
 import { getTokenBalance } from 'src/tokens/utils'
+import { getPreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
+import {
+  getFeeCurrencyAndAmounts,
+  type PreparedTransactionsPossible,
+} from 'src/viem/prepareTransactions'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnDepositConfirmationScreen>
 
-export function useDepositAmount(params: Props['route']['params']) {
+function useDepositAmount(params: Props['route']['params']) {
   const { inputTokenAmount, mode, swapTransaction, pool } = params
   const tokenAmount =
     mode === 'swap-deposit' && swapTransaction
@@ -57,10 +71,81 @@ export function useDepositAmount(params: Props['route']['params']) {
   }
 }
 
-export function useCommonAnalyticsProperties(
-  params: Props['route']['params'],
-  depositAmount: BigNumber
-) {
+function useNetworkFee(
+  preparedTransaction: PreparedTransactionsPossible
+): SwapFeeAmount & { localAmount: BigNumber } {
+  const networkFee = getFeeCurrencyAndAmounts(preparedTransaction)
+  const estimatedNetworkFee = networkFee.estimatedFeeAmount ?? new BigNumber(0)
+  const localAmount = useTokenToLocalAmount(estimatedNetworkFee, networkFee.feeCurrency?.tokenId)
+  return {
+    amount: estimatedNetworkFee,
+    maxAmount: networkFee.maxFeeAmount ?? new BigNumber(0),
+    token: networkFee.feeCurrency,
+    localAmount: localAmount ?? new BigNumber(0),
+  }
+}
+
+function useSwapAppFee({
+  swapTransaction,
+  inputTokenInfo,
+  inputTokenAmount,
+}: {
+  swapTransaction: SwapTransaction | undefined
+  inputTokenInfo: TokenBalance
+  inputTokenAmount: BigNumber
+}) {
+  if (!swapTransaction || !swapTransaction.appFeePercentageIncludedInPrice) {
+    return undefined
+  }
+
+  const percentage = new BigNumber(swapTransaction.appFeePercentageIncludedInPrice)
+  return {
+    percentage,
+    token: inputTokenInfo,
+    amount: inputTokenAmount.multipliedBy(percentage.shiftedBy(-2)), // To convert from percentage to decimal
+  }
+}
+
+function useCrossChainFee({
+  swapTransaction,
+  inputTokenInfo,
+  preparedTransaction,
+}: {
+  swapTransaction: SwapTransaction | undefined
+  inputTokenInfo: TokenBalance
+  preparedTransaction: PreparedTransactionsPossible
+}) {
+  const crossChainFeeCurrency = useSelector((state) =>
+    feeCurrenciesSelector(state, inputTokenInfo.networkId)
+  ).find((token) => token.isNative)
+
+  return useMemo((): SwapFeeAmount | undefined => {
+    if (swapTransaction?.swapType !== 'cross-chain' || !preparedTransaction) {
+      return undefined
+    }
+
+    const crossChainFee = getCrossChainFee({
+      feeCurrency: crossChainFeeCurrency,
+      preparedTransactions: preparedTransaction,
+      estimatedCrossChainFee: swapTransaction.estimatedCrossChainFee,
+      maxCrossChainFee: swapTransaction.maxCrossChainFee,
+      fromTokenId: inputTokenInfo.tokenId,
+      sellAmount: swapTransaction.sellAmount,
+    })
+
+    if (!crossChainFee) {
+      return undefined
+    }
+
+    return {
+      amount: crossChainFee.amount,
+      maxAmount: crossChainFee.maxAmount,
+      token: crossChainFee.token,
+    }
+  }, [swapTransaction, preparedTransaction, crossChainFeeCurrency, inputTokenInfo])
+}
+
+function useCommonAnalyticsProperties(params: Props['route']['params'], depositAmount: BigNumber) {
   return useMemo(
     () => ({
       providerId: params.pool.appId,
@@ -81,16 +166,34 @@ export function useCommonAnalyticsProperties(
 export default function EarnDepositConfirmationScreen({ route: { params } }: Props) {
   const inputTokenAmount = new BigNumber(params.inputTokenAmount)
   const inputTokenInfo = getTokenBalance(params.inputTokenInfo)
+  const preparedTransaction = getPreparedTransactionsPossible(params.preparedTransaction)
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const depositAmount = useDepositAmount(params)
   const commonAnalyticsProperties = useCommonAnalyticsProperties(params, depositAmount.tokenAmount)
   const providerUrl = params.pool.dataProps.manageUrl ?? params.pool.dataProps.termsUrl
+  const isGasSubsidized = isGasSubsidizedForNetwork(preparedTransaction.feeCurrency.networkId)
+  const networkFee = useNetworkFee(preparedTransaction)
+  const swapAppFee = useSwapAppFee({
+    inputTokenAmount,
+    inputTokenInfo,
+    swapTransaction: params.swapTransaction,
+  })
+  const crossChainFee = useCrossChainFee({
+    inputTokenInfo,
+    preparedTransaction,
+    swapTransaction: params.swapTransaction,
+  })
 
   function onPressProvider() {
     AppAnalytics.track(EarnEvents.earn_deposit_provider_info_press, commonAnalyticsProperties)
     providerUrl && dispatch(openUrl(providerUrl, true))
+  }
+
+  if (!networkFee.token || !networkFee.amount.gt(0)) {
+    // should never happen since a possible prepared tx should include fee currency and amount
+    return null
   }
 
   return (
@@ -143,6 +246,45 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             />
           )}
         </ReviewSummary>
+
+        <ReviewDetails>
+          <ReviewDetailsItem
+            testID="EarnDepositConfirmationNetwork"
+            type="plain-text"
+            label={t('transactionDetails.network')}
+            color={themeColors.contentSecondary}
+            value={NETWORK_NAMES[inputTokenInfo.networkId]}
+          />
+
+          <ReviewDetailsItem
+            approx
+            caption={isGasSubsidized ? t('gasSubsidized') : undefined}
+            captionColor={isGasSubsidized ? themeColors.accent : undefined}
+            strikeThrough={isGasSubsidized}
+            testID="EarnDepositConfirmationFee"
+            type="token-amount"
+            label={swapAppFee || crossChainFee ? t('fees') : t('networkFee')}
+            color={themeColors.contentSecondary}
+            tokenAmount={networkFee.amount}
+            localAmount={networkFee.localAmount}
+            tokenInfo={networkFee.token}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+
+          <ReviewDetailsItem
+            approx
+            testID="EarnDepositConfirmationTotal"
+            type="total-token-amount"
+            label={t('reviewTransaction.totalPlusFees')}
+            tokenInfo={inputTokenInfo}
+            feeTokenInfo={networkFee.token}
+            tokenAmount={depositAmount.tokenAmount}
+            localAmount={depositAmount.localAmount}
+            feeTokenAmount={networkFee.amount}
+            feeLocalAmount={networkFee.localAmount}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+        </ReviewDetails>
       </ReviewContent>
     </ReviewTransaction>
   )
