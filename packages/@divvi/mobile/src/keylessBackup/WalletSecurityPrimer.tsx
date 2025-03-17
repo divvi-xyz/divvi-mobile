@@ -5,6 +5,7 @@ import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { KeylessBackupEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import { walletSafe } from 'src/images/Images'
 import { KeylessBackupFlow } from 'src/keylessBackup/types'
@@ -22,7 +23,13 @@ function WalletSecurityPrimer({ route }: Props) {
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.imageContainer}>
-          <Image testID="Email" source={walletSafe} />
+          <Image
+            testID="Email"
+            source={
+              getAppConfig().themes?.default?.assets?.backupAndRecoveryImages?.walletSafe ??
+              walletSafe
+            }
+          />
         </View>
         <Text style={styles.title}>{t('walletSecurityPrimer.title')}</Text>
         <Text style={styles.description}>{t('walletSecurityPrimer.description')}</Text>

@@ -10,7 +10,7 @@
 type StackParamList = object
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/navigate.ts:31](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/navigate.ts#L31)
+Defined in: [packages/@divvi/mobile/src/public/navigate.ts:32](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/navigate.ts#L32)
 
 ## Type declaration
 
@@ -75,5 +75,9 @@ TabWallet: undefined
 ### Withdraw
 
 ```ts
-Withdraw: undefined
+Withdraw:
+  | {
+  tokenId: string;
+ }
+  | undefined;
 ```
