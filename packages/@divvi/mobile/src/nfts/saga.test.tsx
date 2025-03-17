@@ -2,6 +2,7 @@ import { FetchMock } from 'jest-fetch-mock/types'
 import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { select } from 'redux-saga/effects'
+import { getAppConfig } from 'src/appConfig'
 import { DEEP_LINK_URL_SCHEME } from 'src/config'
 import { Actions, celebratedNftFound, nftRewardReadyToDisplay } from 'src/home/actions'
 import { NftCelebrationStatus } from 'src/home/reducers'
@@ -16,7 +17,7 @@ import Logger from 'src/utils/Logger'
 import networkConfig from 'src/web3/networkConfig'
 import { walletAddressSelector } from 'src/web3/selectors'
 import { createMockStore } from 'test/utils'
-import { mockNftAllFields, mockNftMinimumFields } from 'test/values'
+import { mockAppConfig, mockNftAllFields, mockNftMinimumFields } from 'test/values'
 
 jest.mock('src/statsig')
 jest.mock('src/config', () => ({
@@ -149,6 +150,19 @@ describe('Given Nfts saga', () => {
         'NftsSaga',
         'Wallet address not found, skipping NFTs list fetch'
       )
+    })
+
+    it('should not fetch and return empty list when disableNfts is set to true', async () => {
+      jest
+        .mocked(getAppConfig)
+        .mockReturnValueOnce({ ...mockAppConfig, experimental: { disableNfts: true } })
+      await expectSaga(handleFetchNfts)
+        .provide([[select(walletAddressSelector), '0xabc']])
+        .put(fetchNftsCompleted({ nfts: [] }))
+        .run()
+
+      expect(mockFetch).not.toHaveBeenCalled()
+      expect(loggerDebugSpy).not.toHaveBeenCalled()
     })
   })
 

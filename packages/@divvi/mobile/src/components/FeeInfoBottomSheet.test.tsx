@@ -278,7 +278,7 @@ describe('FeeInfoBottomSheet', () => {
     }
   })
 
-  it('renders current footer disclaimer', () => {
+  it('renders custom footer disclaimer', () => {
     const { getByTestId } = render(
       <Provider
         store={createMockStore({

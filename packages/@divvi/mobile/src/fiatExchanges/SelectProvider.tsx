@@ -626,6 +626,8 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: colors.backgroundSecondary,
     borderRadius: 16,
+    borderColor: colors.borderPrimary,
+    borderWidth: 1,
   },
   amountSpentInfoText: {
     textAlign: 'center',

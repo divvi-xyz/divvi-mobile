@@ -504,7 +504,6 @@ export default function EarnEnterAmount({ route }: Props) {
           crossChainFee={crossChainFee}
         />
       )}
-
       <TokenBottomSheet
         forwardedRef={tokenBottomSheetRef}
         snapPoints={['90%']}
