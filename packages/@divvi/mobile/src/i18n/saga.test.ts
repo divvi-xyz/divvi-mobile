@@ -3,6 +3,7 @@ import DeviceInfo from 'react-native-device-info'
 import { expectSaga } from 'redux-saga-test-plan'
 import { EffectProviders, StaticProvider } from 'redux-saga-test-plan/providers'
 import { call, select } from 'redux-saga/effects'
+import { getAppConfig } from 'src/appConfig'
 import { saveOtaTranslations } from 'src/i18n/otaTranslations'
 import { handleFetchOtaTranslations } from 'src/i18n/saga'
 import {
@@ -49,6 +50,10 @@ describe('i18n sagas', () => {
     const mockedVersion = DeviceInfo.getVersion as jest.MockedFunction<typeof DeviceInfo.getVersion>
     mockedVersion.mockImplementation(() => appVersion)
     const defaultProviders: (EffectProviders | StaticProvider)[] = [
+      [
+        call(getAppConfig),
+        { experimental: { otaTranslationsConfig: { crowdinDistributionHash: 'hash' } } },
+      ],
       [select(otaTranslationsAppVersionSelector), appVersion],
       [select(otaTranslationsLanguageSelector), 'en-US'],
       [select(currentLanguageSelector), 'en-US'],

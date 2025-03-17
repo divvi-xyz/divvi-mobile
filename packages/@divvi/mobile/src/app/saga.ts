@@ -29,12 +29,7 @@ import {
   inAppReviewLastInteractionTimestampSelector,
 } from 'src/app/selectors'
 import { getAppConfig } from 'src/appConfig'
-import {
-  DEFAULT_APP_LANGUAGE,
-  DEFAULT_SENTRY_NETWORK_ERRORS,
-  ENABLE_OTA_TRANSLATIONS,
-  isE2EEnv,
-} from 'src/config'
+import { DEFAULT_APP_LANGUAGE, DEFAULT_SENTRY_NETWORK_ERRORS, isE2EEnv } from 'src/config'
 import { FiatExchangeFlow } from 'src/fiatExchanges/types'
 import { initI18n } from 'src/i18n'
 import { currentLanguageSelector, otaTranslationsAppVersionSelector } from 'src/i18n/selectors'
@@ -100,7 +95,8 @@ export function* appInit() {
   const otaTranslationsAppVersion = yield* select(otaTranslationsAppVersionSelector)
   const language = yield* select(currentLanguageSelector)
   const bestLanguage = findBestLanguageTag(Object.keys(locales))?.languageTag
-  const allowOtaTranslations = ENABLE_OTA_TRANSLATIONS
+  const appConfig = yield* call(getAppConfig)
+  const allowOtaTranslations = appConfig.experimental?.otaTranslationsConfig !== undefined
 
   yield* all([
     call([AppAnalytics, 'init']),
