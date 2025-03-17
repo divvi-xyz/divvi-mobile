@@ -195,7 +195,9 @@ const styles = StyleSheet.create({
     padding: Spacing.Thick24,
   },
   countryFlagStyle: {
-    backgroundColor: Colors.backgroundTertiary,
+    backgroundColor: Colors.backgroundSecondary,
+    borderWidth: 1,
+    borderColor: Colors.borderPrimary,
     marginRight: Spacing.Smallest8,
   },
 })

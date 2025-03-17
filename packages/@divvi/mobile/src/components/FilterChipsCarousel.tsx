@@ -61,20 +61,28 @@ function FilterChipsCarousel<T>({
       testID="FilterChipsCarousel"
     >
       {chips.map((chip) => {
+        const { backgroundColor, borderColor, contentColor } = chip.isSelected
+          ? {
+              backgroundColor: Array.isArray(Colors.buttonPrimaryBackground)
+                ? Colors.buttonPrimaryBackground[0]
+                : Colors.buttonPrimaryBackground,
+              borderColor: Colors.buttonPrimaryBorder,
+              contentColor: Colors.buttonPrimaryContent,
+            }
+          : {
+              backgroundColor: Colors.buttonSecondaryBackground,
+              borderColor: Colors.buttonSecondaryBorder,
+              contentColor: Colors.buttonSecondaryContent,
+            }
+
         return (
           <View
             key={chip.id}
             style={[
               styles.filterChipBackground,
-              chip.isSelected
-                ? {
-                    backgroundColor: Colors.buttonPrimaryBackground,
-                    borderColor: Colors.buttonPrimaryBorder,
-                  }
-                : {
-                    backgroundColor: Colors.buttonSecondaryBackground,
-                    borderColor: Colors.buttonSecondaryBorder,
-                  },
+              // borderColor maybe undefined in some button configurations (e.g.,
+              // gradients), so we default to backgroundColor
+              { backgroundColor, borderColor: borderColor ?? backgroundColor },
             ]}
           >
             <Touchable
@@ -84,21 +92,10 @@ function FilterChipsCarousel<T>({
               style={styles.filterChip}
             >
               <View style={styles.filterChipTextWrapper}>
-                <Text
-                  style={[
-                    styles.filterChipText,
-                    chip.isSelected
-                      ? { color: Colors.buttonPrimaryContent }
-                      : { color: Colors.buttonSecondaryContent },
-                  ]}
-                >
-                  {chip.name}
-                </Text>
+                <Text style={[styles.filterChipText, { color: contentColor }]}>{chip.name}</Text>
                 {isNetworkChip(chip) && (
                   <DownArrowIcon
-                    color={
-                      chip.isSelected ? Colors.buttonPrimaryContent : Colors.buttonSecondaryContent
-                    }
+                    color={contentColor}
                     strokeWidth={2}
                     height={Spacing.Regular16}
                     style={{ marginBottom: 2, marginLeft: 4 }}

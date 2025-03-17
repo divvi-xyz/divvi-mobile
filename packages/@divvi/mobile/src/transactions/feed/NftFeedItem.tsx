@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { HomeEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import IconWithNetworkBadge from 'src/components/IconWithNetworkBadge'
 import Touchable from 'src/components/Touchable'
 import ImageErrorIcon from 'src/icons/ImageErrorIcon'
@@ -31,6 +32,10 @@ function NftFeedItem({ transaction }: Props) {
     AppAnalytics.track(HomeEvents.transaction_feed_item_select, {
       itemType: transaction.type,
     })
+  }
+
+  if (getAppConfig().experimental?.disableNfts) {
+    return null
   }
 
   return (

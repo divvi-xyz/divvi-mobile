@@ -119,6 +119,8 @@ const getStartedStyles = StyleSheet.create({
     margin: Spacing.Regular16,
     marginTop: Spacing.Large32,
     borderRadius: 10,
+    borderColor: colors.borderPrimary,
+    borderWidth: 1,
     gap: Spacing.Regular16,
   },
   subtitle: {
