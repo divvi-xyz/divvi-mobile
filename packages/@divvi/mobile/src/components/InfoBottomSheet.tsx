@@ -23,7 +23,7 @@ export default function InfoBottomSheet(props: {
       description={props.description}
       testId={props.testID}
     >
-      {props.children && (
+      {!!props.children && (
         <View style={styles.content} testID={`${props.testID}/Content`}>
           {props.children}
         </View>

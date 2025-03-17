@@ -1094,9 +1094,6 @@ const styles = StyleSheet.create({
   bottomSheetDescriptionText: {
     ...typeScale.bodySmall,
   },
-  bottomSheetButton: {
-    marginTop: Spacing.Thick24,
-  },
   depositDetailsSwapValue: {
     gap: Spacing.Tiny4,
     flexDirection: 'row',
