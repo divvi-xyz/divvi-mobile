@@ -10,7 +10,7 @@
  */
 
 const CROWDIN_BRANCH = 'l10n/main'
-const CROWDIN_PR_USER = 'valora-bot-crowdin'
+const CROWDIN_PR_USER = 'divvi-bot-crowdin'
 
 const ALLOWED_UPDATED_FILE_MATCHER = new RegExp(`locales\/.*\/translation\.json`)
 const DISALLOWED_UPDATED_FILES = ['locales/base/translation.json']
