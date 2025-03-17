@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import colors from 'src/styles/colors'
+import { getSupportedNetworkIds } from 'src/web3/utils'
 
 export enum IconSize {
   XXSMALL = 'xxsmall',
@@ -62,6 +63,7 @@ interface Props<T extends { imageUrl?: string; symbol?: string | never; networkI
 export default function TokenIcon<
   T extends { imageUrl?: string; symbol?: string | never; networkIconUrl?: string },
 >({ token, viewStyle, testID, size = IconSize.MEDIUM, showNetworkIcon = true }: Props<T>) {
+  showNetworkIcon = showNetworkIcon && getSupportedNetworkIds().length > 1
   const { tokenImageSize, networkImageSize, networkImagePosition, tokenTextSize } =
     IconSizeToStyle[size]
 
