@@ -406,10 +406,10 @@
   "amountCelo": "Сума (CELO)",
   "onlyCeloDollars": "Лише cUSD",
   "onlyCelo": "Лише CELO",
-  "celoDollar": "Celo Dollar",
-  "celoEuro": "Celo Euro",
+  "celoDollar": "Долар Celo",
+  "celoEuro": "Євро Celo",
   "celoReal": "Celo Real",
-  "celoDollars": "Celo Dollars",
+  "celoDollars": "Долари Celo",
   "ether": "Ether",
   "tapToCopyCeloDollarsAddress": "Натисніть, щоб скопіювати свою {{appName}} адресу CUSD",
   "disclaimerFiat": "Значення {{currency}} є оцінюваними.",
@@ -537,12 +537,12 @@
   "reclaim": "Вимагати",
   "claimed": "Отримано",
   "celoGold": "CELO",
-  "celoEuros": "Celo Euros",
+  "celoEuros": "Євро Celo",
   "balanceAvailable": "<0></0> доступно",
   "subtotal": "Проміжна сума",
   "total": "Усього",
-  "totalInDollars": "Celo Dollars @ <0></0>",
-  "totalInEuros": "Celo Euros @ <0></0>",
+  "totalInDollars": "Долари Celo @ <0></0>",
+  "totalInEuros": "Євро Celo @ <0></0>",
   "totalInCelo": "Celo @ <0></0>",
   "totalInToken": "<0></0> @ <1></1>",
   "tokenExchanteRate": "{{symbol}} @ <0></0>",
@@ -2365,6 +2365,9 @@
     "discover": {
       "tabName": "Дослідіть",
       "title": "Дослідіть Web3"
+    },
+    "earn": {
+      "tabName": "Заробляти"
     }
   },
   "jumpstartStatus": {
@@ -2637,6 +2640,21 @@
       "myPools": "Мої пули",
       "explore": "Переглянути"
     },
+    "depositConfirmation": {
+      "title": "Депозит для перегляду",
+      "depositing": "Поповнення рахунку",
+      "into": "На",
+      "pool": "{{providerName}} Басейн",
+      "yieldRate": "{{apy}}% ест. ставка дохідності",
+      "swapAndDeposit": "Обмін і внесення депозиту"
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Деталі обміну",
+      "swapFrom": "Обміняти з",
+      "swapTo": "Обміняти на",
+      "whySwap": "Навіщо обмінювати?",
+      "swapDescription": "Для внесення коштів у пул ваш токен обмінюється на токен пулу."
+    },
     "depositBottomSheet": {
       "title": "Огляд і поповнення",
       "description": "Перш ніж внести кошти до пулу Aave, ознайомтеся з деталями транзакції нижче",
@@ -2729,7 +2747,8 @@
       "percentage": "{{percentage}}%",
       "poweredBy": "За підтримки {{providerName}}",
       "deposited": "Надано",
-      "depositAndEarnings": "Депозит і прибуток"
+      "depositAndEarnings": "Депозит і прибуток",
+      "safety": "Безпека"
     },
     "poolFilters": {
       "allPools": "Всі пули",
@@ -2853,13 +2872,33 @@
     "totalPlusFees": "Загальна сума плюс комісії",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
+  "maxNetworkFee": "Максимальна комісія мережі",
+  "estimatedNetworkFee": "Орієнтовна комісія мережі",
+  "fees": "Комісії",
+  "appFee": "Комісія {{appName}}",
+  "estimatedCrossChainFee": "Орієнтовна комісія за кроссчейн обмін",
+  "maxCrossChainFee": "Максимальна комісія за кроссчейн обмін",
+  "bottomSheetDismissButton": "Зрозуміло",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "Ціна недоступна",
   "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount_noFiatPrice": "$t(tokenAmount)",
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ $t(tokenAmount)",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "moreInformation": "Докладніше",
+  "breakdown": "Розбір",
+  "gasSubsidized": "Збори покриваються протягом обмеженого часу",
+  "feeInfoBottomSheet": {
+    "feesInfo_sameChain": "Комісія мережі стягується за оброблення транзакції.",
+    "feesInfo_crossChain": "Комісія мережі стягується за оброблення транзакції. Кроссчейн-комісія стягується постачальником послуг міжмережевого обміну.",
+    "feesInfo_sameChainWithAppFee": "Комісія мережі стягується за оброблення транзакції. Комісія {{appName}} у розмірі {{appFeePercentage}}% сплачується за використання нашого продукту.",
+    "feesInfo_crossChainWithAppFee": "Комісія мережі стягується за оброблення транзакції. Кроссчейн-комісія стягується постачальником послуг міжмережевого обміну. Комісія {{appName}} у розмірі {{appFeePercentage}}% сплачується за використання нашого продукту."
+  },
   "demoMode": {
     "confirmEnter": {
       "title": "Демонстраційний режим",
@@ -2878,8 +2917,8 @@
     },
     "inAppIndicatorLabel": "Демонстраційний режим"
   },
-  "celoDollarAmount_0": "<0></0> Celo Dollar",
-  "celoDollarAmount_1": "<0></0> Celo Dollars",
-  "celoDollarAmount_2": "<0></0> Celo Dollars",
+  "celoDollarAmount_0": "<0></0> Село Долар",
+  "celoDollarAmount_1": "<0></0> Долари Село.",
+  "celoDollarAmount_2": "<0></0> Долари Село.",
   "celoDollarAmount_3": "Celo Dollars"
 }
