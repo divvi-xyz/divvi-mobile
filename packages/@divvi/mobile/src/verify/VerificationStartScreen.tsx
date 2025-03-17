@@ -299,9 +299,9 @@ const styles = StyleSheet.create({
     color: colors.textLink,
   },
   countryFlag: {
-    backgroundColor: colors.buttonSecondaryBackground,
+    backgroundColor: colors.backgroundSecondary,
     borderWidth: 1,
-    borderColor: colors.borderSecondary,
+    borderColor: colors.borderPrimary,
   },
   dismissHelpButton: {
     marginTop: Spacing.Thick24,

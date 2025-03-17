@@ -12,6 +12,7 @@ import { Recipient } from 'src/recipients/recipient'
 import Colors from 'src/styles/colors'
 import { NetworkId, TokenTransactionTypeV2, TransactionStatus } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
+import { getSupportedNetworkIds } from 'src/web3/utils'
 
 const AVATAR_SIZE = 40
 
@@ -101,7 +102,7 @@ function TransactionFeedItemBaseImage(props: Props) {
 }
 
 function TransactionFeedItemImage(props: Props) {
-  if (props.hideNetworkIcon) {
+  if (props.hideNetworkIcon || getSupportedNetworkIds().length <= 1) {
     return <TransactionFeedItemBaseImage {...props} />
   }
 

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Education, { EducationTopic } from 'src/account/Education'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { OnboardingEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import { BtnTypes } from 'src/components/Button'
 import { accountKey1, accountKey2, accountKey3, accountKey4 } from 'src/images/Images'
 import { noHeader } from 'src/navigator/Headers'
@@ -50,13 +51,26 @@ AccountKeyEducation.navigationOptions = {
 
 function useSteps() {
   const { t } = useTranslation()
+  const backupAndRecoveryImages = getAppConfig().themes?.default?.assets?.backupAndRecoveryImages
   return React.useMemo(
     () =>
       [
-        { image: accountKey1, topic: EducationTopic.backup },
-        { image: accountKey2, topic: EducationTopic.backup },
-        { image: accountKey3, topic: EducationTopic.backup },
-        { image: accountKey4, topic: EducationTopic.backup },
+        {
+          image: backupAndRecoveryImages?.recoveryPhraseEducation1 ?? accountKey1,
+          topic: EducationTopic.backup,
+        },
+        {
+          image: backupAndRecoveryImages?.recoveryPhraseEducation2 ?? accountKey2,
+          topic: EducationTopic.backup,
+        },
+        {
+          image: backupAndRecoveryImages?.recoveryPhraseEducation3 ?? accountKey3,
+          topic: EducationTopic.backup,
+        },
+        {
+          image: backupAndRecoveryImages?.recoveryPhraseEducation4 ?? accountKey4,
+          topic: EducationTopic.backup,
+        },
       ].map((step, index) => {
         return {
           ...step,

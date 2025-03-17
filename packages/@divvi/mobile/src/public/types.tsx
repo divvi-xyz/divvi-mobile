@@ -66,7 +66,10 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
         navigationBottomPrimary?: string
         navigationBottomSecondary?: string
         bottomSheetHandle?: string
-        buttonPrimaryBackground?: string
+        /**
+         * Can be a single color or array of colors for a linear gradient
+         */
+        buttonPrimaryBackground?: string | string[]
         buttonPrimaryContent?: string
         buttonPrimaryBorder?: string
         buttonSecondaryBackground?: string
@@ -116,6 +119,16 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
           fingerprint?: ImageSourcePropType
           touchId?: ImageSourcePropType
           iris?: ImageSourcePropType
+        }
+        backupAndRecoveryImages?: {
+          // TODO: consider renaming these to be more descriptive or switch to
+          // color parameterized svgs that are set based on theme colors
+          walletSafe?: ImageSourcePropType
+          cloudBackupEmail?: ImageSourcePropType
+          recoveryPhraseEducation1?: ImageSourcePropType
+          recoveryPhraseEducation2?: ImageSourcePropType
+          recoveryPhraseEducation3?: ImageSourcePropType
+          recoveryPhraseEducation4?: ImageSourcePropType
         }
       }
     }
@@ -231,6 +244,8 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
         }
       }
     }
+    disableNfts?: boolean
+    hideCashInTokenFilters?: boolean
   }
 
   divviProtocol?: {
