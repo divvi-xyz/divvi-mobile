@@ -406,10 +406,10 @@
   "amountCelo": "Monto (CELO)",
   "onlyCeloDollars": "Solo cUSD",
   "onlyCelo": "Solo CELO",
-  "celoDollar": "Celo Dollar",
+  "celoDollar": "Celo Dólar",
   "celoEuro": "Celo Euro",
   "celoReal": "Celo Real",
-  "celoDollars": "Celo Dollars",
+  "celoDollars": "Celo Dólares",
   "ether": "Ether",
   "tapToCopyCeloDollarsAddress": "`Toca para copiar tu dirección de cUSD de {{appName}}",
   "disclaimerFiat": "Los valores en {{currency}} son estimativos.",
@@ -491,7 +491,7 @@
   "tip": "Consejo: ",
   "warning": "Advertencia ",
   "downloadRewards": "Descargar Recompensas Celo",
-  "wallet": "Wallet",
+  "wallet": "Billetera",
   "send": "Enviar",
   "search": "Buscar",
   "namePhoneAddress": "Nombre, teléfono o dirección",
@@ -541,7 +541,7 @@
   "balanceAvailable": "<0></0> disponibles",
   "subtotal": "Subtotal",
   "total": "Total",
-  "totalInDollars": "Celo Dollars @ <0></0>",
+  "totalInDollars": "Celo Dólares @ <0></0>",
   "totalInEuros": "Celo Euros @ <0></0>",
   "totalInCelo": "Celo @ <0></0>",
   "totalInToken": "<0></0> @ <1></1>",
@@ -820,7 +820,7 @@
   },
   "biometryType": {
     "FaceID": "Face ID",
-    "TouchID": "Touch ID",
+    "TouchID": "Tocar ID",
     "Fingerprint": "Reconocimiento de huella digital",
     "Face": "Reconocimiento facial",
     "Iris": "Reconocimiento de iris"
@@ -1371,7 +1371,7 @@
     "dappPositions": "DeFi"
   },
   "open": "Abrir",
-  "nftViewer": "NFT Viewer",
+  "nftViewer": "Visor NFT",
   "whatTotalValue": {
     "title": "¿Qué es el saldo total?",
     "body": "Tu Saldo Total es una suma aproximada de todos tus activos de {{appName}}. Tu Saldo Total cambiará a medida que los precios fluctúen. Se actualiza cada 10 minutos.\nAlgunos activos pueden no aparecer en el Saldo Total porque el precio no está disponible en el momento del cálculo.",
@@ -1516,7 +1516,7 @@
   "favoritedDapps": "Dapps favoritas",
   "allDapps": "Todas las dapps",
   "rewards": "Recompensas",
-  "supercharge": "Supercharge",
+  "supercharge": "Supercarga",
   "others": "Otros",
   "nomSpaceRecipient": "Nomspace: {{name}}",
   "lastDay": "Últimas 24 horas",
@@ -2361,6 +2361,9 @@
     "discover": {
       "tabName": "Explorar",
       "title": "Explora la web3"
+    },
+    "earn": {
+      "tabName": "Gana"
     }
   },
   "jumpstartStatus": {
@@ -2633,6 +2636,21 @@
       "myPools": "Mis pools",
       "explore": "Explorar opciones"
     },
+    "depositConfirmation": {
+      "title": "Depósito de revisión",
+      "depositing": "Depositar",
+      "into": "En",
+      "pool": "{{providerName}} Piscina",
+      "yieldRate": "{{apy}}% de tasa de rendimiento est.",
+      "swapAndDeposit": "Intercambiar y depositar"
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Detalles del intercambio",
+      "swapFrom": "Cambiar de",
+      "swapTo": "Cambiar a",
+      "whySwap": "¿Por qué estoy intercambiando?",
+      "swapDescription": "Para depositar fondos en el pool, tu token se está cambiando por un token del pool."
+    },
     "depositBottomSheet": {
       "title": "Revisar y depositar",
       "description": "Antes de depositar en una pool de Aave, revisa los detalles de la transacción a continuación",
@@ -2725,7 +2743,8 @@
       "percentage": "{{percentage}}%",
       "poweredBy": "Con tecnología de {{providerName}}",
       "deposited": "Suministrado",
-      "depositAndEarnings": "Depósitos y ganancias"
+      "depositAndEarnings": "Depósitos y ganancias",
+      "safety": "Seguridad"
     },
     "poolFilters": {
       "allPools": "Todos los Pools",
@@ -2849,13 +2868,33 @@
     "totalPlusFees": "Total más tasas",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
+  "maxNetworkFee": "Tarifa máxima de red",
+  "estimatedNetworkFee": "Tarifa de red estimada",
+  "fees": "Tarifas",
+  "appFee": "Tarifa de {{appName}}",
+  "estimatedCrossChainFee": "Tarifa de transacción entre cadenas estimada",
+  "maxCrossChainFee": "Tarifas máximas entre cadenas",
+  "bottomSheetDismissButton": "Entendido",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "Precio no disponible",
   "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount_noFiatPrice": "{{tokenAmount}} {{tokenSymbol}}",
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "moreInformation": "Más información",
+  "breakdown": "Desglose",
+  "gasSubsidized": "Las tasas están cubiertas durante un tiempo limitado",
+  "feeInfoBottomSheet": {
+    "feesInfo_sameChain": "La tarifa de red es requerida por la red para procesar la transacción.",
+    "feesInfo_crossChain": "La tarifa de red es requerida por la red para procesar la transacción. La tarifa entre cadenas es cargada por el proveedor entre cadenas.",
+    "feesInfo_sameChainWithAppFee": "La tarifa de red es requerida por la red para procesar la transacción. La tarifa de {{appName}} de {{appFeePercentage}}% se cobra por el uso de nuestro producto.",
+    "feesInfo_crossChainWithAppFee": "La tarifa de red es requerida por la red para procesar la transacción. La tarifa entre cadenas es cargada por el proveedor entre cadenas. La tarifa de {{appName}} de {{appFeePercentage}}% se cobra por el uso de nuestro producto."
+  },
   "demoMode": {
     "confirmEnter": {
       "title": "Modo Demo",
