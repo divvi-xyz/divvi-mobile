@@ -2359,6 +2359,9 @@
     "discover": {
       "tabName": "探索",
       "title": "探索"
+    },
+    "earn": {
+      "tabName": "赚钱"
     }
   },
   "jumpstartStatus": {
@@ -2631,6 +2634,21 @@
       "myPools": "我的池",
       "explore": "探索打开"
     },
+    "depositConfirmation": {
+      "title": "审查存款",
+      "depositing": "存款",
+      "into": "进入",
+      "pool": "{{providerName}} 游泳池",
+      "yieldRate": "{{apy}}估计收益率",
+      "swapAndDeposit": "交换与存款"
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "交换详情",
+      "swapFrom": "交换自",
+      "swapTo": "交换至",
+      "whySwap": "我为什么要进行交换？",
+      "swapDescription": "当您向某个资金池存入资金时，您的代币将会交换成资金池代币。"
+    },
     "depositBottomSheet": {
       "title": "审查和存款",
       "description": "在向 Aave 池存款之前，请查看以下交易详情",
@@ -2723,7 +2741,8 @@
       "percentage": "{{percentage}}%",
       "poweredBy": "由 {{providerName}} 提供支持",
       "deposited": "已提供",
-      "depositAndEarnings": "存款和收益"
+      "depositAndEarnings": "存款和收益",
+      "safety": "安全"
     },
     "poolFilters": {
       "allPools": "所有池",
@@ -2847,13 +2866,33 @@
     "totalPlusFees": "加费用共计",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
+  "maxNetworkFee": "最高网络费用",
+  "estimatedNetworkFee": "估算的网络费用",
+  "fees": "费用",
+  "appFee": "{{appName}} 费用",
+  "estimatedCrossChainFee": "预估跨链费用",
+  "maxCrossChainFee": "最高跨链费用",
+  "bottomSheetDismissButton": "知道了",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "价格不详",
   "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount_noFiatPrice": "{{tokenAmount}} {{tokenSymbol}}",
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "moreInformation": "更多信息",
+  "breakdown": "细目",
+  "gasSubsidized": "在有限的时间内支付费用",
+  "feeInfoBottomSheet": {
+    "feesInfo_sameChain": "使用网络处理交易需支付网络费用。",
+    "feesInfo_crossChain": "使用网络处理交易需支付网络费用。跨链费用由跨链服务提供商收取。",
+    "feesInfo_sameChainWithAppFee": "使用网络处理交易需支付网络费用。使用我们的产品时，将收取 {{appFeePercentage}}% 的 {{appName}} 费用。",
+    "feesInfo_crossChainWithAppFee": "使用网络处理交易需支付网络费用。跨链费用由跨链服务提供商收取。使用我们的产品时，将收取 {{appFeePercentage}}% 的 {{appName}} 费用。"
+  },
   "demoMode": {
     "confirmEnter": {
       "title": "演示模式",
