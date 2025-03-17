@@ -6,6 +6,7 @@ import { useAuth0 } from 'react-native-auth0'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { KeylessBackupEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import BackButton from 'src/components/BackButton'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
@@ -228,7 +229,13 @@ function SignInWithEmail({ route, navigation }: Props) {
       />
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.imageContainer}>
-          <Image testID="Email" source={email} />
+          <Image
+            testID="Email"
+            source={
+              getAppConfig().themes?.default?.assets?.backupAndRecoveryImages?.cloudBackupEmail ??
+              email
+            }
+          />
         </View>
         <Text style={styles.title}>{t('signInWithEmail.title')}</Text>
         <Text style={styles.subtitle}>

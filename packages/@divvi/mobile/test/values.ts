@@ -443,6 +443,7 @@ export const mockTokenBalances: Record<string, StoredTokenBalance> = {
     symbol: 'cUSD',
     imageUrl:
       'https://raw.githubusercontent.com/ubeswap/default-token-list/master/assets/asset_cUSD.png',
+    networkIconUrl: 'https://example.com/address-metadata/main/assets/tokens/CELO.png',
     name: 'Celo Dollar',
     decimals: 18,
     balance: '0',
@@ -2261,3 +2262,9 @@ export const mockStoreRewardReayWithDifferentNft = {
 }
 
 export const mockJumpstartAdddress = '0x7BF3fefE9881127553D23a8Cd225a2c2442c438C'
+
+export const mockAppConfig = {
+  displayName: 'Test App',
+  deepLinkUrlScheme: 'testapp',
+  registryName: 'test',
+}
