@@ -2,8 +2,12 @@ import { render } from '@testing-library/react-native'
 import React from 'react'
 import { Provider } from 'react-redux'
 import TokenIcon from 'src/components/TokenIcon'
+import { NetworkId } from 'src/transactions/types'
+import { getSupportedNetworkIds } from 'src/web3/utils'
 import { createMockStore } from 'test/utils'
 import { mockCeloTokenId, mockCusdTokenId, mockPoofTokenId, mockTokenBalances } from 'test/values'
+
+jest.mock('src/web3/utils')
 
 // Setting up the mock token balances with expected additional values
 const CELO_TOKEN = {
@@ -29,6 +33,13 @@ const store = createMockStore({
 })
 
 describe('TokenIcon', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    jest
+      .mocked(getSupportedNetworkIds)
+      .mockReturnValue([NetworkId['celo-alfajores'], NetworkId['ethereum-sepolia']])
+  })
+
   it('renders correctly with a native token', () => {
     const { queryByTestId, getByTestId } = render(
       <Provider store={store}>
@@ -53,6 +64,19 @@ describe('TokenIcon', () => {
     expect(getByTestId('NetworkIcon')).toHaveProp('source', {
       uri: CELO_TOKEN.imageUrl,
     })
+  })
+
+  it('renders correctly with a non-native token without network icon if only one network is supported', () => {
+    jest.mocked(getSupportedNetworkIds).mockReturnValue([NetworkId['celo-alfajores']])
+    const { getByTestId, queryByTestId } = render(
+      <Provider store={store}>
+        <TokenIcon token={CUSD_TOKEN} />
+      </Provider>
+    )
+    expect(getByTestId('TokenIcon')).toHaveProp('source', {
+      uri: CUSD_TOKEN.imageUrl,
+    })
+    expect(queryByTestId('Assets/NetworkIcon')).toBeFalsy()
   })
 
   it('renders correctly with default icon if no token icon is present', () => {

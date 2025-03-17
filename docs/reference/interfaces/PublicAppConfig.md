@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:247](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L247)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:251](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L251)
 
 #### protocolIds
 
@@ -70,7 +70,7 @@ referrerId: string
 optional experimental: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:202](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L202)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:204](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L204)
 
 Experimental features that may change or be removed in future versions.
 These features are not part of the stable configuration API and should be used with caution.
@@ -107,6 +107,12 @@ optional bidali: object;
 url: string
 ```
 
+#### disableNfts?
+
+```ts
+optional disableNfts: boolean;
+```
+
 #### earn?
 
 ```ts
@@ -129,6 +135,12 @@ optional showSafetyScoreOnPoolCard: boolean;
 
 ```ts
 optional firebase: boolean;
+```
+
+#### hideCashInTokenFilters?
+
+```ts
+optional hideCashInTokenFilters: boolean;
 ```
 
 #### inviteFriends?
@@ -247,7 +259,7 @@ projectName: string
 optional features: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:153](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L153)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:155](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L155)
 
 #### cloudBackup?
 
@@ -341,7 +353,7 @@ optional locales: Partial<{
 }>;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:174](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L174)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:176](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L176)
 
 Optional copies overwrite. This field should contain the same language keys as @interxyz/mobile.
 TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
@@ -354,7 +366,7 @@ TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
 optional networks: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:191](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L191)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:193](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L193)
 
 #### enabledNetworkIds?
 
@@ -380,7 +392,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:25](https://github.com/
 optional screens: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:136](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L136)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:138](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L138)
 
 #### custom()?
 

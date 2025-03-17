@@ -1,6 +1,7 @@
 import { BottomSheetScreenProps } from '@interaxyz/react-navigation-bottom-sheet'
 import React, { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { getAppConfig } from 'src/appConfig'
 import { FilterChip } from 'src/components/FilterChipsCarousel'
 import TokenBottomSheet, { TokenPickerOrigin } from 'src/components/TokenBottomSheet'
 import { fetchFiatConnectProviders } from 'src/fiatconnect/slice'
@@ -35,7 +36,7 @@ function useFilterChips(
 
   const showUKCompliantVariant = getFeatureGate(StatsigFeatureGates.SHOW_UK_COMPLIANT_VARIANT)
 
-  if (flow !== FiatExchangeFlow.CashIn) {
+  if (flow !== FiatExchangeFlow.CashIn || getAppConfig().experimental?.hideCashInTokenFilters) {
     return []
   }
   const supportedNetworkIds = getSupportedNetworkIds()

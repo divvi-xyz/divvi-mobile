@@ -1,5 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit'
 import { isPast, isToday } from 'date-fns'
+import { getAppConfig } from 'src/appConfig'
 import { celebratedNftFound, nftRewardReadyToDisplay } from 'src/home/actions'
 import { isSameNftContract } from 'src/home/celebration/utils'
 import { NftCelebrationStatus } from 'src/home/reducers'
@@ -27,6 +28,9 @@ import { call, put, select, spawn, take, takeLeading } from 'typed-redux-saga'
 const TAG = 'NftsSaga'
 
 async function fetchNftsForSupportedNetworks(address: string): Promise<NftWithNetworkId[]> {
+  if (getAppConfig().experimental?.disableNfts) {
+    return []
+  }
   const supportedNetworkIds = getSupportedNetworkIds()
   const nfts = await Promise.all(
     supportedNetworkIds.map(async (networkId) => {

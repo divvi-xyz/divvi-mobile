@@ -1,21 +1,24 @@
 /* eslint-disable jest/no-conditional-expect */
-import { fireEvent, render, renderHook, within } from '@testing-library/react-native'
+import { fireEvent, render, within } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
-import EarnDepositConfirmationScreen, {
-  useCommonAnalyticsProperties,
-  useDepositAmount,
-} from 'src/earn/EarnDepositConfirmationScreen'
+import EarnDepositConfirmationScreen from 'src/earn/EarnDepositConfirmationScreen'
+import { depositStart } from 'src/earn/slice'
+import * as earnUtils from 'src/earn/utils'
 import { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import type { PreparedTransactionsPossible } from 'src/public'
+import { NETWORK_NAMES } from 'src/shared/conts'
 import { getSerializableTokenBalance } from 'src/tokens/utils'
 import { NetworkId } from 'src/transactions/types'
-import { getSerializablePreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
+import {
+  getSerializablePreparedTransactions,
+  getSerializablePreparedTransactionsPossible,
+} from 'src/viem/preparedTransactionSerialization'
 import { createMockStore, getMockStackScreenProps } from 'test/utils'
 import {
   mockAccount,
@@ -140,12 +143,6 @@ const mockCrossChainProps: StackParamList[Screens.EarnDepositConfirmationScreen]
   } as any,
 }
 
-const HookWrapper = (component: any) => (
-  <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
-    {component?.children ? component.children : component}
-  </Provider>
-)
-
 describe('EarnDepositConfirmationScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -159,8 +156,13 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount: '100',
       fromTokenId: mockArbUsdcTokenId,
       depositTokenAmount: '100',
-      depositLocalAmount: '133',
       swapType: undefined,
+      feesLabel: 'networkFee',
+      feesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      totalFeesValue: 'localAmountApprox, {"localAmount":"133.01","localCurrencySymbol":"₱"}',
+      feesBottomSheetDisclaimerText:
+        'earnFlow.enterAmount.feeBottomSheet.description, {"context":"deposit"}',
     },
     {
       testName: 'same chain swap & deposit',
@@ -169,8 +171,14 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount: '0.041',
       fromTokenId: mockArbEthTokenId,
       depositTokenAmount: '99.999',
-      depositLocalAmount: '132.99867',
       swapType: 'same-chain',
+      feesLabel: 'fees',
+      feesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      totalFeesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"100.00","localAmount":"133.01","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      feesBottomSheetDisclaimerText:
+        'earnFlow.enterAmount.feeBottomSheet.description, {"context":"depositSwapFee","appFeePercentage":"0.6"}',
     },
     {
       testName: 'cross chain swap & deposit',
@@ -179,8 +187,14 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount: '0.041',
       fromTokenId: mockCeloTokenId,
       depositTokenAmount: '99.999',
-      depositLocalAmount: '132.99867',
       swapType: 'cross-chain',
+      feesLabel: 'fees',
+      feesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.00011","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+      totalFeesValue:
+        'tokenAndLocalAmountApprox, {"tokenAmount":"100.00","localAmount":"133.00","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+      feesBottomSheetDisclaimerText:
+        'earnFlow.enterAmount.feeBottomSheet.description, {"context":"depositCrossChainWithSwapFee","appFeePercentage":"0.6"}',
     },
   ])(
     '$testName',
@@ -190,8 +204,11 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount,
       fromTokenId,
       depositTokenAmount,
-      depositLocalAmount,
       swapType,
+      feesLabel,
+      feesValue,
+      totalFeesValue,
+      feesBottomSheetDisclaimerText,
     }) => {
       const fromNetworkId =
         swapType === 'cross-chain' ? NetworkId['celo-alfajores'] : NetworkId['arbitrum-sepolia']
@@ -205,25 +222,8 @@ describe('EarnDepositConfirmationScreen', () => {
         fromNetworkId,
       }
 
-      it('useDepositAmount properly calculates deposit amount in token and fiat', () => {
-        const { result } = renderHook(() => useDepositAmount(props), { wrapper: HookWrapper })
-        expect(result.current.tokenAmount.toString()).toEqual(depositTokenAmount)
-        expect(result.current.localAmount?.toString()).toEqual(depositLocalAmount)
-      })
-
-      it('useCommonAnalyticsProperties properly formats common analytics properties', () => {
-        const { result: depositTokenAmount } = renderHook(() => useDepositAmount(props), {
-          wrapper: HookWrapper,
-        })
-        const { result } = renderHook(
-          () => useCommonAnalyticsProperties(props, depositTokenAmount.current.tokenAmount),
-          { wrapper: HookWrapper }
-        )
-        expect(result.current).toEqual(expectedAnalyticsProperties)
-      })
-
       it('renders proper structure', () => {
-        const { getByTestId } = render(
+        const { getByText, getByTestId } = render(
           <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
             <EarnDepositConfirmationScreen
               {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, props)}
@@ -298,9 +298,74 @@ describe('EarnDepositConfirmationScreen', () => {
             'earnFlow.swapAndDepositInfoSheet.swapDescription'
           )
         }
+
+        // details items
+        expect(getByTestId('EarnDepositConfirmationNetwork/Label')).toHaveTextContent(
+          'transactionDetails.network'
+        )
+        expect(getByTestId('EarnDepositConfirmationNetwork/Value')).toHaveTextContent(
+          NETWORK_NAMES[props.inputTokenInfo.networkId]
+        )
+        expect(getByTestId('EarnDepositConfirmationFee/Label')).toHaveTextContent(feesLabel)
+        expect(getByTestId('EarnDepositConfirmationFee/Value')).toHaveTextContent(feesValue)
+        expect(getByTestId('EarnDepositConfirmationTotal/Label')).toHaveTextContent(
+          'reviewTransaction.totalPlusFees'
+        )
+        expect(getByTestId('EarnDepositConfirmationTotal/Value')).toHaveTextContent(totalFeesValue)
+
+        // fees info bottom sheet
+        expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
+        expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
+          feesBottomSheetDisclaimerText
+        )
+
+        // total plus fees info bottom sheet
+        expect(getByTestId('TotalInfoBottomSheet/Depositing/Label')).toHaveTextContent(
+          'earnFlow.depositConfirmation.depositing'
+        )
+        expect(getByTestId('TotalInfoBottomSheet/Depositing/Value')).toHaveTextContent(
+          'tokenAndLocalAmount, {"tokenAmount":"100.00","localAmount":"133.00","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+        )
+        expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees')
+        expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(feesValue)
+        expect(getByTestId('TotalInfoBottomSheet/Total/Label')).toHaveTextContent(
+          'reviewTransaction.totalPlusFees'
+        )
+        expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(totalFeesValue)
+
+        // footer with disclaimer and confirm button
+        expect(
+          getByText('earnFlow.depositConfirmation.disclaimer, {"providerName":"Aave"}')
+        ).toBeTruthy()
+        expect(getByTestId('EarnDepositConfirmation/TermsAndConditions')).toBeTruthy()
+        expect(getByTestId('EarnDepositConfirmation/ConfirmButton')).toHaveTextContent('deposit')
       })
 
-      it('pressing cancel fires analytics event', () => {
+      it('renders the expected disclaimer when there is no terms url', () => {
+        const { getByTestId, getByText } = render(
+          <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, {
+                ...props,
+                pool: {
+                  ...props.pool,
+                  dataProps: { ...props.pool.dataProps, termsUrl: undefined },
+                },
+              })}
+            />
+          </Provider>
+        )
+
+        expect(
+          getByText(
+            'earnFlow.depositConfirmation.noTermsUrlDisclaimer, {"appName":"Test App","providerName":"Aave"}'
+          )
+        ).toBeTruthy()
+        expect(getByTestId('EarnDepositConfirmation/ProviderDocuments')).toBeTruthy()
+        expect(getByTestId('EarnDepositConfirmation/AppTermsAndConditions')).toBeTruthy()
+      })
+
+      it('triggers an analytics event when the back button is pressed', () => {
         const { getByTestId } = render(
           <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
             <EarnDepositConfirmationScreen
@@ -351,6 +416,140 @@ describe('EarnDepositConfirmationScreen', () => {
           expectedAnalyticsProperties
         )
         expect(mockStore.getActions()).toEqual([openUrl(result, true)])
+      })
+
+      it('shows gas subsidized copy if feature gate is set', () => {
+        jest.spyOn(earnUtils, 'isGasSubsidizedForNetwork').mockReturnValue(true)
+        const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
+        const { getByTestId } = render(
+          <Provider store={mockStore}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, props)}
+            />
+          </Provider>
+        )
+        expect(getByTestId('EarnDepositConfirmationFee/Caption')).toHaveTextContent('gasSubsidized')
+        expect(getByTestId('TotalInfoBottomSheet/Fees/Caption')).toHaveTextContent('gasSubsidized')
+        expect(earnUtils.isGasSubsidizedForNetwork).toHaveBeenCalledWith(fromNetworkId)
+      })
+
+      it('submits the action and triggers an analytics event when the complete button is pressed', () => {
+        const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
+        const { getByTestId } = render(
+          <Provider store={mockStore}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, props)}
+            />
+          </Provider>
+        )
+
+        fireEvent.press(getByTestId('EarnDepositConfirmation/ConfirmButton'))
+        expect(AppAnalytics.track).toHaveBeenCalledWith(
+          EarnEvents.earn_deposit_complete,
+          expectedAnalyticsProperties
+        )
+        expect(mockStore.getActions()).toEqual([
+          {
+            type: depositStart.type,
+            payload: {
+              amount: depositTokenAmount,
+              pool: mockEarnPositions[0],
+              preparedTransactions: getSerializablePreparedTransactions(
+                mockPreparedTransaction.transactions
+              ),
+              mode,
+              fromTokenAmount,
+              fromTokenId,
+            },
+          },
+        ])
+      })
+
+      it('opens the terms and conditions when the terms and conditions button is pressed', () => {
+        const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
+        const { getByTestId } = render(
+          <Provider store={mockStore}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, props)}
+            />
+          </Provider>
+        )
+
+        fireEvent.press(getByTestId('EarnDepositConfirmation/TermsAndConditions'))
+        expect(AppAnalytics.track).toHaveBeenCalledWith(
+          EarnEvents.earn_deposit_terms_and_conditions_press,
+          { type: 'providerTermsAndConditions', ...expectedAnalyticsProperties }
+        )
+        expect(mockStore.getActions()).toEqual([openUrl('termsUrl', true)])
+      })
+
+      it("opens the provider's documentation URL when the provider has no terms and conditions", () => {
+        const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
+        const { getByTestId } = render(
+          <Provider store={mockStore}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, {
+                ...props,
+                pool: {
+                  ...props.pool,
+                  appId: 'beefy',
+                  dataProps: { ...props.pool.dataProps, termsUrl: undefined },
+                },
+              })}
+            />
+          </Provider>
+        )
+
+        fireEvent.press(getByTestId('EarnDepositConfirmation/ProviderDocuments'))
+        expect(AppAnalytics.track).toHaveBeenCalledWith(
+          EarnEvents.earn_deposit_terms_and_conditions_press,
+          { type: 'providerDocuments', ...expectedAnalyticsProperties, providerId: 'beefy' }
+        )
+        expect(mockStore.getActions()).toEqual([openUrl('https://docs.beefy.finance/', true)])
+      })
+
+      it('opens the app T&C URL when the provider has no terms and conditions', () => {
+        const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
+        const { getByTestId } = render(
+          <Provider store={mockStore}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, {
+                ...props,
+                pool: {
+                  ...props.pool,
+                  appId: 'beefy',
+                  dataProps: { ...props.pool.dataProps, termsUrl: undefined },
+                },
+              })}
+            />
+          </Provider>
+        )
+
+        fireEvent.press(getByTestId('EarnDepositConfirmation/AppTermsAndConditions'))
+        expect(AppAnalytics.track).toHaveBeenCalledWith(
+          EarnEvents.earn_deposit_terms_and_conditions_press,
+          { type: 'appTermsAndConditions', ...expectedAnalyticsProperties, providerId: 'beefy' }
+        )
+        expect(mockStore.getActions()).toEqual([openUrl('https://valora.xyz/terms', true)])
+      })
+
+      it('shows loading state and buttons are disabled when deposit is submitted', () => {
+        const mockStore = createMockStore({
+          tokens: { tokenBalances: mockTokenBalances },
+          earn: { depositStatus: 'loading' },
+        })
+        const { getByTestId } = render(
+          <Provider store={mockStore}>
+            <EarnDepositConfirmationScreen
+              {...getMockStackScreenProps(Screens.EarnDepositConfirmationScreen, props)}
+            />
+          </Provider>
+        )
+
+        expect(getByTestId('EarnDepositConfirmation/ConfirmButton')).toBeDisabled()
+        expect(getByTestId('EarnDepositConfirmation/ConfirmButton')).toContainElement(
+          getByTestId('Button/Loading')
+        )
       })
     }
   )
