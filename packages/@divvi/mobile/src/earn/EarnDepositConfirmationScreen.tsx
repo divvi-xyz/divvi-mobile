@@ -30,7 +30,7 @@ import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import TokenIcon from 'src/components/TokenIcon'
 import Touchable from 'src/components/Touchable'
 import { APP_NAME } from 'src/config'
-import { depositTransactionSubmittedSelector } from 'src/earn/selectors'
+import { depositStatusSelector } from 'src/earn/selectors'
 import { depositStart } from 'src/earn/slice'
 import {
   getSwapToAmountInDecimals,
@@ -187,7 +187,8 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
-  const transactionSubmitted = useSelector(depositTransactionSubmittedSelector)
+  const depositStatus = useSelector(depositStatusSelector)
+  const transactionSubmittedAndLoading = depositStatus === 'loading'
   const depositAmount = useDepositAmount(params)
   const commonAnalyticsProperties = useCommonAnalyticsProperties(params, depositAmount.tokenAmount)
   const providerUrl = params.pool.dataProps.manageUrl ?? params.pool.dataProps.termsUrl
@@ -395,9 +396,9 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
           size={BtnSizes.FULL}
           text={t('deposit')}
           accessibilityLabel={t('deposit')}
-          showLoading={transactionSubmitted}
+          showLoading={transactionSubmittedAndLoading}
           onPress={onPressComplete}
-          disabled={transactionSubmitted}
+          disabled={transactionSubmittedAndLoading}
         />
       </ReviewFooter>
 

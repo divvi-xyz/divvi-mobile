@@ -341,7 +341,7 @@ describe('EarnDepositConfirmationScreen', () => {
         expect(getByTestId('EarnDepositConfirmation/ConfirmButton')).toHaveTextContent('deposit')
       })
 
-      it('renders different disclaimer when there is no terms url', () => {
+      it('renders the expected disclaimer when there is no terms url', () => {
         const { getByTestId, getByText } = render(
           <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
             <EarnDepositConfirmationScreen
@@ -365,7 +365,7 @@ describe('EarnDepositConfirmationScreen', () => {
         expect(getByTestId('EarnDepositConfirmation/AppTermsAndConditions')).toBeTruthy()
       })
 
-      it('pressing back button fires analytics event', () => {
+      it('triggers an analytics event when the back button is pressed', () => {
         const { getByTestId } = render(
           <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
             <EarnDepositConfirmationScreen
@@ -433,7 +433,7 @@ describe('EarnDepositConfirmationScreen', () => {
         expect(earnUtils.isGasSubsidizedForNetwork).toHaveBeenCalledWith(fromNetworkId)
       })
 
-      it('pressing complete submits action and fires analytics event', () => {
+      it('submits the action and triggers an analytics event when the complete button is pressed', () => {
         const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
         const { getByTestId } = render(
           <Provider store={mockStore}>
@@ -465,7 +465,7 @@ describe('EarnDepositConfirmationScreen', () => {
         ])
       })
 
-      it('pressing terms and conditions opens the terms and conditions', () => {
+      it('opens the terms and conditions when the terms and conditions button is pressed', () => {
         const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
         const { getByTestId } = render(
           <Provider store={mockStore}>
@@ -483,7 +483,7 @@ describe('EarnDepositConfirmationScreen', () => {
         expect(mockStore.getActions()).toEqual([openUrl('termsUrl', true)])
       })
 
-      it('pressing provider docs opens the providers doc URL (when provider does not have terms and conditions)', () => {
+      it("opens the provider's documentation URL when the provider has no terms and conditions", () => {
         const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
         const { getByTestId } = render(
           <Provider store={mockStore}>
@@ -508,7 +508,7 @@ describe('EarnDepositConfirmationScreen', () => {
         expect(mockStore.getActions()).toEqual([openUrl('https://docs.beefy.finance/', true)])
       })
 
-      it('pressing app terms and conditions opens the app T&C URL (when provider does not have terms and conditions)', () => {
+      it('opens the app T&C URL when the provider has no terms and conditions', () => {
         const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
         const { getByTestId } = render(
           <Provider store={mockStore}>
