@@ -9,7 +9,6 @@ import { ShortcutStatus } from 'src/positions/types'
 import { TokenBalance } from 'src/tokens/slice'
 import { NetworkId } from 'src/transactions/types'
 import {
-  getFeeCurrencyAndAmounts,
   prepareTransactions,
   type PreparedTransactionsPossible,
 } from 'src/viem/prepareTransactions'
@@ -42,7 +41,10 @@ const transactions = [
 ]
 const rewardId = 'claim-reward-0xda7f463c27ec862cfbf2369f3f74c364d050d93f-0.010209368244703615'
 
-jest.mock('src/viem/prepareTransactions')
+jest.mock('src/viem/prepareTransactions', () => ({
+  ...jest.requireActual('src/viem/prepareTransactions'),
+  prepareTransactions: jest.fn(),
+}))
 
 function getMockStoreWithShortcutStatus(
   status: ShortcutStatus,
@@ -307,11 +309,7 @@ describe('usePrepareEnterAmountTransactionsCallback', () => {
   })
 })
 
-describe('useNetworkFee', () => {
-  jest
-    .mocked(getFeeCurrencyAndAmounts)
-    .mockImplementation(jest.requireActual('src/viem/prepareTransactions').getFeeCurrencyAndAmounts)
-
+describe(useNetworkFee, () => {
   it('properly calculates network fee in token and fiat', () => {
     const { result } = renderHook(
       () => useNetworkFee(expectedPrepareTransactionsResult.prepareTransactionsResult),
