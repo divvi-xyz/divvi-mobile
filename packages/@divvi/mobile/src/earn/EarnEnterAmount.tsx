@@ -687,10 +687,14 @@ function TransactionDepositDetails({
           <ReviewDetailsItem
             type="plain-text"
             label={t('earnFlow.enterAmount.swap')}
+            testID="EnterAmountDepositDetails/Swap"
             onInfoPress={() => swapAndDepositBottomSheetRef?.current?.snapToIndex(0)}
             value={
               <View style={styles.depositDetailsSwapValue}>
-                <Text style={styles.depositDetailsSwapValueText}>
+                <Text
+                  style={styles.depositDetailsSwapValueText}
+                  testID="EnterAmountDepositDetails/Swap/From"
+                >
                   <Trans
                     i18nKey="tokenAmount"
                     tOptions={{
@@ -700,7 +704,10 @@ function TransactionDepositDetails({
                   />
                 </Text>
                 <ArrowRightThick size={20} color={Colors.contentPrimary} />
-                <Text style={styles.depositDetailsSwapValueText}>
+                <Text
+                  style={styles.depositDetailsSwapValueText}
+                  testID="EnterAmountDepositDetails/Swap/To"
+                >
                   <Trans
                     i18nKey="tokenAmount"
                     tOptions={{
@@ -758,6 +765,7 @@ function TransactionDepositDetails({
       <ReviewDetailsItem
         type="token-amount"
         label={t('deposit')}
+        testID="EnterAmountDepositDetails/Deposit"
         tokenAmount={depositTokenAmount}
         tokenInfo={depositTokenInfo}
         localAmount={depositLocalAmount}
@@ -769,7 +777,7 @@ function TransactionDepositDetails({
         caption={isGasSubsidized ? t('gasSubsidized') : undefined}
         captionColor={isGasSubsidized ? Colors.accent : undefined}
         strikeThrough={isGasSubsidized}
-        testID="EarnDepositConfirmationFee"
+        testID="EnterAmountDepositDetails/Fee"
         type="token-amount"
         label={swapAppFee || crossChainFee ? t('fees') : t('networkFee')}
         tokenAmount={networkFee.amount}
@@ -785,13 +793,14 @@ function TransactionDepositDetails({
             type="plain-text"
             onInfoPress={() => edtimatedDurationBottomSheetRef.current?.snapToIndex(0)}
             label={t('earnFlow.enterAmount.estimatedDuration')}
+            testID="EnterAmountDepositDetails/EstimatedDuration"
             value={t('swapScreen.transactionDetails.estimatedTransactionTimeInMinutes', {
               minutes: Math.ceil(30 / 60),
             })}
           />
           <InfoBottomSheet
             forwardedRef={edtimatedDurationBottomSheetRef}
-            testID="EstimatedDurationBottomSheet"
+            testID="EnterAmountDepositDetailsDuration/InfoSheet"
             title={t('swapScreen.transactionDetails.estimatedTransactionTime')}
             description={t('swapScreen.transactionDetails.estimatedTransactionTimeInfo')}
           />

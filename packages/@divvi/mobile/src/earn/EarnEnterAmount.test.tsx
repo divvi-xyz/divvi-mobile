@@ -44,9 +44,12 @@ import {
   mockUSDCTokenId,
 } from 'test/values'
 
-jest.mock('src/earn/hooks')
 jest.mock('react-native-localize')
 jest.mock('src/statsig') // for cross chain swap and indirect use in hooksApiSelector
+jest.mock('src/earn/hooks', () => ({
+  ...jest.requireActual('src/earn/hooks'),
+  usePrepareEnterAmountTransactionsCallback: jest.fn(),
+}))
 
 const mockPreparedTransaction: PreparedTransactionsPossible = {
   type: 'possible' as const,
@@ -298,7 +301,7 @@ describe('EarnEnterAmount', () => {
       })
     })
 
-    it('should show tx details and handle navigating to the deposit bottom sheet', async () => {
+    it('should show tx details and handle navigating to the deposit confirmation screen', async () => {
       jest.mocked(usePrepareEnterAmountTransactionsCallback).mockReturnValue({
         prepareTransactionsResult: {
           prepareTransactionsResult: mockPreparedTransaction,
@@ -319,14 +322,16 @@ describe('EarnEnterAmount', () => {
 
       await waitFor(() => expect(getByText('earnFlow.enterAmount.continue')).not.toBeDisabled())
 
-      expect(getByTestId('EarnEnterAmount/Deposit/Crypto')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Deposit/Crypto')).toHaveTextContent('8.00 USDC')
+      expect(getByTestId('EnterAmountDepositDetails/Deposit/Label')).toHaveTextContent('deposit')
+      expect(getByTestId('EnterAmountDepositDetails/Deposit/Value')).toHaveTextContent(
+        'tokenAndLocalAmount, {"tokenAmount":"8.00","localAmount":"10.64","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+      )
 
-      expect(getByTestId('EarnEnterAmount/Deposit/Fiat')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Deposit/Fiat')).toHaveTextContent('₱10.64')
-
-      expect(getByTestId('EarnEnterAmount/Fees')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Fees')).toHaveTextContent('₱0.012')
+      expect(getByTestId('EnterAmountDepositDetails/Fee/InfoIcon')).toBeTruthy()
+      expect(getByTestId('EnterAmountDepositDetails/Fee/Label')).toHaveTextContent('networkFee')
+      expect(getByTestId('EnterAmountDepositDetails/Fee/Value')).toHaveTextContent(
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      )
 
       fireEvent.press(getByText('earnFlow.enterAmount.continue'))
 
@@ -509,7 +514,7 @@ describe('EarnEnterAmount', () => {
       })
     })
 
-    it('should show tx details and handle navigating to the deposit bottom sheet for same-chain swap', async () => {
+    it('should show tx details and handle navigating to the deposit confirmation screen for same-chain swap', async () => {
       jest.mocked(usePrepareEnterAmountTransactionsCallback).mockReturnValue({
         prepareTransactionsResult: {
           prepareTransactionsResult: mockPreparedTransaction,
@@ -530,22 +535,29 @@ describe('EarnEnterAmount', () => {
 
       await waitFor(() => expect(getByText('earnFlow.enterAmount.continue')).not.toBeDisabled())
 
-      expect(getByTestId('EarnEnterAmount/Swap/From')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Swap/From')).toHaveTextContent('0.00041 ETH')
+      expect(getByTestId('EnterAmountDepositDetails/Swap/InfoIcon')).toBeTruthy()
+      expect(getByTestId('EnterAmountDepositDetails/Swap/Label')).toHaveTextContent(
+        'earnFlow.enterAmount.swap'
+      )
+      expect(getByTestId('EnterAmountDepositDetails/Swap/From')).toHaveTextContent(
+        'tokenAmount, {"tokenAmount":"0.00041","tokenSymbol":"ETH"}'
+      )
+      expect(getByTestId('EnterAmountDepositDetails/Swap/To')).toHaveTextContent(
+        'tokenAmount, {"tokenAmount":"1.00","tokenSymbol":"USDC"}'
+      )
 
-      expect(getByTestId('EarnEnterAmount/Swap/To')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Swap/To')).toHaveTextContent('1.00 USDC')
+      expect(getByTestId('EnterAmountDepositDetails/Deposit/Label')).toHaveTextContent('deposit')
+      expect(getByTestId('EnterAmountDepositDetails/Deposit/Value')).toHaveTextContent(
+        'tokenAndLocalAmount, {"tokenAmount":"1.00","localAmount":"1.33","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+      )
 
-      expect(getByTestId('EarnEnterAmount/Deposit/Crypto')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Deposit/Crypto')).toHaveTextContent('1.00 USDC')
+      expect(getByTestId('EnterAmountDepositDetails/Fee/InfoIcon')).toBeTruthy()
+      expect(getByTestId('EnterAmountDepositDetails/Fee/Label')).toHaveTextContent('fees')
+      expect(getByTestId('EnterAmountDepositDetails/Fee/Value')).toHaveTextContent(
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      )
 
-      expect(getByTestId('EarnEnterAmount/Deposit/Fiat')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Deposit/Fiat')).toHaveTextContent('₱1.33')
-
-      expect(getByTestId('EarnEnterAmount/Fees')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Fees')).toHaveTextContent('₱0.012')
-
-      expect(queryByTestId('EarnEnterAmount/Duration')).toBeFalsy()
+      expect(queryByTestId('EnterAmountDepositDetails/EstimatedDuration')).toBeFalsy()
 
       fireEvent.press(getByText('earnFlow.enterAmount.continue'))
 
@@ -578,7 +590,7 @@ describe('EarnEnterAmount', () => {
       })
     })
 
-    it('should show tx details and handle navigating to the deposit bottom sheet for cross-chain swap', async () => {
+    it('should show tx details and handle navigating to the deposit confirmation screen for cross-chain swap', async () => {
       jest
         .mocked(getFeatureGate)
         .mockImplementation(
@@ -607,23 +619,35 @@ describe('EarnEnterAmount', () => {
 
       await waitFor(() => expect(getByText('earnFlow.enterAmount.continue')).not.toBeDisabled())
 
-      expect(getByTestId('EarnEnterAmount/Swap/From')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Swap/From')).toHaveTextContent('0.25 CELO')
+      expect(getByTestId('EnterAmountDepositDetails/Swap/InfoIcon')).toBeTruthy()
+      expect(getByTestId('EnterAmountDepositDetails/Swap/Label')).toHaveTextContent(
+        'earnFlow.enterAmount.swap'
+      )
+      expect(getByTestId('EnterAmountDepositDetails/Swap/From')).toHaveTextContent(
+        'tokenAmount, {"tokenAmount":"0.25","tokenSymbol":"CELO"}'
+      )
+      expect(getByTestId('EnterAmountDepositDetails/Swap/To')).toHaveTextContent(
+        'tokenAmount, {"tokenAmount":"1.00","tokenSymbol":"USDC"}'
+      )
 
-      expect(getByTestId('EarnEnterAmount/Swap/To')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Swap/To')).toHaveTextContent('1.00 USDC')
+      expect(getByTestId('EnterAmountDepositDetails/Deposit/Label')).toHaveTextContent('deposit')
+      expect(getByTestId('EnterAmountDepositDetails/Deposit/Value')).toHaveTextContent(
+        'tokenAndLocalAmount, {"tokenAmount":"1.00","localAmount":"1.33","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+      )
 
-      expect(getByTestId('EarnEnterAmount/Deposit/Crypto')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Deposit/Crypto')).toHaveTextContent('1.00 USDC')
+      expect(getByTestId('EnterAmountDepositDetails/Fee/InfoIcon')).toBeTruthy()
+      expect(getByTestId('EnterAmountDepositDetails/Fee/Label')).toHaveTextContent('fees')
+      expect(getByTestId('EnterAmountDepositDetails/Fee/Value')).toHaveTextContent(
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      )
 
-      expect(getByTestId('EarnEnterAmount/Deposit/Fiat')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Deposit/Fiat')).toHaveTextContent('₱1.33')
-
-      expect(getByTestId('EarnEnterAmount/Fees')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Fees')).toHaveTextContent('₱0.012')
-
-      expect(getByTestId('EarnEnterAmount/Duration')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Duration')).toHaveTextContent('{"minutes":5}')
+      expect(getByTestId('EnterAmountDepositDetails/EstimatedDuration/InfoIcon')).toBeTruthy()
+      expect(getByTestId('EnterAmountDepositDetails/EstimatedDuration/Label')).toHaveTextContent(
+        'earnFlow.enterAmount.estimatedDuration'
+      )
+      expect(getByTestId('EnterAmountDepositDetails/EstimatedDuration/Value')).toHaveTextContent(
+        'swapScreen.transactionDetails.estimatedTransactionTimeInMinutes, {"minutes":1}'
+      )
 
       fireEvent.press(getByText('earnFlow.enterAmount.continue'))
 
@@ -1038,10 +1062,12 @@ describe('EarnEnterAmount', () => {
       networkId: NetworkId['arbitrum-sepolia'],
     })
     // Deposit value should now be decreasedSpendAmount from mockPreparedTransactionDecreaseSpend, which is 1
-    expect(getByTestId('EarnEnterAmount/Deposit/Crypto')).toHaveTextContent('1.00 USDC')
+    expect(getByTestId('EnterAmountDepositDetails/Deposit/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"1.00","localAmount":"1.33","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+    )
   })
 
-  it('should show the FeeDetailsBottomSheet when the user taps the fee details icon', async () => {
+  it('should show the FeeInfoBottomSheet when the user taps the fee details icon', async () => {
     jest.mocked(usePrepareEnterAmountTransactionsCallback).mockReturnValue({
       prepareTransactionsResult: {
         prepareTransactionsResult: mockPreparedTransaction,
@@ -1060,21 +1086,21 @@ describe('EarnEnterAmount', () => {
     )
 
     fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '1')
-    fireEvent.press(getByTestId('LabelWithInfo/FeeLabel'))
-    expect(getByText('earnFlow.enterAmount.feeBottomSheet.feeDetails')).toBeVisible()
-    expect(getByTestId('EstNetworkFee')).toBeTruthy()
-    expect(getByTestId('MaxNetworkFee')).toBeTruthy()
-    expect(queryByTestId('SwapFee')).toBeFalsy()
-    expect(queryByTestId('EstCrossChainFee')).toBeFalsy()
-    expect(queryByTestId('MaxCrossChainFee')).toBeFalsy()
-    expect(getByTestId('EstNetworkFee/Value')).toHaveTextContent('₱0.012 (0.000006 ETH)')
-    expect(getByTestId('MaxNetworkFee/Value')).toHaveTextContent('₱0.012 (0.000006 ETH)')
-    expect(
-      getByText('earnFlow.enterAmount.feeBottomSheet.description, {"context":"deposit"}')
-    ).toBeVisible()
+    fireEvent.press(getByTestId('EnterAmountDepositDetails/Fee'))
+    expect(getByTestId('FeeInfoBottomSheet')).toHaveTextContent('networkFee')
+    expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee/Value')).toHaveTextContent(
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+    expect(queryByTestId('FeeInfoBottomSheet/AppFee')).toBeFalsy()
+    expect(queryByTestId('FeeInfoBottomSheet/EstimatedCrossChainFee')).toBeFalsy()
+    expect(queryByTestId('FeeInfoBottomSheet/MaxCrossChainFee')).toBeFalsy()
+    expect(getByText('feeInfoBottomSheet.feesInfo, {"context":"sameChain"}')).toBeVisible()
   })
 
-  it('should show swap fees on the FeeDetailsBottomSheet when swap transaction is present', async () => {
+  it('should show swap fees on the FeeInfoBottomSheet when swap transaction is present', async () => {
     jest.mocked(usePrepareEnterAmountTransactionsCallback).mockReturnValue({
       prepareTransactionsResult: {
         prepareTransactionsResult: mockPreparedTransaction,
@@ -1093,25 +1119,27 @@ describe('EarnEnterAmount', () => {
     )
 
     fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '1')
-    fireEvent.press(getByTestId('LabelWithInfo/FeeLabel'))
-    expect(getByText('earnFlow.enterAmount.feeBottomSheet.feeDetails')).toBeVisible()
-    expect(getByTestId('EstNetworkFee')).toBeTruthy()
-    expect(getByTestId('MaxNetworkFee')).toBeTruthy()
-    expect(getByTestId('SwapFee')).toBeTruthy()
-    expect(queryByTestId('EstCrossChainFee')).toBeFalsy()
-    expect(queryByTestId('MaxCrossChainFee')).toBeFalsy()
-    expect(getByTestId('EstNetworkFee/Value')).toHaveTextContent('₱0.012 (0.000006 ETH)')
-    expect(getByTestId('MaxNetworkFee/Value')).toHaveTextContent('₱0.012 (0.000006 ETH)')
-    expect(getByTestId('SwapFee/Value')).toHaveTextContent('₱0.008 (0.006 USDC)')
+    fireEvent.press(getByTestId('EnterAmountDepositDetails/Fee'))
+    expect(getByTestId('FeeInfoBottomSheet')).toHaveTextContent('fees')
+    expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee/Value')).toHaveTextContent(
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('FeeInfoBottomSheet/AppFee/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"0.006","localAmount":"0.008","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+    )
+    expect(queryByTestId('FeeInfoBottomSheet/EstimatedCrossChainFee')).toBeFalsy()
+    expect(queryByTestId('FeeInfoBottomSheet/MaxCrossChainFee')).toBeFalsy()
     expect(
       getByText(
-        'earnFlow.enterAmount.feeBottomSheet.description, {"context":"depositSwapFee","appFeePercentage":"0.6"}'
+        'feeInfoBottomSheet.feesInfo, {"context":"sameChainWithAppFee","appFeePercentage":"0.6"}'
       )
     ).toBeVisible()
-    expect(getByTestId('FeeDetailsBottomSheet/GotIt')).toBeVisible()
   })
 
-  it('should show swap and cross chain fees on the FeeDetailsBottomSheet when cross chain swap transaction is present', async () => {
+  it('should show swap and cross chain fees on the FeeInfoBottomSheet when cross chain swap transaction is present', async () => {
     jest.mocked(usePrepareEnterAmountTransactionsCallback).mockReturnValue({
       prepareTransactionsResult: {
         prepareTransactionsResult: mockPreparedTransaction,
@@ -1130,24 +1158,28 @@ describe('EarnEnterAmount', () => {
     )
 
     fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '1')
-    fireEvent.press(getByTestId('LabelWithInfo/FeeLabel'))
-    expect(getByText('earnFlow.enterAmount.feeBottomSheet.feeDetails')).toBeVisible()
-    expect(getByTestId('EstNetworkFee')).toBeTruthy()
-    expect(getByTestId('MaxNetworkFee')).toBeTruthy()
-    expect(getByTestId('SwapFee')).toBeTruthy()
-    expect(getByTestId('EstCrossChainFee')).toBeTruthy()
-    expect(getByTestId('MaxCrossChainFee')).toBeTruthy()
-    expect(getByTestId('EstNetworkFee/Value')).toHaveTextContent('₱0.012 (0.000006 ETH)')
-    expect(getByTestId('MaxNetworkFee/Value')).toHaveTextContent('₱0.012 (0.000006 ETH)')
-    expect(getByTestId('SwapFee/Value')).toHaveTextContent('₱0.008 (0.006 USDC)')
-    expect(getByTestId('EstCrossChainFee/Value')).toHaveTextContent('₱1.00 (0.0005 ETH)')
-    expect(getByTestId('MaxCrossChainFee/Value')).toHaveTextContent('₱2.00 (0.001 ETH)')
+    fireEvent.press(getByTestId('EnterAmountDepositDetails/Fee'))
+    expect(getByTestId('FeeInfoBottomSheet')).toHaveTextContent('fees')
+    expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee/Value')).toHaveTextContent(
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('FeeInfoBottomSheet/AppFee/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"0.006","localAmount":"0.008","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('FeeInfoBottomSheet/EstimatedCrossChainFee/Value')).toHaveTextContent(
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.0005","localAmount":"1.00","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('FeeInfoBottomSheet/MaxCrossChainFee/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"0.001","localAmount":"2.00","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
     expect(
       getByText(
-        'earnFlow.enterAmount.feeBottomSheet.description, {"context":"depositCrossChainWithSwapFee","appFeePercentage":"0.6"}'
+        'feeInfoBottomSheet.feesInfo, {"context":"crossChainWithAppFee","appFeePercentage":"0.6"}'
       )
     ).toBeVisible()
-    expect(getByTestId('FeeDetailsBottomSheet/GotIt')).toBeVisible()
   })
 
   it('should display swap bottom sheet when the user taps the swap details icon', async () => {
@@ -1169,14 +1201,12 @@ describe('EarnEnterAmount', () => {
     )
 
     fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '1')
-    fireEvent.press(getByTestId('LabelWithInfo/SwapLabel'))
-    expect(getByText('earnFlow.enterAmount.swapBottomSheet.swapDetails')).toBeVisible()
-    expect(getByTestId('SwapTo')).toBeTruthy()
-    expect(getByTestId('SwapFrom')).toBeTruthy()
-    expect(getByTestId('SwapTo/Value')).toBeTruthy()
-    expect(getByTestId('SwapFrom/Value')).toBeTruthy()
-    expect(getByText('earnFlow.enterAmount.swapBottomSheet.whySwap')).toBeVisible()
-    expect(getByText('earnFlow.enterAmount.swapBottomSheet.swapDescription')).toBeVisible()
-    expect(getByTestId('SwapDetailsBottomSheet/GotIt')).toBeVisible()
+    fireEvent.press(getByTestId('EnterAmountDepositDetails/Swap'))
+    expect(getByText('earnFlow.swapAndDepositInfoSheet.title')).toBeVisible()
+    expect(getByTestId('SwapAndDepositInfoSheet/SwapFrom')).toBeTruthy()
+    expect(getByTestId('SwapAndDepositInfoSheet/SwapTo')).toBeTruthy()
+    expect(getByText('earnFlow.swapAndDepositInfoSheet.whySwap')).toBeVisible()
+    expect(getByText('earnFlow.swapAndDepositInfoSheet.swapDescription')).toBeVisible()
+    expect(getByTestId('SwapAndDepositInfoSheet/DismissButton')).toBeVisible()
   })
 })
