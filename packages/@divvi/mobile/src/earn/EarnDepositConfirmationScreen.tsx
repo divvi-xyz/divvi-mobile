@@ -303,7 +303,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
         crossChainFee={crossChainFee}
         footerDisclaimer={
           <Trans
-            i18nKey="earnFlow.depositConfirmation.description"
+            i18nKey="earnFlow.enterAmount.feeBottomSheet.description"
             context={
               swapAppFee
                 ? crossChainFee

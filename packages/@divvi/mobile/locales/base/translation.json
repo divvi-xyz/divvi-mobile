@@ -2644,12 +2644,7 @@
       "into": "Into",
       "pool": "{{providerName}} Pool",
       "yieldRate": "{{apy}}% est. yield rate",
-      "swapAndDeposit": "Swap & Deposit",
-      "description_deposit": "The network fee is required by the network to process the deposit transaction.",
-      "description_withdraw": "The network fee is required by the network to process the withdrawal transaction.",
-      "description_depositSwapFee": "The network fee is required by the network to process the deposit transactions. The {{appName}} fee of {{appFeePercentage}}% is charged for your use of our product.",
-      "description_depositCrossChain": "The network fee is required by the network to process the deposit transaction. The cross-chain fee is charged by the cross-chain provider.",
-      "description_depositCrossChainWithSwapFee": "The network fee is required by the network to process the deposit transactions. The {{appName}} fee of {{appFeePercentage}}% is charged for your use of our product. The cross-chain fee is charged by the cross-chain provider."
+      "swapAndDeposit": "Swap & Deposit"
     },
     "swapAndDepositInfoSheet": {
       "title": "Swap Details",

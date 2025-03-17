@@ -180,7 +180,7 @@ describe('EarnDepositConfirmationScreen', () => {
         'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
       totalFeesValue: 'localAmountApprox, {"localAmount":"133.01","localCurrencySymbol":"₱"}',
       feesBottomSheetDisclaimerText:
-        'earnFlow.depositConfirmation.description, {"context":"deposit"}',
+        'earnFlow.enterAmount.feeBottomSheet.description, {"context":"deposit"}',
     },
     {
       testName: 'same chain swap & deposit',
@@ -203,7 +203,7 @@ describe('EarnDepositConfirmationScreen', () => {
       totalFeesValue:
         'tokenAndLocalAmountApprox, {"tokenAmount":"100.00","localAmount":"133.01","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
       feesBottomSheetDisclaimerText:
-        'earnFlow.depositConfirmation.description, {"context":"depositSwapFee","appFeePercentage":"0.6"}',
+        'earnFlow.enterAmount.feeBottomSheet.description, {"context":"depositSwapFee","appFeePercentage":"0.6"}',
     },
     {
       testName: 'cross chain swap & deposit',
@@ -226,7 +226,7 @@ describe('EarnDepositConfirmationScreen', () => {
       totalFeesValue:
         'tokenAndLocalAmountApprox, {"tokenAmount":"100.00","localAmount":"133.00","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
       feesBottomSheetDisclaimerText:
-        'earnFlow.depositConfirmation.description, {"context":"depositCrossChainWithSwapFee","appFeePercentage":"0.6"}',
+        'earnFlow.enterAmount.feeBottomSheet.description, {"context":"depositCrossChainWithSwapFee","appFeePercentage":"0.6"}',
     },
   ])(
     '$testName',
