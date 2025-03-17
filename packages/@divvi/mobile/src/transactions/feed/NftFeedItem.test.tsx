@@ -1,6 +1,7 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import React from 'react'
 import { Provider } from 'react-redux'
+import { getAppConfig } from 'src/appConfig'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { RootState } from 'src/redux/reducers'
@@ -8,7 +9,7 @@ import NftFeedItem from 'src/transactions/feed/NftFeedItem'
 import { Fee, NetworkId, TokenTransactionTypeV2, TransactionStatus } from 'src/transactions/types'
 import networkConfig from 'src/web3/networkConfig'
 import { RecursivePartial, createMockStore } from 'test/utils'
-import { mockAccount, mockNftAllFields } from 'test/values'
+import { mockAccount, mockAppConfig, mockNftAllFields } from 'test/values'
 
 const MOCK_TX_HASH = '0x006b866d20452a24d1d90c7514422188cc7c5d873e2f1ed661ec3f810ad5331c'
 
@@ -89,5 +90,13 @@ describe('NftFeedItem', () => {
       nfts: [mockNftAllFields],
       networkId: NetworkId['celo-alfajores'],
     })
+  })
+
+  it('renders nothing if disableNfts is set', () => {
+    jest
+      .mocked(getAppConfig)
+      .mockReturnValueOnce({ ...mockAppConfig, experimental: { disableNfts: true } })
+    const { toJSON } = renderScreen({})
+    expect(toJSON()).toBeNull()
   })
 })

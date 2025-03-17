@@ -72,7 +72,7 @@ const APP_ID_TO_PROVIDER_DOCUMENTS_URL: Record<string, string | undefined> = {
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnDepositConfirmationScreen>
 
-export function useDepositAmount(params: Props['route']['params']) {
+function useDepositAmount(params: Props['route']['params']) {
   const { inputTokenAmount, mode, swapTransaction, pool } = params
   const tokenAmount =
     mode === 'swap-deposit' && swapTransaction
@@ -88,7 +88,7 @@ export function useDepositAmount(params: Props['route']['params']) {
   }
 }
 
-export function useNetworkFee(
+function useNetworkFee(
   preparedTransaction: PreparedTransactionsPossible
 ): SwapFeeAmount & { localAmount: BigNumber } {
   const networkFee = getFeeCurrencyAndAmounts(preparedTransaction)
@@ -102,7 +102,7 @@ export function useNetworkFee(
   }
 }
 
-export function useSwapAppFee({
+function useSwapAppFee({
   swapTransaction,
   inputTokenInfo,
   inputTokenAmount,
@@ -123,7 +123,7 @@ export function useSwapAppFee({
   }
 }
 
-export function useCrossChainFee({
+function useCrossChainFee({
   swapTransaction,
   inputTokenInfo,
   preparedTransaction,
@@ -162,10 +162,7 @@ export function useCrossChainFee({
   }, [swapTransaction, preparedTransaction, crossChainFeeCurrency, inputTokenInfo])
 }
 
-export function useCommonAnalyticsProperties(
-  params: Props['route']['params'],
-  depositAmount: BigNumber
-) {
+function useCommonAnalyticsProperties(params: Props['route']['params'], depositAmount: BigNumber) {
   return useMemo(
     () => ({
       providerId: params.pool.appId,
@@ -411,7 +408,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
         crossChainFee={crossChainFee}
         footerDisclaimer={
           <Trans
-            i18nKey="earnFlow.depositConfirmation.description"
+            i18nKey="earnFlow.enterAmount.feeBottomSheet.description"
             context={
               swapAppFee
                 ? crossChainFee

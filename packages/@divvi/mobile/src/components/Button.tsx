@@ -1,6 +1,7 @@
 import { debounce } from 'lodash'
 import React, { ReactElement, ReactNode, useCallback } from 'react'
 import { ActivityIndicator, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 import Touchable from 'src/components/Touchable'
 import Colors, { ColorValue } from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
@@ -84,7 +85,7 @@ export default React.memo(function Button(props: ButtonProps) {
   return (
     <View style={getStyleForWrapper(size, style)}>
       {/* these Views cannot be combined as it will cause ripple to not respect the border radius */}
-      <View style={[styles.containRipple, styles.rounded]}>
+      <BackgroundContainer backgroundColor={backgroundColor}>
         <Touchable
           onPress={debouncedOnPress}
           disabled={disabled}
@@ -117,10 +118,31 @@ export default React.memo(function Button(props: ButtonProps) {
             </>
           )}
         </Touchable>
-      </View>
+      </BackgroundContainer>
     </View>
   )
 })
+
+function BackgroundContainer({
+  children,
+  backgroundColor,
+}: {
+  children: ReactNode
+  backgroundColor: ColorValue | ColorValue[]
+}) {
+  return Array.isArray(backgroundColor) ? (
+    <LinearGradient
+      colors={backgroundColor}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={[styles.containRipple, styles.rounded]}
+    >
+      {children}
+    </LinearGradient>
+  ) : (
+    <View style={[styles.containRipple, styles.rounded]}>{children}</View>
+  )
+}
 
 const styles = StyleSheet.create({
   // on android Touchable Provides a ripple effect, by itself it does not respect the border radius on Touchable
@@ -182,7 +204,7 @@ function getColors(type: BtnTypes, disabled: boolean | undefined) {
 
 function getStyle(
   size: BtnSizes | undefined,
-  backgroundColor: ColorValue,
+  backgroundColor: ColorValue | ColorValue[],
   opacity: number | undefined,
   borderColor: ColorValue | undefined,
   iconPositionLeft: boolean
@@ -197,7 +219,7 @@ function getStyle(
   const commonStyles: ViewStyle = {
     ...styles.button,
     ...borderStyles,
-    backgroundColor,
+    backgroundColor: Array.isArray(backgroundColor) ? undefined : backgroundColor,
     opacity,
     flexDirection: iconPositionLeft ? 'row' : 'row-reverse',
   }

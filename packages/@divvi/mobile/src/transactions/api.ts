@@ -1,6 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { getAppConfig } from 'src/appConfig'
 import { type LocalCurrencyCode } from 'src/localCurrency/consts'
-import { FEED_V2_INCLUDE_TYPES, type PageInfo, type TokenTransaction } from 'src/transactions/types'
+import {
+  FEED_V2_INCLUDE_TYPES,
+  FEED_V2_INCLUDE_TYPES_NO_NFT,
+  type PageInfo,
+  type TokenTransaction,
+} from 'src/transactions/types'
 import networkConfig from 'src/web3/networkConfig'
 import { getSupportedNetworkIds } from 'src/web3/utils'
 
@@ -27,12 +33,15 @@ export const transactionFeedV2Api = createApi({
       }
     >({
       query: ({ address, localCurrencyCode, endCursor: afterCursor }) => {
+        const includeTypes = getAppConfig().experimental?.disableNfts
+          ? FEED_V2_INCLUDE_TYPES_NO_NFT
+          : FEED_V2_INCLUDE_TYPES
         return {
           url: '',
           params: {
             address,
             networkIds: getSupportedNetworkIds().join(','),
-            includeTypes: FEED_V2_INCLUDE_TYPES.join(','),
+            includeTypes: includeTypes.join(','),
             localCurrencyCode,
             ...(afterCursor && { afterCursor }),
           },
