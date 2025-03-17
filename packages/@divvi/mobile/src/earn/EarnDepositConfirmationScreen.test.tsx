@@ -1,29 +1,20 @@
 /* eslint-disable jest/no-conditional-expect */
-import { fireEvent, render, renderHook, within } from '@testing-library/react-native'
+import { fireEvent, render, within } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
-import EarnDepositConfirmationScreen, {
-  useCommonAnalyticsProperties,
-  useCrossChainFee,
-  useDepositAmount,
-  useNetworkFee,
-  useSwapAppFee,
-} from 'src/earn/EarnDepositConfirmationScreen'
+import EarnDepositConfirmationScreen from 'src/earn/EarnDepositConfirmationScreen'
 import * as earnUtils from 'src/earn/utils'
 import { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import type { PreparedTransactionsPossible } from 'src/public'
 import { NETWORK_NAMES } from 'src/shared/conts'
-import { getSerializableTokenBalance, getTokenBalance } from 'src/tokens/utils'
+import { getSerializableTokenBalance } from 'src/tokens/utils'
 import { NetworkId } from 'src/transactions/types'
-import {
-  getPreparedTransactionsPossible,
-  getSerializablePreparedTransactionsPossible,
-} from 'src/viem/preparedTransactionSerialization'
+import { getSerializablePreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
 import { createMockStore, getMockStackScreenProps } from 'test/utils'
 import {
   mockAccount,
@@ -148,12 +139,6 @@ const mockCrossChainProps: StackParamList[Screens.EarnDepositConfirmationScreen]
   } as any,
 }
 
-const HookWrapper = (component: any) => (
-  <Provider store={createMockStore({ tokens: { tokenBalances: mockTokenBalances } })}>
-    {component?.children ? component.children : component}
-  </Provider>
-)
-
 describe('EarnDepositConfirmationScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -167,14 +152,7 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount: '100',
       fromTokenId: mockArbUsdcTokenId,
       depositTokenAmount: '100',
-      depositLocalAmount: '133',
       swapType: undefined,
-      tokenNetworkFeeAmount: '0.000006',
-      localNetworkFeeAmount: '0.01197',
-      tokenMaxNetworkFeeAmount: '0.000006',
-      swapAppFeeAmount: undefined,
-      crossChainFeeAmount: undefined,
-      crossChainMaxFeeAmount: undefined,
       feesLabel: 'networkFee',
       feesValue:
         'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
@@ -187,14 +165,7 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount: '0.041',
       fromTokenId: mockArbEthTokenId,
       depositTokenAmount: '99.999',
-      depositLocalAmount: '132.99867',
       swapType: 'same-chain',
-      tokenNetworkFeeAmount: '0.000006',
-      localNetworkFeeAmount: '0.01197',
-      tokenMaxNetworkFeeAmount: '0.000006',
-      swapAppFeeAmount: '0.000246',
-      crossChainFeeAmount: undefined,
-      crossChainMaxFeeAmount: undefined,
       feesLabel: 'fees',
       feesValue:
         'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
@@ -208,14 +179,7 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount: '0.041',
       fromTokenId: mockCeloTokenId,
       depositTokenAmount: '99.999',
-      depositLocalAmount: '132.99867',
       swapType: 'cross-chain',
-      tokenNetworkFeeAmount: '0.000006',
-      localNetworkFeeAmount: '0.0001057418295357891176266032',
-      tokenMaxNetworkFeeAmount: '0.000006',
-      swapAppFeeAmount: '0.000246',
-      crossChainFeeAmount: '5e-20',
-      crossChainMaxFeeAmount: '1e-19',
       feesLabel: 'fees',
       feesValue:
         'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.00011","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
@@ -230,14 +194,7 @@ describe('EarnDepositConfirmationScreen', () => {
       fromTokenAmount,
       fromTokenId,
       depositTokenAmount,
-      depositLocalAmount,
       swapType,
-      tokenNetworkFeeAmount,
-      localNetworkFeeAmount,
-      tokenMaxNetworkFeeAmount,
-      swapAppFeeAmount,
-      crossChainFeeAmount,
-      crossChainMaxFeeAmount,
       feesLabel,
       feesValue,
       totalFeesValue,
@@ -253,63 +210,6 @@ describe('EarnDepositConfirmationScreen', () => {
         swapType,
         fromNetworkId,
       }
-
-      it('useDepositAmount properly calculates deposit amount in token and fiat', () => {
-        const { result } = renderHook(() => useDepositAmount(props), { wrapper: HookWrapper })
-        expect(result.current.tokenAmount.toString()).toEqual(depositTokenAmount)
-        expect(result.current.localAmount?.toString()).toEqual(depositLocalAmount)
-      })
-
-      it('useNetworkFee properly calculates network fee in token and fiat', () => {
-        const { result } = renderHook(
-          () => useNetworkFee(getPreparedTransactionsPossible(props.preparedTransaction)),
-          { wrapper: HookWrapper }
-        )
-        expect(result.current.amount.toString()).toEqual(tokenNetworkFeeAmount)
-        expect(result.current.localAmount?.toString()).toEqual(localNetworkFeeAmount)
-        expect(result.current.maxAmount?.toString()).toEqual(tokenMaxNetworkFeeAmount)
-      })
-
-      it('useSwapAppFee properly calculates swap app fee in token and fiat', () => {
-        const { result } = renderHook(
-          () =>
-            useSwapAppFee({
-              inputTokenAmount: new BigNumber(props.inputTokenAmount),
-              inputTokenInfo: getTokenBalance(props.inputTokenInfo),
-              swapTransaction: props.swapTransaction,
-            }),
-          { wrapper: HookWrapper }
-        )
-        expect(result.current?.amount.toString()).toEqual(swapAppFeeAmount)
-        expect(result.current?.percentage?.toString()).toEqual(
-          props.swapTransaction?.appFeePercentageIncludedInPrice
-        )
-      })
-
-      it('useCrossChainFee properly calculates cross chain fee in token and fiat', () => {
-        const { result } = renderHook(
-          () =>
-            useCrossChainFee({
-              inputTokenInfo: getTokenBalance(props.inputTokenInfo),
-              preparedTransaction: getPreparedTransactionsPossible(props.preparedTransaction),
-              swapTransaction: props.swapTransaction,
-            }),
-          { wrapper: HookWrapper }
-        )
-        expect(result.current?.amount.toString()).toEqual(crossChainFeeAmount)
-        expect(result.current?.maxAmount?.toString()).toEqual(crossChainMaxFeeAmount)
-      })
-
-      it('useCommonAnalyticsProperties properly formats common analytics properties', () => {
-        const { result: depositTokenAmount } = renderHook(() => useDepositAmount(props), {
-          wrapper: HookWrapper,
-        })
-        const { result } = renderHook(
-          () => useCommonAnalyticsProperties(props, depositTokenAmount.current.tokenAmount),
-          { wrapper: HookWrapper }
-        )
-        expect(result.current).toEqual(expectedAnalyticsProperties)
-      })
 
       it('renders proper structure', () => {
         const { getByTestId } = render(
