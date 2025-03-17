@@ -13,6 +13,7 @@ const config: KnipConfig = {
         'build:plugin', // used in postinstall script
       ],
       ignoreDependencies: [
+        '@actions/github', // used in workflows
         '@semantic-release/commit-analyzer', // imported by multi-semantic-release
         '@semantic-release/github', // imported by multi-semantic-release
         '@semantic-release/npm', // imported by multi-semantic-release
@@ -47,31 +48,20 @@ const config: KnipConfig = {
       entry: ['index.js!', 'metro-config.js!', './scripts/**/*.js'],
       project: ['src/**/*.ts!', 'src/**/*.tsx!', 'src/**/*.js!'],
       ignoreDependencies: [
-        '@actions/github',
-        'babel-plugin-module-resolver', // used in babel.config.js to build. not imported, so knip doesn't understand it is used
         'babel-jest',
-        'jest-circus',
         'jest-html-reporter',
         'jest-junit',
         'jest-snapshot',
-        'lint-staged', // pre-commit hook
-        'lokijs', // walletconnect e2e tests requires
-        'react-devtools', // application profiling
-        'react-native-version',
         'react-native-kill-packager',
-        'remote-redux-devtools', // for easy debugging with Flipper
         'typescript-json-schema', // helps manage redux state migrations
+        'ts-node', // used in workflows run by github actions from the example app dir
         '@types/jest',
-        'husky',
         '@tsconfig/node-lts', // used in plugin/tsconfig.json
-        'react-native-flipper',
-        'redux-flipper',
       ],
       ignore: [
         'src/redux/reducersForSchemaGeneration.ts', // used for root state schema generation
         'src/analytics/docs.ts', // documents analytics events, no references
         'src/account/__mocks__/Persona.tsx', // unit test mocks
-        'src/setupE2eEnv.e2e.ts', // e2e test setup
       ],
     },
   },

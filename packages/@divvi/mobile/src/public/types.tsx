@@ -121,6 +121,8 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
           iris?: ImageSourcePropType
         }
         backupAndRecoveryImages?: {
+          // TODO: consider renaming these to be more descriptive or switch to
+          // color parameterized svgs that are set based on theme colors
           walletSafe?: ImageSourcePropType
           cloudBackupEmail?: ImageSourcePropType
           recoveryPhraseEducation1?: ImageSourcePropType
@@ -242,6 +244,8 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
         }
       }
     }
+    disableNfts?: boolean
+    hideCashInTokenFilters?: boolean
   }
 
   divviProtocol?: {
