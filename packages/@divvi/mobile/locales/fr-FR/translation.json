@@ -406,10 +406,10 @@
   "amountCelo": "Montant (CELO)",
   "onlyCeloDollars": "cUSD seulement",
   "onlyCelo": "CELO uniquement",
-  "celoDollar": "Celo Dollar",
-  "celoEuro": "Celo Euro",
+  "celoDollar": "Dollar Celo",
+  "celoEuro": "Euro Celo",
   "celoReal": "Celo Real",
-  "celoDollars": "Celo Dollars",
+  "celoDollars": "Dollars Celo",
   "ether": "Ether",
   "tapToCopyCeloDollarsAddress": "Appuyez pour copier votre adresse cUSD {{appName}}",
   "disclaimerFiat": "Les valeurs {{currency}} sont des estimations.",
@@ -425,12 +425,12 @@
   "fundingEducationDialog": {
     "title": "Créditer votre {{appName}}",
     "body": "Pour approvisionner votre portefeuille {{appName}} , achetez votre actif préféré auprès de l'un des fournisseurs tiers disponibles dans votre pays. Pour plus d'informations, consultez <0>{{link}}</0>",
-    "dismiss": "OK"
+    "dismiss": "Ok"
   },
   "cashOutEducationDialog": {
     "title": "Retirer de {{appName}}",
     "body": "Pour retirer votre solde {{appName}}, vendez l'actif souhaité auprès de l'un des fournisseurs tiers disponibles dans votre pays. Pour plus d'informations, consultez <0>{{link}}</0>",
-    "dismiss": "OK"
+    "dismiss": "Ok"
   },
   "explanationModal": {
     "title": "À propos des prestataires",
@@ -439,7 +439,7 @@
   "invalidAmountDialog": {
     "minAmount": "Nos prestataires ne prennent pas en charge les montants inférieurs à {{usdLimit}}{{localLimit}}. Veuillez saisir un montant plus élevé.",
     "maxAmount": "Nos prestataires ne prennent pas en charge les montants supérieurs à {{usdLimit}}{{localLimit}}. Veuillez saisir un montant moins élevé.",
-    "dismiss": "OK"
+    "dismiss": "Ok"
   },
   "providerFeesDialog": {
     "title": "Frais du prestataire",
@@ -491,7 +491,7 @@
   "tip": "Conseil :",
   "warning": "Avertissement",
   "downloadRewards": "Télécharger les Récompenses Celo",
-  "wallet": "Wallet",
+  "wallet": "Portefeuille",
   "send": "Envoyer",
   "search": "Rechercher",
   "namePhoneAddress": "Nom, téléphone ou adresse",
@@ -541,7 +541,7 @@
   "balanceAvailable": "<0></0> disponibles",
   "subtotal": "Sous-total",
   "total": "Total",
-  "totalInDollars": "Celo Dollars @ <0></0>",
+  "totalInDollars": "Dollars Celo @ <0></0>",
   "totalInEuros": "Celo Euro @ <0></0>",
   "totalInCelo": "Celo @ <0></0>",
   "totalInToken": "<0></0> @ <1></1>",
@@ -1371,7 +1371,7 @@
     "dappPositions": "DeFi"
   },
   "open": "Ouvrir",
-  "nftViewer": "NFT Viewer",
+  "nftViewer": "Visionneuse NFT",
   "whatTotalValue": {
     "title": "Que signifie Solde total ?",
     "body": "Votre Solde total est un montant approximatif de toutes les valeurs que vous détenez sur {{appName}}. Votre Solde total changera en fonction de la fluctuation des prix. Il est mis à jour toutes les 10 minutes.\nCertains actifs ne peuvent pas être affichés dans le Solde total si leur prix n'est pas disponible au moment du calcul.",
@@ -2361,6 +2361,9 @@
     "discover": {
       "tabName": "Découvrir",
       "title": "Découvrez le Web3"
+    },
+    "earn": {
+      "tabName": "Gagner"
     }
   },
   "jumpstartStatus": {
@@ -2633,6 +2636,21 @@
       "myPools": "Mes pools",
       "explore": "Découvrir Open"
     },
+    "depositConfirmation": {
+      "title": "Dépôt de bilan",
+      "depositing": "Dépôt",
+      "into": "Dans",
+      "pool": "{{providerName}} Piscine",
+      "yieldRate": "{{apy}}% taux de rendement est.",
+      "swapAndDeposit": "Échange et dépôt"
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Informations de l'échange",
+      "swapFrom": "Échanger de",
+      "swapTo": "Échanger pour",
+      "whySwap": "Pourquoi est-ce que je fais un swap ?",
+      "swapDescription": "Pour déposer des fonds dans le pool, votre jeton est converti en jeton de pool."
+    },
     "depositBottomSheet": {
       "title": "Vérifier et déposer",
       "description": "Avant de faire un dépôt dans un pool Aave, consultez les détails de la transaction ci-dessous",
@@ -2725,7 +2743,8 @@
       "percentage": "{{percentage}} %",
       "poweredBy": "Propulsé par {{providerName}}",
       "deposited": "Fourni",
-      "depositAndEarnings": "Dépôt et gains"
+      "depositAndEarnings": "Dépôt et gains",
+      "safety": "Sécurité"
     },
     "poolFilters": {
       "allPools": "Tous les pools",
@@ -2849,13 +2868,33 @@
     "totalPlusFees": "Total plus frais",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
+  "maxNetworkFee": "Frais de réseau maximum",
+  "estimatedNetworkFee": "Estimation des frais de réseau",
+  "fees": "Frais",
+  "appFee": "Frais de {{appName}}",
+  "estimatedCrossChainFee": "Estimation des frais inter-chaînes",
+  "maxCrossChainFee": "Frais inter-chaînes maximums",
+  "bottomSheetDismissButton": "J'ai compris",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "Prix non disponible",
   "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount_noFiatPrice": "{{tokenAmount}} {{tokenSymbol}}",
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "moreInformation": "Plus d'informations",
+  "breakdown": "Répartition",
+  "gasSubsidized": "Les frais sont couverts pour une durée limitée",
+  "feeInfoBottomSheet": {
+    "feesInfo_sameChain": "Les frais de réseau sont exigés par le réseau pour traiter la transaction.",
+    "feesInfo_crossChain": "Les frais de réseau sont exigés par le réseau pour traiter la transaction. Les frais cross chain sont facturés par le fournisseur de la cross chain.",
+    "feesInfo_sameChainWithAppFee": "Les frais de réseau sont exigés par le réseau pour traiter la transaction. Les frais de {{appName}} de {{appFeePercentage}}% sont facturés pour l'utilisation de notre produit.",
+    "feesInfo_crossChainWithAppFee": "Les frais de réseau sont exigés par le réseau pour traiter la transaction. Les frais de cross chain sont facturés par le fournisseur de la cross chain. Les frais de {{appName}} de {{appFeePercentage}}% sont facturés pour l'utilisation de notre produit."
+  },
   "demoMode": {
     "confirmEnter": {
       "title": "Mode démo",
