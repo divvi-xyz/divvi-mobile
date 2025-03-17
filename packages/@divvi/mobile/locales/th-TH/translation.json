@@ -2359,6 +2359,9 @@
     "discover": {
       "tabName": "สำรวจ",
       "title": "สำรวจ"
+    },
+    "earn": {
+      "tabName": "Earn"
     }
   },
   "jumpstartStatus": {
@@ -2631,6 +2634,21 @@
       "myPools": "พูลของฉัน",
       "explore": "สำรวจที่เปิดอยู่"
     },
+    "depositConfirmation": {
+      "title": "Review Deposit",
+      "depositing": "Depositing",
+      "into": "Into",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% est. yield rate",
+      "swapAndDeposit": "Swap & Deposit"
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Swap Details",
+      "swapFrom": "Swap From",
+      "swapTo": "Swap To",
+      "whySwap": "Why am I swapping?",
+      "swapDescription": "To deposit funds into the pool, your token is being swapped into a pool token."
+    },
     "depositBottomSheet": {
       "title": "ตรวจสอบและฝากเงิน",
       "description": "ก่อนฝากสินทรัพย์เข้าพูล Aave โปรดตรวจสอบรายละเอียดธุรกรรมที่ด้านล่าง",
@@ -2723,7 +2741,8 @@
       "percentage": "{{percentage}}%",
       "poweredBy": "ดำเนินการโดย {{providerName}}",
       "deposited": "ที่เข้าร่วม",
-      "depositAndEarnings": "ฝากเงินและสร้างรายได้"
+      "depositAndEarnings": "ฝากเงินและสร้างรายได้",
+      "safety": "Safety"
     },
     "poolFilters": {
       "allPools": "พูลทั้งหมด",
@@ -2847,13 +2866,33 @@
     "totalPlusFees": "Total Plus Fees",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
+  "maxNetworkFee": "Max Network Fee",
+  "estimatedNetworkFee": "Estimated Network Fee",
+  "fees": "Fees",
+  "appFee": "{{appName}} Fee",
+  "estimatedCrossChainFee": "Estimated cross-chain fees",
+  "maxCrossChainFee": "Max cross-chain fees",
+  "bottomSheetDismissButton": "Got it",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "ไม่มีราคา",
   "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount_noFiatPrice": "$t(tokenAmount)",
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ $t(tokenAmount)",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "moreInformation": "More information",
+  "breakdown": "Breakdown",
+  "gasSubsidized": "Fees are covered for a limited time",
+  "feeInfoBottomSheet": {
+    "feesInfo_sameChain": "The network fee is required by the network to process the transaction.",
+    "feesInfo_crossChain": "The network fee is required by the network to process the transaction. The cross-chain fee is charged by the cross-chain provider.",
+    "feesInfo_sameChainWithAppFee": "The network fee is required by the network to process the transaction. The {{appName}} fee of {{appFeePercentage}}% is charged for your use of our product.",
+    "feesInfo_crossChainWithAppFee": "The network fee is required by the network to process the transaction. The cross-chain fee is charged by the cross-chain provider. The {{appName}} fee of {{appFeePercentage}}% is charged for your use of our product."
+  },
   "demoMode": {
     "confirmEnter": {
       "title": "Demo Mode",
