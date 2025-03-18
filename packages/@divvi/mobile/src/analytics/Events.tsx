@@ -666,6 +666,7 @@ export enum EarnEvents {
   earn_withdraw_submit_error = 'earn_withdraw_submit_error',
   earn_withdraw_submit_cancel = 'earn_withdraw_submit_cancel',
   earn_withdraw_add_gas_press = 'earn_withdraw_add_gas_press',
+  earn_withdraw_provider_info_press = 'earn_withdraw_provider_info_press',
   earn_info_learn_press = 'earn_info_learn_press',
   earn_info_earn_press = 'earn_info_earn_press',
   earn_home_learn_more_press = 'earn_home_learn_more_press',

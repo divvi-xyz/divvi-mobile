@@ -1650,6 +1650,7 @@ interface EarnEventsProperties {
   }
   [EarnEvents.earn_withdraw_submit_cancel]: EarnWithdrawProperties
   [EarnEvents.earn_withdraw_add_gas_press]: EarnCommonProperties & { gasTokenId: string }
+  [EarnEvents.earn_withdraw_provider_info_press]: EarnWithdrawProperties
   [EarnEvents.earn_info_learn_press]: undefined
   [EarnEvents.earn_info_earn_press]: undefined
   [EarnEvents.earn_home_learn_more_press]: undefined
