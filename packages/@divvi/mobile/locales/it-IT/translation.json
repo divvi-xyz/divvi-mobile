@@ -406,8 +406,8 @@
   "amountCelo": "Importo (CELO)",
   "onlyCeloDollars": "Solo cUSD",
   "onlyCelo": "Solo CELO",
-  "celoDollar": "Celo Dollar",
-  "celoEuro": "Celo Euro",
+  "celoDollar": "Dollaro Celo",
+  "celoEuro": "Euro CELO",
   "celoReal": "Celo Real",
   "celoDollars": "Celo Dollar",
   "ether": "Ether",
@@ -819,8 +819,8 @@
     "guideDescription": "{{biometryType}} rende più facile, veloce e sicuro collegare il tuo wallet a dapps e firmare transazioni."
   },
   "biometryType": {
-    "FaceID": "Face ID",
-    "TouchID": "Touch ID",
+    "FaceID": "Riconoscimento facciale",
+    "TouchID": "Riconoscimento impronte digitali",
     "Fingerprint": "Riconoscimento impronta digitale",
     "Face": "Riconoscimento facciale",
     "Iris": "Riconoscimento dell'iride"
@@ -1360,7 +1360,7 @@
     "titleRamp": "Aggiungi {{currency}} per iniziare a usare {{appName}}",
     "subtitleRamp": "Aggiungi fondi con commissioni basse tramite uno dei nostri provider esterni."
   },
-  "balances": "Assets",
+  "balances": "Asset",
   "totalBalanceWithLocalCurrencySymbol": "Totale {{localCurrencySymbol}}{{totalBalance}}",
   "totalValue": "Saldo totale",
   "viewBalances": "Visualizza asset",
@@ -1371,7 +1371,7 @@
     "dappPositions": "Asset DeFi"
   },
   "open": "Apri",
-  "nftViewer": "NFT Viewer",
+  "nftViewer": "Visualizzatore NFT",
   "whatTotalValue": {
     "title": "Cosa significa saldo totale?",
     "body": "Il tuo saldo totale è una somma approssimativa di tutti i tuoi asset {{appName}}. Il tuo saldo totale varia con l'oscillazione dei prezzi. Viene aggiornato ogni 10 minuti.\nAlcuni asset potrebbero non essere visualizzati nel saldo totale perché il prezzo non è disponibile al momento del calcolo.",
@@ -2361,6 +2361,9 @@
     "discover": {
       "tabName": "Scopri",
       "title": "Esplora il web3"
+    },
+    "earn": {
+      "tabName": "Guadagna"
     }
   },
   "jumpstartStatus": {
@@ -2633,6 +2636,23 @@
       "myPools": "I miei pool",
       "explore": "Esplora aperti"
     },
+    "depositConfirmation": {
+      "title": "Recensione Deposito",
+      "depositing": "Deposito",
+      "into": "Into",
+      "pool": "{{providerName}} Piscina",
+      "yieldRate": "{{apy}}% tasso di rendimento stimato",
+      "swapAndDeposit": "Scambio e deposito",
+      "disclaimer": "Depositando criptovalute in un pool {{providerName}}, accetti i rischi associati all'utilizzo di {{providerName}}. <0>Termini e condizioni</0>",
+      "noTermsUrlDisclaimer": "Sei responsabile delle tue azioni in {{appName}}. {{appName}} declina ogni responsabilità per le tue attività o interazioni con {{providerName}}. Puoi consultare i documenti di {{providerName}} <0>qui</0> e i nostri Termini e Condizioni <1>qui</1>."
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Dettagli swap",
+      "swapFrom": "Scambia da",
+      "swapTo": "Scambia a",
+      "whySwap": "Perché uno swap?",
+      "swapDescription": "Per depositare fondi nel pool, il tuo token viene scambiato con un token del pool."
+    },
     "depositBottomSheet": {
       "title": "Rivedi e deposita",
       "description": "Prima di effettuare depositi in un pool Aave, consulta i dettagli della transazione in basso",
@@ -2725,7 +2745,8 @@
       "percentage": "{{percentage}}%",
       "poweredBy": "Powered by {{providerName}}",
       "deposited": "Forniti",
-      "depositAndEarnings": "Deposito e guadagni"
+      "depositAndEarnings": "Deposito e guadagni",
+      "safety": "Sicurezza"
     },
     "poolFilters": {
       "allPools": "Tutti i pool",
@@ -2849,13 +2870,34 @@
     "totalPlusFees": "Totale più tasse",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
+  "maxNetworkFee": "Commissione di rete massima",
+  "estimatedNetworkFee": "Commissione di rete stimata",
+  "fees": "Commissioni",
+  "appFee": "Commissione di {{appName}}",
+  "estimatedCrossChainFee": "Commissioni stimate cross-chain",
+  "maxCrossChainFee": "Commissioni massime cross-chain",
+  "bottomSheetDismissButton": "Ho capito",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "Prezzo non disponibile",
   "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount_noFiatPrice": "$t(tokenAmount)",
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ $t(tokenAmount)",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "moreInformation": "Ulteriori informazioni",
+  "breakdown": "Breakdown",
+  "gasSubsidized": "Le spese sono coperte per un periodo di tempo limitato",
+  "deposit": "Deposito",
+  "feeInfoBottomSheet": {
+    "feesInfo_sameChain": "La commissione di rete viene richiesta dalla rete per elaborare la transazione.",
+    "feesInfo_crossChain": "La commissione di rete viene richiesta dalla rete per elaborare la transazione. La commissione cross-chain viene addebitata dal provider della cross-chain.",
+    "feesInfo_sameChainWithAppFee": "La commissione di rete viene richiesta dalla rete per elaborare la transazione. La commissione di {{appName}} del {{appFeePercentage}}% viene addebitata per l'utilizzo del nostro prodotto.",
+    "feesInfo_crossChainWithAppFee": "La commissione di rete viene richiesta dalla rete per elaborare la transazione. La commissione cross-chain viene addebitata dal provider della cross-chain. La commissione di {{appName}} del {{appFeePercentage}}% viene addebitata per l'utilizzo del nostro prodotto."
+  },
   "demoMode": {
     "confirmEnter": {
       "title": "Modalità demo",
