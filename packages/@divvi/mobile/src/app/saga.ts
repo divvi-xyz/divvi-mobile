@@ -96,7 +96,7 @@ export function* appInit() {
   const language = yield* select(currentLanguageSelector)
   const bestLanguage = findBestLanguageTag(Object.keys(locales))?.languageTag
   const appConfig = yield* call(getAppConfig)
-  const allowOtaTranslations = appConfig.experimental?.otaTranslationsConfig !== undefined
+  const allowOtaTranslations = appConfig.experimental?.otaTranslations !== undefined
 
   yield* all([
     call([AppAnalytics, 'init']),

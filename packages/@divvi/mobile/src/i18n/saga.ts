@@ -18,7 +18,7 @@ const TAG = 'i18n/saga'
 
 export function* handleFetchOtaTranslations() {
   const appConfig = yield* call(getAppConfig)
-  const otaTranslationsConfig = appConfig.experimental?.otaTranslationsConfig
+  const otaTranslationsConfig = appConfig.experimental?.otaTranslations
   if (otaTranslationsConfig === undefined) {
     Logger.debug(`${TAG}@handleFetchOtaTranslations`, 'OTA translations disabled')
     return

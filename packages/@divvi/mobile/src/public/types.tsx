@@ -246,7 +246,7 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     }
     disableNfts?: boolean
     hideCashInTokenFilters?: boolean
-    otaTranslationsConfig?: {
+    otaTranslations?: {
       crowdinDistributionHash: string
     }
   }

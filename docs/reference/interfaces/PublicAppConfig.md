@@ -173,13 +173,13 @@ optional enableBiometry: boolean;
 optional protectWallet: boolean;
 ```
 
-#### otaTranslationsConfig?
+#### otaTranslations?
 
 ```ts
-optional otaTranslationsConfig: object;
+optional otaTranslations: object;
 ```
 
-##### otaTranslationsConfig.crowdinDistributionHash
+##### otaTranslations.crowdinDistributionHash
 
 ```ts
 crowdinDistributionHash: string
