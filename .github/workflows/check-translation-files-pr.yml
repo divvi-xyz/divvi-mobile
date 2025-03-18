@@ -3,8 +3,8 @@ name: Check translation files
 on:
   workflow_dispatch:
   # Run on pull request and merge queue
-  # pull_request:
-  # merge_group:
+  pull_request:
+  merge_group:
 
 # Cancel any in progress run of the workflow for a given PR
 # This avoids building outdated code
@@ -22,11 +22,9 @@ jobs:
         uses: tj-actions/changed-files@v45
         with:
           files: |
-            locales/*/translation.json
-            ios/MobileStack/*.lproj/InfoPlist.strings
+            packages/@divvi/mobile/locales/*/translation.json
           files_ignore: |
-            locales/base/translation.json
-            ios/MobileStack/Base.lproj/InfoPlist.strings
+            packages/@divvi/mobile/locales/base/translation.json
       - name: Fail if translation files are changed
         if: ${{ (github.event_name != 'merge_group') && (github.head_ref != 'l10n/main') && (steps.changed-files.outputs.any_changed == 'true') }}
         run: |
