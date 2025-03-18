@@ -52,7 +52,7 @@ describe('i18n sagas', () => {
     const defaultProviders: (EffectProviders | StaticProvider)[] = [
       [
         call(getAppConfig),
-        { experimental: { otaTranslationsConfig: { crowdinDistributionHash: 'hash' } } },
+        { experimental: { otaTranslations: { crowdinDistributionHash: 'hash' } } },
       ],
       [select(otaTranslationsAppVersionSelector), appVersion],
       [select(otaTranslationsLanguageSelector), 'en-US'],

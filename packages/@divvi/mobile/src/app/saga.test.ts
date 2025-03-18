@@ -558,7 +558,7 @@ describe('appInit', () => {
   const defaultProviders: (EffectProviders | StaticProvider)[] = [
     [
       call(getAppConfig),
-      { experimental: { otaTranslationsConfig: { crowdinDistributionHash: 'hash' } } },
+      { experimental: { otaTranslations: { crowdinDistributionHash: 'hash' } } },
     ],
     [select(otaTranslationsAppVersionSelector), '1'],
     [select(currentLanguageSelector), 'nl-NL'],
