@@ -2361,6 +2361,9 @@
     "discover": {
       "tabName": "Entdecken",
       "title": "Entdecke das Web3"
+    },
+    "earn": {
+      "tabName": "Verdienen"
     }
   },
   "jumpstartStatus": {
@@ -2633,6 +2636,23 @@
       "myPools": "Meine Pools",
       "explore": "Offen erforschen"
     },
+    "depositConfirmation": {
+      "title": "Überprüfung Kaution",
+      "depositing": "Einzahlen",
+      "into": "In",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% geschätzter Ausbeutesatz",
+      "swapAndDeposit": "Tausch und Einzahlung",
+      "disclaimer": "Indem du Krypto in einen {{providerName}}-Pool einzahlst, akzeptierst du die Risiken, die mit der Nutzung von {{providerName}} verbunden sind. <0>Allgemeine Nutzungsbedingungen</0>",
+      "noTermsUrlDisclaimer": "Du bist für deine Handlungen in {{appName}} verantwortlich. {{appName}} lehnt jede Verantwortung für dein Vermögen oder deine Interaktionen mit {{providerName}} ab. Du kannst die Dokumente von {{providerName}} <0>hier</0> und unsere allgemeinen Geschäftsbedingungen <1>hier</1> einsehen."
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Swap-Details",
+      "swapFrom": "Tausch von",
+      "swapTo": "Tausch zu",
+      "whySwap": "Weshalb tausche ich?",
+      "swapDescription": "Um Guthaben in den Pool einzuzahlen, wird dein Token in einen Pool-Token getauscht."
+    },
     "depositBottomSheet": {
       "title": "Überprüfen und einzahlen",
       "description": "Bevor du eine Einzahlung in einen Aave-Pool vornimmst, solltest du die folgenden Transaktionsdetails überprüfen",
@@ -2725,7 +2745,8 @@
       "percentage": "{{percentage}} %",
       "poweredBy": "Unterstützt von {{providerName}}",
       "deposited": "Bereitgestellt",
-      "depositAndEarnings": "Einzahlungen und Verdienste"
+      "depositAndEarnings": "Einzahlungen und Verdienste",
+      "safety": "Sicherheit"
     },
     "poolFilters": {
       "allPools": "Alle Pools",
@@ -2849,13 +2870,34 @@
     "totalPlusFees": "Gesamt plus Gebühren",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
+  "maxNetworkFee": "Maximale Netzwerkgebühr",
+  "estimatedNetworkFee": "Geschätzte Netzwerkgebühr",
+  "fees": "Gebühren",
+  "appFee": "{{appName}}-Gebühr",
+  "estimatedCrossChainFee": "Geschätzte Chain-übergreifende Gebühren",
+  "maxCrossChainFee": "Maximale Chain-übergreifende Gebühren",
+  "bottomSheetDismissButton": "Verstanden",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "Preis nicht verfügbar",
   "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount_noFiatPrice": "{{tokenAmount}} {{tokenSymbol}}",
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "moreInformation": "Weitere Informationen",
+  "breakdown": "Zusammenfassung",
+  "gasSubsidized": "Die Gebühren werden für eine begrenzte Zeit übernommen",
+  "deposit": "Einzahlung",
+  "feeInfoBottomSheet": {
+    "feesInfo_sameChain": "Das Netzwerk verlangt eine Netzwerkgebühr, damit es die Transaktion verarbeiten kann.",
+    "feesInfo_crossChain": "Das Netzwerk verlangt eine Netzwerkgebühr, damit es die Transaktion verarbeiten kann. Die Cross-Chain-Gebühr wird vom Cross-Chain-Anbieter erhoben.",
+    "feesInfo_sameChainWithAppFee": "Das Netzwerk verlangt eine Netzwerkgebühr, damit es die Transaktion verarbeiten kann. Die {{appName}}-Gebühr von {{appFeePercentage}} % wird für deine Nutzung unseres Produkts erhoben.",
+    "feesInfo_crossChainWithAppFee": "Das Netzwerk verlangt eine Netzwerkgebühr, damit es die Transaktion verarbeiten kann. Die Cross-Chain-Gebühr wird vom Cross-Chain-Anbieter erhoben. Die {{appName}}-Gebühr von {{appFeePercentage}} % wird für deine Nutzung unseres Produkts erhoben."
+  },
   "demoMode": {
     "confirmEnter": {
       "title": "Demo-Modus",
