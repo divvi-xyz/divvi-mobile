@@ -1,3 +1,4 @@
+import { getAppConfig } from 'src/appConfig'
 import type { FiatAccountSchemaCountryOverrides } from 'src/fiatconnect/types'
 import {
   StatsigDynamicConfigs,
@@ -7,14 +8,18 @@ import {
 } from 'src/statsig/types'
 import { NetworkId } from 'src/transactions/types'
 
+const appConfig = getAppConfig()
+
 export const FeatureGates = {
-  [StatsigFeatureGates.SHOW_POSITIONS]: true,
+  [StatsigFeatureGates.SHOW_POSITIONS]: appConfig.experimental?.showPositions ?? true,
   [StatsigFeatureGates.SHOW_CLAIM_SHORTCUTS]: true,
   [StatsigFeatureGates.ALLOW_HOOKS_PREVIEW]: true,
   [StatsigFeatureGates.APP_REVIEW]: false,
-  [StatsigFeatureGates.SHOW_IMPORT_TOKENS_FLOW]: true,
+  [StatsigFeatureGates.SHOW_IMPORT_TOKENS_FLOW]:
+    appConfig.experimental?.showImportTokensFlow ?? true,
   [StatsigFeatureGates.SAVE_CONTACTS]: false,
-  [StatsigFeatureGates.SHOW_SWAP_TOKEN_FILTERS]: true,
+  [StatsigFeatureGates.SHOW_SWAP_TOKEN_FILTERS]:
+    appConfig.experimental?.showSwapTokenFilters ?? true,
   [StatsigFeatureGates.SHUFFLE_SWAP_TOKENS_ORDER]: false,
   [StatsigFeatureGates.SHOW_NFT_CELEBRATION]: false,
   [StatsigFeatureGates.SHOW_NFT_REWARD]: false,
