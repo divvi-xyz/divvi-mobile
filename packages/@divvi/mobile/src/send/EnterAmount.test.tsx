@@ -163,7 +163,7 @@ describe('EnterAmount', () => {
     expect(getByTestId('SendEnterAmount/ExchangeAmount')).toBeTruthy()
     expect(getByTestId('SendEnterAmount/AmountOptions')).toBeTruthy()
     expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('POOF')
-    expect(queryByTestId('SendEnterAmount/FeeLabel')).toBeFalsy()
+    expect(queryByTestId('SendEnterAmount/NetworkFee')).toBeFalsy()
     expect(getByTestId('SendEnterAmount/ReviewButton')).toBeDisabled()
 
     // simulate that the keyboard is dismissed
@@ -769,7 +769,12 @@ describe('EnterAmount', () => {
     expect(getByTestId('SendEnterAmount/MaxAmountWarning')).toBeTruthy()
     expect(queryByTestId('SendEnterAmount/NotEnoughForGasWarning')).toBeFalsy()
     expect(getByTestId('SendEnterAmount/ReviewButton')).toBeDisabled()
-    expect(getByTestId('SendEnterAmount/FeeInCrypto')).toBeTruthy()
+    expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
+    expect(getByTestId('SendEnterAmount/NetworkFee/InfoIcon')).toBeTruthy()
+    expect(getByTestId('SendEnterAmount/NetworkFee/Label')).toHaveTextContent('networkFee')
+    expect(getByTestId('SendEnterAmount/NetworkFee/Value')).toHaveTextContent(
+      `tokenAndLocalAmountApprox, {"tokenAmount":"1.00","localAmount":"0.67","tokenSymbol":"CELO","localCurrencySymbol":"₱"}`
+    )
   })
 
   it('able to press Review when prepareTransactionsResult is type possible (input in token)', () => {
@@ -794,9 +799,11 @@ describe('EnterAmount', () => {
     expect(queryByTestId('SendEnterAmount/MaxAmountWarning')).toBeFalsy()
     expect(queryByTestId('SendEnterAmount/NotEnoughForGasWarning')).toBeFalsy()
     expect(getByTestId('SendEnterAmount/ReviewButton')).toBeEnabled()
-    expect(queryByTestId('SendEnterAmount/FeePlaceholder')).toBeFalsy()
-    expect(getByTestId('SendEnterAmount/FeeInCrypto')).toHaveTextContent(
-      `${APPROX_SYMBOL} 0.006 CELO(₱0.004)`
+    expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
+    expect(getByTestId('SendEnterAmount/NetworkFee/InfoIcon')).toBeTruthy()
+    expect(getByTestId('SendEnterAmount/NetworkFee/Label')).toHaveTextContent('networkFee')
+    expect(getByTestId('SendEnterAmount/NetworkFee/Value')).toHaveTextContent(
+      `tokenAndLocalAmountApprox, {"tokenAmount":"0.006","localAmount":"0.004","tokenSymbol":"CELO","localCurrencySymbol":"₱"}`
     )
     fireEvent.press(getByTestId('SendEnterAmount/ReviewButton'))
     expect(onPressProceedSpy).toHaveBeenCalledTimes(1)
@@ -831,9 +838,11 @@ describe('EnterAmount', () => {
     expect(queryByTestId('SendEnterAmount/MaxAmountWarning')).toBeFalsy()
     expect(queryByTestId('SendEnterAmount/NotEnoughForGasWarning')).toBeFalsy()
     expect(getByTestId('SendEnterAmount/ReviewButton')).toBeEnabled()
-    expect(queryByTestId('SendEnterAmount/FeePlaceholder')).toBeFalsy()
-    expect(getByTestId('SendEnterAmount/FeeInCrypto')).toHaveTextContent(
-      `${APPROX_SYMBOL} 0.006 CELO(₱0.004)`
+    expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
+    expect(getByTestId('SendEnterAmount/NetworkFee/InfoIcon')).toBeTruthy()
+    expect(getByTestId('SendEnterAmount/NetworkFee/Label')).toHaveTextContent('networkFee')
+    expect(getByTestId('SendEnterAmount/NetworkFee/Value')).toHaveTextContent(
+      `tokenAndLocalAmountApprox, {"tokenAmount":"0.006","localAmount":"0.004","tokenSymbol":"CELO","localCurrencySymbol":"₱"}`
     )
     fireEvent.press(getByTestId('SendEnterAmount/ReviewButton'))
     expect(onPressProceedSpy).toHaveBeenCalledTimes(1)
@@ -857,7 +866,7 @@ describe('EnterAmount', () => {
         <EnterAmount {...defaultParams} tokens={tokens} />
       </Provider>
     )
-    expect(queryByTestId('SendEnterAmount/Fee')).toBeFalsy()
+    expect(queryByTestId('SendEnterAmount/NetworkFee')).toBeFalsy()
     expect(
       getByText(
         'tokenEnterAmount.tokenDescription, {"tokenName":"CELO","tokenNetwork":"Celo Alfajores"}'
@@ -913,7 +922,7 @@ describe('EnterAmount', () => {
         </Provider>
       )
 
-      expect(queryByTestId('SendEnterAmount/Fee')).toBeFalsy()
+      expect(queryByTestId('SendEnterAmount/NetworkFee')).toBeFalsy()
     })
     it('does not show fee if input greater than balance', () => {
       const store = createMockStore(mockStore)
@@ -925,7 +934,7 @@ describe('EnterAmount', () => {
       )
 
       fireEvent.changeText(getByTestId('SendEnterAmount/TokenAmountInput'), '100')
-      expect(queryByTestId('SendEnterAmount/Fee')).toBeFalsy()
+      expect(queryByTestId('SendEnterAmount/NetworkFee')).toBeFalsy()
     })
     it('does not show fee if prepare transactions result is not possible', () => {
       const store = createMockStore(mockStore)
@@ -943,7 +952,7 @@ describe('EnterAmount', () => {
       )
 
       fireEvent.changeText(getByTestId('SendEnterAmount/TokenAmountInput'), '1')
-      expect(queryByTestId('SendEnterAmount/Fee')).toBeFalsy()
+      expect(queryByTestId('SendEnterAmount/NetworkFee')).toBeFalsy()
     })
     it('shows fee amount if available', () => {
       const store = createMockStore(mockStore)
@@ -958,8 +967,11 @@ describe('EnterAmount', () => {
       )
 
       fireEvent.changeText(getByTestId('SendEnterAmount/TokenAmountInput'), '1')
-      expect(getByTestId('SendEnterAmount/FeeInCrypto')).toHaveTextContent(
-        `${APPROX_SYMBOL} 0.006 CELO`
+      expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
+      expect(getByTestId('SendEnterAmount/NetworkFee/InfoIcon')).toBeTruthy()
+      expect(getByTestId('SendEnterAmount/NetworkFee/Label')).toHaveTextContent('networkFee')
+      expect(getByTestId('SendEnterAmount/NetworkFee/Value')).toHaveTextContent(
+        `tokenAndLocalAmountApprox, {"tokenAmount":"0.006","localAmount":"0.004","tokenSymbol":"CELO","localCurrencySymbol":"₱"}`
       )
     })
     it('shows review button loading spinner if prepare transactions loading is true', () => {

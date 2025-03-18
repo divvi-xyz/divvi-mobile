@@ -159,11 +159,16 @@ export function usePrepareEarnConfirmationScreenTransactions(
 }
 
 export function useNetworkFee(
-  preparedTransaction: PreparedTransactionsResult
-): SwapFeeAmount & { localAmount: BigNumber } {
+  preparedTransaction: PreparedTransactionsResult | undefined
+): (SwapFeeAmount & { localAmount: BigNumber }) | undefined {
   const networkFee = getFeeCurrencyAndAmounts(preparedTransaction)
   const estimatedNetworkFee = networkFee.estimatedFeeAmount ?? new BigNumber(0)
   const localAmount = useTokenToLocalAmount(estimatedNetworkFee, networkFee.feeCurrency?.tokenId)
+
+  if (!preparedTransaction) {
+    return undefined
+  }
+
   return {
     amount: estimatedNetworkFee,
     maxAmount: networkFee.maxFeeAmount ?? new BigNumber(0),

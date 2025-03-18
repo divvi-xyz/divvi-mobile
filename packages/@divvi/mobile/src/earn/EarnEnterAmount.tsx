@@ -673,7 +673,7 @@ function TransactionDepositDetails({
     prepareTransactionsResult.type === 'possible' &&
     isGasSubsidizedForNetwork(prepareTransactionsResult.feeCurrency.networkId)
 
-  if (!networkFee.maxAmount || !networkFee.token) {
+  if (!networkFee?.maxAmount || !networkFee.token) {
     return null
   }
 

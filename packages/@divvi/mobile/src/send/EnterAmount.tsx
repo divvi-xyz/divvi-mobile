@@ -9,28 +9,30 @@ import { SendEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
 import { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes } from 'src/components/Button'
+import FeeInfoBottomSheet from 'src/components/FeeInfoBottomSheet'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
 import KeyboardAwareScrollView from 'src/components/KeyboardAwareScrollView'
-import { LabelWithInfo } from 'src/components/LabelWithInfo'
+import { ReviewDetailsItem } from 'src/components/ReviewTransaction'
 import TokenBottomSheet, {
   TokenBottomSheetProps,
   TokenPickerOrigin,
 } from 'src/components/TokenBottomSheet'
-import TokenDisplay from 'src/components/TokenDisplay'
 import TokenEnterAmount, {
   FETCH_UPDATED_TRANSACTIONS_DEBOUNCE_TIME_MS,
   useEnterAmount,
 } from 'src/components/TokenEnterAmount'
 import CustomHeader from 'src/components/header/CustomHeader'
+import { useNetworkFee } from 'src/earn/hooks'
+import { LocalCurrencySymbol } from 'src/localCurrency/consts'
+import { getLocalCurrencySymbol } from 'src/localCurrency/selectors'
 import { useSelector } from 'src/redux/hooks'
 import EnterAmountOptions from 'src/send/EnterAmountOptions'
 import { AmountEnteredIn } from 'src/send/types'
-import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import { TokenBalance } from 'src/tokens/slice'
-import { PreparedTransactionsResult, getFeeCurrencyAndAmounts } from 'src/viem/prepareTransactions'
+import { PreparedTransactionsResult } from 'src/viem/prepareTransactions'
 
 export interface ProceedArgs {
   tokenAmount: BigNumber
@@ -111,10 +113,11 @@ export default function EnterAmount({
   const [token, setToken] = useState<TokenBalance>(() => defaultToken ?? tokens[0])
   const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null)
   const feeCurrencies = useSelector((state) => feeCurrenciesSelector(state, token.networkId))
-  const { maxFeeAmount, feeCurrency } = getFeeCurrencyAndAmounts(prepareTransactionsResult)
-  const { tokenId: feeTokenId } = feeCurrency ?? feeCurrencies[0]
+  const networkFee = useNetworkFee(prepareTransactionsResult)
+  const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
 
   const inputRef = useRef<RNTextInput>(null)
+  const feeInfoBottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const tokenBottomSheetRef = useRef<BottomSheetModalRefType>(null)
 
   const {
@@ -230,32 +233,21 @@ export default function EnterAmount({
             onOpenTokenPicker={tokenSelectionDisabled ? undefined : onOpenTokenPicker}
           />
 
-          {!!maxFeeAmount && !!amount && (
-            <View style={styles.feeContainer} testID="SendEnterAmount/Fee">
-              <LabelWithInfo
-                label={t('sendEnterAmountScreen.networkFeeV1_97')}
-                labelStyle={{ color: Colors.contentSecondary }}
-                testID="SendEnterAmount/FeeLabel"
-                style={styles.feeLabelContainer}
+          {prepareTransactionsResult?.type !== 'not-enough-balance-for-gas' && !!networkFee && (
+            <View style={styles.feeContainer}>
+              <ReviewDetailsItem
+                approx
+                testID="SendEnterAmount/NetworkFee"
+                type="token-amount"
+                label={t('networkFee')}
+                tokenAmount={networkFee.amount}
+                localAmount={networkFee.localAmount}
+                tokenInfo={networkFee.token}
+                localCurrencySymbol={localCurrencySymbol}
+                onInfoPress={() => feeInfoBottomSheetRef.current?.snapToIndex(0)}
               />
-              <View testID="SendEnterAmount/FeeInCrypto" style={styles.feeInCryptoContainer}>
-                <TokenDisplay
-                  showApprox
-                  showLocalAmount={false}
-                  style={styles.feeValue}
-                  tokenId={feeTokenId}
-                  amount={maxFeeAmount}
-                />
-                <Text style={styles.feeValue}>
-                  {'('}
-                  <TokenDisplay
-                    tokenId={feeTokenId}
-                    amount={maxFeeAmount}
-                    style={styles.feeValue}
-                  />
-                  {')'}
-                </Text>
-              </View>
+
+              <FeeInfoBottomSheet forwardedRef={feeInfoBottomSheetRef} networkFee={networkFee} />
             </View>
           )}
         </View>
@@ -355,27 +347,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   feeContainer: {
-    marginVertical: Spacing.Thick24,
-    gap: Spacing.Smallest8,
-    flexDirection: 'row',
-  },
-  feeLabelContainer: {
-    flex: 0,
-    alignItems: 'flex-start',
-  },
-  feeInCryptoContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    gap: Spacing.Tiny4,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-end',
-  },
-  feeValue: {
-    ...typeScale.bodyMedium,
-    color: Colors.contentSecondary,
-    flexWrap: 'wrap',
-    textAlign: 'right',
+    marginVertical: Spacing.Regular16,
   },
   reviewButton: {
     paddingTop: Spacing.Thick24,
