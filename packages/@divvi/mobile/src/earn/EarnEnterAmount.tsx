@@ -678,10 +678,7 @@ function TransactionDepositDetails({
   }
 
   return (
-    <View
-      testID="EnterAmountDepositDetails"
-      style={{ gap: Spacing.Smallest8, marginVertical: Spacing.Regular16 }}
-    >
+    <View testID="EnterAmountDepositDetails" style={styles.enterAmountDepositDetails}>
       {swapTransaction && (
         <>
           <ReviewDetailsItem
@@ -1101,5 +1098,9 @@ const styles = StyleSheet.create({
   },
   depositDetailsSwapValueText: {
     ...typeScale.bodyMedium,
+  },
+  enterAmountDepositDetails: {
+    gap: Spacing.Smallest8,
+    marginVertical: Spacing.Regular16,
   },
 })
