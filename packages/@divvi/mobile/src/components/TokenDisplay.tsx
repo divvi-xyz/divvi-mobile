@@ -43,6 +43,12 @@ interface Props {
   errorFallback?: string
 }
 
+/**
+ * @deprecated Use the following translation lines instead:
+ * - `t('tokenAmount')` for token amount only
+ * - `t('localAmount')` for fiat amount only
+ * - `t('tokenAndLocalAmount')` for token and local amounts
+ */
 function TokenDisplay({
   amount,
   tokenId,
