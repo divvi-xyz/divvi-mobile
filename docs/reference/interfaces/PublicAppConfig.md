@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:251](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L251)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:258](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L258)
 
 #### protocolIds
 
@@ -173,10 +173,40 @@ optional enableBiometry: boolean;
 optional protectWallet: boolean;
 ```
 
+#### otaTranslations?
+
+```ts
+optional otaTranslations: object;
+```
+
+##### otaTranslations.crowdinDistributionHash
+
+```ts
+crowdinDistributionHash: string
+```
+
 #### phoneNumberVerification?
 
 ```ts
 optional phoneNumberVerification: boolean;
+```
+
+#### showImportTokensFlow?
+
+```ts
+optional showImportTokensFlow: boolean;
+```
+
+#### showPositions?
+
+```ts
+optional showPositions: boolean;
+```
+
+#### showSwapTokenFilters?
+
+```ts
+optional showSwapTokenFilters: boolean;
 ```
 
 #### tokens?

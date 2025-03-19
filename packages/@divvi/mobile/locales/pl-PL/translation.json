@@ -1375,7 +1375,7 @@
     "dappPositions": "Pozycje dapp"
   },
   "open": "Otwórz",
-  "nftViewer": "NFT Viewer",
+  "nftViewer": "Przeglądarka NFT",
   "whatTotalValue": {
     "title": "Co oznacza termin „saldo całkowite”?",
     "body": "Twoje saldo całkowite to przybliżona suma wszystkich Twoich aktywów w aplikacji {{appName}}. Saldo całkowite będzie się zmieniać wraz z wahaniami cen. Jest ono aktualizowane co 10 minut.\nNiektóre aktywa mogą nie być widoczne w Saldzie całkowitym, ponieważ ich cena jest niedostępna w momencie obliczania salda.",
@@ -2365,6 +2365,9 @@
     "discover": {
       "tabName": "Odkryj",
       "title": "Odkryj"
+    },
+    "earn": {
+      "tabName": "Zarabiaj"
     }
   },
   "jumpstartStatus": {
@@ -2637,6 +2640,23 @@
       "myPools": "Moje pule",
       "explore": "Przeglądaj otwarte"
     },
+    "depositConfirmation": {
+      "title": "Przegląd depozytu",
+      "depositing": "Deponowanie",
+      "into": "Do środka",
+      "pool": "{{providerName}} Basen",
+      "yieldRate": "{{apy}}% est. stopa zwrotu",
+      "swapAndDeposit": "Wymiana i wpłata",
+      "disclaimer": "Wpłacając kryptowaluty do puli {{providerName}}, akceptujesz ryzyko związane z korzystaniem z {{providerName}}. <0>Warunki</0>",
+      "noTermsUrlDisclaimer": "Ponosisz odpowiedzialność za swoje działania w aplikacji {{appName}}. Producent aplikacji {{appName}} zrzeka się wszelkiej odpowiedzialności za Twoje aktywa lub interakcje z dostawcą {{providerName}}. Możesz zapoznać się z dokumentami dostawcy {{providerName}} <0>tutaj</0>, a naszymi warunkami <1>tutaj</1>."
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Dane wymiany",
+      "swapFrom": "Zamień z",
+      "swapTo": "Zamień na",
+      "whySwap": "Dlaczego dokonuję wymiany?",
+      "swapDescription": "Aby można było wpłacić środki do puli, token jest wymieniany na token puli."
+    },
     "depositBottomSheet": {
       "title": "Przegląd i wpłata",
       "description": "Przed dokonaniem wpłaty do puli Aave zapoznaj się z poniższymi szczegółami transakcji",
@@ -2729,7 +2749,8 @@
       "percentage": "{{percentage}}%",
       "poweredBy": "Obsługiwane przez {{providerName}}",
       "deposited": "Dostarczone",
-      "depositAndEarnings": "Wpłaty i zarobki"
+      "depositAndEarnings": "Wpłaty i zarobki",
+      "safety": "Bezpieczeństwo"
     },
     "poolFilters": {
       "allPools": "Wszystkie pule",
@@ -2853,13 +2874,34 @@
     "totalPlusFees": "Razem plus opłaty",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
+  "maxNetworkFee": "Maksymalna opłata sieciowa",
+  "estimatedNetworkFee": "Szacowana opłata sieciowa",
+  "fees": "Opłaty",
+  "appFee": "Opłata w aplikacji {{appName}}",
+  "estimatedCrossChainFee": "Szacowane opłaty cross-chain",
+  "maxCrossChainFee": "Maksymalne opłaty cross-chain",
+  "bottomSheetDismissButton": "Rozumiem",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "Cena niedostępna",
   "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount_noFiatPrice": "$t(tokenAmount)",
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ $t(tokenAmount)",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "moreInformation": "Więcej informacji",
+  "breakdown": "Podział",
+  "gasSubsidized": "Opłaty są pokrywane przez ograniczony czas",
+  "deposit": "Wpłatę",
+  "feeInfoBottomSheet": {
+    "feesInfo_sameChain": "Należy wnieść opłatę sieciową, aby sieć mogła przetworzyć transakcję.",
+    "feesInfo_crossChain": "Należy wnieść opłatę sieciową, aby sieć mogła przetworzyć transakcję. Opłata za wymianę między łańcuchami jest pobierana przez dostawcę świadczącego usługi wymiany między łańcuchami.",
+    "feesInfo_sameChainWithAppFee": "Należy wnieść opłatę sieciową, aby sieć mogła przetworzyć transakcję. Opłata {{appName}} w wysokości {{appFeePercentage}}% jest pobierana za korzystanie z naszego produktu.",
+    "feesInfo_crossChainWithAppFee": "Należy wnieść opłatę sieciową, aby sieć mogła przetworzyć transakcję. Opłata za wymianę między łańcuchami jest pobierana przez dostawcę świadczącego usługi wymiany między łańcuchami. Opłata {{appName}} w wysokości {{appFeePercentage}}% jest pobierana za korzystanie z naszego produktu."
+  },
   "demoMode": {
     "confirmEnter": {
       "title": "Tryb demonstracyjny",
