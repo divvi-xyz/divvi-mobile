@@ -321,8 +321,8 @@ describe(useNetworkFee, () => {
         ),
       }
     )
-    expect(result.current.amount.toString()).toEqual('0.0001')
-    expect(result.current.localAmount?.toString()).toEqual('0.1995')
-    expect(result.current.maxAmount?.toString()).toEqual('0.0005')
+    expect(result.current?.amount.toString()).toEqual('0.0001')
+    expect(result.current?.localAmount?.toString()).toEqual('0.1995')
+    expect(result.current?.maxAmount?.toString()).toEqual('0.0005')
   })
 })

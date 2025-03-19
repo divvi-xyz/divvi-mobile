@@ -246,7 +246,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
   }
 
   // should never happen since a possible prepared tx should include fee currency and amount
-  if (!networkFee.token || !networkFee.amount.gt(0)) {
+  if (!networkFee?.token || !networkFee.amount.gt(0)) {
     Logger.error(TAG, `network fee is missing`)
     return null
   }
