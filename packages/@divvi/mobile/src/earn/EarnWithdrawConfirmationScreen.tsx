@@ -22,6 +22,9 @@ import { positionsWithBalanceSelector } from 'src/positions/selectors'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { useTokenInfo, useTokensInfo, useTokenToLocalAmount } from 'src/tokens/hooks'
 import { convertTokenToLocalAmount } from 'src/tokens/utils'
+import Logger from 'src/utils/Logger'
+
+const TAG = 'earn/EarnWithdrawConfirmationScreen'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnWithdrawConfirmationScreen>
 
@@ -59,11 +62,13 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
   const usdToLocalRate = useSelector(usdToLocalCurrencyRateSelector)
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const rewards = useRewards(params)
+  console.log({ rewards })
   const withdraw = useWithdrawAmountInDepositToken(params)
 
   if (!withdraw.depositToken || !withdraw.withdrawToken) {
     // should never happen
-    throw new Error('Deposit token or withdraw token not found')
+    Logger.error(TAG, 'there is neither deposit nor withdraw token available')
+    return null
   }
 
   function onPressProvider() {
