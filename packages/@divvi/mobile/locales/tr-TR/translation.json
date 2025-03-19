@@ -406,10 +406,10 @@
   "amountCelo": "Miktar (CELO)",
   "onlyCeloDollars": "Sadece cUSD",
   "onlyCelo": "Sadece CELO",
-  "celoDollar": "Celo Dollar",
+  "celoDollar": "Celo Doları",
   "celoEuro": "Celo Eurosu",
   "celoReal": "Celo Real",
-  "celoDollars": "Celo Dollars",
+  "celoDollars": "Celo Dollar",
   "ether": "Ether",
   "tapToCopyCeloDollarsAddress": "{{appName}} cUSD adresinizi kopyalamak için dokunun",
   "disclaimerFiat": "{{currency}} değerleri tahminidir.",
@@ -541,7 +541,7 @@
   "balanceAvailable": "<0></0> mevcut",
   "subtotal": "Toplam",
   "total": "Toplam",
-  "totalInDollars": "Celo Dollars @ <0></0>",
+  "totalInDollars": "Celo Doları @ <0></0>",
   "totalInEuros": "Celo Euro @ <0></0>",
   "totalInCelo": "Celo @ <0></0>",
   "totalInToken": "<0></0> @ <1></1>",
@@ -1371,7 +1371,7 @@
     "dappPositions": "DeFi"
   },
   "open": "Aç",
-  "nftViewer": "NFT Viewer",
+  "nftViewer": "NFT Görüntüleyici",
   "whatTotalValue": {
     "title": "Toplam Bakiye ne demektir?",
     "body": "Toplam Bakiyeniz, tüm {{appName}} varlıklarınızın yaklaşık bir toplamıdır. Fiyatlar dalgalandıkça Toplam Bakiyeniz değişecektir. Bu bilgi, her 10 dakikada bir güncellenir.\nBazı varlıklar, hesaplama sırasında fiyat mevcut olmadığı için Toplam Bakiyede gösterilmeyebilir.",
@@ -2361,6 +2361,9 @@
     "discover": {
       "tabName": "Keşfedin",
       "title": "Web3'ü keşfedin"
+    },
+    "earn": {
+      "tabName": "Kazan"
     }
   },
   "jumpstartStatus": {
@@ -2633,6 +2636,23 @@
       "myPools": "Havuzlarım",
       "explore": "Açık Havuzları Keşfet"
     },
+    "depositConfirmation": {
+      "title": "Depozitoyu İncele",
+      "depositing": "Para Yatırma",
+      "into": "İçine",
+      "pool": "{{providerName}} Havuz",
+      "yieldRate": "{{apy}}tahmini getiri oranı",
+      "swapAndDeposit": "Swap ve Para Yatırma",
+      "disclaimer": "Bir {{providerName}} havuzuna kripto yatırarak {{providerName}} kullanımıyla ilişkili riskleri kabul etmiş olursunuz. <0>Şartlar ve Koşullar</0>",
+      "noTermsUrlDisclaimer": "{{appName}} uygulamasındaki eylemlerinizden siz sorumlusunuz. {{appName}}, varlıklarınız veya {{providerName}} ile etkileşimlerinizden doğabilecek tüm sorumluluğu reddeder. {{providerName}} sağlayıcısına ait belgeleri <0>buradan</0> ve Hüküm ve Koşullarımızı ise <1>buradan</1> inceleyebilirsiniz."
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Takas Detayları",
+      "swapFrom": "Şuradan Gelen Takas",
+      "swapTo": "Şuraya Giden Takas",
+      "whySwap": "Neden takas yapıyorum?",
+      "swapDescription": "Havuza fon yatırmak için tokeniniz bir havuz tokeni ile takas edilir."
+    },
     "depositBottomSheet": {
       "title": "İncele ve Para Yatır",
       "description": "Bir Aave havuzuna para yatırmadan önce lütfen aşağıdaki işlem ayrıntılarını inceleyin",
@@ -2725,7 +2745,8 @@
       "percentage": "%{{percentage}}",
       "poweredBy": "{{providerName}} tarafından desteklenmektedir",
       "deposited": "Yatırılan",
-      "depositAndEarnings": "Yatırım ve Kazançlar"
+      "depositAndEarnings": "Yatırım ve Kazançlar",
+      "safety": "Güvenlik"
     },
     "poolFilters": {
       "allPools": "Tüm Havuzlar",
@@ -2849,13 +2870,34 @@
     "totalPlusFees": "Toplam Artı Ücretler",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
+  "maxNetworkFee": "Maks. Ağ Ücreti",
+  "estimatedNetworkFee": "Tahmini Ağ Ücreti",
+  "fees": "Ücretler",
+  "appFee": "{{appName}} Ücreti",
+  "estimatedCrossChainFee": "Tahmini zincirler arası işlem ücretleri",
+  "maxCrossChainFee": "Maksimum zincirler arası işlem ücretleri",
+  "bottomSheetDismissButton": "Anladım",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "Fiyat Mevcut Değil",
   "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount_noFiatPrice": "{{tokenAmount}} {{tokenSymbol}}",
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "moreInformation": "Daha fazla bilgi",
+  "breakdown": "Dağılım",
+  "gasSubsidized": "Ücretler sınırlı bir süre için karşılanır",
+  "deposit": "Patra Yatırma",
+  "feeInfoBottomSheet": {
+    "feesInfo_sameChain": "Ağ ücreti, işlemin gerçekleştirilmesi için ağ tarafından talep edilir.",
+    "feesInfo_crossChain": "Ağ ücreti, işlemin gerçekleştirilmesi için ağ tarafından talep edilir. Zincirler arası işlem ücreti, zincirler arası işlem sağlayıcısı tarafından tahsil edilir.",
+    "feesInfo_sameChainWithAppFee": "Ağ ücreti, işlemin gerçekleştirilmesi için ağ tarafından talep edilir. Ürünümüzü kullanmanız için %{{appFeePercentage}} {{appName}} ücreti tahsil edilir.",
+    "feesInfo_crossChainWithAppFee": "Ağ ücreti, işlemin gerçekleştirilmesi için ağ tarafından talep edilir. Zincirler arası işlem ücreti, zincirler arası işlem sağlayıcısı tarafından tahsil edilir. Ürünümüzü kullanmanız için %{{appFeePercentage}} {{appName}} ücreti tahsil edilir."
+  },
   "demoMode": {
     "confirmEnter": {
       "title": "Demo Modu",
