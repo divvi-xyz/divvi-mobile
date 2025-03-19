@@ -160,8 +160,6 @@ export const SIMPLEX_FEES_URL =
 
 export const APP_STORE_ID = Config.APP_STORE_ID
 export const DYNAMIC_LINK_DOMAIN_URI_PREFIX = 'https://vlra.app'
-export const ENABLE_OTA_TRANSLATIONS = true
-export const CROWDIN_DISTRIBUTION_HASH = 'e-f9f6869461793b9d1a353b2v7c'
 export const OTA_TRANSLATIONS_FILEPATH = `file://${CachesDirectoryPath}/translations`
 
 export const FETCH_TIMEOUT_DURATION = 15000 // 15 seconds
