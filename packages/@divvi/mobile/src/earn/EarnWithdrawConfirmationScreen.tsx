@@ -62,7 +62,6 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
   const usdToLocalRate = useSelector(usdToLocalCurrencyRateSelector)
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const rewards = useRewards(params)
-  console.log({ rewards })
   const withdraw = useWithdrawAmountInDepositToken(params)
 
   if (!withdraw.depositToken || !withdraw.withdrawToken) {
