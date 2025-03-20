@@ -2365,6 +2365,9 @@
     "discover": {
       "tabName": "Изучите",
       "title": "Исследуйте в Web3 "
+    },
+    "earn": {
+      "tabName": "Зарабатывайте"
     }
   },
   "jumpstartStatus": {
@@ -2637,6 +2640,23 @@
       "myPools": "Мои пулы",
       "explore": "Исследуйте открытые"
     },
+    "depositConfirmation": {
+      "title": "Обзорный депозит",
+      "depositing": "Пополнение счета",
+      "into": "В",
+      "pool": "{{providerName}} Бассейн",
+      "yieldRate": "{{apy}}% расчетной нормы выхода",
+      "swapAndDeposit": "Обмен и пополнение счета",
+      "disclaimer": "Внося криптовалюту на счет в пуле {{providerName}}, вы принимаете риски, связанные с использованием {{providerName}}. <0>Положения и условия</0>",
+      "noTermsUrlDisclaimer": "Вы несете ответственность за свои действия в {{appName}}. {{appName}} отказывается от ответственности за ваши активы или взаимодействия с {{providerName}}. С документами {{providerName}} можно ознакомиться <0>здесь</0>, а с нашими Положениями и условиями <1>здесь</1>."
+    },
+    "swapAndDepositInfoSheet": {
+      "title": "Сведения об обмене",
+      "swapFrom": "Что обменять",
+      "swapTo": "На что обменять",
+      "whySwap": "Зачем нужен обмен?",
+      "swapDescription": "Чтобы внести средства в пул, ваш токен обменивается на токен пула."
+    },
     "depositBottomSheet": {
       "title": "Проверка и депонирование",
       "description": "Перед депонированием в пул Aave ознакомься с деталями сделки ниже",
@@ -2729,7 +2749,8 @@
       "percentage": "{{percentage}}%",
       "poweredBy": "При поддержке {{providerName}}",
       "deposited": "Прилагается",
-      "depositAndEarnings": "Пополнение и заработки"
+      "depositAndEarnings": "Пополнение и заработки",
+      "safety": "Безопасность"
     },
     "poolFilters": {
       "allPools": "Все пулы",
@@ -2853,13 +2874,34 @@
     "totalPlusFees": "Итого плюс сборы",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
+  "maxNetworkFee": "Максимальная комиссия сеть",
+  "estimatedNetworkFee": "Приблизительная комиссия сеть",
+  "fees": "Комиссия",
+  "appFee": "Комиссия {{appName}}",
+  "estimatedCrossChainFee": "Примерные кроссчейн-комиссии",
+  "maxCrossChainFee": "Максимальные кроссчейн-комиссии",
+  "bottomSheetDismissButton": "Понятно",
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "Цена недоступна",
   "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount_noFiatPrice": "{{tokenAmount}} {{tokenSymbol}}",
   "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
   "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "moreInformation": "Дополнительная информация",
+  "breakdown": "Разбивка",
+  "gasSubsidized": "Плата за услуги покрывается в течение ограниченного времени",
+  "deposit": "Депозит",
+  "feeInfoBottomSheet": {
+    "feesInfo_sameChain": "Комиссия сообщества требуется сообществу для обработки транзакции.",
+    "feesInfo_crossChain": "Комиссия сообщества требуется сообществу для обработки транзакции. Кроссчейн-комиссия взимается провайдером кроссчейна.",
+    "feesInfo_sameChainWithAppFee": "Комиссия сообщества требуется сообществу для обработки транзакции. Комиссия {{appName}} в размере {{appFeePercentage}}% взимается за использование вами нашего продукта.",
+    "feesInfo_crossChainWithAppFee": "Комиссия сообщества требуется сообществу для обработки транзакции. Кроссчейн-комиссия взимается провайдером кроссчейна. Комиссия {{appName}} в размере {{appFeePercentage}}% взимается за использование вами нашего продукта."
+  },
   "demoMode": {
     "confirmEnter": {
       "title": "Демо-режим",
@@ -2878,8 +2920,8 @@
     },
     "inAppIndicatorLabel": "Демо-режим"
   },
-  "celoDollarAmount_0": "<0></0> Celo Dollar",
-  "celoDollarAmount_1": "<0></0> Celo Dollars",
-  "celoDollarAmount_2": "<0></0> Celo Dollars",
-  "celoDollarAmount_3": "<0></0> Celo Dollars"
+  "celoDollarAmount_0": "<0></0> Доллары Celo",
+  "celoDollarAmount_1": "&amp;lt;0&amp;gt;&amp;lt;/0&amp;gt; Доллары Celo",
+  "celoDollarAmount_2": "&amp;lt;0&amp;gt;&amp;lt;/0&amp;gt; Доллары Celo",
+  "celoDollarAmount_3": "&amp;lt;0&amp;gt;&amp;lt;/0&amp;gt; Доллары Celo"
 }
