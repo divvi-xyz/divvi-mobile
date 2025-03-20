@@ -20,6 +20,9 @@ const config: KnipConfig = {
         '@semantic-release/release-notes-generator', // imported by multi-semantic-release
         'conventional-changelog-conventionalcommits', // used by semantic-release config preset
       ],
+      ignore: [
+        'scripts/dep-mismatch-check.ts', // Used to check for dependency mismatches across package.json files
+      ],
     },
     'apps/example': {
       entry: [
