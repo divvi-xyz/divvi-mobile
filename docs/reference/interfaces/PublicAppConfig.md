@@ -46,6 +46,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:261](https://github.com
 
 ```ts
 protocolIds: (
+  | "aave"
   | "aerodrome"
   | "allbridge"
   | "beefy"
