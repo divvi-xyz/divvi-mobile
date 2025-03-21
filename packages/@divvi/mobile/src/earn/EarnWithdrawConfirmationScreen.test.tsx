@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
 import { fireEvent, render, within } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import React from 'react'
@@ -104,149 +103,204 @@ describe('EarnWithdrawConfirmationScreen', () => {
     store.clearActions()
   })
 
+  it('renders proper structure for exit', () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator
+          component={EarnWithdrawConfirmationScreen}
+          params={{ mode: 'exit', pool: { ...mockEarnPositions[0], balance: '10.75' } }}
+        />
+      </Provider>
+    )
+
+    // screen header
+    expect(getByTestId('BackChevron')).toBeTruthy()
+    expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.title'
+    )
+
+    // summary item for withdrawal
+    expect(
+      within(getByTestId('EarnWithdrawConfirmation/Withdraw')).getByTestId('TokenIcon')
+    ).toBeTruthy()
+    expect(getByTestId('EarnWithdrawConfirmation/Withdraw/Label')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.withdrawing'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/Withdraw/PrimaryValue')).toHaveTextContent(
+      'tokenAmount, {"tokenAmount":"11.83","tokenSymbol":"USDC"}'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/Withdraw/SecondaryValue')).toHaveTextContent(
+      'localAmount, {"localAmount":"15.73","localCurrencySymbol":"₱"}'
+    )
+
+    // summary item for rewards
+    expect(
+      within(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0`)).getByTestId('TokenIcon')
+    ).toBeTruthy()
+    expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/Label`)).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.rewardClaiming'
+    )
+    expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/PrimaryValue`)).toHaveTextContent(
+      'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}'
+    )
+    expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/SecondaryValue`)).toHaveTextContent(
+      'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}'
+    )
+
+    // summary item for pool
+    expect(
+      within(getByTestId('EarnWithdrawConfirmation/Pool')).getByTestId('TokenIcon')
+    ).toBeTruthy()
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/Label')).toHaveTextContent('from')
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/PrimaryValue')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.pool, {"providerName":"Aave"}'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/SecondaryValue')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.yieldRate, {"apy":"1.92"}'
+    )
+  })
+
+  it('renders proper structure for claim-rewards', () => {
+    const { getByTestId, queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator
+          component={EarnWithdrawConfirmationScreen}
+          params={{ mode: 'claim-rewards', pool: { ...mockEarnPositions[0], balance: '10.75' } }}
+        />
+      </Provider>
+    )
+
+    // screen header
+    expect(getByTestId('BackChevron')).toBeTruthy()
+    expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.title'
+    )
+
+    // summary item for withdrawal
+    expect(queryByTestId('EarnWithdrawConfirmation/Withdraw')).toBeFalsy()
+
+    // summary item for rewards
+    expect(
+      within(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0`)).getByTestId('TokenIcon')
+    ).toBeTruthy()
+    expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/Label`)).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.rewardClaiming'
+    )
+    expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/PrimaryValue`)).toHaveTextContent(
+      'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}'
+    )
+    expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/SecondaryValue`)).toHaveTextContent(
+      'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}'
+    )
+
+    // summary item for pool
+    expect(
+      within(getByTestId('EarnWithdrawConfirmation/Pool')).getByTestId('TokenIcon')
+    ).toBeTruthy()
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/Label')).toHaveTextContent('from')
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/PrimaryValue')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.pool, {"providerName":"Aave"}'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/SecondaryValue')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.yieldRate, {"apy":"1.92"}'
+    )
+  })
+
+  it('renders proper structure for partial withdrawal when there are no rewards to claim', () => {
+    const inputTokenAmount = (10.75 * +mockEarnPositions[0].pricePerShare) / 2
+    const { getByTestId, queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator
+          component={EarnWithdrawConfirmationScreen}
+          params={{
+            mode: 'withdraw',
+            pool: { ...mockEarnPositions[0], balance: '10.75' },
+            inputTokenAmount,
+          }}
+        />
+      </Provider>
+    )
+
+    // screen header
+    expect(getByTestId('BackChevron')).toBeTruthy()
+    expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.title'
+    )
+
+    // summary item for withdrawal
+    expect(
+      within(getByTestId('EarnWithdrawConfirmation/Withdraw')).getByTestId('TokenIcon')
+    ).toBeTruthy()
+    expect(getByTestId('EarnWithdrawConfirmation/Withdraw/Label')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.withdrawing'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/Withdraw/PrimaryValue')).toHaveTextContent(
+      'tokenAmount, {"tokenAmount":"5.91","tokenSymbol":"USDC"}'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/Withdraw/SecondaryValue')).toHaveTextContent(
+      'localAmount, {"localAmount":"7.86","localCurrencySymbol":"₱"}'
+    )
+
+    // summary item for rewards
+    expect(queryByTestId('EarnWithdrawConfirmation/RewardClaim-0')).toBeFalsy()
+
+    // summary item for pool
+    expect(
+      within(getByTestId('EarnWithdrawConfirmation/Pool')).getByTestId('TokenIcon')
+    ).toBeTruthy()
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/Label')).toHaveTextContent('from')
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/PrimaryValue')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.pool, {"providerName":"Aave"}'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/SecondaryValue')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.yieldRate, {"apy":"1.92"}'
+    )
+  })
+
   describe.each([
     {
-      testName: 'exit',
-      props: {
-        pool: { ...mockEarnPositions[0], balance: '10.75' },
-        mode: 'exit',
-      },
-      withdraw: {
-        analytics: { amount: '11.825' },
-        tokenAmount: 'tokenAmount, {"tokenAmount":"11.83","tokenSymbol":"USDC"}',
-        localAmount: 'localAmount, {"localAmount":"15.73","localCurrencySymbol":"₱"}',
-      },
-      rewards: [
-        {
-          analytics: { amount: '0.01', tokenId: mockEarnPositions[0].tokenId },
-          tokenAmount: 'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}',
-          localAmount: 'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}',
-        },
-      ],
+      mode: 'exit',
+      tokenAmount: '11.825',
+      params: { mode: 'exit', pool: { ...mockEarnPositions[0], balance: '10.75' } },
     },
     {
-      testName: 'claim rewards',
-      props: {
-        pool: { ...mockEarnPositions[0], balance: '10.75' },
-        mode: 'claim-rewards',
-      },
-      withdraw: {
-        analytics: { amount: '11.825' },
-        tokenAmount: undefined,
-        localAmount: undefined,
-      },
-      rewards: [
-        {
-          analytics: { amount: '0.01', tokenId: mockEarnPositions[0].tokenId },
-          tokenAmount: 'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}',
-          localAmount: 'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}',
-        },
-      ],
+      mode: 'claim-rewards',
+      tokenAmount: '11.825',
+      params: { mode: 'claim-rewards', pool: { ...mockEarnPositions[0], balance: '10.75' } },
     },
     {
-      testName: 'partial withdrawal',
-      props: {
-        pool: { ...mockEarnPositions[0], balance: '10.75' },
+      mode: 'withdraw',
+      tokenAmount: '5.91',
+      params: {
         mode: 'withdraw',
-        inputTokenAmount: (10.75 * +mockEarnPositions[0].pricePerShare) / 2,
+        pool: { ...mockEarnPositions[0], balance: '10.75' },
+        inputTokenAmount: '5.91',
       },
-      withdraw: {
-        analytics: { amount: `${(10.75 * +mockEarnPositions[0].pricePerShare) / 2}` },
-        tokenAmount: 'tokenAmount, {"tokenAmount":"5.91","tokenSymbol":"USDC"}',
-        localAmount: 'localAmount, {"localAmount":"7.86","localCurrencySymbol":"₱"}',
-      },
-      rewards: [],
     },
-  ])('$testName', ({ props, withdraw, rewards }) => {
+  ])('$mode', ({ mode, tokenAmount, params }) => {
+    const pool = mockEarnPositions[0]
     const expectedAnalyticsProperties = {
+      mode,
+      tokenAmount,
       depositTokenId: mockArbUsdcTokenId,
-      tokenAmount: withdraw.analytics?.amount,
       networkId: NetworkId['arbitrum-sepolia'],
       providerId: mockEarnPositions[0].appId,
-      rewards: [],
       poolId: mockEarnPositions[0].positionId,
-      mode: props.mode,
+      rewards: [],
     }
-    it('renders proper structure', () => {
-      const { getByTestId, queryByTestId } = render(
-        <Provider store={store}>
-          <MockedNavigator component={EarnWithdrawConfirmationScreen} params={props} />
-        </Provider>
-      )
-
-      // screen.debug()
-
-      // screen header
-      expect(getByTestId('BackChevron')).toBeTruthy()
-      expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
-        'earnFlow.withdrawConfirmation.title'
-      )
-
-      // summary item for withdraw
-      if (withdraw.tokenAmount && withdraw.localAmount) {
-        expect(
-          within(getByTestId('EarnWithdrawConfirmation/Withdraw')).getByTestId('TokenIcon')
-        ).toBeTruthy()
-        expect(getByTestId('EarnWithdrawConfirmation/Withdraw/Label')).toHaveTextContent(
-          'earnFlow.withdrawConfirmation.withdrawing'
-        )
-        expect(getByTestId('EarnWithdrawConfirmation/Withdraw/PrimaryValue')).toHaveTextContent(
-          withdraw.tokenAmount
-        )
-        expect(getByTestId('EarnWithdrawConfirmation/Withdraw/SecondaryValue')).toHaveTextContent(
-          withdraw.localAmount
-        )
-      } else {
-        expect(queryByTestId('EarnWithdrawConfirmation/Withdraw')).toBeFalsy()
-      }
-
-      // symmary item for rewards
-      if (rewards.length) {
-        rewards.forEach((reward, idx) => {
-          expect(
-            within(getByTestId(`EarnWithdrawConfirmation/RewardClaim-${idx}`)).getByTestId(
-              'TokenIcon'
-            )
-          ).toBeTruthy()
-          expect(
-            getByTestId(`EarnWithdrawConfirmation/RewardClaim-${idx}/Label`)
-          ).toHaveTextContent('earnFlow.withdrawConfirmation.rewardClaiming')
-          expect(
-            getByTestId(`EarnWithdrawConfirmation/RewardClaim-${idx}/PrimaryValue`)
-          ).toHaveTextContent(reward.tokenAmount)
-          expect(
-            getByTestId(`EarnWithdrawConfirmation/RewardClaim-${idx}/SecondaryValue`)
-          ).toHaveTextContent(reward.localAmount)
-        })
-      } else {
-        expect(queryByTestId('EarnWithdrawConfirmation/RewardClaim-0')).toBeFalsy()
-      }
-
-      // summary item for pool
-      expect(
-        within(getByTestId('EarnWithdrawConfirmation/Pool')).getByTestId('TokenIcon')
-      ).toBeTruthy()
-      expect(getByTestId('EarnWithdrawConfirmation/Pool/Label')).toHaveTextContent('from')
-      expect(getByTestId('EarnWithdrawConfirmation/Pool/PrimaryValue')).toHaveTextContent(
-        'earnFlow.withdrawConfirmation.pool, {"providerName":"Aave"}'
-      )
-      expect(getByTestId('EarnWithdrawConfirmation/Pool/SecondaryValue')).toHaveTextContent(
-        'earnFlow.withdrawConfirmation.yieldRate, {"apy":"1.92"}'
-      )
-    })
 
     it.each([
       {
         title: 'pressing provider pool name opens manageUrl if available',
-        manageUrl: props.pool.dataProps.manageUrl!,
-        termsUrl: props.pool.dataProps.termsUrl!,
-        result: props.pool.dataProps.manageUrl!,
+        manageUrl: pool.dataProps.manageUrl!,
+        termsUrl: pool.dataProps.termsUrl!,
+        result: pool.dataProps.manageUrl!,
       },
       {
         title: 'pressing provider pool name opens termsUrl if manageUrl is not available',
         manageUrl: undefined,
-        termsUrl: props.pool.dataProps.termsUrl!,
-        result: props.pool.dataProps.termsUrl!,
+        termsUrl: pool.dataProps.termsUrl!,
+        result: pool.dataProps.termsUrl!,
       },
     ])('$title', ({ manageUrl, termsUrl, result }) => {
       const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
@@ -255,8 +309,11 @@ describe('EarnWithdrawConfirmationScreen', () => {
           <MockedNavigator
             component={EarnWithdrawConfirmationScreen}
             params={{
-              ...props,
-              pool: { ...props.pool, dataProps: { ...props.pool.dataProps, manageUrl, termsUrl } },
+              ...params,
+              pool: {
+                ...params.pool,
+                dataProps: { ...params.pool.dataProps, manageUrl, termsUrl },
+              },
             }}
           />
         </Provider>

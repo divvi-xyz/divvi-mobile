@@ -246,6 +246,13 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     }
     disableNfts?: boolean
     hideCashInTokenFilters?: boolean
+    otaTranslations?: {
+      crowdinDistributionHash: string
+    }
+    // statsig feature gate defaults
+    showPositions?: boolean
+    showImportTokensFlow?: boolean
+    showSwapTokenFilters?: boolean
   }
 
   divviProtocol?: {

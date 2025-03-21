@@ -7,7 +7,7 @@ export interface Props {
   color?: ColorValue
 }
 
-function HiddenEyeIcon({ color = Colors.accent, size = 24 }: Props) {
+function HiddenEyeIcon({ color = Colors.contentPrimary, size = 24 }: Props) {
   return (
     <Svg height={size} width={size} viewBox="0 0 24 24" fill="none" testID="HiddenEyeIcon">
       <G fill={color} stroke={color} clipPath="url(#a)">
