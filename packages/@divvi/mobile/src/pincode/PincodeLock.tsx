@@ -75,7 +75,7 @@ function PincodeLock() {
 
   if (shouldGetPinWithBiometry && !getPinWithBiometryError) {
     return (
-      <SafeAreaView style={styles.biometryContainer}>
+      <SafeAreaView style={styles.biometryContainer} testID="BiometryContainer">
         {!!assetsConfig?.splashBackgroundImage && (
           <Image
             testID="BackgroundImage"
