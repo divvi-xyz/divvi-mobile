@@ -30,7 +30,7 @@
   "shareAnalytics_detail": "We collect anonymized data about how you use {{appName}} to help improve the application for everyone.",
   "dataSaver": "Data Saver",
   "enableDataSaver": "Enable Data Saver",
-  "dataSaverDetail": "Data Saver mode allows you to communicate with the the network through a trusted node. You can always change this mode in app settings.",
+  "dataSaverDetail": "Data Saver mode allows you to communicate with the network through a trusted node. You can always change this mode in app settings.",
   "keylessBackupSetupTitle": "Create Login",
   "keylessBackupSettingsTitle": "Email & Phone Backup",
   "keylessBackupSettingsDeleteError": "Your backup was not able to be deleted, please wait & try again later.",
