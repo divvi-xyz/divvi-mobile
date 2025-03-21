@@ -758,8 +758,14 @@ describe('EarnEnterAmount', () => {
 
       await waitFor(() => expect(getByText('earnFlow.enterAmount.continue')).not.toBeDisabled())
 
-      expect(getByTestId('EarnEnterAmount/Fees')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Fees')).toHaveTextContent('₱0.012')
+      expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
+      expect(getByTestId('EnterAmountWithdrawDetails/NetworkFee/InfoIcon')).toBeTruthy()
+      expect(getByTestId('EnterAmountWithdrawDetails/NetworkFee/Label')).toHaveTextContent(
+        'networkFee'
+      )
+      expect(getByTestId('EnterAmountWithdrawDetails/NetworkFee/Value')).toHaveTextContent(
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      )
 
       fireEvent.press(getByText('earnFlow.enterAmount.continue'))
 
@@ -842,9 +848,13 @@ describe('EarnEnterAmount', () => {
         </Provider>
       )
 
-      expect(getByTestId('LabelWithInfo/ClaimingReward-0')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/Reward-0')).toHaveTextContent('₱0.016')
-      expect(getByTestId('EarnEnterAmount/Reward-0-crypto')).toHaveTextContent('0.01 ARB')
+      expect(getByTestId('EnterAmountWithdrawDetails/ClaimingReward-0')).toBeTruthy()
+      expect(getByTestId('EnterAmountWithdrawDetails/ClaimingReward-0/Label')).toHaveTextContent(
+        'earnFlow.enterAmount.claimingReward'
+      )
+      expect(getByTestId('EnterAmountWithdrawDetails/ClaimingReward-0/Value')).toHaveTextContent(
+        'tokenAndLocalAmount, {"tokenAmount":"0.01","localAmount":"0.016","tokenSymbol":"ARB","localCurrencySymbol":"₱"}'
+      )
     })
 
     it('should show the Withdrawing and Claiming card if withdrawalIncludesClaim is true', async () => {
