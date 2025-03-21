@@ -1,4 +1,5 @@
 import {
+  Button,
   getFees,
   navigate,
   usePrepareTransactions,
@@ -177,22 +178,13 @@ export default function PlaygroundScreen(_props: RootStackScreenProps<'Playgroun
 
         {/* Send Button - only show when preparation is successful */}
         {prepared?.type === 'possible' && (
-          <Pressable
+          <Button
             onPress={handleSend}
+            text={sendStatus === 'loading' ? 'Sending...' : 'Send Transaction'}
             disabled={sendStatus === 'loading'}
-            style={({ pressed }) => [
-              styles.button,
-              pressed && styles.buttonPressed,
-              sendStatus === 'loading' && styles.buttonDisabled,
-            ]}
-          >
-            <Text style={styles.buttonText}>
-              {sendStatus === 'loading' ? 'Sending...' : 'Send Transaction'}
-            </Text>
-            {sendStatus === 'loading' && (
-              <ActivityIndicator color="#ffffff" style={styles.loader} />
-            )}
-          </Pressable>
+            showLoading={sendStatus === 'loading'}
+            size={'full'}
+          />
         )}
 
         {/* Send Error */}
@@ -254,17 +246,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-  },
-  buttonPressed: {
-    opacity: 0.7,
-  },
-  buttonDisabled: {
-    backgroundColor: '#cccccc',
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
   },
   loader: {
     marginLeft: 8,
