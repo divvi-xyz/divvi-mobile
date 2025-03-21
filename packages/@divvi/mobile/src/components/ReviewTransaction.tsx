@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { groupBy } from 'lodash'
 import React, { useMemo, type ReactNode } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, Text, View, type StyleProp, type TextStyle } from 'react-native'
@@ -8,7 +9,6 @@ import ContactCircle from 'src/components/ContactCircle'
 import CustomHeader from 'src/components/header/CustomHeader'
 import SkeletonPlaceholder from 'src/components/SkeletonPlaceholder'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
-import { APPROX_SYMBOL } from 'src/components/TokenEnterAmount'
 import Touchable from 'src/components/Touchable'
 import InfoIcon from 'src/icons/InfoIcon'
 import WalletIcon from 'src/icons/navigator/Wallet'
@@ -289,116 +289,163 @@ export function ReviewFooter(props: { children: ReactNode }) {
   return <View style={styles.reviewFooter}>{props.children}</View>
 }
 
-type ReviewDetailsItemTotalValueProps = {
-  approx?: boolean
-  tokenInfo: TokenBalance | undefined
-  feeTokenInfo: TokenBalance | undefined
-  tokenAmount: BigNumber | null
-  localAmount: BigNumber | null
-  feeTokenAmount: BigNumber | undefined
-  feeLocalAmount: BigNumber | null
-  localCurrencySymbol: LocalCurrencySymbol
+type Amount = {
+  isDeductible?: boolean
+  tokenInfo: TokenBalance | null | undefined
+  tokenAmount: BigNumber | null | undefined
+  localAmount: BigNumber | null | undefined
 }
 
+type FilteredAmount = {
+  isDeductible?: boolean
+  tokenInfo: TokenBalance
+  tokenAmount: BigNumber
+  localAmount: BigNumber | null | undefined
+}
+
+type ReviewDetailsItemTotalValueProps = {
+  approx?: boolean
+  localCurrencySymbol: LocalCurrencySymbol
+  amounts: Amount[]
+}
+
+/**
+ * This component doesn't do any memoization as the `amounts` array is always expected
+ * to be really small (< 10 items) so the overhead of running array operations on every
+ * re-render should be negligible.
+ */
 export function ReviewDetailsItemTotalValue({
   approx,
-  tokenInfo,
-  feeTokenInfo,
-  tokenAmount,
-  localAmount,
-  feeTokenAmount,
-  feeLocalAmount,
+  amounts,
   localCurrencySymbol,
 }: ReviewDetailsItemTotalValueProps) {
   const { t } = useTranslation()
-  const withApprox = approx ? `${APPROX_SYMBOL} ` : ''
 
-  // if there are not token info or token amount then it should not even be possible to get to the review screen
-  if (!tokenInfo || !tokenAmount) {
+  // filter out "broken" amounts with no token info or token amount
+  const filteredAmounts = amounts.filter(
+    (amount) => !!amount.tokenInfo && !!amount.tokenAmount
+  ) as FilteredAmount[]
+
+  // if all the amounts are "broken" (which should never happen) – then don't return anything
+  if (filteredAmounts.length === 0) {
     return null
   }
 
-  // if there are no fees then just format token amount
-  if (!feeTokenInfo || !feeTokenAmount) {
-    // if fiat amount is availabke then show both token and fiat amounts
-    if (localAmount) {
+  // if there's a single amount then no calculations needed and we show it as is
+  if (filteredAmounts.length === 1) {
+    const amount = filteredAmounts[0]
+
+    // if fiat amount is available then show full amount
+    if (amount.localAmount) {
       return (
         <ReviewDetailsItemTokenValue
           approx={approx}
-          tokenAmount={tokenAmount}
-          localAmount={localAmount}
-          tokenInfo={tokenInfo}
+          tokenAmount={amount.tokenAmount}
+          localAmount={amount.localAmount}
+          tokenInfo={amount.tokenInfo}
           localCurrencySymbol={localCurrencySymbol}
         >
-          <Text style={styles.totalPlusFeesLocalAmount} />
+          <Text style={styles.totalLocalAmount} />
         </ReviewDetailsItemTokenValue>
       )
     }
 
-    // otherwise only show token amount
-
-    return withApprox
+    // otherwise only show the token amount
+    return approx
       ? t('tokenAmountApprox', {
-          tokenAmount: formatValueToDisplay(tokenAmount),
-          tokenSymbol: tokenInfo.symbol,
+          tokenAmount: formatValueToDisplay(amount.tokenAmount),
+          tokenSymbol: amount.tokenInfo.symbol,
         })
       : t('tokenAmount', {
-          tokenAmount: formatValueToDisplay(tokenAmount),
-          tokenSymbol: tokenInfo.symbol,
+          tokenAmount: formatValueToDisplay(amount.tokenAmount),
+          tokenSymbol: amount.tokenInfo.symbol,
         })
   }
 
-  const sameToken = tokenInfo.tokenId === feeTokenInfo.tokenId
-  const haveLocalPrice = !!localAmount && !!feeLocalAmount
+  /**
+   * At this point we have more than one token amount. Usually, this is an input amount
+   * (e.g. send or earn deposit) and network fee but there can be many more. This implies that
+   * there can be various variations of different tokens with variable availability of fiat prices.
+   * Based on that, we need to detect the kind of variation and format it accordingly.
+   */
+  const grouped = groupBy(filteredAmounts, (amount) => amount.tokenInfo.tokenId)
+  const tokenIds = Object.keys(grouped)
+  const sameToken = tokenIds.length === 1
+  const allTokensHaveLocalPrice = filteredAmounts.every((amount) => !!amount.localAmount)
 
-  // if single token and have local price - return token and local amounts
-  if (sameToken && haveLocalPrice) {
+  /**
+   * If all the amounts are of the same token and we have a fiat price for it – then format the value
+   * to the format like "1.00 USDC ($1.00)".
+   */
+  if (sameToken && allTokensHaveLocalPrice) {
+    const tokenInfo = filteredAmounts[0].tokenInfo
+    const tokenAmount = filteredAmounts.reduce(
+      (acc, amount) =>
+        amount.isDeductible ? acc.minus(amount.tokenAmount) : acc.plus(amount.tokenAmount),
+      new BigNumber(0)
+    )
+    const localAmount = filteredAmounts.reduce(
+      (acc, amount) =>
+        amount.isDeductible ? acc.minus(amount.localAmount!) : acc.plus(amount.localAmount!),
+      new BigNumber(0)
+    )
+
     return (
       <ReviewDetailsItemTokenValue
         approx={approx}
-        tokenAmount={tokenAmount.plus(feeTokenAmount)}
-        localAmount={localAmount.plus(feeLocalAmount)}
         tokenInfo={tokenInfo}
         localCurrencySymbol={localCurrencySymbol}
+        tokenAmount={tokenAmount}
+        localAmount={localAmount}
       >
-        <Text style={styles.totalPlusFeesLocalAmount} />
+        <Text style={styles.totalLocalAmount} />
       </ReviewDetailsItemTokenValue>
     )
   }
 
-  // if single token but no local price - return token amount
-  if (sameToken && !haveLocalPrice) {
-    return withApprox
-      ? t('tokenAmountApprox', {
-          tokenAmount: formatValueToDisplay(tokenAmount.plus(feeTokenAmount)),
-          tokenSymbol: tokenInfo.symbol,
-        })
-      : t('tokenAmount', {
-          tokenAmount: formatValueToDisplay(tokenAmount.plus(feeTokenAmount)),
-          tokenSymbol: tokenInfo.symbol,
-        })
+  /**
+   * If all the amounts are of the same token but we don't have its fiat price available –
+   * then format the value to only show the sum of all token amounts like "1.00 USDC".
+   */
+  if (sameToken && !allTokensHaveLocalPrice) {
+    const tokenSymbol = filteredAmounts[0].tokenInfo.symbol
+    const tokenAmount = filteredAmounts.reduce(
+      (acc, amount) =>
+        amount.isDeductible ? acc.minus(amount.tokenAmount) : acc.plus(amount.tokenAmount),
+      new BigNumber(0)
+    )
+    const displayTokenAmount = formatValueToDisplay(tokenAmount)
+    return approx
+      ? t('tokenAmountApprox', { tokenAmount: displayTokenAmount, tokenSymbol })
+      : t('tokenAmount', { tokenAmount: displayTokenAmount, tokenSymbol })
   }
 
-  // if multiple tokens and have local price - return local amount
-  if (!sameToken && haveLocalPrice) {
-    return withApprox
-      ? t('localAmountApprox', {
-          localAmount: formatValueToDisplay(localAmount.plus(feeLocalAmount)),
-          localCurrencySymbol,
-        })
-      : t('localAmount', {
-          localAmount: formatValueToDisplay(localAmount.plus(feeLocalAmount)),
-          localCurrencySymbol,
-        })
+  /**
+   * If there are multiple different tokens and we have fiat prices for all – then format the value
+   * to only show the sum of all fiat amounts like "$1.00"
+   */
+  if (!sameToken && allTokensHaveLocalPrice) {
+    const localAmount = filteredAmounts.reduce(
+      (acc, amount) =>
+        amount.isDeductible ? acc.minus(amount.localAmount!) : acc.plus(amount.localAmount!),
+      new BigNumber(0)
+    )
+    const displayLocalAmount = formatValueToDisplay(localAmount)
+    return approx
+      ? t('localAmountApprox', { localAmount: displayLocalAmount, localCurrencySymbol })
+      : t('localAmount', { localAmount: displayLocalAmount, localCurrencySymbol })
   }
 
-  // otherwise there are multiple tokens with no local prices so return multiple token amounts
-  return t('reviewTransaction.multipleTokensWithPlusSign', {
-    amount1: formatValueToDisplay(tokenAmount),
-    symbol1: tokenInfo.symbol,
-    amount2: formatValueToDisplay(feeTokenAmount),
-    symbol2: feeTokenInfo.symbol,
-  })
+  /**
+   * At this point we can be sure that we have multiple different tokens some/all of which don't
+   * have available fiat prices – then show the value as a written for of a sum of all the token
+   * amounts like "1.00 USDC + 0.0003 ETH"
+   */
+  return filteredAmounts
+    .map((amount) =>
+      t('tokenAmount', { tokenAmount: amount.tokenAmount, tokenSymbol: amount.tokenInfo.symbol })
+    )
+    .join('\n+ ')
 }
 
 export function ReviewParagraph(props: { children: ReactNode }) {
@@ -494,7 +541,7 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-  totalPlusFeesLocalAmount: {
+  totalLocalAmount: {
     color: colors.contentSecondary,
   },
   paragraph: {
