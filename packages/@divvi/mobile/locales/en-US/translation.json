@@ -1585,7 +1585,7 @@
     "title": "Verify your Identity",
     "description": "This step will take about 5 minutes.",
     "disclaimer": "You acknowledge and agree that your Personal Data will be provided to us and shared with third-parties for verification purposes as stated in the <0>Privacy Policy</0>",
-    "button": "Set up ID Verification"
+    "button": "Set up ID Verification\n"
   },
   "fiatConnectKycStatusScreen": {
     "contactSupportPrefill": "I'm having trouble verifying my identity with {{appName}}.",
@@ -1989,7 +1989,7 @@
     "subtitle": "What would you like to do first?",
     "later": "I'll explore later",
     "options": {
-      "add": "Add funds to your wallet",
+      "add": "Review Swap",
       "dapp": "Find ways to use crypto",
       "earn": "Explore earning opportunities",
       "profile": "Build your profile",
