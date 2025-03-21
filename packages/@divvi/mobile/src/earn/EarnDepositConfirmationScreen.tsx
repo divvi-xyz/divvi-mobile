@@ -332,14 +332,20 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             testID="EarnDepositConfirmationTotal"
             type="total-token-amount"
             label={t('reviewTransaction.totalPlusFees')}
-            tokenInfo={inputTokenInfo}
-            feeTokenInfo={networkFee.token}
-            tokenAmount={depositAmount.tokenAmount}
-            localAmount={depositAmount.localAmount}
-            feeTokenAmount={networkFee.amount}
-            feeLocalAmount={networkFee.localAmount}
             localCurrencySymbol={localCurrencySymbol}
             onInfoPress={() => totalBottomSheetRef.current?.snapToIndex(0)}
+            amounts={[
+              {
+                tokenInfo: inputTokenInfo,
+                tokenAmount: depositAmount.tokenAmount,
+                localAmount: depositAmount.localAmount,
+              },
+              {
+                tokenInfo: networkFee.token,
+                tokenAmount: networkFee.amount,
+                localAmount: networkFee.localAmount,
+              },
+            ]}
           />
         </ReviewDetails>
       </ReviewContent>
@@ -446,13 +452,19 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             type="total-token-amount"
             testID="TotalInfoBottomSheet/Total"
             label={t('reviewTransaction.totalPlusFees')}
-            tokenInfo={inputTokenInfo}
-            feeTokenInfo={networkFee.token}
-            tokenAmount={depositAmount.tokenAmount}
-            localAmount={depositAmount.localAmount}
-            feeTokenAmount={networkFee.amount}
-            feeLocalAmount={networkFee.localAmount}
             localCurrencySymbol={localCurrencySymbol}
+            amounts={[
+              {
+                tokenInfo: inputTokenInfo,
+                tokenAmount: depositAmount.tokenAmount,
+                localAmount: depositAmount.localAmount,
+              },
+              {
+                tokenInfo: networkFee.token,
+                tokenAmount: networkFee.amount,
+                localAmount: networkFee.localAmount,
+              },
+            ]}
           />
         </InfoBottomSheetContentBlock>
       </InfoBottomSheet>
