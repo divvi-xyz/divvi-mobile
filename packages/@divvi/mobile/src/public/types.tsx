@@ -43,7 +43,7 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
         backgroundSecondary?: string
         backgroundTertiary?: string
         backgroundScrim?: string
-
+        backgroundSplash?: string
         // text, icons, and other content
         contentPrimary?: string
         contentSecondary?: string
@@ -101,6 +101,7 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
         brandGradientLeft?: string
         brandGradientRight?: string
         contentOnboardingComplete?: string
+        backgroundOnboardingComplete?: string
       }
 
       assets?: {
@@ -108,6 +109,8 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
         welcomeLogo?: React.ComponentType<any>
         welcomeBackgroundImage?: ImageSourcePropType
         onboardingSuccessImage?: ImageSourcePropType
+        onboardingSuccessBackgroundImage?: ImageSourcePropType
+        splashBackgroundImage?: ImageSourcePropType
         brandLogo?: React.ComponentType<{
           size?: number
           color?: string

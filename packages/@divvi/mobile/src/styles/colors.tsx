@@ -8,6 +8,7 @@ const colors = {
   backgroundSecondary: '#F8F9F9', // Subtle contrast background for secondary surfaces like cards, panels, or inputs.
   backgroundTertiary: '#E6E6E6', // Low-emphasis background for subtle supporting areas, typically used when both primary and secondary backgrounds are present, and an additional layer of distinction is needed.
   backgroundScrim: '#000000', // Semi-transparent underlay behind bottom sheets, modals, dialogs, and other temporary surfaces to dim the background.
+  backgroundSplash: '#ff5050', // Background color for splash screen (e.g., when requesting biometrics on app launch)
 
   // text, icons, and other content
   contentPrimary: '#2E3338', // main content on primary background
@@ -63,6 +64,7 @@ const colors = {
   brandGradientLeft: '#26d98a', // Starting color for the brand gradient, used in backgrounds or borders to reinforce brand identity.
   brandGradientRight: '#ffd52c', // Ending color for the brand gradient, used in backgrounds or borders to reinforce brand identity.
   contentOnboardingComplete: '#FFFFFF', // Text and image color for onboarding completion screen
+  backgroundOnboardingComplete: '#ff5050', // Background color for onboarding completion screen
 } as const
 
 const themeColors = {

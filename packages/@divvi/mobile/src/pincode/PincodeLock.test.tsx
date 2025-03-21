@@ -5,9 +5,11 @@ import { Provider } from 'react-redux'
 import { PincodeType } from 'src/account/reducer'
 import { appUnlock } from 'src/app/actions'
 import { ErrorMessages } from 'src/app/ErrorMessages'
+import { getAppConfig } from 'src/appConfig'
 import { checkPin, getPincodeWithBiometry } from 'src/pincode/authentication'
 import PincodeLock from 'src/pincode/PincodeLock'
 import { createMockStore } from 'test/utils'
+import { mockAppConfig } from 'test/values'
 
 const mockedCheckPin = jest.mocked(checkPin)
 const mockedGetPincodeWithBiometry = jest.mocked(getPincodeWithBiometry)
@@ -35,12 +37,32 @@ describe('PincodeLock', () => {
 
     beforeEach(() => {
       jest.clearAllMocks()
+      jest.mocked(getAppConfig).mockReturnValue(mockAppConfig)
       store.clearActions()
     })
 
-    it('renders only the brand background image without pincode input', () => {
+    it('renders empty background without pincode input if biometry is enabled', () => {
+      const { getByTestId, queryByText } = renderComponentWithMockStore()
+
+      expect(getByTestId('BiometryContainer')).toBeTruthy()
+      expect(queryByText('BackgroundImage')).toBeFalsy()
+      expect(queryByText('confirmPin.title')).toBeFalsy()
+    })
+
+    it('renders background image if set in app config and biometry is enabled', () => {
+      jest.mocked(getAppConfig).mockReturnValue({
+        ...mockAppConfig,
+        themes: {
+          default: {
+            assets: {
+              splashBackgroundImage: { uri: 'test.png' },
+            },
+          },
+        },
+      })
       const { queryByText, getByTestId } = renderComponentWithMockStore()
 
+      expect(getByTestId('BiometryContainer')).toBeTruthy()
       expect(getByTestId('BackgroundImage')).toBeTruthy()
       expect(queryByText('confirmPin.title')).toBeFalsy()
     })
@@ -58,12 +80,13 @@ describe('PincodeLock', () => {
 
     it('displays PIN input if failed to unlock with biometry', async () => {
       mockedGetPincodeWithBiometry.mockRejectedValueOnce('some error')
-      const { getByText } = renderComponentWithMockStore()
+      const { getByText, queryByTestId } = renderComponentWithMockStore()
 
       await waitFor(() => {
         expect(mockedGetPincodeWithBiometry).toHaveBeenCalledTimes(1)
       })
       expect(getByText('confirmPin.title')).toBeTruthy()
+      expect(queryByTestId('BiometryContainer')).toBeFalsy()
       expect(store.getActions()).toEqual([])
     })
   })
