@@ -102,6 +102,18 @@ export type StackParamList = {
     mode: Extract<EarnActiveMode, 'deposit' | 'swap-deposit'>
     swapTransaction?: SwapTransaction
   }
+  [Screens.EarnWithdrawConfirmationScreen]:
+    | {
+        mode: Extract<EarnActiveMode, 'claim-rewards' | 'exit'>
+        pool: EarnPosition
+      }
+    | {
+        mode: Extract<EarnActiveMode, 'withdraw'>
+        pool: EarnPosition
+        inputTokenAmount: string
+        useMax: boolean
+      }
+
   [Screens.EarnHome]: { activeEarnTab?: EarnTabType } | undefined
   [Screens.TabEarn]: { activeEarnTab?: EarnTabType } | undefined
   [Screens.EarnPoolInfoScreen]: { pool: EarnPosition }

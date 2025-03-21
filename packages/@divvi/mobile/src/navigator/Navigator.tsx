@@ -36,6 +36,7 @@ import EarnDepositConfirmationScreen from 'src/earn/EarnDepositConfirmationScree
 import EarnEnterAmount from 'src/earn/EarnEnterAmount'
 import EarnHome from 'src/earn/EarnHome'
 import EarnInfoScreen from 'src/earn/EarnInfoScreen'
+import EarnWithdrawConfirmationScreen from 'src/earn/EarnWithdrawConfirmationScreen'
 import EarnPoolInfoScreen from 'src/earn/poolInfoScreen/EarnPoolInfoScreen'
 import BidaliScreen from 'src/fiatExchanges/BidaliScreen'
 import CashInSuccess from 'src/fiatExchanges/CashInSuccess'
@@ -543,6 +544,11 @@ const earnScreens = (Navigator: typeof Stack) => (
     <Navigator.Screen
       name={Screens.EarnDepositConfirmationScreen}
       component={EarnDepositConfirmationScreen}
+      options={noHeader}
+    />
+    <Navigator.Screen
+      name={Screens.EarnWithdrawConfirmationScreen}
+      component={EarnWithdrawConfirmationScreen}
       options={noHeader}
     />
     <Navigator.Screen
