@@ -23,6 +23,17 @@ import variables from 'src/styles/variables'
 import { TokenBalance } from 'src/tokens/slice'
 import Logger from 'src/utils/Logger'
 
+function sumAmounts(
+  amounts: FilteredAmount[],
+  type: keyof Pick<FilteredAmount, 'tokenAmount' | 'localAmount'>
+) {
+  let sum = new BigNumber(0)
+  for (const amount of amounts) {
+    sum = amount.isDeductible ? sum.minus(amount[type]!) : sum.plus(amount[type]!)
+  }
+  return sum
+}
+
 export function ReviewTransaction(props: {
   title: string
   children: ReactNode
@@ -326,40 +337,9 @@ export function ReviewDetailsItemTotalValue({
     (amount) => !!amount.tokenInfo && !!amount.tokenAmount
   ) as FilteredAmount[]
 
-  // if all the amounts are "broken" (which should never happen) – then don't return anything
+  // if all the amounts are "broken" (which should never happen) then don't return anything
   if (filteredAmounts.length === 0) {
     return null
-  }
-
-  // if there's a single amount then no calculations needed and we show it as is
-  if (filteredAmounts.length === 1) {
-    const amount = filteredAmounts[0]
-
-    // if fiat amount is available then show full amount
-    if (amount.localAmount) {
-      return (
-        <ReviewDetailsItemTokenValue
-          approx={approx}
-          tokenAmount={amount.tokenAmount}
-          localAmount={amount.localAmount}
-          tokenInfo={amount.tokenInfo}
-          localCurrencySymbol={localCurrencySymbol}
-        >
-          <Text style={styles.totalLocalAmount} />
-        </ReviewDetailsItemTokenValue>
-      )
-    }
-
-    // otherwise only show the token amount
-    return approx
-      ? t('tokenAmountApprox', {
-          tokenAmount: formatValueToDisplay(amount.tokenAmount),
-          tokenSymbol: amount.tokenInfo.symbol,
-        })
-      : t('tokenAmount', {
-          tokenAmount: formatValueToDisplay(amount.tokenAmount),
-          tokenSymbol: amount.tokenInfo.symbol,
-        })
   }
 
   /**
@@ -368,8 +348,8 @@ export function ReviewDetailsItemTotalValue({
    * there can be various variations of different tokens with variable availability of fiat prices.
    * Based on that, we need to detect the kind of variation and format it accordingly.
    */
-  const grouped = groupBy(filteredAmounts, (amount) => amount.tokenInfo.tokenId)
-  const tokenIds = Object.keys(grouped)
+  const amountsGroupedByTokenId = groupBy(filteredAmounts, (amount) => amount.tokenInfo.tokenId)
+  const tokenIds = Object.keys(amountsGroupedByTokenId)
   const sameToken = tokenIds.length === 1
   const allTokensHaveLocalPrice = filteredAmounts.every((amount) => !!amount.localAmount)
 
@@ -379,17 +359,8 @@ export function ReviewDetailsItemTotalValue({
    */
   if (sameToken && allTokensHaveLocalPrice) {
     const tokenInfo = filteredAmounts[0].tokenInfo
-    const tokenAmount = filteredAmounts.reduce(
-      (acc, amount) =>
-        amount.isDeductible ? acc.minus(amount.tokenAmount) : acc.plus(amount.tokenAmount),
-      new BigNumber(0)
-    )
-    const localAmount = filteredAmounts.reduce(
-      (acc, amount) =>
-        amount.isDeductible ? acc.minus(amount.localAmount!) : acc.plus(amount.localAmount!),
-      new BigNumber(0)
-    )
-
+    const tokenAmount = sumAmounts(filteredAmounts, 'tokenAmount')
+    const localAmount = sumAmounts(filteredAmounts, 'localAmount')
     return (
       <ReviewDetailsItemTokenValue
         approx={approx}
@@ -409,11 +380,7 @@ export function ReviewDetailsItemTotalValue({
    */
   if (sameToken && !allTokensHaveLocalPrice) {
     const tokenSymbol = filteredAmounts[0].tokenInfo.symbol
-    const tokenAmount = filteredAmounts.reduce(
-      (acc, amount) =>
-        amount.isDeductible ? acc.minus(amount.tokenAmount) : acc.plus(amount.tokenAmount),
-      new BigNumber(0)
-    )
+    const tokenAmount = sumAmounts(filteredAmounts, 'tokenAmount')
     const displayTokenAmount = formatValueToDisplay(tokenAmount)
     return approx
       ? t('tokenAmountApprox', { tokenAmount: displayTokenAmount, tokenSymbol })
@@ -425,11 +392,7 @@ export function ReviewDetailsItemTotalValue({
    * to only show the sum of all fiat amounts like "$1.00"
    */
   if (!sameToken && allTokensHaveLocalPrice) {
-    const localAmount = filteredAmounts.reduce(
-      (acc, amount) =>
-        amount.isDeductible ? acc.minus(amount.localAmount!) : acc.plus(amount.localAmount!),
-      new BigNumber(0)
-    )
+    const localAmount = sumAmounts(filteredAmounts, 'localAmount')
     const displayLocalAmount = formatValueToDisplay(localAmount)
     return approx
       ? t('localAmountApprox', { localAmount: displayLocalAmount, localCurrencySymbol })
@@ -438,14 +401,22 @@ export function ReviewDetailsItemTotalValue({
 
   /**
    * At this point we can be sure that we have multiple different tokens some/all of which don't
-   * have available fiat prices – then show the value as a written for of a sum of all the token
-   * amounts like "1.00 USDC + 0.0003 ETH"
+   * have available fiat prices. In this case we have to do the following:
+   *   1. Sum all amounts on a per-token basis.
+   *   2. Show each token summed amount in a column in a format like "1.00 USDC + 0.0003 ETH - 1 CELO".
+   *      If the sum for a token is negative – show minus sign instead of plus.
    */
-  return filteredAmounts
-    .map((amount) =>
-      t('tokenAmount', { tokenAmount: amount.tokenAmount, tokenSymbol: amount.tokenInfo.symbol })
-    )
-    .join('\n+ ')
+  return Object.values(amountsGroupedByTokenId)
+    .map((tokenAmounts, idx) => {
+      const sum = sumAmounts(tokenAmounts, 'tokenAmount')
+      const sign = sum.lt(0) ? '- ' : '+ '
+      const tokenAmount = t('tokenAmount', {
+        tokenAmount: sum.abs(),
+        tokenSymbol: tokenAmounts[0].tokenInfo.symbol,
+      })
+      return `${idx === 0 ? '' : sign}${tokenAmount}`
+    })
+    .join('\n')
 }
 
 export function ReviewParagraph(props: { children: ReactNode }) {

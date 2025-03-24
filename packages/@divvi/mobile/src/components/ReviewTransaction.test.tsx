@@ -9,7 +9,7 @@ import { typeScale } from 'src/styles/fonts'
 import { TokenBalance } from 'src/tokens/slice'
 import Logger from 'src/utils/Logger'
 import { createMockStore } from 'test/utils'
-import { mockCeloTokenId, mockCusdTokenId, mockTokenBalances } from 'test/values'
+import { mockCeloTokenId, mockCeurTokenId, mockCusdTokenId, mockTokenBalances } from 'test/values'
 import {
   ReviewContent,
   ReviewDetailsItem,
@@ -151,50 +151,36 @@ describe('ReviewDetailsItem', () => {
   })
 
   it.each([
-    { fontSize: 'small', type: 'plain-text', amounts: undefined, font: typeScale.bodySmall },
-    { fontSize: 'medium', type: 'plain-text', amounts: undefined, font: typeScale.bodyMedium },
-    { fontSize: undefined, type: 'plain-text', amounts: undefined, font: typeScale.bodyMedium },
-    {
-      fontSize: 'small',
-      type: 'total-token-amount',
-      amounts: [],
-      font: typeScale.labelSemiBoldSmall,
-    },
-    {
-      fontSize: 'medium',
-      type: 'total-token-amount',
-      amounts: [],
-      font: typeScale.labelSemiBoldMedium,
-    },
-    {
-      fontSize: undefined,
-      type: 'total-token-amount',
-      amounts: [],
-      font: typeScale.labelSemiBoldMedium,
-    },
-  ] as (Pick<ReviewDetailsItemProps, 'fontSize' | 'type'> & {
-    amounts: [] | undefined
-    font: any
-  })[])('renders correct font style for $fontSize $type', ({ fontSize, type, font, amounts }) => {
-    const tree = render(
-      <ReviewDetailsItem
-        fontSize={fontSize}
-        type={type}
-        testID="DetailsItem"
-        label="Label"
-        amounts={amounts}
-        {...({} as any)}
-      />
-    )
+    { fontSize: 'small', type: 'plain-text', font: typeScale.bodySmall },
+    { fontSize: 'medium', type: 'plain-text', font: typeScale.bodyMedium },
+    { fontSize: undefined, type: 'plain-text', font: typeScale.bodyMedium },
+    { fontSize: 'small', type: 'total-token-amount', font: typeScale.labelSemiBoldSmall },
+    { fontSize: 'medium', type: 'total-token-amount', font: typeScale.labelSemiBoldMedium },
+    { fontSize: undefined, type: 'total-token-amount', font: typeScale.labelSemiBoldMedium },
+  ] as Array<Pick<ReviewDetailsItemProps, 'fontSize' | 'type'> & { font: any }>)(
+    'renders correct font style for $fontSize size $type',
+    ({ fontSize, type, font }) => {
+      const tree = render(
+        <ReviewDetailsItem
+          fontSize={fontSize}
+          type={type}
+          testID="DetailsItem"
+          label="Label"
+          amounts={[]}
+          {...({} as any)}
+        />
+      )
 
-    expect(tree.getByTestId('DetailsItem/Label')).toHaveStyle(font)
-    expect(tree.getByTestId('DetailsItem/Value')).toHaveStyle(font)
-  })
+      expect(tree.getByTestId('DetailsItem/Label')).toHaveStyle(font)
+      expect(tree.getByTestId('DetailsItem/Value')).toHaveStyle(font)
+    }
+  )
 })
 
 describe('ReviewDetailsItemTotalValue', () => {
   const celoToken = mockTokenBalances[mockCeloTokenId] as unknown as TokenBalance
   const cUSDToken = mockTokenBalances[mockCusdTokenId] as unknown as TokenBalance
+  const cEURToken = mockTokenBalances[mockCeurTokenId] as unknown as TokenBalance
   it.each([
     {
       amounts: [
@@ -203,7 +189,6 @@ describe('ReviewDetailsItemTotalValue', () => {
           tokenAmount: new BigNumber(10),
           localAmount: new BigNumber(10),
         },
-        { tokenInfo: undefined, tokenAmount: undefined, localAmount: null },
       ],
       title:
         'returns the token and fiat amount when fee info is missing and local price is available',
@@ -217,7 +202,6 @@ describe('ReviewDetailsItemTotalValue', () => {
           tokenAmount: new BigNumber(10),
           localAmount: null,
         },
-        { tokenInfo: undefined, tokenAmount: undefined, localAmount: null },
       ],
       title:
         'returns only the token amount when fee info is missing and no local price is available',
@@ -244,12 +228,12 @@ describe('ReviewDetailsItemTotalValue', () => {
     {
       amounts: [
         {
-          tokenInfo: { ...celoToken, priceUsd: new BigNumber(1) },
+          tokenInfo: { ...celoToken, priceUsd: null },
           tokenAmount: new BigNumber(10),
           localAmount: null,
         },
         {
-          tokenInfo: { ...celoToken, priceUsd: new BigNumber(1) },
+          tokenInfo: { ...celoToken, priceUsd: null },
           tokenAmount: new BigNumber(0.5),
           localAmount: null,
         },
@@ -278,12 +262,12 @@ describe('ReviewDetailsItemTotalValue', () => {
     {
       amounts: [
         {
-          tokenInfo: { ...cUSDToken, priceUsd: new BigNumber(1) },
+          tokenInfo: { ...cUSDToken, priceUsd: null },
           tokenAmount: new BigNumber(10),
           localAmount: null,
         },
         {
-          tokenInfo: { ...celoToken, priceUsd: new BigNumber(1) },
+          tokenInfo: { ...celoToken, priceUsd: null },
           tokenAmount: new BigNumber(0.5),
           localAmount: null,
         },
@@ -292,6 +276,111 @@ describe('ReviewDetailsItemTotalValue', () => {
         'returns multiple token amounts when token and fee token are different and no local prices available',
       result:
         'tokenAmount, {"tokenAmount":"10","tokenSymbol":"cUSD"} + tokenAmount, {"tokenAmount":"0.5","tokenSymbol":"CELO"}',
+    },
+    {
+      amounts: [
+        {
+          tokenInfo: { ...cUSDToken, priceUsd: null },
+          tokenAmount: new BigNumber(10),
+          localAmount: new BigNumber(10),
+        },
+        {
+          isDeductible: true,
+          tokenInfo: { ...celoToken, priceUsd: null },
+          tokenAmount: new BigNumber(0.5),
+          localAmount: new BigNumber(0.5),
+        },
+      ],
+      title:
+        'deducts the fee local amount from the input local amount when fiat price is available for both and shows the final fiat amount',
+      result: 'localAmount, {"localAmount":"9.50","localCurrencySymbol":"₱"}',
+    },
+    {
+      amounts: [
+        {
+          tokenInfo: { ...cUSDToken, priceUsd: null },
+          tokenAmount: new BigNumber(10),
+          localAmount: new BigNumber(10),
+        },
+        {
+          isDeductible: true,
+          tokenInfo: { ...celoToken, priceUsd: null },
+          tokenAmount: new BigNumber(0.5),
+          localAmount: null,
+        },
+      ],
+      title:
+        'shows token amounts with a minus sign when fiat price is unavailable for any of the amounts',
+      result:
+        'tokenAmount, {"tokenAmount":"10","tokenSymbol":"cUSD"} - tokenAmount, {"tokenAmount":"0.5","tokenSymbol":"CELO"}',
+    },
+    {
+      amounts: [
+        {
+          tokenInfo: { ...cUSDToken, priceUsd: null },
+          tokenAmount: new BigNumber(10),
+          localAmount: new BigNumber(10),
+        },
+        {
+          isDeductible: true,
+          tokenInfo: { ...celoToken, priceUsd: null },
+          tokenAmount: new BigNumber(1.5),
+          localAmount: new BigNumber(1.5),
+        },
+        {
+          tokenInfo: { ...cEURToken, priceUsd: null },
+          tokenAmount: new BigNumber(5.5),
+          localAmount: new BigNumber(5.5),
+        },
+        {
+          tokenInfo: { ...cEURToken, priceUsd: null },
+          tokenAmount: new BigNumber(1.5),
+          localAmount: new BigNumber(1.5),
+        },
+        {
+          tokenInfo: { ...cEURToken, priceUsd: null },
+          tokenAmount: new BigNumber(3),
+          localAmount: new BigNumber(3),
+        },
+      ],
+      title:
+        'properly sums all fiat amounts and shows the single final fiat amount that includes both addition and deduction',
+      result: 'localAmount, {"localAmount":"18.50","localCurrencySymbol":"₱"}',
+    },
+    {
+      amounts: [
+        {
+          tokenInfo: { ...cUSDToken, priceUsd: null },
+          tokenAmount: new BigNumber(10),
+          localAmount: null,
+        },
+        {
+          isDeductible: true,
+          tokenInfo: { ...celoToken, priceUsd: null },
+          tokenAmount: new BigNumber(1.5),
+          localAmount: null,
+        },
+        {
+          tokenInfo: { ...cEURToken, priceUsd: null },
+          tokenAmount: new BigNumber(5.5),
+          localAmount: null,
+        },
+        {
+          isDeductible: true,
+          tokenInfo: { ...cEURToken, priceUsd: null },
+          tokenAmount: new BigNumber(1.5),
+          localAmount: null,
+        },
+        {
+          tokenInfo: { ...cEURToken, priceUsd: null },
+          tokenAmount: new BigNumber(3),
+          localAmount: null,
+        },
+      ],
+      title:
+        'properly sums amounts on a per-token basis and shows the sum of token amounts with plus or minus sign based on a final token amount for that token',
+      result:
+        'tokenAmount, {"tokenAmount":"10","tokenSymbol":"cUSD"} - tokenAmount, {"tokenAmount":"1.5","tokenSymbol":"CELO"} + tokenAmount, {"tokenAmount":"7","tokenSymbol":"cEUR"}',
     },
   ])('$title', ({ amounts, result }) => {
     const tree = render(
