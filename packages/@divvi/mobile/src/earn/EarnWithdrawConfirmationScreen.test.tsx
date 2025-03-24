@@ -1,18 +1,10 @@
 import { fireEvent, render, within } from '@testing-library/react-native'
-import BigNumber from 'bignumber.js'
 import React from 'react'
 import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
 import EarnWithdrawConfirmationScreen from 'src/earn/EarnWithdrawConfirmationScreen'
-import {
-  prepareClaimTransactions,
-  prepareWithdrawAndClaimTransactions,
-  prepareWithdrawTransactions,
-} from 'src/earn/prepareTransactions'
-import { isGasSubsidizedForNetwork } from 'src/earn/utils'
-import type { PreparedTransactionsPossible } from 'src/public'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import { NetworkId } from 'src/transactions/types'
@@ -21,7 +13,6 @@ import { createMockStore } from 'test/utils'
 import {
   mockAaveArbUsdcAddress,
   mockAaveArbUsdcTokenId,
-  mockArbEthTokenId,
   mockArbUsdcTokenId,
   mockEarnPositions,
   mockPositions,
@@ -44,13 +35,6 @@ const mockStoreTokens = {
   },
 }
 
-const store = createMockStore({
-  tokens: mockStoreTokens,
-  positions: {
-    positions: [...mockPositions, ...mockRewardsPositions],
-  },
-})
-
 jest.mock('src/statsig')
 jest.mock('src/earn/utils', () => ({
   ...(jest.requireActual('src/earn/utils') as any),
@@ -58,52 +42,23 @@ jest.mock('src/earn/utils', () => ({
 }))
 jest.mock('src/earn/prepareTransactions')
 
-const mockPreparedTransaction: PreparedTransactionsPossible = {
-  type: 'possible' as const,
-  transactions: [
-    {
-      from: '0xfrom',
-      to: '0xto',
-      data: '0xdata',
-      gas: BigInt(5e16),
-      _baseFeePerGas: BigInt(1),
-      maxFeePerGas: BigInt(1),
-      maxPriorityFeePerGas: undefined,
-    },
-    {
-      from: '0xfrom',
-      to: '0xto',
-      data: '0xdata',
-      gas: BigInt(1e16),
-      _baseFeePerGas: BigInt(1),
-      maxFeePerGas: BigInt(1),
-      maxPriorityFeePerGas: undefined,
-    },
-  ],
-  feeCurrency: {
-    ...mockTokenBalances[mockArbEthTokenId],
-    balance: new BigNumber(10),
-    priceUsd: new BigNumber(1),
-    lastKnownPriceUsd: new BigNumber(1),
-  },
-}
-
 describe('EarnWithdrawConfirmationScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    jest.mocked(prepareWithdrawAndClaimTransactions).mockResolvedValue(mockPreparedTransaction)
-    jest.mocked(prepareClaimTransactions).mockResolvedValue(mockPreparedTransaction)
-    jest.mocked(prepareWithdrawTransactions).mockResolvedValue(mockPreparedTransaction)
     jest
       .mocked(getFeatureGate)
       .mockImplementation(
         (gateName: StatsigFeatureGates) => gateName === StatsigFeatureGates.SHOW_POSITIONS
       )
-    jest.mocked(isGasSubsidizedForNetwork).mockReturnValue(false)
-    store.clearActions()
   })
 
   it('renders proper structure for exit', () => {
+    const store = createMockStore({
+      tokens: mockStoreTokens,
+      positions: {
+        positions: [...mockPositions, ...mockRewardsPositions],
+      },
+    })
     const { getByTestId } = render(
       <Provider store={store}>
         <MockedNavigator
@@ -161,6 +116,12 @@ describe('EarnWithdrawConfirmationScreen', () => {
   })
 
   it('renders proper structure for claim-rewards', () => {
+    const store = createMockStore({
+      tokens: mockStoreTokens,
+      positions: {
+        positions: [...mockPositions, ...mockRewardsPositions],
+      },
+    })
     const { getByTestId, queryByTestId } = render(
       <Provider store={store}>
         <MockedNavigator
@@ -207,6 +168,12 @@ describe('EarnWithdrawConfirmationScreen', () => {
   })
 
   it('renders proper structure for partial withdrawal when there are no rewards to claim', () => {
+    const store = createMockStore({
+      tokens: mockStoreTokens,
+      positions: {
+        positions: [...mockPositions, ...mockRewardsPositions],
+      },
+    })
     const inputTokenAmount = (10.75 * +mockEarnPositions[0].pricePerShare) / 2
     const { getByTestId, queryByTestId } = render(
       <Provider store={store}>
@@ -278,15 +245,21 @@ describe('EarnWithdrawConfirmationScreen', () => {
       },
     },
   ])('$mode', ({ mode, tokenAmount, params }) => {
+    beforeEach(() => {})
     const pool = mockEarnPositions[0]
     const expectedAnalyticsProperties = {
       mode,
       tokenAmount,
       depositTokenId: mockArbUsdcTokenId,
       networkId: NetworkId['arbitrum-sepolia'],
-      providerId: mockEarnPositions[0].appId,
-      poolId: mockEarnPositions[0].positionId,
-      rewards: [],
+      providerId: pool.appId,
+      poolId: pool.positionId,
+      rewards: [
+        {
+          tokenId: mockRewardsPositions[1].tokens[0].tokenId,
+          amount: mockRewardsPositions[1].tokens[0].balance,
+        },
+      ],
     }
 
     it.each([
@@ -303,7 +276,18 @@ describe('EarnWithdrawConfirmationScreen', () => {
         result: pool.dataProps.termsUrl!,
       },
     ])('$title', ({ manageUrl, termsUrl, result }) => {
-      const mockStore = createMockStore({ tokens: { tokenBalances: mockTokenBalances } })
+      const mockStore = createMockStore({
+        tokens: { tokenBalances: mockTokenBalances },
+        positions: {
+          positions: [
+            ...mockPositions,
+            ...mockRewardsPositions.map((pos) => ({
+              ...pos,
+              tokens: pos.tokens.map((token) => ({ ...token })),
+            })),
+          ],
+        },
+      })
       const { getByTestId } = render(
         <Provider store={mockStore}>
           <MockedNavigator

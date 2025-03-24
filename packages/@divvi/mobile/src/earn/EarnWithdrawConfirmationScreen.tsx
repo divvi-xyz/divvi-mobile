@@ -30,13 +30,26 @@ type Props = NativeStackScreenProps<StackParamList, Screens.EarnWithdrawConfirma
 
 function useRewards(params: Props['route']['params']) {
   const { rewardsPositionIds } = params.pool.dataProps
+  const usdToLocalRate = useSelector(usdToLocalCurrencyRateSelector)
   const rewardsPositions = useSelector(positionsWithBalanceSelector).filter((position) =>
     rewardsPositionIds?.includes(position.positionId)
   )
   const tokensInfo = useTokensInfo(rewardsPositions.map((position) => position.tokens[0]?.tokenId))
   const tokens = useMemo(
-    () => rewardsPositions.flatMap((position) => position.tokens),
-    [rewardsPositions]
+    () =>
+      rewardsPositions
+        .flatMap((position) => position.tokens)
+        .map((token) => {
+          const tokenAmount = new BigNumber(token.balance)
+          const tokenInfo = tokensInfo.find((info) => info?.tokenId === token.tokenId)
+          const localAmount = convertTokenToLocalAmount({
+            tokenAmount,
+            tokenInfo,
+            usdToLocalRate,
+          })
+          return { tokenAmount, tokenInfo, localAmount, balance: token.balance }
+        }),
+    [rewardsPositions, tokensInfo, usdToLocalRate]
   )
 
   return { tokens, tokensInfo }
@@ -59,7 +72,6 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const providerUrl = params.pool.dataProps.manageUrl ?? params.pool.dataProps.termsUrl
-  const usdToLocalRate = useSelector(usdToLocalCurrencyRateSelector)
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const rewards = useRewards(params)
   const withdraw = useWithdrawAmountInDepositToken(params)
@@ -78,11 +90,13 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
         networkId: withdraw.withdrawToken.networkId,
         providerId: params.pool.appId,
         poolId: params.pool.positionId,
-        rewards: rewards.tokens.map((token) => ({
-          amount: token.balance.toString(),
-          tokenId: token.tokenId,
-        })),
         mode: params.mode,
+        rewards: rewards.tokens
+          .filter((token) => !!token.tokenInfo)
+          .map((token) => ({
+            amount: token.balance,
+            tokenId: token.tokenInfo!.tokenId,
+          })),
       })
     }
 
@@ -116,28 +130,22 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
             params.mode === 'exit' ||
             params.pool.dataProps.withdrawalIncludesClaim) &&
             rewards.tokens.map((rewardToken, idx) => {
-              const tokenAmount = new BigNumber(rewardToken.balance)
-              const tokenInfo = rewards.tokensInfo.find(
-                (token) => token?.tokenId === rewardToken.tokenId
-              )
-              const localAmount = convertTokenToLocalAmount({
-                tokenAmount,
-                tokenInfo,
-                usdToLocalRate,
-              })
+              if (!rewardToken.tokenInfo) return null
               return (
                 <ReviewSummaryItem
                   key={idx}
                   testID={`EarnWithdrawConfirmation/RewardClaim-${idx}`}
                   label={t('earnFlow.withdrawConfirmation.rewardClaiming')}
-                  icon={<TokenIcon token={rewardToken} />}
+                  icon={<TokenIcon token={rewardToken.tokenInfo} />}
                   primaryValue={t('tokenAmount', {
-                    tokenAmount: formatValueToDisplay(tokenAmount),
-                    tokenSymbol: tokenInfo?.symbol,
+                    tokenAmount: formatValueToDisplay(rewardToken.tokenAmount),
+                    tokenSymbol: rewardToken.tokenInfo?.symbol,
                   })}
                   secondaryValue={t('localAmount', {
-                    context: localAmount ? undefined : 'noFiatPrice',
-                    localAmount: localAmount ? formatValueToDisplay(localAmount) : '',
+                    context: rewardToken.localAmount ? undefined : 'noFiatPrice',
+                    localAmount: rewardToken.localAmount
+                      ? formatValueToDisplay(rewardToken.localAmount)
+                      : '',
                     localCurrencySymbol,
                   })}
                 />
