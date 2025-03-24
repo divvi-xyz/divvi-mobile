@@ -245,7 +245,6 @@ describe('EarnWithdrawConfirmationScreen', () => {
       },
     },
   ])('$mode', ({ mode, tokenAmount, params }) => {
-    beforeEach(() => {})
     const pool = mockEarnPositions[0]
     const expectedAnalyticsProperties = {
       mode,
