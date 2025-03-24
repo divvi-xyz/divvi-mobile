@@ -277,15 +277,7 @@ describe('EarnWithdrawConfirmationScreen', () => {
     ])('$title', ({ manageUrl, termsUrl, result }) => {
       const mockStore = createMockStore({
         tokens: { tokenBalances: mockTokenBalances },
-        positions: {
-          positions: [
-            ...mockPositions,
-            ...mockRewardsPositions.map((pos) => ({
-              ...pos,
-              tokens: pos.tokens.map((token) => ({ ...token })),
-            })),
-          ],
-        },
+        positions: { positions: [...mockPositions, ...mockRewardsPositions] },
       })
       const { getByTestId } = render(
         <Provider store={mockStore}>
