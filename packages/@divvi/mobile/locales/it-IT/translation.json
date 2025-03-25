@@ -1005,7 +1005,7 @@
   "request": "Richiedi",
   "requestToken": "Richiedi {{token}}",
   "requestSent": "Richiesta inviata",
-  "from": "da",
+  "from": "Da",
   "verificationMessage": "Hai pagato una commissione per collegare il tuo conto. Ti diamo il benvenuto in {{appName}}.",
   "receivedAmountFromCelo": "Hai ricevuto questo importo dal faucet.",
   "dollarsSent": "Dollari inviati",
@@ -2635,6 +2635,13 @@
       "depositAndEarnings": "Deposito e guadagni",
       "myPools": "I miei pool",
       "explore": "Esplora aperti"
+    },
+    "withdrawConfirmation": {
+      "title": "Recensione Ritiro",
+      "rewardClaiming": "Richiesta di ricompensa",
+      "withdrawing": "Ritiro",
+      "pool": "{{providerName}} Piscina",
+      "yieldRate": "{{apy}}% tasso di rendimento stimato"
     },
     "depositConfirmation": {
       "title": "Recensione Deposito",
