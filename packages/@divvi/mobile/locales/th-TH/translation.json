@@ -2634,6 +2634,13 @@
       "myPools": "พูลของฉัน",
       "explore": "สำรวจที่เปิดอยู่"
     },
+    "withdrawConfirmation": {
+      "title": "Review Withdraw",
+      "rewardClaiming": "Reward Claiming",
+      "withdrawing": "Withdrawing",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% est. yield rate"
+    },
     "depositConfirmation": {
       "title": "Review Deposit",
       "depositing": "Depositing",
