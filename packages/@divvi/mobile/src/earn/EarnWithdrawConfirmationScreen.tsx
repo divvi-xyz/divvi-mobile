@@ -58,11 +58,13 @@ function useRewards(params: Props['route']['params']) {
 function useWithdrawAmountInDepositToken(params: Props['route']['params']) {
   const depositToken = useTokenInfo(params.pool.dataProps.depositTokenId)
   const withdrawToken = useTokenInfo(params.pool.dataProps.withdrawTokenId)
-  const tokenAmount = useMemo(() => {
-    return params.mode === 'withdraw'
-      ? new BigNumber(params.inputTokenAmount)
-      : getEarnPositionBalanceValues({ pool: params.pool }).poolBalanceInDepositToken
-  }, [params])
+  const tokenAmount = useMemo(
+    () =>
+      params.mode === 'withdraw'
+        ? new BigNumber(params.inputTokenAmount)
+        : getEarnPositionBalanceValues({ pool: params.pool }).poolBalanceInDepositToken,
+    [params]
+  )
 
   const localAmount = useTokenToLocalAmount(tokenAmount, depositToken?.tokenId)
   return { tokenAmount, localAmount, depositToken, withdrawToken }
@@ -129,14 +131,14 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
           {(params.mode === 'claim-rewards' ||
             params.mode === 'exit' ||
             params.pool.dataProps.withdrawalIncludesClaim) &&
-            rewards.tokens.map((rewardToken, idx) => {
-              if (!rewardToken.tokenInfo) return null
-              return (
+            rewards.tokens
+              .filter((rewardToken) => !!rewardToken.tokenInfo)
+              .map((rewardToken, idx) => (
                 <ReviewSummaryItem
                   key={idx}
                   testID={`EarnWithdrawConfirmation/RewardClaim-${idx}`}
                   label={t('earnFlow.withdrawConfirmation.rewardClaiming')}
-                  icon={<TokenIcon token={rewardToken.tokenInfo} />}
+                  icon={<TokenIcon token={rewardToken.tokenInfo!} />}
                   primaryValue={t('tokenAmount', {
                     tokenAmount: formatValueToDisplay(rewardToken.tokenAmount),
                     tokenSymbol: rewardToken.tokenInfo?.symbol,
@@ -149,8 +151,7 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
                     localCurrencySymbol,
                   })}
                 />
-              )
-            })}
+              ))}
 
           <ReviewSummaryItem
             testID="EarnWithdrawConfirmation/Pool"
