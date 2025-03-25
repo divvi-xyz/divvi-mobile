@@ -1009,7 +1009,7 @@
   "request": "Żądanie",
   "requestToken": "Zażądaj {{token}}",
   "requestSent": "Żądanie wysłane",
-  "from": "od",
+  "from": "Od",
   "verificationMessage": "Opłata za podłączenie konta została przesłana. Witaj w aplikacji {{appName}}!",
   "receivedAmountFromCelo": "Otrzymujesz tę kwotę ze strony Faucet!",
   "dollarsSent": "Przesłane dolary",
@@ -2639,6 +2639,13 @@
       "depositAndEarnings": "Wpłaty i zarobki",
       "myPools": "Moje pule",
       "explore": "Przeglądaj otwarte"
+    },
+    "withdrawConfirmation": {
+      "title": "Przejrzyj wypłatę",
+      "rewardClaiming": "Odbieranie nagród",
+      "withdrawing": "Wycofanie się",
+      "pool": "{{providerName}} Basen",
+      "yieldRate": "{{apy}}% est. stopa zwrotu"
     },
     "depositConfirmation": {
       "title": "Przegląd depozytu",
