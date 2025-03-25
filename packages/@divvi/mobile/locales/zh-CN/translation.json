@@ -2634,6 +2634,13 @@
       "myPools": "我的池",
       "explore": "探索打开"
     },
+    "withdrawConfirmation": {
+      "title": "审查提款",
+      "rewardClaiming": "奖励申请",
+      "withdrawing": "退出",
+      "pool": "{{providerName}} 游泳池",
+      "yieldRate": "{{apy}}估计收益率"
+    },
     "depositConfirmation": {
       "title": "审查存款",
       "depositing": "存款",
