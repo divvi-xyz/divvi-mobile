@@ -1005,7 +1005,7 @@
   "request": "Solicitar",
   "requestToken": "Solicitar {{token}}",
   "requestSent": "Solicitud enviada",
-  "from": "de",
+  "from": "De",
   "verificationMessage": "Pagaste la tarifa de conexión. ¡Te damos la bienvenida a {{appName}}!",
   "receivedAmountFromCelo": "¡Recibiste esta cantidad del Faucet!",
   "dollarsSent": "Dólares enviados",
@@ -2635,6 +2635,13 @@
       "depositAndEarnings": "Depósitos y ganancias",
       "myPools": "Mis pools",
       "explore": "Explorar opciones"
+    },
+    "withdrawConfirmation": {
+      "title": "Revisión Retirada",
+      "rewardClaiming": "Reclamación de recompensas",
+      "withdrawing": "Retirada de",
+      "pool": "{{providerName}} Piscina",
+      "yieldRate": "{{apy}}% de tasa de rendimiento est."
     },
     "depositConfirmation": {
       "title": "Depósito de revisión",
