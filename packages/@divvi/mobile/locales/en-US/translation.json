@@ -1005,7 +1005,7 @@
   "request": "Request",
   "requestToken": "Request {{token}}",
   "requestSent": "Request Sent",
-  "from": "from",
+  "from": "From",
   "verificationMessage": "You paid a fee to connect your account. Welcome to {{appName}}!",
   "receivedAmountFromCelo": "You received this amount from the Faucet!",
   "dollarsSent": "Dollars Sent",
@@ -2635,6 +2635,13 @@
       "depositAndEarnings": "Deposit & Earnings",
       "myPools": "My Pools",
       "explore": "Explore Open"
+    },
+    "withdrawConfirmation": {
+      "title": "Review Withdraw",
+      "rewardClaiming": "Reward Claiming",
+      "withdrawing": "Withdrawing",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% est. yield rate"
     },
     "depositConfirmation": {
       "title": "Review Deposit",
