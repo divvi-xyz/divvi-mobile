@@ -1009,7 +1009,7 @@
   "request": "Запит",
   "requestToken": "Запит {{token}}",
   "requestSent": "Запит надіслано",
-  "from": "від",
+  "from": "Від",
   "verificationMessage": "Ви отримали плату за під'єднання вашого облікового запису. Вітаємо в {{appName}}!",
   "receivedAmountFromCelo": "Ви отримали цю суму від Faucet!",
   "dollarsSent": "Доларів надіслано",
@@ -2639,6 +2639,13 @@
       "depositAndEarnings": "Депозит і прибуток",
       "myPools": "Мої пули",
       "explore": "Переглянути"
+    },
+    "withdrawConfirmation": {
+      "title": "Відгукнутись Вивести",
+      "rewardClaiming": "Отримання винагороди",
+      "withdrawing": "Відкликання",
+      "pool": "{{providerName}} Басейн",
+      "yieldRate": "{{apy}}% ест. ставка дохідності"
     },
     "depositConfirmation": {
       "title": "Депозит для перегляду",
