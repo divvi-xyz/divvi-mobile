@@ -1005,7 +1005,7 @@
   "request": "Demander",
   "requestToken": "Demander {{token}}",
   "requestSent": "Demande envoyée",
-  "from": "de",
+  "from": "De",
   "verificationMessage": "Vous avez payé des frais pour connecter votre compte. Bienvenue sur {{appName}}!",
   "receivedAmountFromCelo": "Vous avez reçu ce montant de la part du Faucet !",
   "dollarsSent": "Dollars envoyés",
@@ -2635,6 +2635,13 @@
       "depositAndEarnings": "Dépôt et gains",
       "myPools": "Mes pools",
       "explore": "Découvrir Open"
+    },
+    "withdrawConfirmation": {
+      "title": "Révision Retrait",
+      "rewardClaiming": "Demande de récompense",
+      "withdrawing": "Retrait",
+      "pool": "{{providerName}} Piscine",
+      "yieldRate": "{{apy}}% taux de rendement est."
     },
     "depositConfirmation": {
       "title": "Dépôt de bilan",
