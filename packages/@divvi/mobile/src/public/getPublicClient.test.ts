@@ -1,6 +1,6 @@
 import { getPublicClient } from './getPublicClient'
 
-// TODO: remove this once when remove DEFAULT_TESTNET
+// TODO: remove this when we remove DEFAULT_TESTNET
 jest.mock('../config', () => ({
   ...jest.requireActual('../config'),
   DEFAULT_TESTNET: 'mainnet',
