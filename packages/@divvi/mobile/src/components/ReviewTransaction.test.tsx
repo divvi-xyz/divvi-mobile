@@ -377,7 +377,6 @@ describe('ReviewDetailsItemTotalValue', () => {
       title: 'shows negative fiat amount for multiple different tokens',
       result: 'localAmount, {"localAmount":"0.60","localCurrencySymbol":"- ₱"}',
     },
-
     {
       amounts: [
         {
