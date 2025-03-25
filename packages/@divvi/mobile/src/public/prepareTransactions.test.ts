@@ -31,7 +31,7 @@ describe('prepareTransactions', () => {
   })
 
   it('should correctly prepare transactions', async () => {
-    const feeCurrencies = feeCurrenciesSelector(store.getState(), NetworkId['celo-alfajores'])
+    const feeCurrencies = feeCurrenciesSelector(store.getState(), NetworkId['celo-mainnet'])
     const mockPrepareResult = { type: 'possible' } as any
 
     jest.mocked(internalPrepareTransactions).mockResolvedValue(mockPrepareResult)
@@ -46,7 +46,7 @@ describe('prepareTransactions', () => {
     ]
 
     const result = await prepareTransactions({
-      networkId: 'celo-alfajores',
+      networkId: 'celo-mainnet',
       transactionRequests: txRequests,
     })
 
@@ -70,7 +70,7 @@ describe('prepareTransactions', () => {
   it('should throw if no wallet address is found', async () => {
     mockStore.getState.mockImplementation(() => getMockStoreData({ web3: { account: null } }))
     await expect(
-      prepareTransactions({ networkId: 'celo-alfajores', transactionRequests: [] })
+      prepareTransactions({ networkId: 'celo-mainnet', transactionRequests: [] })
     ).rejects.toThrow('Wallet address not found')
   })
 })
