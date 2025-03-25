@@ -1005,7 +1005,7 @@
   "request": "İste",
   "requestToken": "{{token}} iste",
   "requestSent": "İstek gönderildi",
-  "from": "kullanıcısından",
+  "from": "Bu Token’dan",
   "verificationMessage": "Hesabınızı bağlamak için bir ücret ödediniz. {{appName}}'a hoş geldiniz!",
   "receivedAmountFromCelo": "Faucet'ten bu miktarı aldınız!",
   "dollarsSent": "Gönderilen Dolar",
@@ -2635,6 +2635,13 @@
       "depositAndEarnings": "Yatırım ve Kazançlar",
       "myPools": "Havuzlarım",
       "explore": "Açık Havuzları Keşfet"
+    },
+    "withdrawConfirmation": {
+      "title": "Para Çekmeyi İncele",
+      "rewardClaiming": "Ödül Talep Etme",
+      "withdrawing": "Geri çekilme",
+      "pool": "{{providerName}} Havuz",
+      "yieldRate": "{{apy}}tahmini getiri oranı"
     },
     "depositConfirmation": {
       "title": "Depozitoyu İncele",
