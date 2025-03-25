@@ -8,7 +8,6 @@ import {
   navigate,
   navigateBack,
   navigateHome,
-  navigateHomeAndThenToScreen,
   navigationRef,
   navigatorIsReadyRef,
 } from 'src/navigator/NavigationService'
@@ -21,7 +20,7 @@ const TestScreen = ({ route }: NativeStackScreenProps<ParamListBase>) => (
     <Text>Screen {route.name}</Text>
     <Button onPress={() => navigateBack()} text="Back" />
     <Button onPress={() => navigate(Screens.WithdrawSpend)} text="Go to Withdraw Spend" />
-    <Button onPress={() => navigateHomeAndThenToScreen(Screens.Profile)} text="Go to Profile" />
+    <Button onPress={() => navigate(Screens.Profile)} text="Go to Profile" />
     <Button onPress={() => navigateHome()} text="Go To Home" />
   </View>
 )
@@ -71,16 +70,5 @@ describe('NavigationService', () => {
     await waitFor(() => expect(getByText('Screen WithdrawSpend')).toBeTruthy())
     fireEvent.press(getByText('Back'))
     await waitFor(() => expect(getByText('Screen Profile')).toBeTruthy())
-  })
-
-  it('navigateHomeAndThenToScreen works correctly', async () => {
-    const { getByText } = render(<MockedNavigator />)
-
-    fireEvent.press(getByText('Go to Withdraw Spend'))
-    await waitFor(() => expect(getByText('Screen WithdrawSpend')).toBeTruthy())
-    fireEvent.press(getByText('Go to Profile'))
-    await waitFor(() => expect(getByText('Screen Profile')).toBeTruthy())
-    fireEvent.press(getByText('Back'))
-    await waitFor(() => expect(getByText('Screen TabNavigator')).toBeTruthy())
   })
 })

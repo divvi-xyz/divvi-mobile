@@ -19,7 +19,7 @@ import { clearStoredMnemonic } from 'src/backup/utils'
 import { FIREBASE_ENABLED } from 'src/config'
 import { firebaseSignOut } from 'src/firebase/firebase'
 import { currentLanguageSelector } from 'src/i18n/selectors'
-import { navigate, navigateClearingStack, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateClearingStack } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { userLocationDataSelector } from 'src/networkInfo/selectors'
 import {
@@ -221,11 +221,7 @@ export function* updateStatsigAndNavigate(action: UpdateStatsigAndNavigateAction
   // Wait for wallet address to exist before updating statsig user
   yield* call(getWalletAddress)
   yield* call(patchUpdateStatsigUser)
-  if (action.screen === Screens.TabHome) {
-    navigateHome()
-  } else {
-    navigate(action.screen)
-  }
+  navigate(action.screen)
 }
 
 export function* watchUpdateStatsigAndNavigate() {
