@@ -1005,7 +1005,7 @@
   "request": "Anfragen",
   "requestToken": "{{token}} anfordern",
   "requestSent": "Anfrage gesendet",
-  "from": "von",
+  "from": "Von",
   "verificationMessage": "Du hast eine Gebühr zur Verbindung deines Kontos bezahlt. Willkommen auf {{appName}}!",
   "receivedAmountFromCelo": "Du kannst diesen Betrag vom Faucet erhalten!",
   "dollarsSent": "Gesendete Dollar",
@@ -2635,6 +2635,13 @@
       "depositAndEarnings": "Einzahlungen und Verdienste",
       "myPools": "Meine Pools",
       "explore": "Offen erforschen"
+    },
+    "withdrawConfirmation": {
+      "title": "Überprüfung Zurückziehen",
+      "rewardClaiming": "Belohnung einfordern",
+      "withdrawing": "Rückzug",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% geschätzter Ausbeutesatz"
     },
     "depositConfirmation": {
       "title": "Überprüfung Kaution",
