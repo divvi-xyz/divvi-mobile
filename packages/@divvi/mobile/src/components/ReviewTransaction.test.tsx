@@ -345,7 +345,7 @@ describe('ReviewDetailsItemTotalValue', () => {
           localAmount: new BigNumber(0.5),
         },
       ],
-      title: 'shows negative fiat amount for the same token',
+      title: 'shows negative token and fiat amounts for the same token',
       result:
         'tokenAndLocalAmount, {"tokenAmount":"- 0.40","localAmount":"-0.40","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
     },
