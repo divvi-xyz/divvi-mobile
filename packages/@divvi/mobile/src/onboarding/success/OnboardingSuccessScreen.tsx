@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { getAppConfig } from 'src/appConfig'
-import { background } from 'src/images/Images'
 import Logo from 'src/images/Logo'
 import { nuxNavigationOptionsNoBackButton } from 'src/navigator/Headers'
 import { navigateHome } from 'src/navigator/NavigationService'
@@ -24,21 +23,17 @@ function OnboardingSuccessScreen() {
   const assetsConfig = getAppConfig().themes?.default?.assets
 
   const image = assetsConfig?.onboardingSuccessImage
+  const backgroundImage = assetsConfig?.onboardingSuccessBackgroundImage
 
   return (
     <View style={styles.container}>
+      {!!backgroundImage && <Image source={backgroundImage} style={styles.backgroundImage} />}
       {image ? (
-        <>
-          <Image source={image} />
-          <Text style={styles.textWithImage}>{t('success.message')}</Text>
-        </>
+        <Image source={image} />
       ) : (
-        <>
-          <Image source={background} style={styles.backgroundImage} />
-          <Logo color={colors.contentOnboardingComplete} size={70} />
-          <Text style={styles.textWithBackground}>{t('success.message')}</Text>
-        </>
+        <Logo color={colors.contentOnboardingComplete} size={70} />
       )}
+      <Text style={styles.text}>{t('success.message')}</Text>
     </View>
   )
 }
@@ -50,7 +45,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.backgroundPrimary,
+    backgroundColor: colors.backgroundOnboardingComplete,
   },
   backgroundImage: {
     ...StyleSheet.absoluteFillObject,
@@ -58,24 +53,11 @@ const styles = StyleSheet.create({
     width: undefined,
     height: undefined,
   },
-  textWithImage: {
+  text: {
     ...typeScale.titleLarge,
-    color: colors.accent,
-    marginTop: Spacing.Regular16,
-    marginBottom: 30,
-    textAlign: 'center',
-  },
-  textWithBackground: {
-    ...typeScale.titleSmall,
-    fontSize: 30,
-    lineHeight: 36,
     color: colors.contentOnboardingComplete,
     marginTop: Spacing.Regular16,
-    marginBottom: 30,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 2,
-    shadowOpacity: 1,
-    shadowColor: colors.softShadow,
+    marginBottom: Spacing.Large32,
   },
 })
 

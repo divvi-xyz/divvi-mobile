@@ -13,7 +13,7 @@ import { pincodeTypeSelector } from 'src/account/selectors'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { appUnlock } from 'src/app/actions'
 import { supportedBiometryTypeSelector } from 'src/app/selectors'
-import { background } from 'src/images/Images'
+import { getAppConfig } from 'src/appConfig'
 import Pincode from 'src/pincode/Pincode'
 import { checkPin, getPincodeWithBiometry } from 'src/pincode/authentication'
 import { useDispatch, useSelector } from 'src/redux/hooks'
@@ -64,6 +64,8 @@ function PincodeLock() {
     }
   }, [])
 
+  const assetsConfig = getAppConfig().themes?.default?.assets
+
   const { error: getPinWithBiometryError } = useAsync(async () => {
     if (shouldGetPinWithBiometry) {
       const pin = await getPincodeWithBiometry()
@@ -73,14 +75,20 @@ function PincodeLock() {
 
   if (shouldGetPinWithBiometry && !getPinWithBiometryError) {
     return (
-      <SafeAreaView style={styles.loadingContainer}>
-        <Image testID="BackgroundImage" source={background} style={styles.backgroundImage} />
+      <SafeAreaView style={styles.biometryContainer} testID="BiometryContainer">
+        {!!assetsConfig?.splashBackgroundImage && (
+          <Image
+            testID="BackgroundImage"
+            source={assetsConfig.splashBackgroundImage}
+            style={styles.backgroundImage}
+          />
+        )}
       </SafeAreaView>
     )
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.pinContainer}>
       <Pincode
         title={t('confirmPin.title')}
         errorText={errorText}
@@ -93,13 +101,14 @@ function PincodeLock() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  pinContainer: {
     paddingTop: 20,
     flex: 1,
     backgroundColor: colors.backgroundPrimary,
   },
-  loadingContainer: {
+  biometryContainer: {
     flex: 1,
+    backgroundColor: colors.backgroundSplash,
   },
   backgroundImage: {
     ...StyleSheet.absoluteFillObject,
