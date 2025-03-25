@@ -317,6 +317,70 @@ describe('ReviewDetailsItemTotalValue', () => {
     {
       amounts: [
         {
+          tokenInfo: { ...celoToken, priceUsd: null },
+          tokenAmount: new BigNumber(0.0001),
+          localAmount: null,
+        },
+        {
+          isDeductible: true,
+          tokenInfo: { ...celoToken, priceUsd: null },
+          tokenAmount: new BigNumber(0.5),
+          localAmount: null,
+        },
+      ],
+      title: 'shows negative token amount for the same token',
+      result: 'tokenAmount, {"tokenAmount":"- 0.50","tokenSymbol":"CELO"}',
+    },
+    {
+      amounts: [
+        {
+          tokenInfo: { ...celoToken, priceUsd: null },
+          tokenAmount: new BigNumber(0.1),
+          localAmount: new BigNumber(0.1),
+        },
+        {
+          isDeductible: true,
+          tokenInfo: { ...celoToken, priceUsd: null },
+          tokenAmount: new BigNumber(0.5),
+          localAmount: new BigNumber(0.5),
+        },
+      ],
+      title: 'shows negative fiat amount for the same token',
+      result:
+        'tokenAndLocalAmount, {"tokenAmount":"- 0.40","localAmount":"-0.40","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+    },
+    {
+      amounts: [
+        {
+          tokenInfo: { ...celoToken, priceUsd: null },
+          tokenAmount: new BigNumber(0.1),
+          localAmount: new BigNumber(0.1),
+        },
+        {
+          isDeductible: true,
+          tokenInfo: { ...celoToken, priceUsd: null },
+          tokenAmount: new BigNumber(0.5),
+          localAmount: new BigNumber(0.5),
+        },
+        {
+          isDeductible: true,
+          tokenInfo: { ...cUSDToken, priceUsd: null },
+          tokenAmount: new BigNumber(0.5),
+          localAmount: new BigNumber(0.5),
+        },
+        {
+          tokenInfo: { ...cEURToken, priceUsd: null },
+          tokenAmount: new BigNumber(0.3),
+          localAmount: new BigNumber(0.3),
+        },
+      ],
+      title: 'shows negative fiat amount for multiple different tokens',
+      result: 'localAmount, {"localAmount":"0.60","localCurrencySymbol":"- ₱"}',
+    },
+
+    {
+      amounts: [
+        {
           tokenInfo: { ...cUSDToken, priceUsd: null },
           tokenAmount: new BigNumber(10),
           localAmount: new BigNumber(10),

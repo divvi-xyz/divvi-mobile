@@ -273,9 +273,9 @@ function ReviewDetailsItemTokenValue(props: ReviewDetailsItemTokenValueProps) {
   return (
     <Trans
       i18nKey={props.approx ? 'tokenAndLocalAmountApprox' : 'tokenAndLocalAmount'}
-      context={props.localAmount?.gt(0) ? undefined : 'noFiatPrice'}
+      context={props.localAmount ? undefined : 'noFiatPrice'}
       tOptions={{
-        tokenAmount: `${sign}${formatValueToDisplay(props.tokenAmount)}`,
+        tokenAmount: `${sign}${formatValueToDisplay(props.tokenAmount.abs())}`,
         localAmount: props.localAmount ? formatValueToDisplay(props.localAmount) : '',
         tokenSymbol: props.tokenInfo?.symbol,
         localCurrencySymbol: props.localCurrencySymbol,
