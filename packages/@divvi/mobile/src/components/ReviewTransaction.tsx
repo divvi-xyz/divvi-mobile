@@ -268,12 +268,14 @@ type ReviewDetailsItemTokenValueProps = {
 function ReviewDetailsItemTokenValue(props: ReviewDetailsItemTokenValueProps) {
   if (!props.tokenAmount) return null
 
+  const sign = props.tokenAmount.isNegative() ? '- ' : ''
+
   return (
     <Trans
       i18nKey={props.approx ? 'tokenAndLocalAmountApprox' : 'tokenAndLocalAmount'}
       context={props.localAmount?.gt(0) ? undefined : 'noFiatPrice'}
       tOptions={{
-        tokenAmount: formatValueToDisplay(props.tokenAmount),
+        tokenAmount: `${sign}${formatValueToDisplay(props.tokenAmount)}`,
         localAmount: props.localAmount ? formatValueToDisplay(props.localAmount) : '',
         tokenSymbol: props.tokenInfo?.symbol,
         localCurrencySymbol: props.localCurrencySymbol,
@@ -343,10 +345,9 @@ export function ReviewDetailsItemTotalValue({
   }
 
   /**
-   * At this point we have more than one token amount. Usually, this is an input amount
-   * (e.g. send or earn deposit) and network fee but there can be many more. This implies that
-   * there can be various variations of different tokens with variable availability of fiat prices.
-   * Based on that, we need to detect the kind of variation and format it accordingly.
+   * At this point we have at least one token amount. There can be various variations of different
+   * tokens with variable availability of fiat prices. Based on that, we need to detect the kind of
+   * variation and format it accordingly.
    */
   const amountsGroupedByTokenId = groupBy(filteredAmounts, (amount) => amount.tokenInfo.tokenId)
   const tokenIds = Object.keys(amountsGroupedByTokenId)
@@ -381,7 +382,8 @@ export function ReviewDetailsItemTotalValue({
   if (sameToken && !allTokensHaveLocalPrice) {
     const tokenSymbol = filteredAmounts[0].tokenInfo.symbol
     const tokenAmount = sumAmounts(filteredAmounts, 'tokenAmount')
-    const displayTokenAmount = formatValueToDisplay(tokenAmount)
+    const sign = tokenAmount.isNegative() ? '- ' : ''
+    const displayTokenAmount = `${sign}${formatValueToDisplay(tokenAmount.abs())}`
     return approx
       ? t('tokenAmountApprox', { tokenAmount: displayTokenAmount, tokenSymbol })
       : t('tokenAmount', { tokenAmount: displayTokenAmount, tokenSymbol })
@@ -393,10 +395,12 @@ export function ReviewDetailsItemTotalValue({
    */
   if (!sameToken && allTokensHaveLocalPrice) {
     const localAmount = sumAmounts(filteredAmounts, 'localAmount')
-    const displayLocalAmount = formatValueToDisplay(localAmount)
+    const sign = localAmount.isNegative() ? '- ' : ''
+    const displayLocalAmount = formatValueToDisplay(localAmount.abs())
+    const symbol = `${sign}${localCurrencySymbol}`
     return approx
-      ? t('localAmountApprox', { localAmount: displayLocalAmount, localCurrencySymbol })
-      : t('localAmount', { localAmount: displayLocalAmount, localCurrencySymbol })
+      ? t('localAmountApprox', { localAmount: displayLocalAmount, localCurrencySymbol: symbol })
+      : t('localAmount', { localAmount: displayLocalAmount, localCurrencySymbol: symbol })
   }
 
   /**
