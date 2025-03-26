@@ -534,6 +534,8 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   [SwapEvents.swap_show_fund_your_wallet]: `When "Fund your wallet" bottom sheet is displayed`,
   [SwapEvents.swap_add_funds]: `When user taps "Add funds" button is "Fund your wallet" bottom sheet`,
   [SwapEvents.swap_switch_tokens]: `When a user taps the button to switch the to and from tokens`,
+  [SwapEvents.swap_unfavorable_rate_warning_displayed]: `When the unfavorable rate bottom sheet is displayed`,
+  [SwapEvents.swap_unfavorable_rate_warning_cancelled]: `When the cancel button is pressed in the unfavorable rate bottom sheet`,
   [CeloNewsEvents.celo_news_screen_open]: `When the screen is mounted`,
   [CeloNewsEvents.celo_news_article_tap]: `When a user taps on a news article`,
   [CeloNewsEvents.celo_news_bottom_read_more_tap]: `When a user taps on the read more button at the bottom of the screen`,

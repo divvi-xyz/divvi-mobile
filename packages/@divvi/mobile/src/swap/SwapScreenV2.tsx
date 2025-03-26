@@ -40,6 +40,7 @@ import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
 import SwapTransactionDetails from 'src/swap/SwapTransactionDetails'
+import UnfavorableRateBottomSheet from 'src/swap/UnfavorableRateBottomSheet'
 import getCrossChainFee from 'src/swap/getCrossChainFee'
 import { getSwapTxsAnalyticsProperties } from 'src/swap/getSwapTxsAnalyticsProperties'
 import { currentSwapSelector } from 'src/swap/selectors'
@@ -85,8 +86,12 @@ export default function SwapScreenV2({ route }: Props) {
   const showUKCompliantVariant = getFeatureGate(StatsigFeatureGates.SHOW_UK_COMPLIANT_VARIANT)
   const { swappableFromTokens, swappableToTokens, areSwapTokensShuffled } = useSwappableTokens()
   const { links } = getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.APP_CONFIG])
-  const { maxSlippagePercentage, enableAppFee, priceImpactWarningThreshold } =
-    getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.SWAP_CONFIG])
+  const {
+    maxSlippagePercentage,
+    enableAppFee,
+    priceImpactWarningThreshold,
+    unfavorableExchangeRateThreshold,
+  } = getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.SWAP_CONFIG])
 
   const inputFromRef = useRef<RNTextInput>(null)
   const inputToRef = useRef<RNTextInput>(null)
@@ -96,6 +101,7 @@ export default function SwapScreenV2({ route }: Props) {
   const feeInfoBottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const slippageInfoBottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const estimatedDurationBottomSheetRef = useRef<BottomSheetModalRefType>(null)
+  const unfavorableSwapBottomSheetRef = useRef<BottomSheetModalRefType>(null)
 
   const [noUsdPriceToken, setNoUsdPriceToken] = useState<
     { token: TokenBalance; tokenPositionInList: number } | undefined
@@ -327,6 +333,18 @@ export default function SwapScreenV2({ route }: Props) {
     ]
   )
 
+  const showUnfavorableRateConfirmation = useMemo(() => {
+    if (!quote || !processedAmountsFrom.local.bignum || !processedAmountsTo.local.bignum) {
+      return false
+    }
+
+    return (
+      processedAmountsTo.local.bignum
+        .div(processedAmountsFrom.local.bignum)
+        .lt(unfavorableExchangeRateThreshold) || warnings.showPriceImpactWarning
+    )
+  }, [quote, processedAmountsFrom, processedAmountsTo, warnings.showPriceImpactWarning])
+
   useEffect(
     function refreshTransactionQuote() {
       setStartedSwapId(undefined)
@@ -437,7 +455,7 @@ export default function SwapScreenV2({ route }: Props) {
     })
   }
 
-  function handleConfirmSwap() {
+  function submitSwap() {
     if (!quote) {
       return // this should never happen, because the button must be disabled in that cases
     }
@@ -496,6 +514,7 @@ export default function SwapScreenV2({ route }: Props) {
             fromToken.networkId,
             tokensById
           ),
+          isUnfavorableRate: showUnfavorableRateConfirmation,
         })
 
         setStartedSwapId(swapId)
@@ -524,6 +543,75 @@ export default function SwapScreenV2({ route }: Props) {
         const assertNever: never = resultType
         return assertNever
     }
+  }
+
+  function handleConfirmSwap() {
+    if (!quote) {
+      return // this should never happen, because the button must be disabled in that cases
+    }
+
+    const fromToken = tokensById[quote.fromTokenId]
+    const toToken = tokensById[quote.toTokenId]
+
+    if (!fromToken || !toToken) {
+      // Should never happen
+      return
+    }
+
+    if (showUnfavorableRateConfirmation) {
+      AppAnalytics.track(SwapEvents.swap_unfavorable_rate_warning_displayed, {
+        toTokenId: toToken.tokenId,
+        toTokenNetworkId: toToken.networkId,
+        toTokenIsImported: !!toToken.isManuallyImported,
+        toToken: toToken.address,
+        fromTokenId: fromToken.tokenId,
+        fromTokenNetworkId: fromToken.networkId,
+        fromTokenIsImported: !!fromToken?.isManuallyImported,
+        fromToken: fromToken.address,
+        amount: processedAmountsFrom.token.bignum?.toString() || '',
+        amountType: 'sellAmount',
+        estimatedPriceImpact: quote.estimatedPriceImpact,
+        price: quote.price,
+        appFeePercentageIncludedInPrice: quote.appFeePercentageIncludedInPrice,
+        provider: quote.provider,
+        swapType: quote.swapType,
+      })
+      unfavorableSwapBottomSheetRef.current?.snapToIndex(0)
+      return
+    }
+
+    submitSwap()
+  }
+
+  function handleUnfavorableRateBottomSheetCancel() {
+    if (!quote) {
+      return // this should never happen, because swap confirmation button is disabled in that case
+    }
+
+    const fromToken = tokensById[quote.fromTokenId]
+    const toToken = tokensById[quote.toTokenId]
+
+    if (!fromToken || !toToken) {
+      // Should never happen
+      return
+    }
+    AppAnalytics.track(SwapEvents.swap_unfavorable_rate_warning_cancelled, {
+      toTokenId: toToken.tokenId,
+      toTokenNetworkId: toToken.networkId,
+      toTokenIsImported: !!toToken.isManuallyImported,
+      toToken: toToken.address,
+      fromTokenId: fromToken.tokenId,
+      fromTokenNetworkId: fromToken.networkId,
+      fromTokenIsImported: !!fromToken?.isManuallyImported,
+      fromToken: fromToken.address,
+      amount: processedAmountsFrom.token.bignum?.toString() || '',
+      amountType: 'sellAmount',
+      estimatedPriceImpact: quote.estimatedPriceImpact,
+      price: quote.price,
+      appFeePercentageIncludedInPrice: quote.appFeePercentageIncludedInPrice,
+      provider: quote.provider,
+      swapType: quote.swapType,
+    })
   }
 
   function handleSwitchTokens() {
@@ -1029,6 +1117,14 @@ export default function SwapScreenV2({ route }: Props) {
         ctaLabel={t('swapScreen.noUsdPriceWarning.ctaDismiss')}
         onPressCta={handleDismissSelectTokenNoUsdPrice}
         onDismiss={handleDismissSelectTokenNoUsdPrice}
+      />
+
+      <UnfavorableRateBottomSheet
+        forwardedRef={unfavorableSwapBottomSheetRef}
+        onConfirm={submitSwap}
+        onCancel={handleUnfavorableRateBottomSheetCancel}
+        fromTokenAmount={processedAmountsFrom.token.displayAmount}
+        toTokenAmount={processedAmountsTo.token.displayAmount}
       />
     </SafeAreaView>
   )

@@ -426,6 +426,7 @@ export function SwapScreen({ route }: Props) {
             fromToken.networkId,
             tokensById
           ),
+          isUnfavorableRate: false,
         })
 
         localDispatch(startSwap({ swapId }))
