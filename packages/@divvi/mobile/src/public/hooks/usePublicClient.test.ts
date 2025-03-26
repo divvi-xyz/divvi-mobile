@@ -16,9 +16,9 @@ describe('usePublicClient', () => {
   })
 
   it('should return public client for the given networkId', () => {
-    const { result } = renderHook(() => usePublicClient({ networkId: 'celo-alfajores' }))
+    const { result } = renderHook(() => usePublicClient({ networkId: 'celo-mainnet' }))
 
-    expect(getPublicClient).toHaveBeenCalledWith({ networkId: 'celo-alfajores' })
+    expect(getPublicClient).toHaveBeenCalledWith({ networkId: 'celo-mainnet' })
     expect(result.current).toBe(mockPublicClient)
   })
 })
