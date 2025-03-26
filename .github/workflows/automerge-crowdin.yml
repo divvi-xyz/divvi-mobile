@@ -6,6 +6,9 @@ on:
   # https://crontab.guru/#0_2_*_*_*
   schedule:
     - cron: '0 2 * * *'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   automerge-crowdin-pr:
