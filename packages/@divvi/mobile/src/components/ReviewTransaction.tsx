@@ -319,7 +319,7 @@ type FilteredAmount = {
 type ReviewDetailsItemTotalValueProps = {
   approx?: boolean
   localCurrencySymbol: LocalCurrencySymbol
-  amounts: Amount[]
+  amounts: Array<Amount | undefined | false>
 }
 
 /**
@@ -336,7 +336,7 @@ export function ReviewDetailsItemTotalValue({
 
   // filter out "broken" amounts with no token info or token amount
   const filteredAmounts = amounts.filter(
-    (amount) => !!amount.tokenInfo && !!amount.tokenAmount
+    (amount) => !!amount && !!amount.tokenInfo && !!amount.tokenAmount
   ) as FilteredAmount[]
 
   // if all the amounts are "broken" (which should never happen) then don't return anything

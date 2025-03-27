@@ -7,22 +7,34 @@ import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
 import {
   ReviewContent,
+  ReviewDetails,
+  ReviewDetailsItem,
   ReviewSummary,
   ReviewSummaryItem,
   ReviewTransaction,
 } from 'src/components/ReviewTransaction'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import TokenIcon from 'src/components/TokenIcon'
-import { getEarnPositionBalanceValues, getTotalYieldRate } from 'src/earn/utils'
+import { useNetworkFee, usePrepareEarnConfirmationScreenTransactions } from 'src/earn/hooks'
+import {
+  getEarnPositionBalanceValues,
+  getTotalYieldRate,
+  isGasSubsidizedForNetwork,
+} from 'src/earn/utils'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { getLocalCurrencySymbol, usdToLocalCurrencyRateSelector } from 'src/localCurrency/selectors'
 import type { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
-import { positionsWithBalanceSelector } from 'src/positions/selectors'
+import { hooksApiUrlSelector, positionsWithBalanceSelector } from 'src/positions/selectors'
 import { useDispatch, useSelector } from 'src/redux/hooks'
+import { NETWORK_NAMES } from 'src/shared/conts'
+import themeColors from 'src/styles/colors'
 import { useTokenInfo, useTokensInfo, useTokenToLocalAmount } from 'src/tokens/hooks'
+import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import { convertTokenToLocalAmount } from 'src/tokens/utils'
 import Logger from 'src/utils/Logger'
+import { walletAddressSelector } from 'src/web3/selectors'
+import { isAddress, type Address } from 'viem'
 
 const TAG = 'earn/EarnWithdrawConfirmationScreen'
 
@@ -31,13 +43,13 @@ type Props = NativeStackScreenProps<StackParamList, Screens.EarnWithdrawConfirma
 function useRewards(params: Props['route']['params']) {
   const { rewardsPositionIds } = params.pool.dataProps
   const usdToLocalRate = useSelector(usdToLocalCurrencyRateSelector)
-  const rewardsPositions = useSelector(positionsWithBalanceSelector).filter((position) =>
+  const positions = useSelector(positionsWithBalanceSelector).filter((position) =>
     rewardsPositionIds?.includes(position.positionId)
   )
-  const tokensInfo = useTokensInfo(rewardsPositions.map((position) => position.tokens[0]?.tokenId))
+  const tokensInfo = useTokensInfo(positions.map((position) => position.tokens[0]?.tokenId))
   const tokens = useMemo(
     () =>
-      rewardsPositions
+      positions
         .flatMap((position) => position.tokens)
         .map((token) => {
           const tokenAmount = new BigNumber(token.balance)
@@ -49,10 +61,10 @@ function useRewards(params: Props['route']['params']) {
           })
           return { tokenAmount, tokenInfo, localAmount, balance: token.balance }
         }),
-    [rewardsPositions, tokensInfo, usdToLocalRate]
+    [positions, tokensInfo, usdToLocalRate]
   )
 
-  return { tokens, tokensInfo }
+  return { tokens, tokensInfo, positions }
 }
 
 function useWithdrawAmountInDepositToken(params: Props['route']['params']) {
@@ -77,12 +89,27 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const rewards = useRewards(params)
   const withdraw = useWithdrawAmountInDepositToken(params)
+  const hooksApiUrl = useSelector(hooksApiUrlSelector)
+  const walletAddress = (useSelector(walletAddressSelector) || '') as Address
+  const feeCurrencies = useSelector((state) =>
+    feeCurrenciesSelector(state, withdraw.depositToken?.networkId)
+  )
 
-  if (!withdraw.depositToken || !withdraw.withdrawToken) {
-    // should never happen
-    Logger.error(TAG, 'there is neither deposit nor withdraw token available')
-    return null
-  }
+  const isGasSubsidized = withdraw.depositToken
+    ? isGasSubsidizedForNetwork(withdraw.depositToken.networkId)
+    : false
+
+  const preparedTransaction = usePrepareEarnConfirmationScreenTransactions(params.mode, {
+    amount: withdraw.tokenAmount.dividedBy(params.pool.pricePerShare[0]).toString(),
+    pool: params.pool,
+    walletAddress,
+    feeCurrencies,
+    hooksApiUrl,
+    rewardsPositions: rewards.positions,
+    useMax: params.mode !== 'withdraw' || params.useMax,
+  })
+
+  const networkFee = useNetworkFee(preparedTransaction.result)
 
   function onPressProvider() {
     if (withdraw.withdrawToken) {
@@ -105,6 +132,18 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
     if (providerUrl) {
       dispatch(openUrl(providerUrl, true))
     }
+  }
+
+  if (!withdraw.depositToken || !withdraw.withdrawToken) {
+    // should never happen
+    Logger.error(TAG, 'There is neither deposit nor withdraw token available')
+    return null
+  }
+
+  if (!walletAddress || !isAddress(walletAddress)) {
+    // should never happen
+    Logger.error(TAG, 'Wallet address is not valid')
+    return null
   }
 
   return (
@@ -166,6 +205,55 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
             })}
           />
         </ReviewSummary>
+
+        <ReviewDetails>
+          <ReviewDetailsItem
+            testID="EarnWithdrawConfirmation/Details/Network"
+            type="plain-text"
+            label={t('transactionDetails.network')}
+            color={themeColors.contentSecondary}
+            value={NETWORK_NAMES[withdraw.depositToken.networkId]}
+          />
+
+          <ReviewDetailsItem
+            approx
+            caption={isGasSubsidized ? t('gasSubsidized') : undefined}
+            captionColor={isGasSubsidized ? themeColors.accent : undefined}
+            strikeThrough={isGasSubsidized}
+            testID="EarnWithdrawConfirmation/Details/NetworkFee"
+            type="token-amount"
+            label={t('networkFee')}
+            isLoading={preparedTransaction.loading}
+            color={themeColors.contentSecondary}
+            tokenAmount={networkFee?.amount}
+            localAmount={networkFee?.localAmount}
+            tokenInfo={networkFee?.token}
+            localCurrencySymbol={localCurrencySymbol}
+          />
+
+          <ReviewDetailsItem
+            approx
+            testID="EarnWithdrawConfirmation/Details/Total"
+            type="total-token-amount"
+            label={t('reviewTransaction.totalLessFees')}
+            localCurrencySymbol={localCurrencySymbol}
+            isLoading={preparedTransaction.loading}
+            amounts={[
+              params.mode !== 'claim-rewards' && {
+                tokenInfo: withdraw.depositToken,
+                tokenAmount: withdraw.tokenAmount,
+                localAmount: withdraw.localAmount,
+              },
+              {
+                isDeductible: true,
+                tokenInfo: networkFee?.token,
+                tokenAmount: networkFee?.amount,
+                localAmount: networkFee?.localAmount,
+              },
+              ...rewards.tokens,
+            ]}
+          />
+        </ReviewDetails>
       </ReviewContent>
     </ReviewTransaction>
   )
