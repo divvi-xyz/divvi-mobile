@@ -10,7 +10,7 @@ import BackButton from 'src/components/BackButton'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import { HeaderTitleWithSubtitle } from 'src/navigator/Headers'
-import { navigateHome, popToScreen } from 'src/navigator/NavigationService'
+import { navigateInitialTab, popToScreen } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { TopBarTextButton } from 'src/navigator/TopBarButton'
 import { StackParamList } from 'src/navigator/types'
@@ -96,7 +96,7 @@ function VerificationCodeInputScreen({
             if (prevRoute?.name) {
               popToScreen(prevRoute.name)
             } else {
-              navigateHome()
+              navigateInitialTab()
             }
           } else {
             // if onboarding, continue with the next onboarding screen

@@ -227,11 +227,11 @@ export async function isBottomSheetVisible(screen: Screens) {
 }
 
 /***
- * Navigates to the home screen resetting the navigation stack by default
+ * Navigates to the inital screen resetting the navigation stack by default
  * If called from a modal make sure to pass fromModal: true. Otherwise it will cause a null pointer dereference and subsequent app crash
  * TODO: stop using ReactNative modals and switch to react-navigation modals
  */
-export function navigateHome(fromModal?: boolean) {
+export function navigateInitialTab(fromModal?: boolean) {
   const timeout = fromModal && Platform.OS === 'ios' ? 500 : 0
   setTimeout(() => {
     navigateClearingStack(Screens.TabNavigator)

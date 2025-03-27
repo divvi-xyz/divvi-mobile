@@ -7,7 +7,7 @@ import Button from 'src/components/Button'
 import {
   navigate,
   navigateBack,
-  navigateHome,
+  navigateInitialTab,
   navigationRef,
   navigatorIsReadyRef,
 } from 'src/navigator/NavigationService'
@@ -21,7 +21,7 @@ const TestScreen = ({ route }: NativeStackScreenProps<ParamListBase>) => (
     <Button onPress={() => navigateBack()} text="Back" />
     <Button onPress={() => navigate(Screens.WithdrawSpend)} text="Go to Withdraw Spend" />
     <Button onPress={() => navigate(Screens.Profile)} text="Go to Profile" />
-    <Button onPress={() => navigateHome()} text="Go To Home" />
+    <Button onPress={() => navigateInitialTab()} text="Go To Home" />
   </View>
 )
 
@@ -47,7 +47,7 @@ jest.unmock('@react-navigation/native')
 jest.mock('src/statsig')
 
 describe('NavigationService', () => {
-  it('navigate and navigateHome works correctly', async () => {
+  it('navigate and navigateInitialTab works correctly', async () => {
     const { getByText } = render(<MockedNavigator />)
     fireEvent.press(getByText('Go to Withdraw Spend'))
     await waitFor(() => expect(getByText('Screen WithdrawSpend')).toBeTruthy())

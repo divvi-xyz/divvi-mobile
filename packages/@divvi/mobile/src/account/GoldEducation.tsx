@@ -8,7 +8,7 @@ import { OnboardingEvents } from 'src/analytics/Events'
 import { BtnTypes } from 'src/components/Button'
 import { celoEducation1, celoEducation2, celoEducation3, celoEducation4 } from 'src/images/Images'
 import { noHeader } from 'src/navigator/Headers'
-import { navigateBack, navigateHome } from 'src/navigator/NavigationService'
+import { navigateBack, navigateInitialTab } from 'src/navigator/NavigationService'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 
 export default function GoldEducation() {
@@ -24,7 +24,7 @@ export default function GoldEducation() {
     if (isCeloEducationComplete) {
       navigateBack()
     } else {
-      navigateHome()
+      navigateInitialTab()
       dispatch(setGoldEducationCompleted())
     }
   }

@@ -10,7 +10,7 @@ import {
   KeylessBackupOrigin,
   KeylessBackupStatus,
 } from 'src/keylessBackup/types'
-import { ensurePincode, navigate, navigateHome } from 'src/navigator/NavigationService'
+import { ensurePincode, navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { goToNextOnboardingScreen } from 'src/onboarding/steps'
 import Logger from 'src/utils/Logger'
@@ -85,7 +85,7 @@ describe('KeylessBackupProgress', () => {
       expect(getByTestId('KeylessBackupProgress/Continue')).toBeTruthy()
       fireEvent.press(getByTestId('KeylessBackupProgress/Continue'))
 
-      expect(navigateHome).toHaveBeenCalledTimes(1)
+      expect(navigateInitialTab).toHaveBeenCalledTimes(1)
       expect(AppAnalytics.track).toHaveBeenCalledTimes(1)
       expect(AppAnalytics.track).toHaveBeenCalledWith(
         KeylessBackupEvents.cab_progress_completed_continue,
