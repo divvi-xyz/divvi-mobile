@@ -8,13 +8,16 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
 import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
+import Button, { BtnSizes } from 'src/components/Button'
 import FeeInfoBottomSheet from 'src/components/FeeInfoBottomSheet'
 import InfoBottomSheet, { InfoBottomSheetContentBlock } from 'src/components/InfoBottomSheet'
+import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
 import {
   buildAmounts,
   ReviewContent,
   ReviewDetails,
   ReviewDetailsItem,
+  ReviewFooter,
   ReviewSummary,
   ReviewSummaryItem,
   ReviewTransaction,
@@ -22,14 +25,18 @@ import {
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import TokenIcon from 'src/components/TokenIcon'
 import { useNetworkFee, usePrepareEarnConfirmationScreenTransactions } from 'src/earn/hooks'
+import { withdrawStatusSelector } from 'src/earn/selectors'
+import { withdrawStart } from 'src/earn/slice'
 import {
   getEarnPositionBalanceValues,
   getTotalYieldRate,
   isGasSubsidizedForNetwork,
 } from 'src/earn/utils'
+import { CICOFlow } from 'src/fiatExchanges/types'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { getLocalCurrencySymbol, usdToLocalCurrencyRateSelector } from 'src/localCurrency/selectors'
-import type { Screens } from 'src/navigator/Screens'
+import { navigate } from 'src/navigator/NavigationService'
+import { Screens } from 'src/navigator/Screens'
 import type { StackParamList } from 'src/navigator/types'
 import { hooksApiUrlSelector, positionsWithBalanceSelector } from 'src/positions/selectors'
 import { useDispatch, useSelector } from 'src/redux/hooks'
@@ -40,6 +47,7 @@ import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import type { TokenBalance } from 'src/tokens/slice'
 import { convertTokenToLocalAmount } from 'src/tokens/utils'
 import Logger from 'src/utils/Logger'
+import { getSerializablePreparedTransactions } from 'src/viem/preparedTransactionSerialization'
 import { walletAddressSelector } from 'src/web3/selectors'
 import { isAddress, type Address } from 'viem'
 
@@ -98,8 +106,8 @@ function useRewards(params: Props['route']['params']) {
     rewardsPositionIds?.includes(position.positionId)
   )
   const tokensInfo = useTokensInfo(positions.map((position) => position.tokens[0]?.tokenId))
-  const tokens = positions
-    .flatMap((position) => position.tokens)
+  const flattenedPositionTokens = positions.flatMap((position) => position.tokens)
+  const tokens = flattenedPositionTokens
     .map((token) => {
       const tokenAmount = new BigNumber(token.balance)
       const tokenInfo = tokensInfo.find((info) => info?.tokenId === token.tokenId)
@@ -110,9 +118,9 @@ function useRewards(params: Props['route']['params']) {
       })
       return { tokenAmount, tokenInfo, localAmount, balance: token.balance }
     })
-    .filter((rewardToken) => !!rewardToken.tokenInfo) as Array<Amount & { balance: string }>
+    .filter((token) => !!token.tokenInfo) as Array<Amount & { balance: string }>
 
-  return { tokens, tokensInfo, positions }
+  return { tokens, tokensInfo, positions, flattenedPositionTokens }
 }
 
 function useWithdrawAmountInDepositToken(params: Props['route']['params']) {
@@ -139,6 +147,7 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
   const rewards = useRewards(params)
   const withdraw = useWithdrawAmountInDepositToken(params)
   const totalWithdrawAmountsPerToken = getTotalWithdrawAmountsPerToken(rewards.tokens, withdraw)
+  const withdrawStatus = useSelector(withdrawStatusSelector)
   const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const hooksApiUrl = useSelector(hooksApiUrlSelector)
   const walletAddress = (useSelector(walletAddressSelector) || '') as Address
@@ -170,12 +179,10 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
         providerId: params.pool.appId,
         poolId: params.pool.positionId,
         mode: params.mode,
-        rewards: rewards.tokens
-          .filter((token) => !!token.tokenInfo)
-          .map((token) => ({
-            amount: token.balance,
-            tokenId: token.tokenInfo.tokenId,
-          })),
+        rewards: rewards.flattenedPositionTokens.map((token) => ({
+          amount: token.balance.toString(),
+          tokenId: token.tokenId,
+        })),
       })
     }
 
@@ -183,6 +190,46 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
       dispatch(openUrl(providerUrl, true))
     }
   }
+
+  function onPress() {
+    if (preparedTransaction.result?.type !== 'possible') {
+      // should never happen because button is disabled if withdraw is not possible
+      throw new Error('Cannot be called without possible prepared transactions')
+    }
+
+    dispatch(
+      withdrawStart({
+        preparedTransactions: getSerializablePreparedTransactions(
+          preparedTransaction.result.transactions
+        ),
+        rewardsTokens: rewards.flattenedPositionTokens,
+        pool: params.pool,
+        mode: params.mode,
+        ...(params.mode !== 'claim-rewards' && { amount: withdraw.tokenAmount.toString() }),
+      })
+    )
+
+    if (withdraw.withdrawToken) {
+      AppAnalytics.track(EarnEvents.earn_collect_earnings_press, {
+        depositTokenId: params.pool.dataProps.depositTokenId,
+        tokenAmount: withdraw.tokenAmount.toString(),
+        networkId: withdraw.withdrawToken.networkId,
+        providerId: params.pool.appId,
+        poolId: params.pool.positionId,
+        rewards: rewards.flattenedPositionTokens.map((token) => ({
+          amount: token.balance.toString(),
+          tokenId: token.tokenId,
+        })),
+        mode: params.mode,
+      })
+    }
+  }
+
+  const ctaDisabled =
+    preparedTransaction.loading ||
+    preparedTransaction.error ||
+    preparedTransaction.result?.type !== 'possible' ||
+    withdrawStatus === 'loading'
 
   if (!withdraw.depositToken || !withdraw.withdrawToken) {
     // should never happen
@@ -305,6 +352,61 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
           />
         </ReviewDetails>
       </ReviewContent>
+
+      <ReviewFooter>
+        {preparedTransaction.error && (
+          <InLineNotification
+            testID="EarnWithdrawConfirmation/PrepareError"
+            variant={NotificationVariant.Error}
+            title={t('earnFlow.collect.errorTitle')}
+            description={t('earnFlow.collect.errorDescription')}
+          />
+        )}
+        {preparedTransaction.result?.type === 'not-enough-balance-for-gas' && (
+          <InLineNotification
+            variant={NotificationVariant.Warning}
+            testID="EarnWithdrawConfirmation/NoGasWarning"
+            title={t('earnFlow.collect.noGasTitle', { symbol: feeCurrencies[0].symbol })}
+            description={t('earnFlow.collect.noGasDescription', {
+              symbol: feeCurrencies[0].symbol,
+              network: NETWORK_NAMES[withdraw.depositToken.networkId],
+            })}
+            ctaLabel={t('earnFlow.collect.noGasCta', {
+              symbol: feeCurrencies[0].symbol,
+              network: NETWORK_NAMES[withdraw.depositToken.networkId],
+            })}
+            onPressCta={() => {
+              AppAnalytics.track(EarnEvents.earn_withdraw_add_gas_press, {
+                gasTokenId: feeCurrencies[0].tokenId,
+                depositTokenId: params.pool.dataProps.depositTokenId,
+                networkId: params.pool.networkId,
+                providerId: params.pool.appId,
+                poolId: params.pool.positionId,
+              })
+              navigate(Screens.FiatExchangeAmount, {
+                tokenId: feeCurrencies[0].tokenId,
+                flow: CICOFlow.CashIn,
+                tokenSymbol: feeCurrencies[0].symbol,
+              })
+            }}
+          />
+        )}
+
+        <Button
+          size={BtnSizes.FULL}
+          text={
+            params.mode === 'withdraw'
+              ? t('earnFlow.collect.ctaWithdraw')
+              : params.mode === 'exit'
+                ? t('earnFlow.collect.ctaExit')
+                : t('earnFlow.collect.ctaReward')
+          }
+          onPress={onPress}
+          testID="EarnWithdrawConfirmation/ConfirmButton"
+          disabled={!!ctaDisabled}
+          showLoading={withdrawStatus === 'loading'}
+        />
+      </ReviewFooter>
 
       <FeeInfoBottomSheet forwardedRef={feeBottomSheetRef} networkFee={networkFee} />
 
