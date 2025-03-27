@@ -179,10 +179,36 @@ describe('EarnWithdrawConfirmationScreen', () => {
       expect(queryByTestId('EarnWithdrawConfirmation/Details/Total/Loader')).toBeFalsy()
     })
 
+    expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/InfoIcon')).toBeTruthy()
+    expect(getByTestId('EarnWithdrawConfirmation/Details/Total/InfoIcon')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Value')).toHaveTextContent(
       'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/Value')).toHaveTextContent(
+      'localAmountApprox, {"localAmount":"15.66","localCurrencySymbol":"₱"}'
+    )
+
+    // fees info bottom sheet
+    expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
+    expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
+      'feeInfoBottomSheet.feesInfo, {"context":"sameChain"}'
+    )
+
+    // total plus fees info bottom sheet
+    expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Label')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.withdrawing'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"11.83","localAmount":"15.73","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees')
+    expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Total/Label')).toHaveTextContent(
+      'reviewTransaction.totalLessFees'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(
       'localAmountApprox, {"localAmount":"15.66","localCurrencySymbol":"₱"}'
     )
 
@@ -267,10 +293,36 @@ describe('EarnWithdrawConfirmationScreen', () => {
       expect(queryByTestId('EarnWithdrawConfirmation/Details/Total/Loader')).toBeFalsy()
     })
 
+    expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/InfoIcon')).toBeTruthy()
+    expect(getByTestId('EarnWithdrawConfirmation/Details/Total/InfoIcon')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Value')).toHaveTextContent(
       'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/Value')).toHaveTextContent(
+      'localAmountApprox, {"localAmount":"0.064","localCurrencySymbol":"- ₱"}'
+    )
+
+    // fees info bottom sheet
+    expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
+    expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
+      'feeInfoBottomSheet.feesInfo, {"context":"sameChain"}'
+    )
+
+    // total plus fees info bottom sheet
+    expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Label')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.withdrawing'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"11.83","localAmount":"15.73","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees')
+    expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Total/Label')).toHaveTextContent(
+      'reviewTransaction.totalLessFees'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(
       'localAmountApprox, {"localAmount":"0.064","localCurrencySymbol":"- ₱"}'
     )
 
@@ -372,10 +424,36 @@ describe('EarnWithdrawConfirmationScreen', () => {
       expect(queryByTestId('EarnWithdrawConfirmation/Details/Total/Loader')).toBeFalsy()
     })
 
+    expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/InfoIcon')).toBeTruthy()
+    expect(getByTestId('EarnWithdrawConfirmation/Details/Total/InfoIcon')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Value')).toHaveTextContent(
       'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/Value')).toHaveTextContent(
+      'localAmountApprox, {"localAmount":"7.80","localCurrencySymbol":"₱"}'
+    )
+
+    // fees info bottom sheet
+    expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
+    expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
+      'feeInfoBottomSheet.feesInfo, {"context":"sameChain"}'
+    )
+
+    // total plus fees info bottom sheet
+    expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Label')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.withdrawing'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"5.91","localAmount":"7.86","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees')
+    expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Total/Label')).toHaveTextContent(
+      'reviewTransaction.totalLessFees'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(
       'localAmountApprox, {"localAmount":"7.80","localCurrencySymbol":"₱"}'
     )
 
@@ -419,6 +497,103 @@ describe('EarnWithdrawConfirmationScreen', () => {
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw')).toBeTruthy()
     expect(queryByTestId('EarnWithdrawConfirmation/RewardClaim-0')).toBeFalsy()
     expect(getByTestId('EarnWithdrawConfirmation/Pool')).toBeTruthy()
+  })
+
+  it('properly sums up withdrawal amount and multiple claimed rewards of different tokens and shows proper total amounts breakdown', async () => {
+    const store = createMockStore({
+      tokens: mockStoreTokens,
+      positions: {
+        positions: [
+          ...mockPositions,
+          mockRewardsPositions[1],
+          {
+            ...mockRewardsPositions[0],
+            positionId:
+              'arbitrum-sepolia:0x460b97bd498e1157530aeb3086301d5225b91216:supply-incentives',
+          },
+        ],
+      },
+    })
+    const pool = {
+      ...mockEarnPositions[0],
+      balance: '10.75',
+      dataProps: { ...mockEarnPositions[0].dataProps, withdrawalIncludesClaim: true },
+    }
+    const { getByTestId, queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator
+          component={EarnWithdrawConfirmationScreen}
+          params={{ mode: 'withdraw', pool, inputTokenAmount: '5' }}
+        />
+      </Provider>
+    )
+
+    await waitFor(() => {
+      expect(queryByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Loader')).toBeFalsy()
+      expect(queryByTestId('EarnWithdrawConfirmation/Details/Total/Loader')).toBeFalsy()
+    })
+
+    // withdraw amount in USDC
+    expect(getByTestId('EarnWithdrawConfirmation/Withdraw/PrimaryValue')).toHaveTextContent(
+      'tokenAmount, {"tokenAmount":"5.00","tokenSymbol":"USDC"}'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/Withdraw/SecondaryValue')).toHaveTextContent(
+      'localAmount, {"localAmount":"6.65","localCurrencySymbol":"₱"}'
+    )
+
+    // Claimed Reward in ARB
+    expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/PrimaryValue`)).toHaveTextContent(
+      'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}'
+    )
+    expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/SecondaryValue`)).toHaveTextContent(
+      'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}'
+    )
+
+    // Claimed Reward in USDC
+    expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-1/PrimaryValue`)).toHaveTextContent(
+      'tokenAmount, {"tokenAmount":"10.75","tokenSymbol":"USDC"}'
+    )
+    expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-1/SecondaryValue`)).toHaveTextContent(
+      'localAmount, {"localAmount":"14.30","localCurrencySymbol":"₱"}'
+    )
+
+    // Network Fee
+    expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Value')).toHaveTextContent(
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+
+    // Total
+    expect(getByTestId('EarnWithdrawConfirmation/Details/Total/Value')).toHaveTextContent(
+      'localAmountApprox, {"localAmount":"20.88","localCurrencySymbol":"₱"}'
+    )
+
+    // Total bottom sheet withdrawing details
+
+    // First label is withdrawing
+    expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Label')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.withdrawing'
+    )
+    // Withdraw amount in USDC + Claimed Reward in USDC
+    expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"15.75","localAmount":"20.95","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+    )
+
+    // Second label is empty
+    expect(getByTestId('TotalInfoBottomSheet/Withdrawing-1/Label')).toBeEmptyElement()
+    // Claimed Reward in ARB
+    expect(getByTestId('TotalInfoBottomSheet/Withdrawing-1/Value')).toHaveTextContent(
+      'tokenAndLocalAmount, {"tokenAmount":"0.01","localAmount":"0.016","tokenSymbol":"ARB","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('TotalInfoBottomSheet/Total/Label')).toHaveTextContent(
+      'reviewTransaction.totalLessFees'
+    )
+    // Total is the same as in details
+    expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(
+      'localAmountApprox, {"localAmount":"20.88","localCurrencySymbol":"₱"}'
+    )
   })
 
   describe.each([
