@@ -27,7 +27,7 @@ describe(estimateFeesPerGas, () => {
     }
     const fees = await estimateFeesPerGas(client as any)
     expect(fees).toEqual({
-      maxFeePerGas: BigInt(70), // baseFeePerGas * 1.2 (default multiplier in viem)
+      maxFeePerGas: BigInt(70), // baseFeePerGas * 1.2 (default multiplier in viem) + maxPriorityFeePerGas
       maxPriorityFeePerGas: BigInt(10),
       baseFeePerGas: BigInt(50),
     })
