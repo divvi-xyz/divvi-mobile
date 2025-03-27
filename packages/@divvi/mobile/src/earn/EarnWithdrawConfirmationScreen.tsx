@@ -47,13 +47,16 @@ const TAG = 'earn/EarnWithdrawConfirmationScreen'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnWithdrawConfirmationScreen>
 
-function getTotalWithdrawAmountsPerToken<
-  T extends {
-    tokenInfo: TokenBalance | undefined
-    tokenAmount: BigNumber
-    localAmount: BigNumber | null
-  },
->(rewardTokens: T[], withdraw: ReturnType<typeof useWithdrawAmountInDepositToken>) {
+type FilteredAmount = {
+  tokenInfo: TokenBalance
+  tokenAmount: BigNumber
+  localAmount: BigNumber | null
+}
+
+function getTotalWithdrawAmountsPerToken<Amount>(
+  rewardTokens: FilteredAmount[],
+  withdraw: ReturnType<typeof useWithdrawAmountInDepositToken>
+) {
   if (!withdraw.depositToken) {
     Logger.error(TAG, 'depositToken is not available')
     return []
@@ -67,24 +70,22 @@ function getTotalWithdrawAmountsPerToken<
       localAmount: withdraw.localAmount,
     },
   ]
-  const groupedTokens = groupBy(allTokens, (token) => token.tokenInfo!.tokenId)
-  const summedTokens: Record<string, T> = {}
+  const groupedTokens = groupBy(allTokens, (token) => token.tokenInfo.tokenId)
+  const summedTokens: Record<string, FilteredAmount> = {}
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const tokenId in groupedTokens) {
-    const tokens = groupedTokens[tokenId]
+  for (const [tokenId, amounts] of Object.entries(groupedTokens)) {
     summedTokens[tokenId] = {
-      tokenInfo: tokens[0].tokenInfo,
-      tokenAmount: tokens.reduce((acc, token) => acc.plus(token.tokenAmount), new BigNumber(0)),
-      localAmount: tokens.reduce<T['localAmount']>(
+      tokenInfo: amounts[0].tokenInfo,
+      tokenAmount: amounts.reduce((acc, token) => acc.plus(token.tokenAmount), new BigNumber(0)),
+      localAmount: amounts.reduce<FilteredAmount['localAmount']>(
         (acc, token) => (acc && token.localAmount ? acc.plus(token.localAmount) : null),
         new BigNumber(0)
       ),
-    } as T
+    }
   }
 
   const sortedTokens = Object.values(summedTokens).sort((token) =>
-    token.tokenInfo!.tokenId === withdraw.depositToken!.tokenId ? -1 : 0
+    withdraw.depositToken && token.tokenInfo.tokenId === withdraw.depositToken.tokenId ? -1 : 0
   )
 
   return sortedTokens
@@ -109,7 +110,7 @@ function useRewards(params: Props['route']['params']) {
       })
       return { tokenAmount, tokenInfo, localAmount, balance: token.balance }
     })
-    .filter((rewardToken) => !!rewardToken.tokenInfo)
+    .filter((rewardToken) => !!rewardToken.tokenInfo) as Array<FilteredAmount & { balance: string }>
 
   return { tokens, tokensInfo, positions }
 }
@@ -173,7 +174,7 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
           .filter((token) => !!token.tokenInfo)
           .map((token) => ({
             amount: token.balance,
-            tokenId: token.tokenInfo!.tokenId,
+            tokenId: token.tokenInfo.tokenId,
           })),
       })
     }
@@ -224,7 +225,7 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
                 key={idx}
                 testID={`EarnWithdrawConfirmation/RewardClaim-${idx}`}
                 label={t('earnFlow.withdrawConfirmation.rewardClaiming')}
-                icon={<TokenIcon token={rewardToken.tokenInfo!} />}
+                icon={<TokenIcon token={rewardToken.tokenInfo} />}
                 primaryValue={t('tokenAmount', {
                   tokenAmount: formatValueToDisplay(rewardToken.tokenAmount),
                   tokenSymbol: rewardToken.tokenInfo?.symbol,
@@ -316,7 +317,7 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
           <View>
             {totalWithdrawAmountsPerToken.map((token, idx) => (
               <ReviewDetailsItem
-                key={token.tokenInfo!.tokenId}
+                key={token.tokenInfo.tokenId}
                 fontSize="small"
                 type="token-amount"
                 testID={`TotalInfoBottomSheet/Withdrawing-${idx}`}
