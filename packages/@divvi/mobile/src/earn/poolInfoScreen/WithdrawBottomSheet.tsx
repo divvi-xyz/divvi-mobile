@@ -84,7 +84,7 @@ function ClaimAction({
         networkId: pool.networkId,
         depositTokenId: pool.dataProps.depositTokenId,
       })
-      navigate(Screens.EarnConfirmationScreen, { pool, mode: 'claim-rewards', useMax: true })
+      navigate(Screens.EarnWithdrawConfirmationScreen, { pool, mode: 'claim-rewards' })
       forwardedRef.current?.close()
     },
   }
@@ -122,7 +122,7 @@ function ExitAction({
         networkId: pool.networkId,
         depositTokenId: pool.dataProps.depositTokenId,
       })
-      navigate(Screens.EarnConfirmationScreen, { pool, mode: 'exit', useMax: true })
+      navigate(Screens.EarnWithdrawConfirmationScreen, { pool, mode: 'exit' })
       forwardedRef.current?.close()
     },
   }

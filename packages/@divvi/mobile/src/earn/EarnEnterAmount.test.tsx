@@ -783,10 +783,10 @@ describe('EarnEnterAmount', () => {
         mode: 'withdraw',
       })
 
-      expect(navigate).toHaveBeenCalledWith(Screens.EarnConfirmationScreen, {
+      expect(navigate).toHaveBeenCalledWith(Screens.EarnWithdrawConfirmationScreen, {
         pool: mockEarnPositions[0],
         mode: 'withdraw',
-        inputAmount: '8',
+        inputTokenAmount: '8',
         useMax: false,
       })
     })

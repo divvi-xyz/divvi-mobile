@@ -88,12 +88,6 @@ export type StackParamList = {
     pool: EarnPosition
     mode?: Extract<EarnActiveMode, 'deposit' | 'swap-deposit' | 'withdraw'>
   }
-  [Screens.EarnConfirmationScreen]: {
-    pool: EarnPosition
-    mode: Extract<EarnActiveMode, 'claim-rewards' | 'exit' | 'withdraw'>
-    inputAmount?: string
-    useMax: boolean
-  }
   [Screens.EarnDepositConfirmationScreen]: {
     preparedTransaction: SerializablePreparedTransactionsPossible
     inputTokenInfo: SerializedTokenBalance

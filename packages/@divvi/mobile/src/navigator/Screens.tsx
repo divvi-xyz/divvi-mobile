@@ -17,7 +17,6 @@ export enum Screens {
   DemoModeAuthBlock = 'DemoModeAuthBlock',
   EarnInfoScreen = 'EarnInfoScreen',
   EarnEnterAmount = 'EarnEnterAmount',
-  EarnConfirmationScreen = 'EarnConfirmationScreen',
   EarnDepositConfirmationScreen = 'EarnDepositConfirmationScreen',
   EarnWithdrawConfirmationScreen = 'EarnWithdrawConfirmationScreen',
   EarnHome = 'EarnHome',
