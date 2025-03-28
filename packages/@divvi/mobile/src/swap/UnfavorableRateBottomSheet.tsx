@@ -1,31 +1,47 @@
+import { BigNumber } from 'bignumber.js'
 import React, { RefObject } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
+import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import ArrowRightThick from 'src/icons/ArrowRightThick'
+import { getLocalCurrencySymbol } from 'src/localCurrency/selectors'
+import { useSelector } from 'src/redux/hooks'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
+import { TokenBalance } from 'src/tokens/slice'
 
 export default function UnfavorableRateBottomSheet({
   forwardedRef,
   onConfirm,
   onCancel,
-  fromTokenAmountDisplay,
-  fromLocalAmountDisplay,
-  toTokenAmountDisplay,
-  toLocalAmountDisplay,
+  fromTokenAmount,
+  fromLocalAmount,
+  toTokenAmount,
+  toLocalAmount,
+  fromTokenInfo,
+  toTokenInfo,
 }: {
   forwardedRef: RefObject<BottomSheetModalRefType>
   onConfirm: () => void
   onCancel: () => void
-  fromTokenAmountDisplay: string
-  fromLocalAmountDisplay: string
-  toTokenAmountDisplay: string
-  toLocalAmountDisplay: string
+  fromTokenAmount: BigNumber | null
+  fromLocalAmount: BigNumber | null
+  toTokenAmount: BigNumber | null
+  toLocalAmount: BigNumber | null
+  fromTokenInfo: TokenBalance | undefined
+  toTokenInfo: TokenBalance | undefined
 }) {
   const { t } = useTranslation()
+
+  const localCurrencySymbol = useSelector(getLocalCurrencySymbol)
+
+  if (!fromTokenInfo || !toTokenInfo || !fromTokenAmount || !toTokenAmount) {
+    // should never happen
+    return null
+  }
 
   return (
     <BottomSheet
@@ -35,19 +51,35 @@ export default function UnfavorableRateBottomSheet({
       testId="UnfavorableSwapBottomSheet"
     >
       {/* TODO: use new TokenDisplay component proposed in https://github.com/divvi-xyz/divvi-mobile/pull/181 */}
-      <View style={styles.amountContainer} testID="AmountContainer">
-        <Text style={styles.tokenAmount}>
-          {fromTokenAmountDisplay}
-          {!!fromLocalAmountDisplay && (
-            <Text style={styles.localAmount}> ({fromLocalAmountDisplay})</Text>
-          )}
+      <View style={styles.amountContainer}>
+        <Text style={styles.tokenAmount} testID="FromAmount">
+          <Trans
+            i18nKey={'tokenAndLocalAmount'}
+            context={fromLocalAmount ? undefined : 'noFiatPrice'}
+            tOptions={{
+              tokenAmount: `${formatValueToDisplay(fromTokenAmount.abs())}`,
+              localAmount: fromLocalAmount ? formatValueToDisplay(fromLocalAmount) : '',
+              tokenSymbol: fromTokenInfo?.symbol,
+              localCurrencySymbol,
+            }}
+          >
+            <Text style={styles.localAmount} />
+          </Trans>
         </Text>
         <ArrowRightThick />
-        <Text style={styles.tokenAmount}>
-          {toTokenAmountDisplay}
-          {!!toLocalAmountDisplay && (
-            <Text style={styles.localAmount}> ({toLocalAmountDisplay})</Text>
-          )}
+        <Text style={styles.tokenAmount} testID="ToAmount">
+          <Trans
+            i18nKey={'tokenAndLocalAmount'}
+            context={toLocalAmount ? undefined : 'noFiatPrice'}
+            tOptions={{
+              tokenAmount: `${formatValueToDisplay(toTokenAmount.abs())}`,
+              localAmount: toLocalAmount ? formatValueToDisplay(toLocalAmount) : '',
+              tokenSymbol: toTokenInfo?.symbol,
+              localCurrencySymbol,
+            }}
+          >
+            <Text style={styles.localAmount} />
+          </Trans>
         </Text>
       </View>
       <View style={styles.buttonContainer}>
