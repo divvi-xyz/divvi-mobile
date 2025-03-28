@@ -2875,6 +2875,7 @@
   "reviewTransaction": {
     "title": "Revisão Enviar",
     "totalPlusFees": "Total mais taxas",
+    "totalLessFees": "Total menos taxas",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Taxa de rede máx.",
