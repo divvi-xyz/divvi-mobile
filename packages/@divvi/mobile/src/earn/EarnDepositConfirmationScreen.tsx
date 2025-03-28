@@ -16,6 +16,7 @@ import InfoBottomSheet, {
   InfoBottomSheetParagraph,
 } from 'src/components/InfoBottomSheet'
 import {
+  buildAmounts,
   ReviewContent,
   ReviewDetails,
   ReviewDetailsItem,
@@ -334,7 +335,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             label={t('reviewTransaction.totalPlusFees')}
             localCurrencySymbol={localCurrencySymbol}
             onInfoPress={() => totalBottomSheetRef.current?.snapToIndex(0)}
-            amounts={[
+            amounts={buildAmounts([
               {
                 tokenInfo: inputTokenInfo,
                 tokenAmount: depositAmount.tokenAmount,
@@ -345,7 +346,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
                 tokenAmount: networkFee.amount,
                 localAmount: networkFee.localAmount,
               },
-            ]}
+            ])}
           />
         </ReviewDetails>
       </ReviewContent>
@@ -453,7 +454,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             testID="TotalInfoBottomSheet/Total"
             label={t('reviewTransaction.totalPlusFees')}
             localCurrencySymbol={localCurrencySymbol}
-            amounts={[
+            amounts={buildAmounts([
               {
                 tokenInfo: inputTokenInfo,
                 tokenAmount: depositAmount.tokenAmount,
@@ -464,7 +465,7 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
                 tokenAmount: networkFee.amount,
                 localAmount: networkFee.localAmount,
               },
-            ]}
+            ])}
           />
         </InfoBottomSheetContentBlock>
       </InfoBottomSheet>

@@ -23,10 +23,7 @@ import variables from 'src/styles/variables'
 import { TokenBalance } from 'src/tokens/slice'
 import Logger from 'src/utils/Logger'
 
-function sumAmounts(
-  amounts: FilteredAmount[],
-  type: keyof Pick<FilteredAmount, 'tokenAmount' | 'localAmount'>
-) {
+function sumAmounts(amounts: Amount[], type: keyof Pick<Amount, 'tokenAmount' | 'localAmount'>) {
   let sum = new BigNumber(0)
   for (const amount of amounts) {
     sum = amount.isDeductible ? sum.minus(amount[type]!) : sum.plus(amount[type]!)
@@ -302,24 +299,31 @@ export function ReviewFooter(props: { children: ReactNode }) {
   return <View style={styles.reviewFooter}>{props.children}</View>
 }
 
-type Amount = {
+type MaybeAmount = {
   isDeductible?: boolean
   tokenInfo: TokenBalance | null | undefined
   tokenAmount: BigNumber | null | undefined
   localAmount: BigNumber | null | undefined
 }
 
-type FilteredAmount = {
-  isDeductible?: boolean
-  tokenInfo: TokenBalance
-  tokenAmount: BigNumber
-  localAmount: BigNumber | null | undefined
-}
+type Amount = MaybeAmount & { tokenInfo: TokenBalance; tokenAmount: BigNumber }
 
 type ReviewDetailsItemTotalValueProps = {
   approx?: boolean
   localCurrencySymbol: LocalCurrencySymbol
   amounts: Amount[]
+}
+
+/**
+ * Filters and returns an array of valid Amounts, removing falsy values, and ensuring each Amount
+ * has valid tokenInfo and tokenAmount properties.
+ */
+export function buildAmounts(
+  maybeAmounts: Array<MaybeAmount | undefined | false | null>
+): Amount[] {
+  return maybeAmounts.filter(
+    (amount): amount is Amount => !!amount && !!amount.tokenInfo && !!amount.tokenAmount
+  )
 }
 
 /**
@@ -336,8 +340,8 @@ export function ReviewDetailsItemTotalValue({
 
   // filter out "broken" amounts with no token info or token amount
   const filteredAmounts = amounts.filter(
-    (amount) => !!amount.tokenInfo && !!amount.tokenAmount
-  ) as FilteredAmount[]
+    (amount) => !!amount && !!amount.tokenInfo && !!amount.tokenAmount
+  ) as Amount[]
 
   // if all the amounts are "broken" (which should never happen) then don't return anything
   if (filteredAmounts.length === 0) {
