@@ -2634,6 +2634,13 @@
       "myPools": "我的池",
       "explore": "探索打开"
     },
+    "withdrawConfirmation": {
+      "title": "审查提款",
+      "rewardClaiming": "奖励申请",
+      "withdrawing": "退出",
+      "pool": "{{providerName}} 游泳池",
+      "yieldRate": "{{apy}}估计收益率"
+    },
     "depositConfirmation": {
       "title": "审查存款",
       "depositing": "存款",
@@ -2866,6 +2873,7 @@
   "reviewTransaction": {
     "title": "审查发送",
     "totalPlusFees": "加费用共计",
+    "totalLessFees": "减去费用共计",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "最高网络费用",

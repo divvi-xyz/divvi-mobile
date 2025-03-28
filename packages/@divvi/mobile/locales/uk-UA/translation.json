@@ -1009,7 +1009,7 @@
   "request": "Запит",
   "requestToken": "Запит {{token}}",
   "requestSent": "Запит надіслано",
-  "from": "від",
+  "from": "Від",
   "verificationMessage": "Ви отримали плату за під'єднання вашого облікового запису. Вітаємо в {{appName}}!",
   "receivedAmountFromCelo": "Ви отримали цю суму від Faucet!",
   "dollarsSent": "Доларів надіслано",
@@ -2640,6 +2640,13 @@
       "myPools": "Мої пули",
       "explore": "Переглянути"
     },
+    "withdrawConfirmation": {
+      "title": "Відгукнутись Вивести",
+      "rewardClaiming": "Отримання винагороди",
+      "withdrawing": "Відкликання",
+      "pool": "{{providerName}} Басейн",
+      "yieldRate": "{{apy}}% ест. ставка дохідності"
+    },
     "depositConfirmation": {
       "title": "Депозит для перегляду",
       "depositing": "Поповнення рахунку",
@@ -2872,6 +2879,7 @@
   "reviewTransaction": {
     "title": "Відгук Надіслати",
     "totalPlusFees": "Загальна сума плюс комісії",
+    "totalLessFees": "Загальна сума за вирахуванням комісій",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Максимальна комісія мережі",

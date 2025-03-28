@@ -1005,7 +1005,7 @@
   "request": "Anfragen",
   "requestToken": "{{token}} anfordern",
   "requestSent": "Anfrage gesendet",
-  "from": "von",
+  "from": "Von",
   "verificationMessage": "Du hast eine Gebühr zur Verbindung deines Kontos bezahlt. Willkommen auf {{appName}}!",
   "receivedAmountFromCelo": "Du kannst diesen Betrag vom Faucet erhalten!",
   "dollarsSent": "Gesendete Dollar",
@@ -2636,6 +2636,13 @@
       "myPools": "Meine Pools",
       "explore": "Offen erforschen"
     },
+    "withdrawConfirmation": {
+      "title": "Überprüfung Zurückziehen",
+      "rewardClaiming": "Belohnung einfordern",
+      "withdrawing": "Rückzug",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% geschätzter Ausbeutesatz"
+    },
     "depositConfirmation": {
       "title": "Überprüfung Kaution",
       "depositing": "Einzahlen",
@@ -2868,6 +2875,7 @@
   "reviewTransaction": {
     "title": "Rückblick Senden",
     "totalPlusFees": "Gesamt plus Gebühren",
+    "totalLessFees": "Gesamt abzüglich Gebühren",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Maximale Netzwerkgebühr",

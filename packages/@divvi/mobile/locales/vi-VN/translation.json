@@ -1003,7 +1003,7 @@
   "request": "Yêu cầu",
   "requestToken": "Yêu cầu {{token}}",
   "requestSent": "Đã gửi yêu cầu",
-  "from": "từ",
+  "from": "Từ",
   "verificationMessage": "Bạn đã thanh toán phí để kết nối tài khoản. Chào mừng đến với {{appName}}!",
   "receivedAmountFromCelo": "Bạn đã nhận số tiền này từ Faucet!",
   "dollarsSent": "Đã gửi Đô la",
@@ -2634,6 +2634,13 @@
       "myPools": "Các quỹ của tôi",
       "explore": "Khám phá các quỹ đang mở"
     },
+    "withdrawConfirmation": {
+      "title": "Review Withdraw",
+      "rewardClaiming": "Reward Claiming",
+      "withdrawing": "Withdrawing",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% est. yield rate"
+    },
     "depositConfirmation": {
       "title": "Review Deposit",
       "depositing": "Depositing",
@@ -2866,6 +2873,7 @@
   "reviewTransaction": {
     "title": "Review Send",
     "totalPlusFees": "Total Plus Fees",
+    "totalLessFees": "Total Less Fees",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Phí mạng tối đa",

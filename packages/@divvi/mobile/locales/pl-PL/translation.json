@@ -1009,7 +1009,7 @@
   "request": "Żądanie",
   "requestToken": "Zażądaj {{token}}",
   "requestSent": "Żądanie wysłane",
-  "from": "od",
+  "from": "Od",
   "verificationMessage": "Opłata za podłączenie konta została przesłana. Witaj w aplikacji {{appName}}!",
   "receivedAmountFromCelo": "Otrzymujesz tę kwotę ze strony Faucet!",
   "dollarsSent": "Przesłane dolary",
@@ -2640,6 +2640,13 @@
       "myPools": "Moje pule",
       "explore": "Przeglądaj otwarte"
     },
+    "withdrawConfirmation": {
+      "title": "Przejrzyj wypłatę",
+      "rewardClaiming": "Odbieranie nagród",
+      "withdrawing": "Wycofanie się",
+      "pool": "{{providerName}} Basen",
+      "yieldRate": "{{apy}}% est. stopa zwrotu"
+    },
     "depositConfirmation": {
       "title": "Przegląd depozytu",
       "depositing": "Deponowanie",
@@ -2872,6 +2879,7 @@
   "reviewTransaction": {
     "title": "Wyślij recenzję",
     "totalPlusFees": "Razem plus opłaty",
+    "totalLessFees": "Suma pomniejszona o opłaty",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Maksymalna opłata sieciowa",

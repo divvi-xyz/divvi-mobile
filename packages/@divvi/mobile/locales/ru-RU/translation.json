@@ -1009,7 +1009,7 @@
   "request": "Запросить",
   "requestToken": "Запросить {{token}}",
   "requestSent": "Запрос отправлен",
-  "from": "от",
+  "from": "От кого",
   "verificationMessage": "Вы заплатили комиссию за подключение своего аккаунта. Добро пожаловать в {{appName}}!",
   "receivedAmountFromCelo": "Вы получили эту сумму от Faucet!",
   "dollarsSent": "Отправленные доллары",
@@ -2640,6 +2640,13 @@
       "myPools": "Мои пулы",
       "explore": "Исследуйте открытые"
     },
+    "withdrawConfirmation": {
+      "title": "Обзорный вывод",
+      "rewardClaiming": "Претензия на вознаграждение",
+      "withdrawing": "Вывод",
+      "pool": "{{providerName}} Бассейн",
+      "yieldRate": "{{apy}}% расчетной нормы выхода"
+    },
     "depositConfirmation": {
       "title": "Обзорный депозит",
       "depositing": "Пополнение счета",
@@ -2872,6 +2879,7 @@
   "reviewTransaction": {
     "title": "Обзор Отправить",
     "totalPlusFees": "Итого плюс сборы",
+    "totalLessFees": "Итого за вычетом сборов",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Максимальная комиссия сеть",
