@@ -338,13 +338,8 @@ export function ReviewDetailsItemTotalValue({
 }: ReviewDetailsItemTotalValueProps) {
   const { t } = useTranslation()
 
-  // filter out "broken" amounts with no token info or token amount
-  const filteredAmounts = amounts.filter(
-    (amount) => !!amount && !!amount.tokenInfo && !!amount.tokenAmount
-  ) as Amount[]
-
-  // if all the amounts are "broken" (which should never happen) then don't return anything
-  if (filteredAmounts.length === 0) {
+  // if there are no amounts then don't return anything
+  if (amounts.length === 0) {
     return null
   }
 
@@ -353,19 +348,19 @@ export function ReviewDetailsItemTotalValue({
    * tokens with variable availability of fiat prices. Based on that, we need to detect the kind of
    * variation and format it accordingly.
    */
-  const amountsGroupedByTokenId = groupBy(filteredAmounts, (amount) => amount.tokenInfo.tokenId)
+  const amountsGroupedByTokenId = groupBy(amounts, (amount) => amount.tokenInfo.tokenId)
   const tokenIds = Object.keys(amountsGroupedByTokenId)
   const sameToken = tokenIds.length === 1
-  const allTokensHaveLocalPrice = filteredAmounts.every((amount) => !!amount.localAmount)
+  const allTokensHaveLocalPrice = amounts.every((amount) => !!amount.localAmount)
 
   /**
    * If all the amounts are of the same token and we have a fiat price for it – then format the value
    * to the format like "1.00 USDC ($1.00)".
    */
   if (sameToken && allTokensHaveLocalPrice) {
-    const tokenInfo = filteredAmounts[0].tokenInfo
-    const tokenAmount = sumAmounts(filteredAmounts, 'tokenAmount')
-    const localAmount = sumAmounts(filteredAmounts, 'localAmount')
+    const tokenInfo = amounts[0].tokenInfo
+    const tokenAmount = sumAmounts(amounts, 'tokenAmount')
+    const localAmount = sumAmounts(amounts, 'localAmount')
     return (
       <ReviewDetailsItemTokenValue
         approx={approx}
@@ -384,8 +379,8 @@ export function ReviewDetailsItemTotalValue({
    * then format the value to only show the sum of all token amounts like "1.00 USDC".
    */
   if (sameToken && !allTokensHaveLocalPrice) {
-    const tokenSymbol = filteredAmounts[0].tokenInfo.symbol
-    const tokenAmount = sumAmounts(filteredAmounts, 'tokenAmount')
+    const tokenSymbol = amounts[0].tokenInfo.symbol
+    const tokenAmount = sumAmounts(amounts, 'tokenAmount')
     const sign = tokenAmount.isNegative() ? '- ' : ''
     const displayTokenAmount = `${sign}${formatValueToDisplay(tokenAmount.abs())}`
     return approx
@@ -398,7 +393,7 @@ export function ReviewDetailsItemTotalValue({
    * to only show the sum of all fiat amounts like "$1.00"
    */
   if (!sameToken && allTokensHaveLocalPrice) {
-    const localAmount = sumAmounts(filteredAmounts, 'localAmount')
+    const localAmount = sumAmounts(amounts, 'localAmount')
     const sign = localAmount.isNegative() ? '- ' : ''
     const displayLocalAmount = formatValueToDisplay(localAmount.abs())
     const symbol = `${sign}${localCurrencySymbol}`
