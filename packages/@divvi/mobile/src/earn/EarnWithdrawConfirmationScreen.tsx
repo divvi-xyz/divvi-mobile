@@ -6,6 +6,7 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
 import {
+  buildAmounts,
   ReviewContent,
   ReviewDetails,
   ReviewDetailsItem,
@@ -238,7 +239,7 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
             label={t('reviewTransaction.totalLessFees')}
             localCurrencySymbol={localCurrencySymbol}
             isLoading={preparedTransaction.loading}
-            amounts={[
+            amounts={buildAmounts([
               params.mode !== 'claim-rewards' && {
                 tokenInfo: withdraw.depositToken,
                 tokenAmount: withdraw.tokenAmount,
@@ -251,7 +252,7 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
                 localAmount: networkFee?.localAmount,
               },
               ...rewards.tokens,
-            ]}
+            ])}
           />
         </ReviewDetails>
       </ReviewContent>

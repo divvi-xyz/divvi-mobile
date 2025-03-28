@@ -11,6 +11,7 @@ import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes } from 'src/components/Button'
 import InfoBottomSheet, { InfoBottomSheetContentBlock } from 'src/components/InfoBottomSheet'
 import {
+  buildAmounts,
   ReviewContent,
   ReviewDetails,
   ReviewDetailsItem,
@@ -219,14 +220,14 @@ export default function SendConfirmation({ route: { params } }: Props) {
             isLoading={prepareTransactionLoading}
             localCurrencySymbol={localCurrencySymbol}
             onInfoPress={() => totalBottomSheetRef.current?.snapToIndex(0)}
-            amounts={[
+            amounts={buildAmounts([
               { tokenInfo, tokenAmount, localAmount },
               {
                 tokenInfo: feeTokenInfo,
                 tokenAmount: tokenEstimatedFeeAmount,
                 localAmount: localEstimatedFeeAmount,
               },
-            ]}
+            ])}
           />
         </ReviewDetails>
       </ReviewContent>
@@ -300,14 +301,14 @@ export default function SendConfirmation({ route: { params } }: Props) {
             type="total-token-amount"
             label={t('reviewTransaction.totalPlusFees')}
             localCurrencySymbol={localCurrencySymbol}
-            amounts={[
+            amounts={buildAmounts([
               { tokenInfo, tokenAmount, localAmount },
               {
                 tokenInfo: feeTokenInfo,
                 tokenAmount: tokenEstimatedFeeAmount,
                 localAmount: localEstimatedFeeAmount,
               },
-            ]}
+            ])}
           />
         </InfoBottomSheetContentBlock>
       </InfoBottomSheet>
