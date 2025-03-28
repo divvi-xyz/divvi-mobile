@@ -82,10 +82,10 @@ describe('EarnWithdrawConfirmationScreen', () => {
       'earnFlow.withdrawConfirmation.withdrawing'
     )
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/PrimaryValue')).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"11.83","tokenSymbol":"USDC"}'
+      '11.83 USDC'
     )
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/SecondaryValue')).toHaveTextContent(
-      'localAmount, {"localAmount":"15.73","localCurrencySymbol":"₱"}'
+      '₱15.73'
     )
 
     // summary item for rewards
@@ -202,10 +202,10 @@ describe('EarnWithdrawConfirmationScreen', () => {
       'earnFlow.withdrawConfirmation.withdrawing'
     )
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/PrimaryValue')).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"5.91","tokenSymbol":"USDC"}'
+      '5.91 USDC'
     )
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/SecondaryValue')).toHaveTextContent(
-      'localAmount, {"localAmount":"7.86","localCurrencySymbol":"₱"}'
+      '₱7.86'
     )
 
     // summary item for rewards

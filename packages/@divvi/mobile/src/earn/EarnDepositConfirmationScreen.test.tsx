@@ -245,10 +245,10 @@ describe('EarnDepositConfirmationScreen', () => {
           'earnFlow.depositConfirmation.depositing'
         )
         expect(getByTestId('EarnDepositConfirmationToken/PrimaryValue')).toHaveTextContent(
-          'tokenAmount, {"tokenAmount":"100.00","tokenSymbol":"USDC"}'
+          '100.00 USDC'
         )
         expect(getByTestId('EarnDepositConfirmationToken/SecondaryValue')).toHaveTextContent(
-          'localAmount, {"localAmount":"133.00","localCurrencySymbol":"₱"}'
+          '₱133.00'
         )
 
         // summary item for pool

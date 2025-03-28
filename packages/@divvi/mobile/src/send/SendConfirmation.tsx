@@ -20,7 +20,7 @@ import {
   ReviewSummaryItemContact,
   ReviewTransaction,
 } from 'src/components/ReviewTransaction'
-import { formatValueToDisplay } from 'src/components/TokenDisplay'
+import { LocalAmountDisplay, TokenAmountDisplay } from 'src/components/TokenDisplayV2'
 import TokenIcon from 'src/components/TokenIcon'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { getLocalCurrencyCode, getLocalCurrencySymbol } from 'src/localCurrency/selectors'
@@ -177,15 +177,12 @@ export default function SendConfirmation({ route: { params } }: Props) {
             testID="SendConfirmationToken"
             label={t('sending')}
             icon={<TokenIcon token={tokenInfo} />}
-            primaryValue={t('tokenAmount', {
-              tokenAmount: formatValueToDisplay(tokenAmount),
-              tokenSymbol: tokenInfo.symbol ?? '',
-            })}
-            secondaryValue={t('localAmount', {
-              localAmount: formatValueToDisplay(localAmount ?? new BigNumber(0)),
-              localCurrencySymbol,
-              context: localAmount ? undefined : 'noFiatPrice',
-            })}
+            primaryValue={
+              <TokenAmountDisplay tokenAmount={tokenAmount} tokenId={tokenInfo.tokenId} />
+            }
+            secondaryValue={
+              <LocalAmountDisplay tokenAmount={tokenAmount} tokenId={tokenInfo.tokenId} />
+            }
           />
 
           <ReviewSummaryItemContact testID="SendConfirmationRecipient" recipient={recipient} />

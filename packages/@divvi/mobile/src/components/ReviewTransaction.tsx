@@ -72,8 +72,8 @@ export function ReviewSummary(props: { children: ReactNode }) {
 export function ReviewSummaryItem(props: {
   label: string
   icon: ReactNode
-  primaryValue: string
-  secondaryValue?: string
+  primaryValue: ReactNode
+  secondaryValue?: ReactNode
   testID?: string
   onPress?: () => void
 }) {
