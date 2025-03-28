@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 import BottomSheet, { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
+import ArrowRightThick from 'src/icons/ArrowRightThick'
+import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 
@@ -10,14 +12,18 @@ export default function UnfavorableRateBottomSheet({
   forwardedRef,
   onConfirm,
   onCancel,
-  fromTokenAmount,
-  toTokenAmount,
+  fromTokenAmountDisplay,
+  fromLocalAmountDisplay,
+  toTokenAmountDisplay,
+  toLocalAmountDisplay,
 }: {
   forwardedRef: RefObject<BottomSheetModalRefType>
   onConfirm: () => void
   onCancel: () => void
-  fromTokenAmount: string // amount with symbol
-  toTokenAmount: string // amount with symbol
+  fromTokenAmountDisplay: string
+  fromLocalAmountDisplay: string
+  toTokenAmountDisplay: string
+  toLocalAmountDisplay: string
 }) {
   const { t } = useTranslation()
 
@@ -28,7 +34,22 @@ export default function UnfavorableRateBottomSheet({
       description={t('swapUnfavorableRateBottomSheet.description')}
       testId="UnfavorableSwapBottomSheet"
     >
-      <Text style={styles.tokenAmount}>{`${fromTokenAmount} → ${toTokenAmount}`}</Text>
+      {/* TODO: use new TokenDisplay component proposed in https://github.com/divvi-xyz/divvi-mobile/pull/181 */}
+      <View style={styles.amountContainer} testID="AmountContainer">
+        <Text style={styles.tokenAmount}>
+          {fromTokenAmountDisplay}
+          {!!fromLocalAmountDisplay && (
+            <Text style={styles.localAmount}> ({fromLocalAmountDisplay})</Text>
+          )}
+        </Text>
+        <ArrowRightThick />
+        <Text style={styles.tokenAmount}>
+          {toTokenAmountDisplay}
+          {!!toLocalAmountDisplay && (
+            <Text style={styles.localAmount}> ({toLocalAmountDisplay})</Text>
+          )}
+        </Text>
+      </View>
       <View style={styles.buttonContainer}>
         <Button
           onPress={() => {
@@ -54,9 +75,18 @@ export default function UnfavorableRateBottomSheet({
 }
 
 const styles = StyleSheet.create({
+  amountContainer: {
+    flexDirection: 'row',
+    marginVertical: Spacing.Thick24,
+    gap: Spacing.Smallest8,
+    alignItems: 'center',
+  },
   tokenAmount: {
     ...typeScale.labelSemiBoldSmall,
-    marginVertical: Spacing.Thick24,
+  },
+  localAmount: {
+    ...typeScale.bodySmall,
+    color: colors.contentSecondary,
   },
   buttonContainer: {
     gap: Spacing.Small12,

@@ -1124,8 +1124,10 @@ export default function SwapScreenV2({ route }: Props) {
         forwardedRef={unfavorableSwapBottomSheetRef}
         onConfirm={submitSwap}
         onCancel={handleUnfavorableRateBottomSheetCancel}
-        fromTokenAmount={processedAmountsFrom.token.displayAmount}
-        toTokenAmount={processedAmountsTo.token.displayAmount}
+        fromTokenAmountDisplay={processedAmountsFrom.token.displayAmount}
+        fromLocalAmountDisplay={processedAmountsFrom.local.displayAmount}
+        toTokenAmountDisplay={processedAmountsTo.token.displayAmount}
+        toLocalAmountDisplay={processedAmountsTo.local.displayAmount}
       />
     </SafeAreaView>
   )
