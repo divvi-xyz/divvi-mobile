@@ -2879,6 +2879,7 @@
   "reviewTransaction": {
     "title": "Обзор Отправить",
     "totalPlusFees": "Итого плюс сборы",
+    "totalLessFees": "Итого за вычетом сборов",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Максимальная комиссия сеть",
