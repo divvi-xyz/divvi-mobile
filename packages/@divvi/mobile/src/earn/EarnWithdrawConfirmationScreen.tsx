@@ -118,7 +118,7 @@ function useRewards(params: Props['route']['params']) {
       })
       return { tokenAmount, tokenInfo, localAmount, balance: token.balance }
     })
-    .filter((token) => !!token.tokenInfo) as Array<Amount & { balance: string }>
+    .filter((token): token is Amount & { balance: string } => !!token.tokenInfo)
 
   return { tokens, tokensInfo, positions, flattenedPositionTokens }
 }
