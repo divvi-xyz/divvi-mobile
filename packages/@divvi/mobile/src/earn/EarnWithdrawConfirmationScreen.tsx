@@ -1,10 +1,15 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 import BigNumber from 'bignumber.js'
-import React, { useMemo } from 'react'
+import { groupBy } from 'lodash'
+import React, { useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { EarnEvents } from 'src/analytics/Events'
 import { openUrl } from 'src/app/actions'
+import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
+import FeeInfoBottomSheet from 'src/components/FeeInfoBottomSheet'
+import InfoBottomSheet, { InfoBottomSheetContentBlock } from 'src/components/InfoBottomSheet'
 import {
   buildAmounts,
   ReviewContent,
@@ -32,6 +37,7 @@ import { NETWORK_NAMES } from 'src/shared/conts'
 import themeColors from 'src/styles/colors'
 import { useTokenInfo, useTokensInfo, useTokenToLocalAmount } from 'src/tokens/hooks'
 import { feeCurrenciesSelector } from 'src/tokens/selectors'
+import type { TokenBalance } from 'src/tokens/slice'
 import { convertTokenToLocalAmount } from 'src/tokens/utils'
 import Logger from 'src/utils/Logger'
 import { walletAddressSelector } from 'src/web3/selectors'
@@ -41,6 +47,50 @@ const TAG = 'earn/EarnWithdrawConfirmationScreen'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnWithdrawConfirmationScreen>
 
+type Amount = {
+  tokenInfo: TokenBalance
+  tokenAmount: BigNumber
+  localAmount: BigNumber | null
+}
+
+function getTotalWithdrawAmountsPerToken(
+  rewardTokens: Amount[],
+  withdraw: ReturnType<typeof useWithdrawAmountInDepositToken>
+) {
+  if (!withdraw.depositToken) {
+    Logger.error(TAG, 'depositToken is not available')
+    return []
+  }
+
+  const allTokens = [
+    ...rewardTokens,
+    {
+      tokenInfo: withdraw.depositToken,
+      tokenAmount: withdraw.tokenAmount,
+      localAmount: withdraw.localAmount,
+    },
+  ]
+  const groupedTokens = groupBy(allTokens, (token) => token.tokenInfo.tokenId)
+  const summedTokens: Record<string, Amount> = {}
+
+  for (const [tokenId, amounts] of Object.entries(groupedTokens)) {
+    summedTokens[tokenId] = {
+      tokenInfo: amounts[0].tokenInfo,
+      tokenAmount: amounts.reduce((acc, token) => acc.plus(token.tokenAmount), new BigNumber(0)),
+      localAmount: amounts.reduce<Amount['localAmount']>(
+        (acc, token) => (acc && token.localAmount ? acc.plus(token.localAmount) : null),
+        new BigNumber(0)
+      ),
+    }
+  }
+
+  const sortedTokens = Object.values(summedTokens).sort((token) =>
+    withdraw.depositToken && token.tokenInfo.tokenId === withdraw.depositToken.tokenId ? -1 : 0
+  )
+
+  return sortedTokens
+}
+
 function useRewards(params: Props['route']['params']) {
   const { rewardsPositionIds } = params.pool.dataProps
   const usdToLocalRate = useSelector(usdToLocalCurrencyRateSelector)
@@ -48,22 +98,19 @@ function useRewards(params: Props['route']['params']) {
     rewardsPositionIds?.includes(position.positionId)
   )
   const tokensInfo = useTokensInfo(positions.map((position) => position.tokens[0]?.tokenId))
-  const tokens = useMemo(
-    () =>
-      positions
-        .flatMap((position) => position.tokens)
-        .map((token) => {
-          const tokenAmount = new BigNumber(token.balance)
-          const tokenInfo = tokensInfo.find((info) => info?.tokenId === token.tokenId)
-          const localAmount = convertTokenToLocalAmount({
-            tokenAmount,
-            tokenInfo,
-            usdToLocalRate,
-          })
-          return { tokenAmount, tokenInfo, localAmount, balance: token.balance }
-        }),
-    [positions, tokensInfo, usdToLocalRate]
-  )
+  const tokens = positions
+    .flatMap((position) => position.tokens)
+    .map((token) => {
+      const tokenAmount = new BigNumber(token.balance)
+      const tokenInfo = tokensInfo.find((info) => info?.tokenId === token.tokenId)
+      const localAmount = convertTokenToLocalAmount({
+        tokenAmount,
+        tokenInfo,
+        usdToLocalRate,
+      })
+      return { tokenAmount, tokenInfo, localAmount, balance: token.balance }
+    })
+    .filter((rewardToken) => !!rewardToken.tokenInfo) as Array<Amount & { balance: string }>
 
   return { tokens, tokensInfo, positions }
 }
@@ -87,9 +134,12 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const providerUrl = params.pool.dataProps.manageUrl ?? params.pool.dataProps.termsUrl
-  const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
+  const feeBottomSheetRef = useRef<BottomSheetModalRefType>(null)
+  const totalBottomSheetRef = useRef<BottomSheetModalRefType>(null)
   const rewards = useRewards(params)
   const withdraw = useWithdrawAmountInDepositToken(params)
+  const totalWithdrawAmountsPerToken = getTotalWithdrawAmountsPerToken(rewards.tokens, withdraw)
+  const localCurrencySymbol = useSelector(getLocalCurrencySymbol) ?? LocalCurrencySymbol.USD
   const hooksApiUrl = useSelector(hooksApiUrlSelector)
   const walletAddress = (useSelector(walletAddressSelector) || '') as Address
   const feeCurrencies = useSelector((state) =>
@@ -109,7 +159,6 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
     rewardsPositions: rewards.positions,
     useMax: params.mode !== 'withdraw' || params.useMax,
   })
-
   const networkFee = useNetworkFee(preparedTransaction.result)
 
   function onPressProvider() {
@@ -125,7 +174,7 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
           .filter((token) => !!token.tokenInfo)
           .map((token) => ({
             amount: token.balance,
-            tokenId: token.tokenInfo!.tokenId,
+            tokenId: token.tokenInfo.tokenId,
           })),
       })
     }
@@ -171,27 +220,25 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
           {(params.mode === 'claim-rewards' ||
             params.mode === 'exit' ||
             params.pool.dataProps.withdrawalIncludesClaim) &&
-            rewards.tokens
-              .filter((rewardToken) => !!rewardToken.tokenInfo)
-              .map((rewardToken, idx) => (
-                <ReviewSummaryItem
-                  key={idx}
-                  testID={`EarnWithdrawConfirmation/RewardClaim-${idx}`}
-                  label={t('earnFlow.withdrawConfirmation.rewardClaiming')}
-                  icon={<TokenIcon token={rewardToken.tokenInfo!} />}
-                  primaryValue={t('tokenAmount', {
-                    tokenAmount: formatValueToDisplay(rewardToken.tokenAmount),
-                    tokenSymbol: rewardToken.tokenInfo?.symbol,
-                  })}
-                  secondaryValue={t('localAmount', {
-                    context: rewardToken.localAmount ? undefined : 'noFiatPrice',
-                    localAmount: rewardToken.localAmount
-                      ? formatValueToDisplay(rewardToken.localAmount)
-                      : '',
-                    localCurrencySymbol,
-                  })}
-                />
-              ))}
+            rewards.tokens.map((rewardToken, idx) => (
+              <ReviewSummaryItem
+                key={idx}
+                testID={`EarnWithdrawConfirmation/RewardClaim-${idx}`}
+                label={t('earnFlow.withdrawConfirmation.rewardClaiming')}
+                icon={<TokenIcon token={rewardToken.tokenInfo} />}
+                primaryValue={t('tokenAmount', {
+                  tokenAmount: formatValueToDisplay(rewardToken.tokenAmount),
+                  tokenSymbol: rewardToken.tokenInfo?.symbol,
+                })}
+                secondaryValue={t('localAmount', {
+                  context: rewardToken.localAmount ? undefined : 'noFiatPrice',
+                  localAmount: rewardToken.localAmount
+                    ? formatValueToDisplay(rewardToken.localAmount)
+                    : '',
+                  localCurrencySymbol,
+                })}
+              />
+            ))}
 
           <ReviewSummaryItem
             testID="EarnWithdrawConfirmation/Pool"
@@ -230,6 +277,7 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
             localAmount={networkFee?.localAmount}
             tokenInfo={networkFee?.token}
             localCurrencySymbol={localCurrencySymbol}
+            onInfoPress={() => feeBottomSheetRef.current?.snapToIndex(0)}
           />
 
           <ReviewDetailsItem
@@ -239,6 +287,7 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
             label={t('reviewTransaction.totalLessFees')}
             localCurrencySymbol={localCurrencySymbol}
             isLoading={preparedTransaction.loading}
+            onInfoPress={() => totalBottomSheetRef.current?.snapToIndex(0)}
             amounts={buildAmounts([
               params.mode !== 'claim-rewards' && {
                 tokenInfo: withdraw.depositToken,
@@ -256,6 +305,70 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
           />
         </ReviewDetails>
       </ReviewContent>
+
+      <FeeInfoBottomSheet forwardedRef={feeBottomSheetRef} networkFee={networkFee} />
+
+      <InfoBottomSheet
+        forwardedRef={totalBottomSheetRef}
+        title={t('reviewTransaction.totalLessFees')}
+        testID="TotalInfoBottomSheet"
+      >
+        <InfoBottomSheetContentBlock>
+          <View>
+            {totalWithdrawAmountsPerToken.map((token, idx) => (
+              <ReviewDetailsItem
+                key={token.tokenInfo.tokenId}
+                fontSize="small"
+                type="token-amount"
+                testID={`TotalInfoBottomSheet/Withdrawing-${idx}`}
+                label={idx === 0 ? t('earnFlow.withdrawConfirmation.withdrawing') : ''}
+                localCurrencySymbol={localCurrencySymbol}
+                {...token}
+              />
+            ))}
+          </View>
+
+          {networkFee && (
+            <ReviewDetailsItem
+              approx
+              fontSize="small"
+              type="token-amount"
+              testID="TotalInfoBottomSheet/Fees"
+              label={t('fees')}
+              caption={isGasSubsidized ? t('gasSubsidized') : undefined}
+              captionColor={isGasSubsidized ? themeColors.accent : undefined}
+              strikeThrough={isGasSubsidized}
+              tokenAmount={networkFee.amount}
+              localAmount={networkFee.localAmount}
+              tokenInfo={networkFee.token}
+              localCurrencySymbol={localCurrencySymbol}
+            />
+          )}
+
+          <ReviewDetailsItem
+            approx
+            fontSize="small"
+            type="total-token-amount"
+            testID="TotalInfoBottomSheet/Total"
+            label={t('reviewTransaction.totalLessFees')}
+            localCurrencySymbol={localCurrencySymbol}
+            amounts={buildAmounts([
+              params.mode !== 'claim-rewards' && {
+                tokenInfo: withdraw.depositToken,
+                tokenAmount: withdraw.tokenAmount,
+                localAmount: withdraw.localAmount,
+              },
+              {
+                isDeductible: true,
+                tokenInfo: networkFee?.token,
+                tokenAmount: networkFee?.amount,
+                localAmount: networkFee?.localAmount,
+              },
+              ...rewards.tokens,
+            ])}
+          />
+        </InfoBottomSheetContentBlock>
+      </InfoBottomSheet>
     </ReviewTransaction>
   )
 }
