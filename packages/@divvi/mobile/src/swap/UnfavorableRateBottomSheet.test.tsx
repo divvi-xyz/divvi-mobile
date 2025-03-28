@@ -1,10 +1,13 @@
-import { fireEvent, render } from '@testing-library/react-native'
+import { fireEvent, render, waitFor } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
-import React from 'react'
+import React, { act } from 'react'
+import { PanResponder } from 'react-native'
 import { Provider } from 'react-redux'
 import UnfavorableRateBottomSheet from 'src/swap/UnfavorableRateBottomSheet'
 import { createMockStore } from 'test/utils'
 import { mockCeloTokenBalance, mockCusdTokenBalance } from 'test/values'
+
+jest.unmock('src/swap/UnfavorableRateBottomSheet')
 
 const onConfirm = jest.fn()
 const onCancel = jest.fn()
@@ -38,6 +41,10 @@ function renderSheet({
 describe('UnfavorableRateBottomSheet', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    jest
+      .spyOn(PanResponder, 'create')
+      .mockImplementation((config: any) => ({ panHandlers: config }))
+    jest.useFakeTimers()
   })
 
   it('renders correctly', () => {
@@ -107,10 +114,37 @@ describe('UnfavorableRateBottomSheet', () => {
     expect(onConfirm).not.toHaveBeenCalled()
   })
 
-  it('calls onConfirm when confirm button is pressed', () => {
-    const { getByText } = renderSheet()
-    fireEvent.press(getByText('swapUnfavorableRateBottomSheet.confirm'))
+  it('calls onConfirm when slider is completed and then resets', async () => {
+    const { getByTestId, getByText, queryByText } = renderSheet()
+    const slider = getByTestId('SlideButton/Slider')
+    // Simulate sliding action
+    slider.props.onPanResponderRelease(null, { dx: 2 })
+
+    await waitFor(() => {
+      expect(getByText('swapUnfavorableRateBottomSheet.confirmed')).toBeTruthy()
+      expect(queryByText('swapUnfavorableRateBottomSheet.confirm')).toBeFalsy()
+    })
+
+    jest.advanceTimersByTime(600)
+
     expect(onConfirm).toHaveBeenCalled()
+
+    await act(() => jest.advanceTimersByTime(600))
+
+    await waitFor(() => {
+      expect(queryByText('swapUnfavorableRateBottomSheet.confirmed')).toBeFalsy()
+      expect(queryByText('swapUnfavorableRateBottomSheet.confirm')).toBeTruthy()
+    })
+
     expect(onCancel).not.toHaveBeenCalled()
+  })
+
+  it('does not call onConfirm when slider is not completed', () => {
+    const { getByTestId } = renderSheet()
+    const slider = getByTestId('SlideButton/Slider')
+    slider.props.onPanResponderRelease(null, { dx: 1 })
+
+    jest.advanceTimersByTime(600)
+    expect(onConfirm).not.toHaveBeenCalled()
   })
 })
