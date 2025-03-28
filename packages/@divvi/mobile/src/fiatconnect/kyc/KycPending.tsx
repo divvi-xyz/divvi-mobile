@@ -11,7 +11,7 @@ import getNavigationOptions from 'src/fiatconnect/kyc/getNavigationOptions'
 import BankIcon from 'src/icons/BankIcon'
 import CircledIcon from 'src/icons/CircledIcon'
 import ClockIcon from 'src/icons/ClockIcon'
-import { navigateHome } from 'src/navigator/NavigationService'
+import { navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import colors from 'src/styles/colors'
@@ -35,7 +35,7 @@ function KycPending({ route, navigation }: Props) {
       flow: route.params.flow,
       fiatConnectKycStatus: FiatConnectKycStatus.KycPending,
     })
-    navigateHome()
+    navigateInitialTab()
   }
 
   return (

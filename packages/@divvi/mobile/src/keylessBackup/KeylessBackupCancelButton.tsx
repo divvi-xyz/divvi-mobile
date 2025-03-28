@@ -2,7 +2,7 @@ import React from 'react'
 import { AnalyticsEventType } from 'src/analytics/Properties'
 import CancelButton from 'src/components/CancelButton'
 import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 
 export default function KeylessBackupCancelButton({
@@ -19,7 +19,7 @@ export default function KeylessBackupCancelButton({
       eventName={eventName}
       eventProperties={{ keylessBackupFlow: flow, origin }}
       onCancel={() => {
-        flow === KeylessBackupFlow.Setup ? navigateHome() : navigate(Screens.ImportSelect)
+        flow === KeylessBackupFlow.Setup ? navigateInitialTab() : navigate(Screens.ImportSelect)
       }}
     />
   )

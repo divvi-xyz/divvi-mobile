@@ -1,10 +1,10 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import React from 'react'
-import { KeylessBackupEvents } from 'src/analytics/Events'
 import AppAnalytics from 'src/analytics/AppAnalytics'
+import { KeylessBackupEvents } from 'src/analytics/Events'
 import KeylessBackupCancelButton from 'src/keylessBackup/KeylessBackupCancelButton'
 import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 
 describe('KeylessBackupCancelButton', () => {
@@ -24,7 +24,7 @@ describe('KeylessBackupCancelButton', () => {
 
     fireEvent.press(getByTestId('CancelButton'))
 
-    expect(navigateHome).toHaveBeenCalledTimes(1)
+    expect(navigateInitialTab).toHaveBeenCalledTimes(1)
     expect(AppAnalytics.track).toHaveBeenCalledTimes(1)
     expect(AppAnalytics.track).toHaveBeenCalledWith(
       KeylessBackupEvents.cab_enter_phone_number_cancel,

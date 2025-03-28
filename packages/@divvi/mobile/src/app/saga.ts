@@ -34,7 +34,7 @@ import { FiatExchangeFlow } from 'src/fiatExchanges/types'
 import { initI18n } from 'src/i18n'
 import { currentLanguageSelector, otaTranslationsAppVersionSelector } from 'src/i18n/selectors'
 import { jumpstartClaim } from 'src/jumpstart/saga'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { handleEnableHooksPreviewDeepLink } from 'src/positions/saga'
@@ -239,7 +239,7 @@ export function* handleDeepLink(action: OpenDeepLink) {
       navigate(Screens.CashInSuccess, { provider: cicoSuccessParam.split('/')[0] })
       // Some providers append transaction information to the redirect links so can't check for strict equality
     } else if (rawParams.path.startsWith('/cash-in-failure')) {
-      navigateHome()
+      navigateInitialTab()
     } else if (isSecureOrigin && rawParams.pathname === '/openScreen' && rawParams.query) {
       // The isSecureOrigin is important. We don't want it to be possible to fire this deep link from outside
       // of our own notifications for security reasons.

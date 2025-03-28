@@ -16,7 +16,7 @@ import {
 } from 'src/earn/slice'
 import { DepositInfo, WithdrawInfo } from 'src/earn/types'
 import { isGasSubsidizedForNetwork } from 'src/earn/utils'
-import { navigateHome } from 'src/navigator/NavigationService'
+import { navigateInitialTab } from 'src/navigator/NavigationService'
 import { CANCELLED_PIN_INPUT } from 'src/pincode/authentication'
 import { vibrateError } from 'src/styles/hapticFeedback'
 import { getTokenInfo } from 'src/tokens/saga'
@@ -236,7 +236,7 @@ export function* depositSubmitSaga(action: PayloadAction<DepositInfo>) {
       txHashes
     )
 
-    navigateHome()
+    navigateInitialTab()
     submitted = true
 
     // wait for the tx receipts, so that we can track them
@@ -404,7 +404,7 @@ export function* withdrawSubmitSaga(action: PayloadAction<WithdrawInfo>) {
       `Successfully sent ${mode} transaction(s) to the network`,
       txHashes
     )
-    navigateHome()
+    navigateInitialTab()
     submitted = true
 
     // Wait for transaction receipts

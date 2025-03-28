@@ -3,11 +3,11 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { OnboardingEvents } from 'src/analytics/Events'
-import AppAnalytics from 'src/analytics/AppAnalytics'
 import { backupCompletedSelector } from 'src/account/selectors'
+import AppAnalytics from 'src/analytics/AppAnalytics'
+import { OnboardingEvents } from 'src/analytics/Events'
 import Checkmark from 'src/icons/Checkmark'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { useSelector } from 'src/redux/hooks'
@@ -32,7 +32,7 @@ function BackupComplete({ route }: Props) {
         navigate(Screens.SecuritySubmenu, { promptConfirmRemovalModal: true })
       } else if (backupCompleted) {
         AppAnalytics.track(OnboardingEvents.backup_complete)
-        navigateHome()
+        navigateInitialTab()
       } else {
         throw new Error('Backup complete screen should not be reachable without completing backup')
       }

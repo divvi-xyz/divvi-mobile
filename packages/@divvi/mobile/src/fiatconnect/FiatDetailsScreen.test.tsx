@@ -10,7 +10,7 @@ import FiatConnectQuote from 'src/fiatExchanges/quotes/FiatConnectQuote'
 import { CICOFlow } from 'src/fiatExchanges/types'
 import { FiatConnectQuoteSuccess } from 'src/fiatconnect'
 import { SendingFiatAccountStatus, submitFiatAccount } from 'src/fiatconnect/slice'
-import { navigateBack, navigateHome } from 'src/navigator/NavigationService'
+import { navigateBack, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { getDynamicConfigParams } from 'src/statsig'
 import { StatsigDynamicConfigs } from 'src/statsig/types'
@@ -190,7 +190,7 @@ describe('FiatDetailsScreen', () => {
     const { getByText } = render(<Provider store={store}>{headerRight}</Provider>)
 
     fireEvent.press(getByText('cancel'))
-    expect(navigateHome).toHaveBeenCalled()
+    expect(navigateInitialTab).toHaveBeenCalled()
     expect(AppAnalytics.track).toHaveBeenCalledWith(FiatExchangeEvents.cico_fiat_details_cancel, {
       flow: mockScreenPropsWithAllowedValues.route.params.flow,
       provider: quoteWithAllowedValues.getProviderId(),

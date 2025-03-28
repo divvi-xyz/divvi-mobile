@@ -23,7 +23,7 @@ import {
 } from 'src/keylessBackup/types'
 import { useDollarsToLocalAmount, useLocalCurrencyCode } from 'src/localCurrency/hooks'
 import { HeaderTitleWithSubtitle } from 'src/navigator/Headers'
-import { ensurePincode, navigate, navigateHome } from 'src/navigator/NavigationService'
+import { ensurePincode, navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { TopBarTextButton } from 'src/navigator/TopBarButton'
 import { StackParamList } from 'src/navigator/types'
@@ -312,7 +312,7 @@ function Setup({ origin }: { origin: KeylessBackupOrigin }) {
           onboardingProps,
           firstScreenInCurrentStep: Screens.SignInWithEmail,
         })
-      : navigateHome()
+      : navigateInitialTab()
   }
 
   const iconMarginTop = { marginTop: variables.height / 4 }

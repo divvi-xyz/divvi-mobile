@@ -6,7 +6,7 @@ import {
   fiatConnectQuotesErrorSelector,
 } from 'src/fiatconnect/selectors'
 import { refetchQuote } from 'src/fiatconnect/slice'
-import { navigateHome } from 'src/navigator/NavigationService'
+import { navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { useDispatch, useSelector } from 'src/redux/hooks'
@@ -28,7 +28,7 @@ export default function FiatConnectRefetchQuoteScreen({ route }: Props) {
   useEffect(() => {
     if (!cachedQuoteParams) {
       // For some reason, we don't have a cached quote; go to beginning of CICO flow
-      navigateHome()
+      navigateInitialTab()
     } else {
       if (!tokenInfo) {
         throw new Error(`Token info not found for token symbol ${cachedQuoteParams.cryptoType}`)
@@ -48,7 +48,7 @@ export default function FiatConnectRefetchQuoteScreen({ route }: Props) {
 
   if (fiatConnectQuotesError) {
     // We have a cached quote, but there was some error while re-fetching; go to beginning of CICO flow
-    navigateHome()
+    navigateInitialTab()
   }
 
   return (

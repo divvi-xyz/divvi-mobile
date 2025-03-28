@@ -6,7 +6,7 @@ import { chooseCreateAccount, chooseRestoreAccount } from 'src/account/actions'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { OnboardingEvents } from 'src/analytics/Events'
 import { getAppConfig } from 'src/appConfig'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { firstOnboardingScreen } from 'src/onboarding/steps'
 import Welcome from 'src/onboarding/welcome/Welcome'
@@ -167,7 +167,7 @@ describe('Welcome', () => {
       fireEvent.press(getByText('demoMode.confirmEnter.cta'))
 
       expect(store.getActions()).toEqual([demoModeToggled(true)])
-      await waitFor(() => expect(navigateHome).not.toHaveBeenCalled())
+      await waitFor(() => expect(navigateInitialTab).not.toHaveBeenCalled())
 
       rerender(
         <Provider
@@ -180,7 +180,7 @@ describe('Welcome', () => {
           <Welcome />
         </Provider>
       )
-      await waitFor(() => expect(navigateHome).toHaveBeenCalled())
+      await waitFor(() => expect(navigateInitialTab).toHaveBeenCalled())
     })
 
     it('shows a custom logo when configured', () => {

@@ -8,7 +8,7 @@ import TextButton from 'src/components/TextButton'
 import FiatConnectQuote from 'src/fiatExchanges/quotes/FiatConnectQuote'
 import i18n from 'src/i18n'
 import { emptyHeader } from 'src/navigator/Headers'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
@@ -38,7 +38,7 @@ const getNavigationOptions = ({
       flow: quote.flow,
       fiatConnectKycStatus,
     })
-    navigateHome()
+    navigateInitialTab()
   }
   return {
     ...emptyHeader,

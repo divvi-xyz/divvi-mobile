@@ -4,7 +4,7 @@ import 'react-native'
 import { Provider } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import BackupComplete from 'src/backup/BackupComplete'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { createMockStore, getMockStackScreenProps } from 'test/utils'
 
@@ -55,7 +55,7 @@ describe('BackupComplete', () => {
       </Provider>
     )
     jest.advanceTimersByTime(2000)
-    expect(navigateHome).toHaveBeenCalledWith()
+    expect(navigateInitialTab).toHaveBeenCalledWith()
     expect(AppAnalytics.track).toHaveBeenCalledWith('backup_complete')
   })
 })

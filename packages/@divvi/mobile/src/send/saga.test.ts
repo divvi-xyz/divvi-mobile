@@ -7,7 +7,7 @@ import { showError } from 'src/alert/actions'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { CeloExchangeEvents, SendEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
-import { navigateBack, navigateHome } from 'src/navigator/NavigationService'
+import { navigateBack, navigateInitialTab } from 'src/navigator/NavigationService'
 import {
   Actions,
   SendPaymentAction,
@@ -119,7 +119,7 @@ describe(sendPaymentSaga, () => {
     {
       testSuffix: 'navigates home when not initiated from modal',
       fromExternal: false,
-      navigateFn: navigateHome,
+      navigateFn: navigateInitialTab,
     },
     {
       testSuffix: 'navigates back when initiated from modal',
