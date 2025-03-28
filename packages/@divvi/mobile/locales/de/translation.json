@@ -2875,6 +2875,7 @@
   "reviewTransaction": {
     "title": "Rückblick Senden",
     "totalPlusFees": "Gesamt plus Gebühren",
+    "totalLessFees": "Gesamt abzüglich Gebühren",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Maximale Netzwerkgebühr",
