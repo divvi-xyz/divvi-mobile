@@ -2879,6 +2879,7 @@
   "reviewTransaction": {
     "title": "Відгук Надіслати",
     "totalPlusFees": "Загальна сума плюс комісії",
+    "totalLessFees": "Загальна сума за вирахуванням комісій",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Максимальна комісія мережі",
