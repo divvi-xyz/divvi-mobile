@@ -2879,6 +2879,7 @@
   "reviewTransaction": {
     "title": "Wyślij recenzję",
     "totalPlusFees": "Razem plus opłaty",
+    "totalLessFees": "Suma pomniejszona o opłaty",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Maksymalna opłata sieciowa",
