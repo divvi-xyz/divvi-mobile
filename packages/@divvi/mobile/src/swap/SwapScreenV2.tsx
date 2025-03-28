@@ -90,7 +90,7 @@ export default function SwapScreenV2({ route }: Props) {
     maxSlippagePercentage,
     enableAppFee,
     priceImpactWarningThreshold,
-    unfavorableExchangeRateThreshold,
+    minReceivedFiatWarningPercent,
   } = getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.SWAP_CONFIG])
 
   const inputFromRef = useRef<RNTextInput>(null)
@@ -341,7 +341,8 @@ export default function SwapScreenV2({ route }: Props) {
     return (
       processedAmountsTo.local.bignum
         .div(processedAmountsFrom.local.bignum)
-        .lt(unfavorableExchangeRateThreshold) || warnings.showPriceImpactWarning
+        .multipliedBy(100)
+        .lt(minReceivedFiatWarningPercent) || warnings.showPriceImpactWarning
     )
   }, [quote, processedAmountsFrom, processedAmountsTo, warnings.showPriceImpactWarning])
 

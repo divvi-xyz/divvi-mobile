@@ -342,7 +342,7 @@ describe('SwapScreen', () => {
         transactionFeesLearnMore: mockTxFeesLearnMoreUrl,
       },
       priceImpactWarningThreshold: 4,
-      unfavorableExchangeRateThreshold: 0.8,
+      minReceivedFiatWarningPercent: 95,
     })
 
     const originalReadContract = publicClient.celo.readContract
