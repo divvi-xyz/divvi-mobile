@@ -11,17 +11,22 @@ import {
   prepareWithdrawAndClaimTransactions,
   prepareWithdrawTransactions,
 } from 'src/earn/prepareTransactions'
+import { withdrawStart } from 'src/earn/slice'
 import { isGasSubsidizedForNetwork } from 'src/earn/utils'
+import { navigate } from 'src/navigator/NavigationService'
+import { Screens } from 'src/navigator/Screens'
 import type { PreparedTransactionsPossible } from 'src/public'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import { NetworkId } from 'src/transactions/types'
+import { getSerializablePreparedTransactions } from 'src/viem/preparedTransactionSerialization'
 import MockedNavigator from 'test/MockedNavigator'
 import { createMockStore, mockStoreBalancesToTokenBalances } from 'test/utils'
 import {
   mockAaveArbUsdcAddress,
   mockAaveArbUsdcTokenId,
   mockAccount,
+  mockArbArbTokenId,
   mockArbEthTokenId,
   mockArbUsdcTokenId,
   mockEarnPositions,
@@ -94,6 +99,7 @@ describe('EarnWithdrawConfirmationScreen', () => {
     jest.mocked(prepareWithdrawAndClaimTransactions).mockResolvedValue(mockPreparedTransaction)
     jest.mocked(prepareClaimTransactions).mockResolvedValue(mockPreparedTransaction)
     jest.mocked(prepareWithdrawTransactions).mockResolvedValue(mockPreparedTransaction)
+    jest.mocked(isGasSubsidizedForNetwork).mockReturnValue(false)
     jest
       .mocked(getFeatureGate)
       .mockImplementation(
@@ -211,6 +217,9 @@ describe('EarnWithdrawConfirmationScreen', () => {
     expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(
       'localAmountApprox, {"localAmount":"15.66","localCurrencySymbol":"₱"}'
     )
+    expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toHaveTextContent(
+      'earnFlow.collect.ctaExit'
+    )
 
     expect(prepareWithdrawAndClaimTransactions).toHaveBeenCalledWith({
       feeCurrencies: mockStoreBalancesToTokenBalances([
@@ -324,6 +333,9 @@ describe('EarnWithdrawConfirmationScreen', () => {
     )
     expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(
       'localAmountApprox, {"localAmount":"0.064","localCurrencySymbol":"- ₱"}'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toHaveTextContent(
+      'earnFlow.collect.ctaReward'
     )
 
     expect(prepareClaimTransactions).toHaveBeenCalledWith({
@@ -455,6 +467,9 @@ describe('EarnWithdrawConfirmationScreen', () => {
     )
     expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(
       'localAmountApprox, {"localAmount":"7.80","localCurrencySymbol":"₱"}'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toHaveTextContent(
+      'earnFlow.collect.ctaWithdraw'
     )
 
     expect(prepareWithdrawTransactions).toHaveBeenCalledWith({
@@ -701,5 +716,217 @@ describe('EarnWithdrawConfirmationScreen', () => {
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Caption')).toHaveTextContent(
       'gasSubsidized'
     )
+  })
+
+  it('shows error and keeps cta disabled if prepare tx fails', async () => {
+    jest.mocked(prepareWithdrawTransactions).mockRejectedValue(new Error('Failed to prepare'))
+    const store = createMockStore({
+      tokens: { tokenBalances: mockTokenBalances },
+      positions: { positions: [...mockPositions, ...mockRewardsPositions] },
+    })
+    const { getByTestId, queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator
+          component={EarnWithdrawConfirmationScreen}
+          params={{ pool: mockEarnPositions[0], mode: 'withdraw', useMax: true }}
+        />
+      </Provider>
+    )
+
+    // screen header
+    expect(getByTestId('BackChevron')).toBeTruthy()
+    expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.title'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
+    await waitFor(() => {
+      expect(queryByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Loader')).toBeFalsy()
+    })
+    expect(getByTestId('EarnWithdrawConfirmation/PrepareError')).toHaveTextContent(
+      'earnFlow.collect.errorTitle'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
+  })
+
+  it('disables cta if not enough balance for gas', async () => {
+    jest.mocked(prepareWithdrawTransactions).mockResolvedValue({
+      type: 'not-enough-balance-for-gas',
+      feeCurrencies: [mockPreparedTransaction.feeCurrency],
+    })
+    const store = createMockStore({
+      tokens: { tokenBalances: mockTokenBalances },
+      positions: { positions: [...mockPositions, ...mockRewardsPositions] },
+    })
+
+    const { getByTestId, queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator
+          component={EarnWithdrawConfirmationScreen}
+          params={{ pool: mockEarnPositions[0], mode: 'withdraw', useMax: true }}
+        />
+      </Provider>
+    )
+
+    expect(getByTestId('BackChevron')).toBeTruthy()
+    expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.title'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
+    await waitFor(() => {
+      expect(queryByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Loader')).toBeFalsy()
+    })
+    expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
+    expect(getByTestId('EarnWithdrawConfirmation/NoGasWarning')).toBeTruthy()
+  })
+
+  it('pressing cta dispatches withdraw action and fires analytics event', async () => {
+    const store = createMockStore({
+      tokens: { tokenBalances: mockTokenBalances },
+      positions: { positions: [...mockPositions, ...mockRewardsPositions] },
+    })
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator
+          component={EarnWithdrawConfirmationScreen}
+          params={{
+            pool: { ...mockEarnPositions[0], balance: '10.75' },
+            mode: 'withdraw',
+            inputTokenAmount: '11.825',
+            useMax: true,
+          }}
+        />
+      </Provider>
+    )
+
+    await waitFor(() => {
+      expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeEnabled()
+    })
+
+    fireEvent.press(getByTestId('EarnWithdrawConfirmation/ConfirmButton'))
+
+    expect(store.getActions()).toEqual([
+      {
+        type: withdrawStart.type,
+        payload: {
+          amount: '11.825',
+          pool: { ...mockEarnPositions[0], balance: '10.75' },
+          preparedTransactions: getSerializablePreparedTransactions(
+            mockPreparedTransaction.transactions
+          ),
+          rewardsTokens: mockRewardsPositions[1].tokens,
+          mode: 'withdraw',
+        },
+      },
+    ])
+
+    expect(AppAnalytics.track).toHaveBeenCalledWith(EarnEvents.earn_collect_earnings_press, {
+      depositTokenId: mockArbUsdcTokenId,
+      tokenAmount: '11.825',
+      networkId: NetworkId['arbitrum-sepolia'],
+      providerId: mockEarnPositions[0].appId,
+      rewards: [{ amount: '0.01', tokenId: mockArbArbTokenId }],
+      poolId: mockEarnPositions[0].positionId,
+      mode: 'withdraw',
+    })
+  })
+
+  it('disables cta and shows loading spinner when withdraw is submitted', async () => {
+    const store = createMockStore({
+      earn: { withdrawStatus: 'loading' },
+      tokens: mockStoreTokens,
+      positions: {
+        positions: [...mockPositions, ...mockRewardsPositions],
+      },
+    })
+    const { getByTestId, queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator
+          component={EarnWithdrawConfirmationScreen}
+          params={{ pool: mockEarnPositions[0], mode: 'withdraw', useMax: true }}
+        />
+      </Provider>
+    )
+
+    expect(getByTestId('BackChevron')).toBeTruthy()
+    expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.title'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
+    await waitFor(() => {
+      expect(queryByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Loader')).toBeFalsy()
+    })
+    expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
+    expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toContainElement(
+      getByTestId('Button/Loading')
+    )
+  })
+
+  it('navigate and fire analytics on no gas CTA press', async () => {
+    jest.mocked(prepareWithdrawTransactions).mockResolvedValue({
+      type: 'not-enough-balance-for-gas',
+      feeCurrencies: [mockPreparedTransaction.feeCurrency],
+    })
+    const store = createMockStore({
+      tokens: { tokenBalances: mockTokenBalances },
+      positions: { positions: [...mockPositions, ...mockRewardsPositions] },
+    })
+    const { getByTestId, queryByTestId, getByText } = render(
+      <Provider store={store}>
+        <MockedNavigator
+          component={EarnWithdrawConfirmationScreen}
+          params={{ pool: mockEarnPositions[0], mode: 'withdraw', useMax: true }}
+        />
+      </Provider>
+    )
+
+    expect(getByTestId('BackChevron')).toBeTruthy()
+    expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
+      'earnFlow.withdrawConfirmation.title'
+    )
+    expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
+    await waitFor(() => {
+      expect(queryByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Loader')).toBeFalsy()
+    })
+
+    expect(getByTestId('EarnWithdrawConfirmation/NoGasWarning')).toHaveTextContent(
+      'earnFlow.collect.noGasCta, {"symbol":"ETH","network":"Arbitrum Sepolia"}'
+    )
+    fireEvent.press(
+      getByText('earnFlow.collect.noGasCta, {"symbol":"ETH","network":"Arbitrum Sepolia"}')
+    )
+
+    expect(navigate).toHaveBeenCalledWith(Screens.FiatExchangeAmount, {
+      flow: 'CashIn',
+      tokenId: mockArbEthTokenId,
+      tokenSymbol: 'ETH',
+    })
+    expect(AppAnalytics.track).toHaveBeenCalledWith(EarnEvents.earn_withdraw_add_gas_press, {
+      gasTokenId: mockArbEthTokenId,
+      networkId: NetworkId['arbitrum-sepolia'],
+      poolId: mockEarnPositions[0].positionId,
+      providerId: mockEarnPositions[0].appId,
+      depositTokenId: mockArbUsdcTokenId,
+    })
+  })
+
+  it.each([
+    ['claim-rewards', 'earnFlow.collect.ctaReward'],
+    ['withdraw', 'earnFlow.collect.ctaWithdraw'],
+    ['exit', 'earnFlow.collect.ctaExit'],
+  ])('shows correct button text for %s', async (mode, expectedHeader) => {
+    const store = createMockStore({
+      tokens: { tokenBalances: mockTokenBalances },
+      positions: { positions: [...mockPositions, ...mockRewardsPositions] },
+    })
+    const { getByText } = render(
+      <Provider store={store}>
+        <MockedNavigator
+          component={EarnWithdrawConfirmationScreen}
+          params={{ pool: mockEarnPositions[0], mode }}
+        />
+      </Provider>
+    )
+
+    expect(getByText(expectedHeader)).toBeTruthy()
   })
 })
