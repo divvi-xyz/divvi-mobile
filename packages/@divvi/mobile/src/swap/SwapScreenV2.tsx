@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import BigNumber from 'bignumber.js'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TextInput as RNTextInput, StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -455,7 +455,7 @@ export default function SwapScreenV2({ route }: Props) {
     })
   }
 
-  function submitSwap() {
+  const submitSwap = useCallback(() => {
     if (!quote) {
       return // this should never happen, because the button must be disabled in that cases
     }
@@ -543,7 +543,7 @@ export default function SwapScreenV2({ route }: Props) {
         const assertNever: never = resultType
         return assertNever
     }
-  }
+  }, [quote, processedAmountsFrom, processedAmountsTo, showUnfavorableRateConfirmation, tokensById])
 
   function handleConfirmSwap() {
     if (!quote) {
@@ -583,7 +583,7 @@ export default function SwapScreenV2({ route }: Props) {
     submitSwap()
   }
 
-  function handleUnfavorableRateBottomSheetCancel() {
+  const handleUnfavorableRateBottomSheetCancel = useCallback(() => {
     if (!quote) {
       return // this should never happen, because swap confirmation button is disabled in that case
     }
@@ -612,7 +612,7 @@ export default function SwapScreenV2({ route }: Props) {
       provider: quote.provider,
       swapType: quote.swapType,
     })
-  }
+  }, [quote, processedAmountsFrom, processedAmountsTo, tokensById])
 
   function handleSwitchTokens() {
     AppAnalytics.track(SwapEvents.swap_switch_tokens, {
