@@ -11,7 +11,7 @@ import { CICOFlow } from 'src/fiatExchanges/types'
 import { FiatConnectQuoteSuccess } from 'src/fiatconnect'
 import TransferStatusScreen from 'src/fiatconnect/TransferStatusScreen'
 import { FiatConnectTransfer, SendingTransferStatus } from 'src/fiatconnect/slice'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import appTheme from 'src/styles/appTheme'
 import networkConfig, { blockExplorerUrls } from 'src/web3/networkConfig'
@@ -93,7 +93,7 @@ describe('TransferStatusScreen', () => {
       )
       expect(queryByTestId('Continue')).toBeTruthy()
       fireEvent.press(getByTestId('Continue'))
-      expect(navigateHome).toHaveBeenCalledWith()
+      expect(navigateInitialTab).toHaveBeenCalledWith()
       expect(AppAnalytics.track).toHaveBeenCalledTimes(1)
       expect(AppAnalytics.track).toHaveBeenCalledWith(
         FiatExchangeEvents.cico_fc_transfer_success_complete,
@@ -176,7 +176,7 @@ describe('TransferStatusScreen', () => {
       )
       expect(queryByTestId('Continue')).toBeTruthy()
       fireEvent.press(getByTestId('Continue'))
-      expect(navigateHome).toHaveBeenCalledWith()
+      expect(navigateInitialTab).toHaveBeenCalledWith()
       expect(AppAnalytics.track).toHaveBeenCalledTimes(1)
       expect(AppAnalytics.track).toHaveBeenCalledWith(
         FiatExchangeEvents.cico_fc_transfer_success_complete,
@@ -203,7 +203,7 @@ describe('TransferStatusScreen', () => {
       )
       expect(queryByTestId('Continue')).toBeTruthy()
       fireEvent.press(getByTestId('Continue'))
-      expect(navigateHome).toHaveBeenCalledWith()
+      expect(navigateInitialTab).toHaveBeenCalledWith()
       expect(AppAnalytics.track).toHaveBeenCalledTimes(1)
       expect(AppAnalytics.track).toHaveBeenCalledWith(
         FiatExchangeEvents.cico_fc_transfer_processing_continue,
@@ -251,7 +251,7 @@ describe('TransferStatusScreen', () => {
       )
       expect(queryByTestId('Continue')).toBeTruthy()
       fireEvent.press(getByTestId('Continue'))
-      expect(navigateHome).toHaveBeenCalledWith()
+      expect(navigateInitialTab).toHaveBeenCalledWith()
       expect(AppAnalytics.track).toHaveBeenCalledTimes(1)
       expect(AppAnalytics.track).toHaveBeenCalledWith(
         FiatExchangeEvents.cico_fc_transfer_processing_continue,
@@ -293,7 +293,7 @@ describe('TransferStatusScreen', () => {
       )
       expect(getByText(`fiatConnectStatusScreen.${header}.cancel`)).toBeTruthy()
       fireEvent.press(getByTestId('Cancel'))
-      expect(navigateHome).toHaveBeenCalledWith()
+      expect(navigateInitialTab).toHaveBeenCalledWith()
       expect(AppAnalytics.track).toHaveBeenCalledTimes(1)
       expect(AppAnalytics.track).toHaveBeenCalledWith(
         FiatExchangeEvents.cico_fc_transfer_error_cancel,

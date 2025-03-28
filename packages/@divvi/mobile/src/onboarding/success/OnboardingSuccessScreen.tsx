@@ -4,7 +4,7 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import { getAppConfig } from 'src/appConfig'
 import Logo from 'src/images/Logo'
 import { nuxNavigationOptionsNoBackButton } from 'src/navigator/Headers'
-import { navigateHome } from 'src/navigator/NavigationService'
+import { navigateInitialTab } from 'src/navigator/NavigationService'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
@@ -12,7 +12,7 @@ import { Spacing } from 'src/styles/styles'
 function OnboardingSuccessScreen() {
   useEffect(() => {
     const timeout = setTimeout(() => {
-      navigateHome()
+      navigateInitialTab()
     }, 3000)
 
     return () => clearTimeout(timeout)

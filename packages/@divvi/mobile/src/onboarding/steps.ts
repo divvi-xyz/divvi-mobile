@@ -114,7 +114,7 @@ export const onboardingPropsSelector = createSelector(
 )
 
 /**
- * Traverses through the directed graph of onboarding navigate, navigateClearingStack, and navigateHome calls
+ * Traverses through the directed graph of onboarding navigate, navigateClearingStack, and navigateInitialTab calls
  * and count the number of screens until the given screen and the total number
  */
 export function getOnboardingStepValues(screen: Screens, onboardingProps: OnboardingProps) {

@@ -30,7 +30,7 @@ import {
   usdToLocalCurrencyRateSelector,
 } from 'src/localCurrency/selectors'
 import { emptyHeader } from 'src/navigator/Headers'
-import { navigate, navigateBack, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateBack, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { useDispatch, useSelector } from 'src/redux/hooks'
@@ -163,7 +163,7 @@ export default function FiatConnectReviewScreen({ route, navigation }: Props) {
         },
       })
     } else if (previousScreen?.name === Screens.FiatConnectRefetchQuote) {
-      navigateHome()
+      navigateInitialTab()
     } else {
       navigateBack()
     }
@@ -700,7 +700,7 @@ FiatConnectReviewScreen.navigationOptions = ({
           flow: route.params.flow,
           provider: route.params.normalizedQuote.getProviderId(),
         })
-        navigateHome()
+        navigateInitialTab()
       }}
       style={styles.cancelBtn}
     />

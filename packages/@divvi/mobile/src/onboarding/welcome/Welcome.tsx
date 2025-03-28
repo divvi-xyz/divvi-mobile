@@ -13,7 +13,7 @@ import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import DivviLogo from 'src/images/DivviLogo'
 import WelcomeLogo from 'src/images/WelcomeLogo'
 import { nuxNavigationOptions } from 'src/navigator/Headers'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import LanguageButton from 'src/onboarding/LanguageButton'
 import { firstOnboardingScreen } from 'src/onboarding/steps'
@@ -44,7 +44,7 @@ export default function Welcome() {
 
   useEffect(() => {
     if (demoModeEnabled) {
-      navigateHome()
+      navigateInitialTab()
     }
   }, [demoModeEnabled])
 

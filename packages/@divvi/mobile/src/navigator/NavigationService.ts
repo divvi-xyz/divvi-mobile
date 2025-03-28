@@ -227,47 +227,18 @@ export async function isBottomSheetVisible(screen: Screens) {
 }
 
 /***
- * Navigates to the home screen resetting the navigation stack by default
+ * Navigates to the inital screen resetting the navigation stack by default
  * If called from a modal make sure to pass fromModal: true. Otherwise it will cause a null pointer dereference and subsequent app crash
  * TODO: stop using ReactNative modals and switch to react-navigation modals
  */
-export function navigateHome(fromModal?: boolean) {
+export function navigateInitialTab(fromModal?: boolean) {
   const timeout = fromModal && Platform.OS === 'ios' ? 500 : 0
   setTimeout(() => {
-    navigateClearingStack(Screens.TabNavigator, { initialScreen: Screens.TabHome })
+    navigateClearingStack(Screens.TabNavigator)
   }, timeout)
 }
 
 export function navigateToError(errorMessage: string, error?: Error) {
   Logger.debug(`${TAG}@navigateToError`, `Navigating to error screen: ${errorMessage}`, error)
   navigate(Screens.ErrorScreen, { errorMessage })
-}
-
-/**
- * Helper to navigate to home and then to another screen. Used in the CYA
- * screen. This doesn't work for bottom sheet screens.
- */
-export function navigateHomeAndThenToScreen<RouteName extends keyof StackParamList>(
-  ...args: undefined extends StackParamList[RouteName]
-    ? [RouteName] | [RouteName, StackParamList[RouteName]]
-    : [RouteName, StackParamList[RouteName]]
-) {
-  const [routeName, params] = args
-  ensureNavigator()
-    .then(() => {
-      Logger.debug(`${TAG}@navigateHomeAndThenToScreen`, `Dispatch ${routeName}`)
-
-      navigationRef.current?.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [
-            { name: Screens.TabNavigator, params: { initialScreen: Screens.TabHome } },
-            { name: routeName, params },
-          ],
-        })
-      )
-    })
-    .catch((reason) => {
-      Logger.error(`${TAG}@navigateHomeAndThenToScreen`, 'Navigation failure', reason)
-    })
 }

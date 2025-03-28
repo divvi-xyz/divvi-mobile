@@ -26,7 +26,7 @@ import { SendingFiatAccountStatus, submitFiatAccount } from 'src/fiatconnect/sli
 import Checkmark from 'src/icons/Checkmark'
 import InfoIcon from 'src/icons/InfoIcon'
 import { styles as headerStyles } from 'src/navigator/Headers'
-import { navigateHome } from 'src/navigator/NavigationService'
+import { navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { userLocationDataSelector } from 'src/networkInfo/selectors'
@@ -115,7 +115,7 @@ const FiatDetailsScreen = ({ route, navigation }: Props) => {
               provider: quote.getProviderId(),
               fiatAccountSchema,
             })
-            navigateHome()
+            navigateInitialTab()
           }}
           style={styles.cancelBtn}
         />

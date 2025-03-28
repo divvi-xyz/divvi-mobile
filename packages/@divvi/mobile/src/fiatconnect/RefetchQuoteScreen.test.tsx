@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import FiatConnectRefetchQuoteScreen from 'src/fiatconnect/RefetchQuoteScreen'
 import { refetchQuote } from 'src/fiatconnect/slice'
 import { CICOFlow } from 'src/fiatExchanges/types'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { CiCoCurrency } from 'src/utils/currencies'
 import { createMockStore, getMockStackScreenProps } from 'test/utils'
@@ -31,8 +31,8 @@ describe('RefetchQuoteScreen', () => {
         <FiatConnectRefetchQuoteScreen {...props} />
       </Provider>
     )
-    expect(navigateHome).toHaveBeenCalledTimes(1)
-    expect(navigateHome).toHaveBeenCalledWith()
+    expect(navigateInitialTab).toHaveBeenCalledTimes(1)
+    expect(navigateInitialTab).toHaveBeenCalledWith()
     expect(store.dispatch).not.toHaveBeenCalled()
   })
 
@@ -63,8 +63,8 @@ describe('RefetchQuoteScreen', () => {
         <FiatConnectRefetchQuoteScreen {...props} />
       </Provider>
     )
-    expect(navigateHome).toHaveBeenCalledTimes(1)
-    expect(navigateHome).toHaveBeenCalledWith()
+    expect(navigateInitialTab).toHaveBeenCalledTimes(1)
+    expect(navigateInitialTab).toHaveBeenCalledWith()
     expect(store.dispatch).toHaveBeenCalledWith(
       refetchQuote({
         flow: CICOFlow.CashOut,

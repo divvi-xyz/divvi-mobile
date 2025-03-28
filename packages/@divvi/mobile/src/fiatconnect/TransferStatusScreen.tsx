@@ -19,7 +19,7 @@ import CircledIcon from 'src/icons/CircledIcon'
 import ClockIcon from 'src/icons/ClockIcon'
 import OpenLinkIcon from 'src/icons/OpenLinkIcon'
 import { emptyHeader } from 'src/navigator/Headers'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { useSelector } from 'src/redux/hooks'
@@ -182,7 +182,7 @@ function SuccessOrProcessingSection({
       provider,
       txHash,
     })
-    navigateHome()
+    navigateInitialTab()
   }
 
   return (
@@ -223,7 +223,7 @@ export default function FiatConnectTransferStatusScreen({ route, navigation }: P
       flow,
       provider: normalizedQuote.getProviderId(),
     })
-    navigateHome()
+    navigateInitialTab()
   }
 
   // make loading description visible if sending is taking a while

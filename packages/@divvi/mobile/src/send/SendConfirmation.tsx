@@ -11,6 +11,7 @@ import type { BottomSheetModalRefType } from 'src/components/BottomSheet'
 import Button, { BtnSizes } from 'src/components/Button'
 import InfoBottomSheet, { InfoBottomSheetContentBlock } from 'src/components/InfoBottomSheet'
 import {
+  buildAmounts,
   ReviewContent,
   ReviewDetails,
   ReviewDetailsItem,
@@ -217,14 +218,16 @@ export default function SendConfirmation({ route: { params } }: Props) {
             type="total-token-amount"
             label={t('reviewTransaction.totalPlusFees')}
             isLoading={prepareTransactionLoading}
-            onInfoPress={() => totalBottomSheetRef.current?.snapToIndex(0)}
-            tokenInfo={tokenInfo}
-            feeTokenInfo={feeTokenInfo}
-            tokenAmount={tokenAmount}
-            localAmount={localAmount}
-            feeTokenAmount={maxFeeAmount}
-            feeLocalAmount={localMaxFeeAmount}
             localCurrencySymbol={localCurrencySymbol}
+            onInfoPress={() => totalBottomSheetRef.current?.snapToIndex(0)}
+            amounts={buildAmounts([
+              { tokenInfo, tokenAmount, localAmount },
+              {
+                tokenInfo: feeTokenInfo,
+                tokenAmount: tokenEstimatedFeeAmount,
+                localAmount: localEstimatedFeeAmount,
+              },
+            ])}
           />
         </ReviewDetails>
       </ReviewContent>
@@ -297,13 +300,15 @@ export default function SendConfirmation({ route: { params } }: Props) {
             fontSize="small"
             type="total-token-amount"
             label={t('reviewTransaction.totalPlusFees')}
-            tokenInfo={tokenInfo}
-            feeTokenInfo={feeTokenInfo}
-            tokenAmount={tokenAmount}
-            localAmount={localAmount}
-            feeTokenAmount={maxFeeAmount}
-            feeLocalAmount={localMaxFeeAmount}
             localCurrencySymbol={localCurrencySymbol}
+            amounts={buildAmounts([
+              { tokenInfo, tokenAmount, localAmount },
+              {
+                tokenInfo: feeTokenInfo,
+                tokenAmount: tokenEstimatedFeeAmount,
+                localAmount: localEstimatedFeeAmount,
+              },
+            ])}
           />
         </InfoBottomSheetContentBlock>
       </InfoBottomSheet>

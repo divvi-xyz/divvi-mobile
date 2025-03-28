@@ -9,7 +9,7 @@ import { CICOFlow } from 'src/fiatExchanges/types'
 import { FiatConnectQuoteSuccess } from 'src/fiatconnect'
 import KycPending from 'src/fiatconnect/kyc/KycPending'
 import getNavigationOptions from 'src/fiatconnect/kyc/getNavigationOptions'
-import { navigateHome } from 'src/navigator/NavigationService'
+import { navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { createMockStore, getMockStackScreenProps } from 'test/utils'
 import { mockCusdTokenId, mockFiatConnectQuotes } from 'test/values'
@@ -76,7 +76,7 @@ describe('KycPending', () => {
       flow: CICOFlow.CashOut,
       fiatConnectKycStatus: FiatConnectKycStatus.KycPending,
     })
-    expect(navigateHome).toHaveBeenCalledTimes(1)
-    expect(navigateHome).toHaveBeenCalledWith()
+    expect(navigateInitialTab).toHaveBeenCalledTimes(1)
+    expect(navigateInitialTab).toHaveBeenCalledWith()
   })
 })

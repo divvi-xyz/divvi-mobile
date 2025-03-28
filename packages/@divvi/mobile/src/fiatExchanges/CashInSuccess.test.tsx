@@ -2,7 +2,7 @@ import { fireEvent, render } from '@testing-library/react-native'
 import * as React from 'react'
 import { Provider } from 'react-redux'
 import CashInSuccessScreen from 'src/fiatExchanges/CashInSuccess'
-import { navigateHome } from 'src/navigator/NavigationService'
+import { navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { createMockStore, getMockStackScreenProps } from 'test/utils'
 
@@ -49,6 +49,6 @@ describe('CashinInSuccess', () => {
     )
 
     fireEvent.press(tree.getByTestId('SuccessContinue'))
-    expect(navigateHome).toHaveBeenCalled()
+    expect(navigateInitialTab).toHaveBeenCalled()
   })
 })

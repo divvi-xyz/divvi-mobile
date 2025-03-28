@@ -19,7 +19,7 @@ import QRCodeIcon from 'src/icons/QRCode'
 import ShareIcon from 'src/icons/Share'
 import Times from 'src/icons/Times'
 import { noHeaderGestureDisabled } from 'src/navigator/Headers'
-import { navigateHome } from 'src/navigator/NavigationService'
+import { navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { TopBarIconButton } from 'src/navigator/TopBarButton'
 import { StackParamList } from 'src/navigator/types'
@@ -99,7 +99,7 @@ function JumpstartShareLink({ route }: Props) {
 
   const handleConfirmNavigation = () => {
     AppAnalytics.track(JumpstartEvents.jumpstart_share_confirm_close)
-    // calling navigateHome directly from this function causes an app crash,
+    // calling navigateInitialTab directly from this function causes an app crash,
     // possibly because of the race condition between navigation and unmounting
     // the Dialog (Modal). Using a ref to track the user's intention to navigate
     // as a quick fix here, as we plan to remove the use of the Dialog soon.
@@ -114,7 +114,7 @@ function JumpstartShareLink({ route }: Props) {
 
   const handleNavigation = () => {
     if (shouldNavigate.current) {
-      navigateHome()
+      navigateInitialTab()
     }
   }
 
