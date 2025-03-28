@@ -23,6 +23,7 @@ import {
   ReviewTransaction,
 } from 'src/components/ReviewTransaction'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
+import { LocalAmountDisplay, TokenAmountDisplay } from 'src/components/TokenDisplayV2'
 import TokenIcon from 'src/components/TokenIcon'
 import { useNetworkFee, usePrepareEarnWithdrawConfirmationScreenTransactions } from 'src/earn/hooks'
 import { withdrawStatusSelector } from 'src/earn/selectors'
@@ -252,15 +253,18 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
               testID="EarnWithdrawConfirmation/Withdraw"
               label={t('earnFlow.withdrawConfirmation.withdrawing')}
               icon={<TokenIcon token={withdraw.depositToken} />}
-              primaryValue={t('tokenAmount', {
-                tokenAmount: formatValueToDisplay(withdraw.tokenAmount),
-                tokenSymbol: withdraw.depositToken.symbol,
-              })}
-              secondaryValue={t('localAmount', {
-                context: withdraw.localAmount ? undefined : 'noFiatPrice',
-                localAmount: withdraw.localAmount ? formatValueToDisplay(withdraw.localAmount) : '',
-                localCurrencySymbol,
-              })}
+              primaryValue={
+                <TokenAmountDisplay
+                  tokenAmount={withdraw.tokenAmount}
+                  tokenId={withdraw.depositToken.tokenId}
+                />
+              }
+              secondaryValue={
+                <LocalAmountDisplay
+                  tokenAmount={withdraw.tokenAmount}
+                  tokenId={withdraw.depositToken.tokenId}
+                />
+              }
             />
           )}
 
