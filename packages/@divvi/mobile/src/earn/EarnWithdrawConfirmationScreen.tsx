@@ -24,7 +24,7 @@ import {
 } from 'src/components/ReviewTransaction'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
 import TokenIcon from 'src/components/TokenIcon'
-import { useNetworkFee, usePrepareEarnConfirmationScreenTransactions } from 'src/earn/hooks'
+import { useNetworkFee, usePrepareEarnWithdrawConfirmationScreenTransactions } from 'src/earn/hooks'
 import { withdrawStatusSelector } from 'src/earn/selectors'
 import { withdrawStart } from 'src/earn/slice'
 import {
@@ -159,7 +159,7 @@ export default function EarnWithdrawConfirmationScreen({ route: { params } }: Pr
     ? isGasSubsidizedForNetwork(withdraw.depositToken.networkId)
     : false
 
-  const preparedTransaction = usePrepareEarnConfirmationScreenTransactions(params.mode, {
+  const preparedTransaction = usePrepareEarnWithdrawConfirmationScreenTransactions(params.mode, {
     amount: withdraw.tokenAmount.dividedBy(params.pool.pricePerShare[0]).toString(),
     pool: params.pool,
     walletAddress,

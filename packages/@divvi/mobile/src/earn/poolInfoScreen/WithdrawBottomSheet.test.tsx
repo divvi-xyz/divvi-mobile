@@ -97,13 +97,12 @@ describe('WithdrawBottomSheet', () => {
       networkId: mockEarnPositions[0].networkId,
       depositTokenId: mockEarnPositions[0].dataProps.depositTokenId,
     })
-    expect(navigate).toHaveBeenCalledWith(Screens.EarnConfirmationScreen, {
+    expect(navigate).toHaveBeenCalledWith(Screens.EarnWithdrawConfirmationScreen, {
       pool: {
         ...mockEarnPositions[0],
         balance: '100',
       },
       mode: 'claim-rewards',
-      useMax: true,
     })
   })
   it('tapping exit on WithdrawBottomSheet navigates to enter amount screen', () => {
@@ -128,13 +127,12 @@ describe('WithdrawBottomSheet', () => {
       networkId: mockEarnPositions[0].networkId,
       depositTokenId: mockEarnPositions[0].dataProps.depositTokenId,
     })
-    expect(navigate).toHaveBeenCalledWith(Screens.EarnConfirmationScreen, {
+    expect(navigate).toHaveBeenCalledWith(Screens.EarnWithdrawConfirmationScreen, {
       pool: {
         ...mockEarnPositions[0],
         balance: '100',
       },
       mode: 'exit',
-      useMax: true,
     })
   })
   it('shows correct copy when ClaimType is Earnings', () => {

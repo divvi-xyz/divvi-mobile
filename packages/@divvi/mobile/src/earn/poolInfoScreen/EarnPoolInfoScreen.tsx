@@ -230,7 +230,7 @@ export default function EarnPoolInfoScreen({ route, navigation }: Props) {
     if (partialWithdrawalsEnabled) {
       withdrawBottomSheetRef.current?.snapToIndex(0)
     } else {
-      navigate(Screens.EarnConfirmationScreen, { pool, mode: 'exit', useMax: true })
+      navigate(Screens.EarnWithdrawConfirmationScreen, { pool, mode: 'exit' })
     }
   }
 
