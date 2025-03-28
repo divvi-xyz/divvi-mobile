@@ -2873,6 +2873,7 @@
   "reviewTransaction": {
     "title": "审查发送",
     "totalPlusFees": "加费用共计",
+    "totalLessFees": "减去费用共计",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "最高网络费用",
