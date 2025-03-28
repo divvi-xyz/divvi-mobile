@@ -47,14 +47,14 @@ const TAG = 'earn/EarnWithdrawConfirmationScreen'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.EarnWithdrawConfirmationScreen>
 
-type FilteredAmount = {
+type Amount = {
   tokenInfo: TokenBalance
   tokenAmount: BigNumber
   localAmount: BigNumber | null
 }
 
-function getTotalWithdrawAmountsPerToken<Amount>(
-  rewardTokens: FilteredAmount[],
+function getTotalWithdrawAmountsPerToken(
+  rewardTokens: Amount[],
   withdraw: ReturnType<typeof useWithdrawAmountInDepositToken>
 ) {
   if (!withdraw.depositToken) {
@@ -71,13 +71,13 @@ function getTotalWithdrawAmountsPerToken<Amount>(
     },
   ]
   const groupedTokens = groupBy(allTokens, (token) => token.tokenInfo.tokenId)
-  const summedTokens: Record<string, FilteredAmount> = {}
+  const summedTokens: Record<string, Amount> = {}
 
   for (const [tokenId, amounts] of Object.entries(groupedTokens)) {
     summedTokens[tokenId] = {
       tokenInfo: amounts[0].tokenInfo,
       tokenAmount: amounts.reduce((acc, token) => acc.plus(token.tokenAmount), new BigNumber(0)),
-      localAmount: amounts.reduce<FilteredAmount['localAmount']>(
+      localAmount: amounts.reduce<Amount['localAmount']>(
         (acc, token) => (acc && token.localAmount ? acc.plus(token.localAmount) : null),
         new BigNumber(0)
       ),
@@ -110,7 +110,7 @@ function useRewards(params: Props['route']['params']) {
       })
       return { tokenAmount, tokenInfo, localAmount, balance: token.balance }
     })
-    .filter((rewardToken) => !!rewardToken.tokenInfo) as Array<FilteredAmount & { balance: string }>
+    .filter((rewardToken) => !!rewardToken.tokenInfo) as Array<Amount & { balance: string }>
 
   return { tokens, tokensInfo, positions }
 }
