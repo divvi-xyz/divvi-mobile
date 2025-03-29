@@ -128,8 +128,8 @@ export function usePrepareEnterAmountTransactionsCallback(
   }
 }
 
-// Used on the EarnConfirmationScreen.tsx called once on load
-export function usePrepareEarnConfirmationScreenTransactions(
+// Used on the EarnWithdrawConfirmationScreen.tsx called once on load
+export function usePrepareEarnWithdrawConfirmationScreenTransactions(
   mode: Extract<EarnActiveMode, 'claim-rewards' | 'exit' | 'withdraw'>,
   params: {
     pool: EarnPosition
@@ -152,7 +152,7 @@ export function usePrepareEarnConfirmationScreenTransactions(
     {
       onError: (err) => {
         const error = ensureError(err)
-        Logger.error(TAG, 'usePrepareEarnConfirmationScreenTransactions', error)
+        Logger.error(TAG, 'usePrepareEarnWithdrawConfirmationScreenTransactions', error)
       },
     }
   )
