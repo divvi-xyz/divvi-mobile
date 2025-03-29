@@ -10,12 +10,14 @@ import Checkmark from 'src/icons/Checkmark'
 import ForwardChevron from 'src/icons/ForwardChevron'
 import { getLocalCurrencySymbol } from 'src/localCurrency/selectors'
 import { useSelector } from 'src/redux/hooks'
-import { default as Colors, default as colors } from 'src/styles/colors'
+import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
+import { vibrateSuccess } from 'src/styles/hapticFeedback'
 import { Spacing } from 'src/styles/styles'
 import { TokenBalance } from 'src/tokens/slice'
 
 const BUTTON_HEIGHT = 56
+const SLIDER_SIZE = 40
 
 export default function UnfavorableRateBottomSheet({
   forwardedRef,
@@ -110,13 +112,16 @@ export default function UnfavorableRateBottomSheet({
 
 const SlideButton = ({ onComplete }: { onComplete: () => void }) => {
   const { t } = useTranslation()
-  const slideThreshold = useRef(1)
   const pan = useRef(new Animated.Value(0)).current
   const [completed, setCompleted] = useState(false)
 
-  const onCompleteRef = useRef(onComplete)
+  // use both ref and state so changes to layout trigger re-renders and the
+  // PanResponder has access to the latest value
+  const slideThresholdRef = useRef(1)
+  const [slideThreshold, setSlideThreshold] = useState(1)
 
   // ensure the latest onComplete is used by the pan responder
+  const onCompleteRef = useRef(onComplete)
   useEffect(() => {
     onCompleteRef.current = onComplete
   }, [onComplete])
@@ -126,13 +131,14 @@ const SlideButton = ({ onComplete }: { onComplete: () => void }) => {
       onMoveShouldSetPanResponder: () => !completed,
       onPanResponderMove: Animated.event([null, { dx: pan }], { useNativeDriver: false }),
       onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dx > slideThreshold.current) {
+        if (gestureState.dx > slideThresholdRef.current) {
           Animated.timing(pan, {
-            toValue: slideThreshold.current,
+            toValue: slideThresholdRef.current,
             duration: 50,
-            useNativeDriver: false,
+            useNativeDriver: true,
           }).start(() => {
             setCompleted(true)
+            vibrateSuccess()
             // delay the onComplete to allow the user to see the checkmark
             setTimeout(onCompleteRef.current, 500)
             // reset after a second to allow the user to slide again in case the
@@ -145,7 +151,7 @@ const SlideButton = ({ onComplete }: { onComplete: () => void }) => {
         } else {
           Animated.spring(pan, {
             toValue: 0,
-            useNativeDriver: false,
+            useNativeDriver: true,
           }).start()
         }
       },
@@ -157,14 +163,15 @@ const SlideButton = ({ onComplete }: { onComplete: () => void }) => {
       style={[
         styles.slideButtonContainer,
         completed
-          ? { backgroundColor: Colors.buttonSecondaryBackground }
-          : { backgroundColor: Colors.buttonTertiaryBackground },
+          ? { backgroundColor: colors.backgroundTertiary }
+          : { backgroundColor: colors.buttonTertiaryBackground },
       ]}
       onLayout={(event) => {
-        const { width } = event.nativeEvent.layout
         // threshold is the left edge of the slider, so we need to subtract the
-        // width of the slider which is same as the height of the button
-        slideThreshold.current = width - BUTTON_HEIGHT
+        // width of the slider and the margin
+        const newThreshold = event.nativeEvent.layout.width - SLIDER_SIZE - 2 * Spacing.Smallest8
+        setSlideThreshold(newThreshold)
+        slideThresholdRef.current = newThreshold
       }}
       testID="SlideButton"
     >
@@ -181,8 +188,8 @@ const SlideButton = ({ onComplete }: { onComplete: () => void }) => {
             transform: [
               {
                 translateX: pan.interpolate({
-                  inputRange: [0, slideThreshold.current],
-                  outputRange: [0, slideThreshold.current],
+                  inputRange: [0, slideThreshold],
+                  outputRange: [0, slideThreshold],
                   extrapolate: 'clamp',
                 }),
               },
@@ -192,9 +199,9 @@ const SlideButton = ({ onComplete }: { onComplete: () => void }) => {
         testID="SlideButton/Slider"
       >
         {!completed ? (
-          <ForwardChevron color={Colors.contentTertiary} />
+          <ForwardChevron color={colors.contentTertiary} />
         ) : (
-          <Checkmark height={24} width={24} color={Colors.contentTertiary} />
+          <Checkmark height={24} width={24} color={colors.contentTertiary} />
         )}
       </Animated.View>
     </View>
@@ -220,8 +227,8 @@ const styles = StyleSheet.create({
   },
   slideButtonContainer: {
     borderWidth: 1,
-    borderColor: Colors.buttonTertiaryBorder,
-    borderRadius: 30,
+    borderColor: colors.buttonTertiaryBorder,
+    borderRadius: BUTTON_HEIGHT / 2,
     justifyContent: 'center',
     overflow: 'hidden',
     width: '100%',
@@ -232,15 +239,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     textAlign: 'center',
-    color: Colors.buttonSecondaryContent,
+    color: colors.buttonSecondaryContent,
   },
   slider: {
-    backgroundColor: Array.isArray(Colors.buttonPrimaryBackground)
-      ? Colors.buttonPrimaryBackground[0]
-      : Colors.buttonPrimaryBackground,
-    width: 40, // Reduced width slightly due to margin
-    height: 40, // Reduced height slightly due to margin
-    borderRadius: 20,
+    backgroundColor: Array.isArray(colors.buttonPrimaryBackground)
+      ? colors.buttonPrimaryBackground[0]
+      : colors.buttonPrimaryBackground,
+    width: SLIDER_SIZE,
+    height: SLIDER_SIZE,
+    borderRadius: SLIDER_SIZE / 2,
     justifyContent: 'center',
     alignItems: 'center',
     margin: Spacing.Smallest8,
