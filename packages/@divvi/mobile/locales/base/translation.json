@@ -1904,6 +1904,12 @@
       "addFundsButton": "Add Funds"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Are you sure?",
+    "description": "You are about to make a very unfavorable swap. Please confirm that you would like to complete the swap.",
+    "cancel": "Cancel",
+    "confirm": "Slide to Swap"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Swap from",
     "swapTo": "Swap to",

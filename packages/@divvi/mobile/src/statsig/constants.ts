@@ -81,6 +81,7 @@ export const DynamicConfigs = {
       popularTokenIds: [] as string[],
       enabled: true,
       priceImpactWarningThreshold: 4,
+      minReceivedFiatWarningPercent: 95,
     },
   },
   [StatsigDynamicConfigs.CICO_TOKEN_INFO]: {
