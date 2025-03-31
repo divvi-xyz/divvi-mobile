@@ -1906,7 +1906,8 @@
     "title": "Estas seguro",
     "description": "Estás a punto de realizar un intercambio muy desfavorable. Por favor, confirma que deseas completar el intercambio.",
     "cancel": "Cancelar",
-    "confirm": "Deslizar para intercambiar"
+    "confirm": "Deslizar para intercambiar",
+    "confirmed": "Canje confirmado"
   },
   "swapTransactionDetailPage": {
     "swapFrom": "Cambiar de",
