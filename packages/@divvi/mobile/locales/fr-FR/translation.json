@@ -1906,7 +1906,8 @@
     "title": "Êtes-vous sûr ?",
     "description": "Tu es sur le point de faire un échange très défavorable. Confirme que tu souhaites effectuer l'échange.",
     "cancel": "Annuler",
-    "confirm": "Glisser pour échanger"
+    "confirm": "Glisser pour échanger",
+    "confirmed": "Échange confirmé"
   },
   "swapTransactionDetailPage": {
     "swapFrom": "Échanger de",
