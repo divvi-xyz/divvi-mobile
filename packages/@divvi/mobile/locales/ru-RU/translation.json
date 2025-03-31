@@ -1906,6 +1906,12 @@
       "addFundsButton": "Внести средства"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Вы уверены?",
+    "description": "Ты собираешься совершить очень невыгодный обмен. Пожалуйста, подтверди, что ты хочешь завершить обмен.",
+    "cancel": "Отмена",
+    "confirm": "Слайд, чтобы поменять местами"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Что обменять",
     "swapTo": "На что обменять",
