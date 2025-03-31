@@ -1910,7 +1910,8 @@
     "title": "Czy na pewno?",
     "description": "Zamierzasz dokonać bardzo niekorzystnej wymiany. Potwierdź, że chcesz dokończyć wymianę.",
     "cancel": "Anuluj",
-    "confirm": "Przesuń, aby zamienić"
+    "confirm": "Przesuń, aby zamienić",
+    "confirmed": "Zamiana potwierdzona"
   },
   "swapTransactionDetailPage": {
     "swapFrom": "Zamień z",
