@@ -1906,6 +1906,12 @@
       "addFundsButton": "Додати кошти"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Ви впевнені?",
+    "description": "Ви збираєтеся здійснити дуже невигідний обмін. Будь ласка, підтвердіть, що ви бажаєте завершити обмін.",
+    "cancel": "Скасувати",
+    "confirm": "Перемістити на інший бік"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Обміняти з",
     "swapTo": "Обміняти на",
