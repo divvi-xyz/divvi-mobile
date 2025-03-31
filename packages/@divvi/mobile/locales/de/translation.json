@@ -1906,7 +1906,8 @@
     "title": "Bist Du sicher?",
     "description": "Du bist im Begriff, einen sehr ungünstigen Tausch vorzunehmen. Bitte bestätige, dass du den Tausch abschließen möchtest.",
     "cancel": "Abbrechen",
-    "confirm": "Dia zum Tauschen"
+    "confirm": "Dia zum Tauschen",
+    "confirmed": "Tausch Bestätigt"
   },
   "swapTransactionDetailPage": {
     "swapFrom": "Tausch von",
