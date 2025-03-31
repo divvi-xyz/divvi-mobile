@@ -114,6 +114,7 @@ const SlideButton = ({ onComplete }: { onComplete: () => void }) => {
   const { t } = useTranslation()
   const pan = useRef(new Animated.Value(0)).current
   const [completed, setCompleted] = useState(false)
+  const [showSlideFill, setShowSlideFill] = useState(false)
 
   // use both ref and state so changes to layout trigger re-renders and the
   // PanResponder has access to the latest value
@@ -129,7 +130,12 @@ const SlideButton = ({ onComplete }: { onComplete: () => void }) => {
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: () => !completed,
-      onPanResponderMove: Animated.event([null, { dx: pan }], { useNativeDriver: false }),
+      onPanResponderMove: Animated.event([null, { dx: pan }], {
+        useNativeDriver: false,
+        listener: () => {
+          setShowSlideFill(true)
+        },
+      }),
       onPanResponderRelease: (_, gestureState) => {
         if (gestureState.dx > slideThresholdRef.current) {
           Animated.timing(pan, {
@@ -145,10 +151,12 @@ const SlideButton = ({ onComplete }: { onComplete: () => void }) => {
             // transaction submission fails
             setTimeout(() => {
               setCompleted(false)
+              setShowSlideFill(false)
               pan.setValue(0)
             }, 1000)
           })
         } else {
+          setShowSlideFill(false)
           Animated.spring(pan, {
             toValue: 0,
             useNativeDriver: true,
@@ -160,12 +168,7 @@ const SlideButton = ({ onComplete }: { onComplete: () => void }) => {
 
   return (
     <View
-      style={[
-        styles.slideButtonContainer,
-        completed
-          ? { backgroundColor: colors.backgroundTertiary }
-          : { backgroundColor: colors.buttonTertiaryBackground },
-      ]}
+      style={styles.slideButtonContainer}
       onLayout={(event) => {
         // threshold is the left edge of the slider, so we need to subtract the
         // width of the slider and the margin
@@ -175,6 +178,26 @@ const SlideButton = ({ onComplete }: { onComplete: () => void }) => {
       }}
       testID="SlideButton"
     >
+      {showSlideFill && (
+        // background fill that follows the slider
+        <Animated.View
+          style={[
+            styles.slideFill,
+            {
+              transform: [
+                {
+                  translateX: pan.interpolate({
+                    inputRange: [0, slideThreshold],
+                    // shifts from left (-100%) to right (0%)
+                    outputRange: [-slideThreshold, 0],
+                    extrapolate: 'clamp',
+                  }),
+                },
+              ],
+            },
+          ]}
+        />
+      )}
       <Text style={styles.slideButtonText}>
         {completed
           ? t('swapUnfavorableRateBottomSheet.confirmed')
@@ -214,6 +237,7 @@ const styles = StyleSheet.create({
     marginVertical: Spacing.Thick24,
     gap: Spacing.Smallest8,
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   tokenAmount: {
     ...typeScale.labelSemiBoldSmall,
@@ -226,6 +250,7 @@ const styles = StyleSheet.create({
     gap: Spacing.Small12,
   },
   slideButtonContainer: {
+    backgroundColor: colors.buttonTertiaryBackground,
     borderWidth: 1,
     borderColor: colors.buttonTertiaryBorder,
     borderRadius: BUTTON_HEIGHT / 2,
@@ -251,5 +276,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     margin: Spacing.Smallest8,
+  },
+  slideFill: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: colors.backgroundTertiary,
+    borderRadius: BUTTON_HEIGHT / 2,
+    left: 0,
   },
 })
