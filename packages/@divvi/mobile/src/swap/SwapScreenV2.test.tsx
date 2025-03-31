@@ -1432,7 +1432,7 @@ describe('SwapScreen', () => {
     })
 
     it('pressing cancel fires analytics and does nothing else', async () => {
-      const { getByText, store, swapScreen } = renderScreen({})
+      const { getByText, getByTestId, store, swapScreen } = renderScreen({})
 
       selectSwapTokens('CELO', 'cUSD', swapScreen)
       await selectMaxFromAmount(swapScreen)
@@ -1442,7 +1442,7 @@ describe('SwapScreen', () => {
       })
       fireEvent.press(getByText('swapScreen.confirmSwap'))
 
-      fireEvent.press(getByText('swapUnfavorableRateBottomSheet.cancel'))
+      fireEvent.press(getByTestId('unfavorable-rate-cancel'))
 
       expect(store.getActions()).toEqual([])
       expect(AppAnalytics.track).toHaveBeenCalledWith(
@@ -1454,7 +1454,7 @@ describe('SwapScreen', () => {
     it('selecting confirm and submits the swap', async () => {
       const quoteReceivedTimestamp = 1000
       jest.spyOn(Date, 'now').mockReturnValue(quoteReceivedTimestamp) // quote received timestamp
-      const { getByText, store, swapScreen, swapFromContainer } = renderScreen({})
+      const { getByText, getByTestId, store, swapScreen, swapFromContainer } = renderScreen({})
 
       selectSwapTokens('CELO', 'cUSD', swapScreen)
       fireEvent.changeText(
@@ -1467,7 +1467,7 @@ describe('SwapScreen', () => {
       })
       fireEvent.press(getByText('swapScreen.confirmSwap'))
 
-      fireEvent.press(getByText('swapUnfavorableRateBottomSheet.confirm'))
+      fireEvent.press(getByTestId('unfavorable-rate-confirm'))
 
       expect(store.getActions()).toEqual(
         expect.arrayContaining([
