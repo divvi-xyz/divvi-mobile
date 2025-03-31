@@ -1906,7 +1906,8 @@
     "title": "Tem certeza?",
     "description": "Você está prestes a fazer uma troca muito desfavorável. Confirme que você gostaria de concluir a troca.",
     "cancel": "Cancelar",
-    "confirm": "Deslize para trocar"
+    "confirm": "Deslize para trocar",
+    "confirmed": "Troca confirmada"
   },
   "swapTransactionDetailPage": {
     "swapFrom": "Trocar de",
