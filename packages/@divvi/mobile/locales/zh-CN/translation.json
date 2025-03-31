@@ -1904,7 +1904,8 @@
     "title": "您确定吗？",
     "description": "您将进行一次非常不利的交换。请确认您愿意完成交换。",
     "cancel": "取消",
-    "confirm": "滑动交换"
+    "confirm": "滑动交换",
+    "confirmed": "交换已确认"
   },
   "swapTransactionDetailPage": {
     "swapFrom": "交换自",
