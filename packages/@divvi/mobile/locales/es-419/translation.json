@@ -1902,6 +1902,12 @@
       "addFundsButton": "Agregar fondos"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Estas seguro",
+    "description": "Estás a punto de realizar un intercambio muy desfavorable. Por favor, confirma que deseas completar el intercambio.",
+    "cancel": "Cancelar",
+    "confirm": "Deslizar para intercambiar"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Cambiar de",
     "swapTo": "Cambiar a",
