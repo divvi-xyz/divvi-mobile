@@ -97,7 +97,7 @@ const mockStoreTokenBalances = {
   [mockCeloTokenId]: {
     ...mockTokenBalances[mockCeloTokenId],
     isSwappable: true,
-    priceUsd: '13.05584965485329753569',
+    priceUsd: '0.81',
   },
   [mockTestTokenTokenId]: {
     tokenId: mockTestTokenTokenId,
@@ -191,11 +191,11 @@ const renderScreen = ({
   }
 }
 
-const defaultQuote: FetchQuoteResponse = {
+const quoteCusdToCelo: FetchQuoteResponse = {
   unvalidatedSwapTransaction: {
     swapType: 'same-chain',
     chainId: 44787,
-    price: '1.2345678',
+    price: '1.2345678', // ~ 1 / 0.81
     guaranteedPrice: '1.1234567',
     appFeePercentageIncludedInPrice: undefined,
     sellTokenAddress: mockCeloAddress,
@@ -215,11 +215,24 @@ const defaultQuote: FetchQuoteResponse = {
     swapProvider: 'someProvider',
   },
 }
-const defaultQuoteResponse = JSON.stringify(defaultQuote)
+const quoteCeloToCusd: FetchQuoteResponse = {
+  ...quoteCusdToCelo,
+  unvalidatedSwapTransaction: {
+    ...quoteCusdToCelo.unvalidatedSwapTransaction,
+    sellTokenAddress: mockCusdAddress,
+    buyTokenAddress: mockCeloAddress,
+    price: '0.81', // same as celo price
+    guaranteedPrice: '0.805',
+    sellAmount: '1523456665200000000',
+    buyAmount: '1234000000000000000',
+  },
+}
+const quoteCusdToCeloResponse = JSON.stringify(quoteCusdToCelo)
+const quoteCeloToCusdResponse = JSON.stringify(quoteCeloToCusd)
 
 const preparedTransactions: SerializableTransactionRequest[] = [
   {
-    data: '0x095ea7b3000000000000000000000000000000000000000000000000000000000000012300000000000000000000000000000000000000000000000011200c7644d50000',
+    data: '0x095ea7b30000000000000000000000000000000000000000000000000000000000000123000000000000000000000000000000000000000000000000152467c3eff27c00',
     from: '0x0000000000000000000000000000000000007E57',
     gas: '21000',
     maxFeePerGas: '12000000000',
@@ -329,6 +342,7 @@ describe('SwapScreen', () => {
         transactionFeesLearnMore: mockTxFeesLearnMoreUrl,
       },
       priceImpactWarningThreshold: 4,
+      minReceivedFiatWarningPercent: 95,
     })
 
     const originalReadContract = publicClient.celo.readContract
@@ -403,14 +417,14 @@ describe('SwapScreen', () => {
       ...commonAnalyticsProps,
       fieldType: 'FROM',
       tokenId: 'celo-alfajores:native',
-      tokenPositionInList: 1,
+      tokenPositionInList: 3,
       tokenSymbol: 'CELO',
     })
     expect(AppAnalytics.track).toHaveBeenCalledWith(SwapEvents.swap_screen_confirm_token, {
       ...commonAnalyticsProps,
       fieldType: 'TO',
       tokenId: 'celo-alfajores:0x874069fa1eb16d44d622f2e0ca25eea172369bc1',
-      tokenPositionInList: 2,
+      tokenPositionInList: 1,
       tokenSymbol: 'cUSD',
       toTokenId: 'celo-alfajores:0x874069fa1eb16d44d622f2e0ca25eea172369bc1',
       toTokenNetworkId: 'celo-alfajores',
@@ -511,12 +525,12 @@ describe('SwapScreen', () => {
   })
 
   it('should keep the to amount in sync with the exchange rate', async () => {
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCusdToCeloResponse)
     const { swapFromContainer, swapToContainer, swapScreen, getByText, getByTestId } = renderScreen(
       {}
     )
 
-    selectSwapTokens('CELO', 'cUSD', swapScreen)
+    selectSwapTokens('cUSD', 'CELO', swapScreen)
 
     fireEvent.changeText(
       within(swapFromContainer).getByTestId('SwapAmountInput/TokenAmountInput'),
@@ -528,25 +542,25 @@ describe('SwapScreen', () => {
     })
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 1.23456 cUSD'
+      '1 cUSD ≈ 1.23456 CELO'
     )
     expect(
       within(swapFromContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
     ).toBe('1.234')
     expect(
       within(swapFromContainer).getByTestId('SwapAmountInput/ExchangeAmount')
-    ).toHaveTextContent(`${APPROX_SYMBOL} ₱21.43`)
+    ).toHaveTextContent(`${APPROX_SYMBOL} ₱1.64`)
     expect(
       within(swapToContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
     ).toBe('1.5234566652')
     expect(within(swapToContainer).getByTestId('SwapAmountInput/ExchangeAmount')).toHaveTextContent(
-      `${APPROX_SYMBOL} ₱2.03`
+      `${APPROX_SYMBOL} ₱1.64`
     )
     expect(getByText('swapScreen.confirmSwap')).not.toBeDisabled()
   })
 
   it('should display a loader when initially fetching exchange rate', async () => {
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCeloToCusdResponse)
     const { swapScreen, swapFromContainer, swapToContainer, getByText, getByTestId } = renderScreen(
       {}
     )
@@ -573,14 +587,14 @@ describe('SwapScreen', () => {
     )
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 1.23456 cUSD'
+      '1 CELO ≈ 0.81000 cUSD'
     )
     expect(
       within(swapFromContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
     ).toBe('1.234')
     expect(
       within(swapToContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
-    ).toBe('1.5234566652')
+    ).toBe('0.99954')
     expect(getByText('swapScreen.confirmSwap')).not.toBeDisabled()
   })
 
@@ -605,9 +619,9 @@ describe('SwapScreen', () => {
       .mockImplementation((gate) => gate === StatsigFeatureGates.ALLOW_CROSS_CHAIN_SWAPS)
     mockFetch.mockResponseOnce(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           swapType: 'cross-chain',
           sellAmount: new BigNumber(10).times(new BigNumber(10).pow(18)).toString(),
           maxCrossChainFee: new BigNumber(10).pow(18).toString(),
@@ -642,9 +656,9 @@ describe('SwapScreen', () => {
       .mockImplementation((gate) => gate === StatsigFeatureGates.ALLOW_CROSS_CHAIN_SWAPS)
     mockFetch.mockResponseOnce(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           swapType: 'cross-chain',
           sellAmount: new BigNumber(10).times(new BigNumber(10).pow(18)).toString(),
           maxCrossChainFee: new BigNumber(10).pow(18).toString(),
@@ -680,9 +694,9 @@ describe('SwapScreen', () => {
       .mockImplementation((gate) => gate === StatsigFeatureGates.ALLOW_CROSS_CHAIN_SWAPS)
     mockFetch.mockResponseOnce(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           swapType: 'cross-chain',
           sellAmount: new BigNumber(10).times(new BigNumber(10).pow(18)).toString(),
           maxCrossChainFee: new BigNumber(10).pow(18).toString(),
@@ -717,9 +731,9 @@ describe('SwapScreen', () => {
 
     mockFetch.mockResponseOnce(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           price: highPriceImpactPrice,
           estimatedPriceImpact: highPriceImpact,
         },
@@ -727,9 +741,9 @@ describe('SwapScreen', () => {
     )
     mockFetch.mockResponseOnce(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           price: lowPriceImpactPrice,
           estimatedPriceImpact: lowPriceImpact,
         },
@@ -793,9 +807,9 @@ describe('SwapScreen', () => {
 
     mockFetch.mockResponseOnce(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           price: highPriceImpactPrice,
           estimatedPriceImpact: null,
         },
@@ -803,9 +817,9 @@ describe('SwapScreen', () => {
     )
     mockFetch.mockResponseOnce(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           price: lowPriceImpactPrice,
           estimatedPriceImpact: '2.3',
         },
@@ -866,9 +880,9 @@ describe('SwapScreen', () => {
   it('should prioritise showing the no priceUsd warning when there is also a high price impact', async () => {
     mockFetch.mockResponseOnce(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           estimatedPriceImpact: 5, // above warning threshold
         },
       })
@@ -904,7 +918,7 @@ describe('SwapScreen', () => {
       },
     })
     mockGetNumberFormatSettings.mockReturnValue({ decimalSeparator: ',' })
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCeloToCusdResponse)
     const { swapScreen, swapFromContainer, swapToContainer, getByText, getByTestId } = renderScreen(
       {}
     )
@@ -931,19 +945,19 @@ describe('SwapScreen', () => {
     )
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 1,23456 cUSD'
+      '1 CELO ≈ 0,81000 cUSD'
     )
     expect(
       within(swapFromContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
     ).toBe('1,234')
     expect(
       within(swapFromContainer).getByTestId('SwapAmountInput/ExchangeAmount')
-    ).toHaveTextContent(`${APPROX_SYMBOL} ₱21,43`)
+    ).toHaveTextContent(`${APPROX_SYMBOL} ₱1,33`)
     expect(
       within(swapToContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
-    ).toBe('1,5234566652')
+    ).toBe('0,99954')
     expect(within(swapToContainer).getByTestId('SwapAmountInput/ExchangeAmount')).toHaveTextContent(
-      `${APPROX_SYMBOL} ₱2,03`
+      `${APPROX_SYMBOL} ₱1,33`
     )
     expect(getByTestId('SwapTransactionDetails/Slippage')).toHaveTextContent('0,3%')
     expect(getByText('swapScreen.confirmSwap')).not.toBeDisabled()
@@ -979,7 +993,7 @@ describe('SwapScreen', () => {
   ])(
     'sets the expected amount when the $amountLabel chip is selected',
     async ({ amountLabel, percentage, expectedToAmount, expectedFromAmount }) => {
-      mockFetch.mockResponse(defaultQuoteResponse)
+      mockFetch.mockResponse(quoteCusdToCeloResponse)
       const { swapFromContainer, swapToContainer, getByText, getByTestId, swapScreen } =
         renderScreen({})
 
@@ -1007,7 +1021,7 @@ describe('SwapScreen', () => {
   )
 
   it('should show and hide the max warning for fee currencies', async () => {
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCusdToCeloResponse)
     const { swapFromContainer, getByText, queryByTestId, swapScreen } = renderScreen({
       celoBalance: '0',
       cUSDBalance: '10',
@@ -1034,7 +1048,7 @@ describe('SwapScreen', () => {
   })
 
   it("shouldn't show the max warning when there's balance for more than 1 fee currency", async () => {
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCusdToCeloResponse)
     const { swapFromContainer, queryByTestId, swapScreen } = renderScreen({
       celoBalance: '10',
       cUSDBalance: '20',
@@ -1046,7 +1060,7 @@ describe('SwapScreen', () => {
   })
 
   it('should fetch the quote if the amount is cleared and re-entered', async () => {
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCusdToCeloResponse)
     const { swapFromContainer, swapToContainer, getByText, getByTestId, swapScreen } = renderScreen(
       {}
     )
@@ -1159,7 +1173,7 @@ describe('SwapScreen', () => {
     const quoteReceivedTimestamp = 1000
     jest.spyOn(Date, 'now').mockReturnValue(quoteReceivedTimestamp) // quote received timestamp
 
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCeloToCusdResponse)
     const { getByText, store, swapScreen } = renderScreen({})
 
     selectSwapTokens('CELO', 'cUSD', swapScreen)
@@ -1179,12 +1193,12 @@ describe('SwapScreen', () => {
           quote: {
             preparedTransactions,
             receivedAt: quoteReceivedTimestamp,
-            price: defaultQuote.unvalidatedSwapTransaction.price,
+            price: quoteCeloToCusd.unvalidatedSwapTransaction.price,
             appFeePercentageIncludedInPrice:
-              defaultQuote.unvalidatedSwapTransaction.appFeePercentageIncludedInPrice,
-            provider: defaultQuote.details.swapProvider,
-            estimatedPriceImpact: defaultQuote.unvalidatedSwapTransaction.estimatedPriceImpact,
-            allowanceTarget: defaultQuote.unvalidatedSwapTransaction.allowanceTarget,
+              quoteCeloToCusd.unvalidatedSwapTransaction.appFeePercentageIncludedInPrice,
+            provider: quoteCeloToCusd.details.swapProvider,
+            estimatedPriceImpact: quoteCusdToCelo.unvalidatedSwapTransaction.estimatedPriceImpact,
+            allowanceTarget: quoteCusdToCelo.unvalidatedSwapTransaction.allowanceTarget,
             swapType: 'same-chain',
           },
           userInput: {
@@ -1192,7 +1206,7 @@ describe('SwapScreen', () => {
             fromTokenId: mockCeloTokenId,
             swapAmount: {
               [Field.FROM]: '10',
-              [Field.TO]: '12.345678', // 10 * 1.2345678
+              [Field.TO]: '8.1', // 10 * 0.81
             },
             updatedField: Field.FROM,
           },
@@ -1206,9 +1220,9 @@ describe('SwapScreen', () => {
     jest.spyOn(publicClient.celo, 'readContract').mockResolvedValueOnce(BigInt(11 * 1e18)) // greater than swap amount of 10
     mockFetch.mockResponse(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           buyTokenAddress: mockCeloAddress,
           sellTokenAddress: mockCusdAddress,
         },
@@ -1236,12 +1250,12 @@ describe('SwapScreen', () => {
           quote: {
             preparedTransactions: [preparedTransactions[1]], // no approval transaction
             receivedAt: expect.any(Number),
-            price: defaultQuote.unvalidatedSwapTransaction.price,
+            price: quoteCusdToCelo.unvalidatedSwapTransaction.price,
             appFeePercentageIncludedInPrice:
-              defaultQuote.unvalidatedSwapTransaction.appFeePercentageIncludedInPrice,
-            provider: defaultQuote.details.swapProvider,
-            estimatedPriceImpact: defaultQuote.unvalidatedSwapTransaction.estimatedPriceImpact,
-            allowanceTarget: defaultQuote.unvalidatedSwapTransaction.allowanceTarget,
+              quoteCusdToCelo.unvalidatedSwapTransaction.appFeePercentageIncludedInPrice,
+            provider: quoteCusdToCelo.details.swapProvider,
+            estimatedPriceImpact: quoteCusdToCelo.unvalidatedSwapTransaction.estimatedPriceImpact,
+            allowanceTarget: quoteCusdToCelo.unvalidatedSwapTransaction.allowanceTarget,
             swapType: 'same-chain',
           },
           userInput: {
@@ -1264,7 +1278,7 @@ describe('SwapScreen', () => {
     jest.spyOn(Date, 'now').mockReturnValue(quoteReceivedTimestamp) // quote received timestamp
 
     mockGetNumberFormatSettings.mockReturnValue({ decimalSeparator: ',' })
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCeloToCusdResponse)
     const { swapScreen, swapFromContainer, getByText, store } = renderScreen({})
 
     selectSwapTokens('CELO', 'cUSD', swapScreen)
@@ -1287,12 +1301,12 @@ describe('SwapScreen', () => {
           quote: {
             preparedTransactions,
             receivedAt: quoteReceivedTimestamp,
-            price: defaultQuote.unvalidatedSwapTransaction.price,
+            price: quoteCeloToCusd.unvalidatedSwapTransaction.price,
             appFeePercentageIncludedInPrice:
-              defaultQuote.unvalidatedSwapTransaction.appFeePercentageIncludedInPrice,
-            provider: defaultQuote.details.swapProvider,
-            estimatedPriceImpact: defaultQuote.unvalidatedSwapTransaction.estimatedPriceImpact,
-            allowanceTarget: defaultQuote.unvalidatedSwapTransaction.allowanceTarget,
+              quoteCeloToCusd.unvalidatedSwapTransaction.appFeePercentageIncludedInPrice,
+            provider: quoteCeloToCusd.details.swapProvider,
+            estimatedPriceImpact: quoteCusdToCelo.unvalidatedSwapTransaction.estimatedPriceImpact,
+            allowanceTarget: quoteCusdToCelo.unvalidatedSwapTransaction.allowanceTarget,
             swapType: 'same-chain',
           },
           userInput: {
@@ -1300,7 +1314,7 @@ describe('SwapScreen', () => {
             fromTokenId: mockCeloTokenId,
             swapAmount: {
               [Field.FROM]: '1.5',
-              [Field.TO]: '1.8518517', // 1.5 * 1.2345678
+              [Field.TO]: '1.215', // 1.5 * 0.81
             },
             updatedField: Field.FROM,
           },
@@ -1311,7 +1325,7 @@ describe('SwapScreen', () => {
   })
 
   it('should have correct analytics on swap submission', async () => {
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCeloToCusdResponse)
 
     const mockSwapId = 'test-swap-id'
     mockedUuidv4.mockReturnValue(mockSwapId)
@@ -1342,21 +1356,147 @@ describe('SwapScreen', () => {
       fromTokenIsImported: false,
       amount: '10',
       amountType: 'sellAmount',
-      allowanceTarget: defaultQuote.unvalidatedSwapTransaction.allowanceTarget,
-      estimatedPriceImpact: defaultQuote.unvalidatedSwapTransaction.estimatedPriceImpact,
-      price: defaultQuote.unvalidatedSwapTransaction.price,
-      provider: defaultQuote.details.swapProvider,
+      allowanceTarget: quoteCeloToCusd.unvalidatedSwapTransaction.allowanceTarget,
+      estimatedPriceImpact: quoteCeloToCusd.unvalidatedSwapTransaction.estimatedPriceImpact,
+      price: quoteCeloToCusd.unvalidatedSwapTransaction.price,
+      provider: quoteCeloToCusd.details.swapProvider,
       web3Library: 'viem',
       gas: 1821000,
       maxGasFee: 0.021852,
-      maxGasFeeUsd: 0.28529642665785426,
+      maxGasFeeUsd: 0.01770012,
       estimatedGasFee: 0.014568,
-      estimatedGasFeeUsd: 0.19019761777190283,
+      estimatedGasFeeUsd: 0.01180008,
       feeCurrency: undefined,
       feeCurrencySymbol: 'CELO',
       txCount: 2,
       swapType: 'same-chain',
       swapId: mockSwapId,
+      isUnfavorableRate: false,
+    })
+  })
+
+  describe.each([
+    { testName: 'price impact too high', estimatedPriceImpact: '5.2', price: '0.81' },
+    { testName: 'unfavorable exchange rate', estimatedPriceImpact: '0.1', price: '0.4' },
+  ])('with $testName', ({ estimatedPriceImpact, price }) => {
+    const analyticsProps = {
+      toToken: mockCusdAddress,
+      toTokenId: mockCusdTokenId,
+      toTokenNetworkId: NetworkId['celo-alfajores'],
+      toTokenIsImported: false,
+      fromToken: mockCeloAddress,
+      fromTokenId: mockCeloTokenId,
+      fromTokenNetworkId: NetworkId['celo-alfajores'],
+      fromTokenIsImported: false,
+      amount: '10',
+      amountType: 'sellAmount',
+      estimatedPriceImpact,
+      price,
+      appFeePercentageIncludedInPrice:
+        quoteCeloToCusd.unvalidatedSwapTransaction.appFeePercentageIncludedInPrice,
+      provider: quoteCeloToCusd.details.swapProvider,
+      swapType: 'same-chain',
+    }
+
+    beforeEach(() => {
+      mockFetch.mockResponseOnce(
+        JSON.stringify({
+          ...quoteCeloToCusd,
+          unvalidatedSwapTransaction: {
+            ...quoteCeloToCusd.unvalidatedSwapTransaction,
+            estimatedPriceImpact,
+            price,
+          },
+        })
+      )
+    })
+
+    it('should show unfavorable rate bottom sheet', async () => {
+      const { getByText, store, swapScreen } = renderScreen({})
+
+      selectSwapTokens('CELO', 'cUSD', swapScreen)
+      await selectMaxFromAmount(swapScreen)
+
+      await act(() => {
+        jest.runOnlyPendingTimers()
+      })
+
+      expect(getByText('swapScreen.confirmSwap')).not.toBeDisabled()
+      fireEvent.press(getByText('swapScreen.confirmSwap'))
+
+      expect(store.getActions()).toEqual([])
+      expect(AppAnalytics.track).toHaveBeenCalledWith(
+        SwapEvents.swap_unfavorable_rate_warning_displayed,
+        analyticsProps
+      )
+    })
+
+    it('pressing cancel fires analytics and does nothing else', async () => {
+      const { getByText, store, swapScreen } = renderScreen({})
+
+      selectSwapTokens('CELO', 'cUSD', swapScreen)
+      await selectMaxFromAmount(swapScreen)
+
+      await act(() => {
+        jest.runOnlyPendingTimers()
+      })
+      fireEvent.press(getByText('swapScreen.confirmSwap'))
+
+      fireEvent.press(getByText('swapUnfavorableRateBottomSheet.cancel'))
+
+      expect(store.getActions()).toEqual([])
+      expect(AppAnalytics.track).toHaveBeenCalledWith(
+        SwapEvents.swap_unfavorable_rate_warning_cancelled,
+        analyticsProps
+      )
+    })
+
+    it('selecting confirm and submits the swap', async () => {
+      const quoteReceivedTimestamp = 1000
+      jest.spyOn(Date, 'now').mockReturnValue(quoteReceivedTimestamp) // quote received timestamp
+      const { getByText, store, swapScreen, swapFromContainer } = renderScreen({})
+
+      selectSwapTokens('CELO', 'cUSD', swapScreen)
+      fireEvent.changeText(
+        within(swapFromContainer).getByTestId('SwapAmountInput/TokenAmountInput'),
+        '1'
+      )
+
+      await act(() => {
+        jest.runOnlyPendingTimers()
+      })
+      fireEvent.press(getByText('swapScreen.confirmSwap'))
+
+      fireEvent.press(getByText('swapUnfavorableRateBottomSheet.confirm'))
+
+      expect(store.getActions()).toEqual(
+        expect.arrayContaining([
+          swapStart({
+            swapId: expect.any(String),
+            quote: {
+              preparedTransactions,
+              receivedAt: quoteReceivedTimestamp,
+              price,
+              appFeePercentageIncludedInPrice:
+                quoteCeloToCusd.unvalidatedSwapTransaction.appFeePercentageIncludedInPrice,
+              provider: quoteCeloToCusd.details.swapProvider,
+              estimatedPriceImpact,
+              allowanceTarget: quoteCusdToCelo.unvalidatedSwapTransaction.allowanceTarget,
+              swapType: 'same-chain',
+            },
+            userInput: {
+              toTokenId: mockCusdTokenId,
+              fromTokenId: mockCeloTokenId,
+              swapAmount: {
+                [Field.FROM]: '1',
+                [Field.TO]: price,
+              },
+              updatedField: Field.FROM,
+            },
+            areSwapTokensShuffled: false,
+          }),
+        ])
+      )
     })
   })
 
@@ -1419,7 +1559,7 @@ describe('SwapScreen', () => {
   })
 
   it('should display the correct transaction details', async () => {
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCeloToCusdResponse)
     const { getByTestId, swapFromContainer, swapScreen } = renderScreen({
       celoBalance: '10',
       cUSDBalance: '10',
@@ -1438,13 +1578,13 @@ describe('SwapScreen', () => {
     const transactionDetails = getByTestId('SwapTransactionDetails')
     expect(transactionDetails).toHaveTextContent('swapScreen.transactionDetails.fee')
     // matches mocked value (0.015 CELO) provided to estimateFeesPerGas, estimateGas, and gas in defaultQuoteResponse
-    expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent('≈ ₱0.25')
+    expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent('≈ ₱0.016')
     expect(transactionDetails).toHaveTextContent('swapScreen.transactionDetails.slippagePercentage')
     expect(getByTestId('SwapTransactionDetails/Slippage')).toHaveTextContent('0.3%')
   })
 
   it('should disable the confirm button after a swap has been submitted', async () => {
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCusdToCeloResponse)
     const { update, getByText, getByTestId, swapScreen, store } = renderScreen({})
 
     selectSwapTokens('CELO', 'cUSD', swapScreen)
@@ -1488,7 +1628,7 @@ describe('SwapScreen', () => {
   })
 
   it('should show and hide the error warning', async () => {
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCusdToCeloResponse)
     const { update, getByText, queryByText, swapFromContainer, swapScreen, store } = renderScreen(
       {}
     )
@@ -1548,7 +1688,7 @@ describe('SwapScreen', () => {
   })
 
   it('should show and hide the switched network warning if cross chain swaps disabled', async () => {
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCusdToCeloResponse)
     jest.mocked(getFeatureGate).mockImplementation(() => false)
     const {
       getByText,
@@ -1617,7 +1757,7 @@ describe('SwapScreen', () => {
 
   it("should warn when the balances for feeCurrencies are 0 and can't cover the fee", async () => {
     // Swap from POOF to CELO, when no feeCurrency has any balance
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCusdToCeloResponse)
     const { getByText, swapScreen } = renderScreen({
       celoBalance: '0',
       cUSDBalance: '0',
@@ -1641,7 +1781,7 @@ describe('SwapScreen', () => {
 
   it('should warn when the balances for feeCurrencies are too low to cover the fee', async () => {
     // Swap from POOF to CELO, when no feeCurrency has any balance
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCusdToCeloResponse)
     const { getByText, swapScreen } = renderScreen({
       celoBalance: '0.001',
       cUSDBalance: '0.001',
@@ -1665,7 +1805,7 @@ describe('SwapScreen', () => {
 
   it('should prompt the user to decrease the swap amount when swapping the max amount of a feeCurrency, and no other feeCurrency has enough balance to pay for the fee', async () => {
     // Swap CELO to cUSD, when only CELO has balance
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCusdToCeloResponse)
     const { getByText, queryByText, swapScreen, swapFromContainer } = renderScreen({
       celoBalance: '1.234',
       cUSDBalance: '0',
@@ -1692,9 +1832,9 @@ describe('SwapScreen', () => {
     // Mock next call with the decreased amount
     mockFetch.mockResponse(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           sellAmount: '1207057600000000000',
         },
       })
@@ -1720,9 +1860,9 @@ describe('SwapScreen', () => {
     // Swap CELO to cUSD, when only CELO has balance
     mockFetch.mockResponse(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           sellAmount: '1233000000000000000', // 1.233
         },
       })
@@ -1750,9 +1890,9 @@ describe('SwapScreen', () => {
     // Mock next call with the decreased amount
     mockFetch.mockResponse(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           sellAmount: '1207057600000000000',
         },
       })
@@ -1778,9 +1918,9 @@ describe('SwapScreen', () => {
     // Swap CELO to cUSD, when only CELO has balance
     mockFetch.mockResponse(
       JSON.stringify({
-        ...defaultQuote,
+        ...quoteCusdToCelo,
         unvalidatedSwapTransaction: {
-          ...defaultQuote.unvalidatedSwapTransaction,
+          ...quoteCusdToCelo.unvalidatedSwapTransaction,
           sellAmount: '1000000000000000000', // 1
         },
       })
@@ -1809,7 +1949,7 @@ describe('SwapScreen', () => {
 
   it("should allow swapping the max balance of a feeCurrency when there's another feeCurrency to pay for the fee", async () => {
     // Swap full CELO balance to cUSD
-    mockFetch.mockResponse(defaultQuoteResponse)
+    mockFetch.mockResponse(quoteCusdToCeloResponse)
     const { getByText, queryByTestId, swapScreen, swapFromContainer } = renderScreen({
       celoBalance: '1.234',
       cUSDBalance: '10',
