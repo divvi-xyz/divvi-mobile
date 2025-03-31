@@ -1904,7 +1904,8 @@
     "title": "Bạn có chắc chắn không?",
     "description": "You are about to make a very unfavorable swap. Please confirm that you would like to complete the swap.",
     "cancel": "Hủy",
-    "confirm": "Slide to Swap"
+    "confirm": "Slide to Swap",
+    "confirmed": "Swap Confirmed"
   },
   "swapTransactionDetailPage": {
     "swapFrom": "Trao đổi từ",
