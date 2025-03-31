@@ -1906,7 +1906,8 @@
     "title": "Emin misiniz?",
     "description": "Çok elverişsiz bir takas yapmak üzeresiniz. Lütfen takası tamamlamak istediğinizi onaylayın.",
     "cancel": "İptal",
-    "confirm": "Değiştirmek için Kaydırın"
+    "confirm": "Değiştirmek için Kaydırın",
+    "confirmed": "Takas Onaylandı"
   },
   "swapTransactionDetailPage": {
     "swapFrom": "Takas kaynağı",
