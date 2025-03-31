@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
     marginVertical: Spacing.Thick24,
     gap: Spacing.Smallest8,
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   tokenAmount: {
     ...typeScale.labelSemiBoldSmall,
