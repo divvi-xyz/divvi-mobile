@@ -1900,6 +1900,12 @@
       "addFundsButton": "เพิ่มเงินทุน"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "คุณแน่ใจหรือไม่",
+    "description": "You are about to make a very unfavorable swap. Please confirm that you would like to complete the swap.",
+    "cancel": "ยกเลิก",
+    "confirm": "Slide to Swap"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "สว็อปจาก",
     "swapTo": "สว็อปเป็น",
