@@ -1900,6 +1900,12 @@
       "addFundsButton": "Nạp tiền"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Bạn có chắc chắn không?",
+    "description": "You are about to make a very unfavorable swap. Please confirm that you would like to complete the swap.",
+    "cancel": "Hủy",
+    "confirm": "Slide to Swap"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Trao đổi từ",
     "swapTo": "Trao đổi sang",
