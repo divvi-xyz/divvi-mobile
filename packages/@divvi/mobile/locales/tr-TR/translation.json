@@ -1902,6 +1902,12 @@
       "addFundsButton": "Bakiye Ekle"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Emin misiniz?",
+    "description": "Çok elverişsiz bir takas yapmak üzeresiniz. Lütfen takası tamamlamak istediğinizi onaylayın.",
+    "cancel": "İptal",
+    "confirm": "Değiştirmek için Kaydırın"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Takas kaynağı",
     "swapTo": "Takas hedefi",
