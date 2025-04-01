@@ -252,10 +252,11 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     otaTranslations?: {
       crowdinDistributionHash: string
     }
-    // statsig feature gate defaults
+    // statsig feature gate / dynamic config defaults
     showPositions?: boolean
     showImportTokensFlow?: boolean
     showSwapTokenFilters?: boolean
+    enableSwapFee?: boolean
   }
 
   divviProtocol?: {
