@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:261](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L261)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:262](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L262)
 
 #### protocolIds
 
@@ -130,6 +130,12 @@ optional showLearnMore: boolean;
 
 ```ts
 optional showSafetyScoreOnPoolCard: boolean;
+```
+
+#### enableSwapFee?
+
+```ts
+optional enableSwapFee: boolean;
 ```
 
 #### firebase?
