@@ -256,7 +256,7 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     showPositions?: boolean
     showImportTokensFlow?: boolean
     showSwapTokenFilters?: boolean
-    enableSwapFee?: boolean
+    enableSwapAppFee?: boolean
   }
 
   divviProtocol?: {

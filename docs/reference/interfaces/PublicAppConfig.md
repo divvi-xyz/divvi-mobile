@@ -132,10 +132,10 @@ optional showLearnMore: boolean;
 optional showSafetyScoreOnPoolCard: boolean;
 ```
 
-#### enableSwapFee?
+#### enableSwapAppFee?
 
 ```ts
-optional enableSwapFee: boolean;
+optional enableSwapAppFee: boolean;
 ```
 
 #### firebase?
