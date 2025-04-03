@@ -19,7 +19,9 @@ const withMobileApp: ConfigPlugin<{
 }> = (config, props = {}) => {
   return withPlugins(config, [
     // Sentry
-    [withSentry, props.sentry ?? {}],
+    ...((props.sentry
+      ? [withSentry, props.sentry ?? {}]
+      : []) as ConfigPlugin<SentryPluginProps>[]),
 
     // iOS
     withIosAppDelegateResetKeychain,
