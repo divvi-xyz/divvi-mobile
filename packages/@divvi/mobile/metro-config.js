@@ -1,4 +1,5 @@
 const { getDefaultConfig: getDefaultConfigExpo } = require('expo/metro-config')
+const { withSentryConfig } = require('@sentry/react-native/metro')
 
 // Wraps Expo's getDefaultConfig to add our customizations
 function getDefaultConfig(...args) {
@@ -34,7 +35,7 @@ function getDefaultConfig(...args) {
     return context.resolveRequest(context, moduleName, platform)
   }
 
-  return config
+  return withSentryConfig(config)
 }
 
 module.exports = { getDefaultConfig }
