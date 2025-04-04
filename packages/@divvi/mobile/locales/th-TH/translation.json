@@ -903,7 +903,7 @@
     "learnMore": {
       "buttonLabel": "ฉันต้องเชื่อมต่อหรือไม่",
       "title": "ฉันต้องเชื่อมต่อหรือไม่",
-      "body": "Connecting your phone number will allow you to send money to friends in your address book and other phone numbers. \n\nIf you choose to skip this step you won’t be able to access your contacts and you will only be able to send money via QR code or wallet address."
+      "body": "การเชื่อมต่อหมายเลขโทรศัพท์ของคุณจะช่วยให้คุณสามารถส่งเงินให้เพื่อนในสมุดที่อยู่และหมายเลขโทรศัพท์อื่นๆ \n\nหากคุณเลือกข้ามขั้นตอนนี้ คุณจะไม่สามารถเข้าถึงผู้ติดต่อของคุณ และจะสามารถส่งเงินผ่าน QR Code หรือที่อยู่กระเป๋าเงินได้เท่านั้น"
     },
     "skip": {
       "title": "คุณแน่ใจหรือไม่",
@@ -919,8 +919,8 @@
     "codeInputPlaceholder": "123456",
     "helpDialog": {
       "title": "ความช่วยเหลือ",
-      "body": "We sent an SMS to your phone number. Please check your text messages to find the 6 digit code. \n\nIf you’re having trouble receiving messages, you can skip this step for now and try again later.",
-      "bodyCloudBackupOnboarding": "We sent an SMS to your phone number. Please check your text messages to find the 6 digit code. \n\nIf you’re having trouble receiving messages, we recommend backing up with a Recovery Phrase. You can try signing in with your email and phone later.",
+      "body": "เราได้ส่ง SMS ไปยังหมายเลขโทรศัพท์ของคุณ โปรดตรวจสอบข้อความของคุณเพื่อดูรหัส 6 ตัว \n\nหากคุณมีปัญหาในการรับข้อความ คุณสามารถข้ามขั้นตอนนี้ไปก่อนและลองอีกครั้งภายหลัง",
+      "bodyCloudBackupOnboarding": "เราได้ส่ง SMS ไปยังหมายเลขโทรศัพท์ของคุณ โปรดตรวจสอบข้อความของคุณเพื่อดูรหัส 6 ตัว \n\nหากคุณมีปัญหาในการรับข้อความ ขอแนะนำให้คุณสำรองข้อมูลวลีกู้คืนรหัสไว้ โดยสามารถลองลงชื่อเข้าใช้ด้วยอีเมลและหมายเลขโทรศัพท์ของคุณได้ภายหลัง",
       "skip": "ข้าม",
       "dismiss": "ย้อนกลับ",
       "useRecoveryPhrase": "ใช้วลีกู้คืนรหัส"
@@ -1900,6 +1900,13 @@
       "addFundsButton": "เพิ่มเงินทุน"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "คุณแน่ใจหรือไม่",
+    "description": "คุณกำลังทำการสว็อปที่ไม่น่าพึงพอใจ โปรดยืนยันว่าคุณต้องการดำเนินการสว็อปให้เสร็จสิ้น",
+    "cancel": "ยกเลิก",
+    "confirm": "เลื่อนเพื่อสว็อป",
+    "confirmed": "ยืนยันการสว็อป"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "สว็อปจาก",
     "swapTo": "สว็อปเป็น",
@@ -2634,12 +2641,19 @@
       "myPools": "พูลของฉัน",
       "explore": "สำรวจที่เปิดอยู่"
     },
+    "withdrawConfirmation": {
+      "title": "ดูการถอนเงิน",
+      "rewardClaiming": "การขอรับรางวัล",
+      "withdrawing": "การถอนเงิน",
+      "pool": "พูล {{providerName}}",
+      "yieldRate": "อัตราผลตอบแทนโดยประมาณ {{apy}}%"
+    },
     "depositConfirmation": {
-      "title": "Review Deposit",
-      "depositing": "Depositing",
-      "into": "Into",
-      "pool": "{{providerName}} Pool",
-      "yieldRate": "{{apy}}% est. yield rate",
+      "title": "ตรวจสอบการฝากเงิน",
+      "depositing": "การฝากเงิน",
+      "into": "บทนำ",
+      "pool": "พูล {{providerName}}",
+      "yieldRate": "อัตราผลตอบแทนโดยประมาณ {{apy}}%",
       "swapAndDeposit": "สว็อปและฝากเงิน",
       "disclaimer": "เมื่อฝากคริปโตในพูล {{providerName}} คุณยอมรับความเสี่ยงที่มาพร้อมการใช้ {{providerName}} <0>ข้อกำหนดและเงื่อนไข</0>",
       "noTermsUrlDisclaimer": "คุณต้องรับผิดชอบในการกระทำของคุณใน {{appName}} โดย {{appName}} ขอปฏิเสธความรับผิดชอบใดๆ ต่อสินทรัพย์หรือปฎิสัมพันธ์ระหว่างคุณกับ {{providerName}} คุณสามารถตรวจสอบเอกสารของ {{providerName}} ได้<0>ที่นี่</0> และตรวจสอบข้อกำหนดและเงื่อนไขของเราได้<1>ที่นี่</1>"
@@ -2744,7 +2758,7 @@
       "poweredBy": "ดำเนินการโดย {{providerName}}",
       "deposited": "ที่เข้าร่วม",
       "depositAndEarnings": "ฝากเงินและสร้างรายได้",
-      "safety": "Safety"
+      "safety": "ความปลอดภัย"
     },
     "poolFilters": {
       "allPools": "พูลทั้งหมด",
@@ -2850,22 +2864,23 @@
     "tokenDescription": "{{tokenName}} บน {{tokenNetwork}}"
   },
   "gasFeeWarning": {
-    "title": "You need more {{tokenSymbol}} for gas fees",
-    "title_Dapp": "You have an insufficient gas token balance",
-    "descriptionMaxAmount_Send": "Add {{tokenSymbol}} for gas fees or lower the amount you're sending",
-    "descriptionMaxAmount_Swap": "Add {{tokenSymbol}} for gas fees or lower the amount you're swapping",
-    "descriptionMaxAmount_Deposit": "Add {{tokenSymbol}} for gas fees or lower the amount you're depositing",
-    "descriptionMaxAmount_Withdraw": "Add {{tokenSymbol}} for gas fees or lower the amount you're withdrawing",
-    "descriptionDapp": "Add {{tokenSymbol}} to complete this transaction",
+    "title": "คุณต้องใช้อีก {{tokenSymbol}} สำหรับค่าก๊าซ",
+    "title_Dapp": "คุณมียอดคงเหลือโทเค็นก๊าซไม่เพียงพอ",
+    "descriptionMaxAmount_Send": "เพิ่ม {{tokenSymbol}} สำหรับค่าก๊าซหรือปรับลดจำนวนเงินที่คุณจะส่ง",
+    "descriptionMaxAmount_Swap": "เพิ่ม {{tokenSymbol}} สำหรับค่าก๊าซหรือปรับลดจำนวนเงินที่คุณจะสว็อป",
+    "descriptionMaxAmount_Deposit": "เพิ่ม {{tokenSymbol}} สำหรับค่าก๊าซหรือปรับลดจำนวนเงินที่คุณจะฝาก",
+    "descriptionMaxAmount_Withdraw": "เพิ่ม {{tokenSymbol}} สำหรับค่าก๊าซหรือปรับลดจำนวนเงินที่คุณจะถอน",
+    "descriptionDapp": "เพิ่ม {{tokenSymbol}} เพื่อดำเนินการธุรกรรมนี้ให้เสร็จสมบูรณ์",
     "ctaBuy": "ซื้อ {{tokenSymbol}}",
-    "ctaAction_Send": "Send smaller amount",
+    "ctaAction_Send": "ส่งจำนวนเงินที่น้อยลง",
     "ctaAction_Swap": "สว็อปจำนวนเงินที่น้อยลง",
-    "ctaAction_Deposit": "Deposit smaller amount",
-    "ctaAction_Withdraw": "Withdraw smaller amount"
+    "ctaAction_Deposit": "ฝากจำนวนเงินที่น้อยลง",
+    "ctaAction_Withdraw": "ถอนจำนวนเงินที่น้อยลง"
   },
   "reviewTransaction": {
-    "title": "Review Send",
-    "totalPlusFees": "Total Plus Fees",
+    "title": "ตรวจสอบการส่ง",
+    "totalPlusFees": "ค่าธรรมเนียมบวกเพิ่มทั้งหมด",
+    "totalLessFees": "ค่าธรรมเนียมลดลงทั้งหมด",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "ค่าธรรมเนียมเครือข่ายสูงสุด",
@@ -2888,7 +2903,7 @@
   "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "ข้อมูลเพิ่มเติม",
   "breakdown": "รายละเอียด",
-  "gasSubsidized": "Fees are covered for a limited time",
+  "gasSubsidized": "ครอบคลุมค่าธรรมเนียมในระยะเวลาจำกัด",
   "deposit": "ฝากเงิน",
   "feeInfoBottomSheet": {
     "feesInfo_sameChain": "เครือข่ายจะเรียกเก็บค่าธรรมเนียมเครือข่ายในการดำเนินธุรกรรม",
@@ -2898,21 +2913,21 @@
   },
   "demoMode": {
     "confirmEnter": {
-      "title": "Demo Mode",
-      "info": "You are about to enter into demo mode. You are free to explore the features of the app without completing any transactions",
-      "cta": "Enter Demo"
+      "title": "โหมดทดลอง",
+      "info": "คุณกำลังเข้าสู่โหมดทดลอง โดยคุณสามารถศึกษาคุณสมบัติต่างๆ ของแอปนี้โดยไม่จำเป็นต้องดำเนินการธุรกรรมใดๆ ให้เสร็จสมบูรณ์",
+      "cta": "เข้าสู่โหมดทดลอง"
     },
     "confirmExit": {
-      "title": "In Demo Mode",
-      "info": "You are currently viewing the app in demo mode",
-      "cta": "Exit Demo"
+      "title": "ในโหมดทดลอง",
+      "info": "ขณะนี้คุณกำลังดูแอปในโหมดทดลอง",
+      "cta": "ออกจากโหมดทดลอง"
     },
     "restrictedAccess": {
-      "title": "In Demo Mode",
-      "info": "You can't complete this action because you are viewing the app in demo mode",
-      "cta": "Exit Demo"
+      "title": "ในโหมดทดลอง",
+      "info": "คุณไม่สามารถดำเนินการสิ่งนี้ได้เนื่องจากคุณกำลังดูแอปในโหมดทดลอง",
+      "cta": "ออกจากโหมดทดลอง"
     },
-    "inAppIndicatorLabel": "Demo Mode"
+    "inAppIndicatorLabel": "โหมดทดลอง"
   },
   "celoDollarAmount_0": "&amp;lt;0&amp;gt;&amp;lt;/0&amp;gt; Celo ดอลลาร์"
 }

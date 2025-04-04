@@ -30,7 +30,7 @@
   "shareAnalytics_detail": "We collect anonymized data about how you use {{appName}} to help improve the application for everyone.",
   "dataSaver": "Data Saver",
   "enableDataSaver": "Enable Data Saver",
-  "dataSaverDetail": "Data Saver mode allows you to communicate with the the network through a trusted node. You can always change this mode in app settings.",
+  "dataSaverDetail": "Data Saver mode allows you to communicate with the network through a trusted node. You can always change this mode in app settings.",
   "keylessBackupSetupTitle": "Create Login",
   "keylessBackupSettingsTitle": "Email & Phone Backup",
   "keylessBackupSettingsDeleteError": "Your backup was not able to be deleted, please wait & try again later.",
@@ -315,7 +315,7 @@
   "superchargeClaimFailure": "There was an issue claiming your Supercharge rewards.",
   "superchargeNotificationBody": "Your Supercharge rewards are here! Claim them now.",
   "superchargeNotificationStart": "Claim rewards",
-  "superchargingNotificationBody": "You're getting rewards with Supercharge ⚡",
+  "superchargingNotificationBody": "You're getting 25% rewards with Supercharge ⚡",
   "superchargingNotificationBodyV1_33": "You're getting {{apy}}% rewards with Supercharge ⚡",
   "superchargingNotificationStart": "Learn more",
   "startSuperchargingNotificationBody": "Get rewarded with crypto weekly. Start Supercharging!",
@@ -696,8 +696,8 @@
     "body": "Once they set up their {{appName}} wallet and connect their number, you’ll each get an exclusive NFT."
   },
   "inviteRewardsBannerCUSD": {
-    "title": "Refer a friend and receive USDT together",
-    "body": "Once they connect their phone number to {{appName}}, you’ll both receive 1 USDT."
+    "title": "Invite friends and get up to 12 cUSD",
+    "body": "Once they connect their number and add funds to {{appName}}, you’ll both receive 0.50 cUSD."
   },
   "inviteWithUrl": {
     "title": "Invite a Friend",
@@ -705,14 +705,14 @@
     "button": "Share Invite",
     "error": "There was an issue creating a sharable link",
     "share": "Hey! Sign up to {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number. Make sure to sign up with my referral link here: {{shareUrl}}.",
-    "help": "To collect this reward, the invitee must download through the referral link and connect their phone number to a new {{appName}} wallet. <0>View all terms</0>",
+    "help": "To collect this reward, the invitee must download through the referral link, connect their phone number, add funds and keep them in their {{appName}} wallet for 7 days. <0>View all terms</0>",
     "rewardsActive": {
       "title": "Invite friends and collect NFTs",
       "body": "Invite your friends and family to download {{appName}} and each of you will get an exclusive NFT"
     },
     "rewardsActiveCUSD": {
-      "title": "Invite a friend to {{appName}} and receive USDT together",
-      "body": "Invite a friend to {{appName}}. Once they download the app with your link and connect their phone number, you’ll each get 1 USDT while funds last. Spread the word!"
+      "title": "GET UP TO 12 cUSD for inviting your friends to {{appName}}!",
+      "body": "Get 0.50 cUSD for every friend you invite to {{appName}}. Once they connect their number, add funds, and hold them for 7 days, you’ll both get 0.50 cUSD. Hurry, funds are limited! (Limit 25 friends)."
     }
   },
   "getReward": "Get ${{reward}}",
@@ -1005,7 +1005,7 @@
   "request": "Request",
   "requestToken": "Request {{token}}",
   "requestSent": "Request Sent",
-  "from": "from",
+  "from": "From",
   "verificationMessage": "You paid a fee to connect your account. Welcome to {{appName}}!",
   "receivedAmountFromCelo": "You received this amount from the Faucet!",
   "dollarsSent": "Dollars Sent",
@@ -1047,7 +1047,7 @@
   "inviteWithoutPayment": "Hi! I’ve been using {{appName}} to send crypto worldwide. It’s easy to try and I want to invite you to check it out with this link: {{link}}",
   "inviteWithEscrowedPayment": "Hi! I’ve been using {{appName}} to send crypto worldwide. I just sent you {{amount}} {{token}}. Please download the {{appName}} App and redeem your {{token}} using this link: {{link}}",
   "inviteWithRewards": "Hi! 👋 I'm using {{appName}} as my crypto wallet. It's super quick to download the app and connect your phone number - plus, we both get a special edition NFT as a reward. 💫 \n\nUse this link to download: {{link}}",
-  "inviteWithRewardsCUSD": "Hey! Right now we can both get 1 USDT if you sign up to {{appName}} wallet and connect your phone number. I use it to grow my savings with crypto, and you can set it up in seconds with just a phone number. Make sure to sign up with my referral link here: \n\n{{link}} \n\n Hurry, the referral promotion ends soon!",
+  "inviteWithRewardsCUSD": "Hey! Right now we can both get a free $0.50 reward if you sign up, connect your number, and fund your {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number. Make sure to sign up with my referral link here: \n\n{{link}} \n\n Hurry, the referral promotion ends soon.",
   "loadingContacts": "Finding your contacts",
   "myCode": "My Code",
   "scanCode": "Scan",
@@ -1522,7 +1522,7 @@
   "lastDay": "Last 24 hrs",
   "noMoreTransactions": "There are no more transactions",
   "selectProviderScreen": {
-    "somePaymentsUnavailable": "Purchases are powered by our partner providers. Fees may vary. Some payment methods are unavailable in your region.",
+    "somePaymentsUnavailable": "Purchases are powered by our partner providers. Some payment methods are unavailable in your region.",
     "disclaimerWithSomePaymentsUnavailable": "Payments are powered by network partners. Fees may vary. Some payment methods are unavailable in your region. <0>Learn more.</0>",
     "disclaimer": "Payments are powered by network partners. Fees may vary. <0>Learn more.</0>",
     "disclaimerUK": "This is not an invitation to buy cryptoassets. We only provide a list of providers who are selling cryptoassets with price information and a link to their website.",
@@ -1585,7 +1585,7 @@
     "title": "Verify your Identity",
     "description": "This step will take about 5 minutes.",
     "disclaimer": "You acknowledge and agree that your Personal Data will be provided to us and shared with third-parties for verification purposes as stated in the <0>Privacy Policy</0>",
-    "button": "Set up ID Verification"
+    "button": "Set up ID Verification\n"
   },
   "fiatConnectKycStatusScreen": {
     "contactSupportPrefill": "I'm having trouble verifying my identity with {{appName}}.",
@@ -1902,6 +1902,13 @@
       "addFundsButton": "Add Funds"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Are you sure?",
+    "description": "You are about to make a very unfavorable swap. Please confirm that you would like to complete the swap.",
+    "cancel": "Cancel",
+    "confirm": "Slide to Swap",
+    "confirmed": "Swap Confirmed"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Swap from",
     "swapTo": "Swap to",
@@ -1973,8 +1980,8 @@
       "body": "Looks like {{contactName}} isn't on {{appName}}. You can still send a payment if you know their wallet address, or send an invite instead. \n\n After they download the wallet and connect their phone number, you’ll both get an exclusive NFT."
     },
     "rewardsActiveCUSD": {
-      "title": "Refer {{contactName}} to {{appName}} and get 1 USDT",
-      "body": "Looks like {{contactName}} isn’t on {{appName}}. You can still send a payment if you know their wallet address, or send an invite instead. \n\nAfter they download {{appName}} and connect their phone number, you will both get 1 USDT while funds last."
+      "title": "Invite {{contactName}} to {{appName}} and get 0.50 cUSD",
+      "body": "Looks like {{contactName}} isn’t on {{appName}}. You can still send a payment if you know their wallet address, or send an invite instead. \n\n After they download {{appName}}, connect their phone number, add funds and keep them in their wallet for 7 days, you will both get 0.50 cUSD while funds last."
     }
   },
   "celoNews": {
@@ -1989,7 +1996,7 @@
     "subtitle": "What would you like to do first?",
     "later": "I'll explore later",
     "options": {
-      "add": "Add funds to your wallet",
+      "add": "Review Swap",
       "dapp": "Find ways to use crypto",
       "earn": "Explore earning opportunities",
       "profile": "Build your profile",
@@ -2636,6 +2643,13 @@
       "myPools": "My Pools",
       "explore": "Explore Open"
     },
+    "withdrawConfirmation": {
+      "title": "Review Withdraw",
+      "rewardClaiming": "Reward Claiming",
+      "withdrawing": "Withdrawing",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% est. yield rate"
+    },
     "depositConfirmation": {
       "title": "Review Deposit",
       "depositing": "Depositing",
@@ -2868,6 +2882,7 @@
   "reviewTransaction": {
     "title": "Review Send",
     "totalPlusFees": "Total Plus Fees",
+    "totalLessFees": "Total Less Fees",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Max Network Fee",
@@ -2880,12 +2895,12 @@
   "tokenAmount": "{{tokenAmount}} {{tokenSymbol}}",
   "localAmount": "{{localCurrencySymbol}}{{localAmount}}",
   "localAmount_noFiatPrice": "Price Unavailable",
-  "tokenAndLocalAmount": "{{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmount": "$t(tokenAmount) <0>($t(localAmount))</0>",
   "tokenAndLocalAmount_noFiatPrice": "$t(tokenAmount)",
-  "tokenAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}}",
-  "localAmountApprox": "≈ {{localCurrencySymbol}}{{localAmount}}",
+  "tokenAmountApprox": "≈ $t(tokenAmount)",
+  "localAmountApprox": "≈ $t(localAmount)",
   "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
-  "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
+  "tokenAndLocalAmountApprox": "≈ $t(tokenAmount) <0>($t(localAmount))</0>",
   "tokenAndLocalAmountApprox_noFiatPrice": "≈ $t(tokenAmount)",
   "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "More information",

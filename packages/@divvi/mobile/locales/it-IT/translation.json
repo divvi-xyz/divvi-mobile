@@ -1005,7 +1005,7 @@
   "request": "Richiedi",
   "requestToken": "Richiedi {{token}}",
   "requestSent": "Richiesta inviata",
-  "from": "da",
+  "from": "Da",
   "verificationMessage": "Hai pagato una commissione per collegare il tuo conto. Ti diamo il benvenuto in {{appName}}.",
   "receivedAmountFromCelo": "Hai ricevuto questo importo dal faucet.",
   "dollarsSent": "Dollari inviati",
@@ -1902,6 +1902,13 @@
       "addFundsButton": "Aggiungi fondi"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Sei sicuro?",
+    "description": "Stai per effettuare uno scambio molto sfavorevole. Conferma che vuoi completare lo scambio.",
+    "cancel": "Annulla",
+    "confirm": "Scorri per scambiare",
+    "confirmed": "Scambio confermato"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Scambia da",
     "swapTo": "Scambia a",
@@ -2636,12 +2643,19 @@
       "myPools": "I miei pool",
       "explore": "Esplora aperti"
     },
-    "depositConfirmation": {
-      "title": "Recensione Deposito",
-      "depositing": "Deposito",
-      "into": "Into",
+    "withdrawConfirmation": {
+      "title": "Rivedi prelievo",
+      "rewardClaiming": "Richiesta di ricompensa",
+      "withdrawing": "Prelievo in corso",
       "pool": "{{providerName}} Piscina",
-      "yieldRate": "{{apy}}% tasso di rendimento stimato",
+      "yieldRate": "{{apy}}% tasso di rendimento stimato"
+    },
+    "depositConfirmation": {
+      "title": "Rivedi deposito",
+      "depositing": "Deposito in corso",
+      "into": "In",
+      "pool": "Pool {{providerName}}",
+      "yieldRate": "Tasso di rendimento stimato {{apy}}%",
       "swapAndDeposit": "Scambio e deposito",
       "disclaimer": "Depositando criptovalute in un pool {{providerName}}, accetti i rischi associati all'utilizzo di {{providerName}}. <0>Termini e condizioni</0>",
       "noTermsUrlDisclaimer": "Sei responsabile delle tue azioni in {{appName}}. {{appName}} declina ogni responsabilità per le tue attività o interazioni con {{providerName}}. Puoi consultare i documenti di {{providerName}} <0>qui</0> e i nostri Termini e Condizioni <1>qui</1>."
@@ -2868,6 +2882,7 @@
   "reviewTransaction": {
     "title": "Recensione Invia",
     "totalPlusFees": "Totale più tasse",
+    "totalLessFees": "Totale meno commissioni",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Commissione di rete massima",
@@ -2890,7 +2905,7 @@
   "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "Ulteriori informazioni",
   "breakdown": "Breakdown",
-  "gasSubsidized": "Le spese sono coperte per un periodo di tempo limitato",
+  "gasSubsidized": "Per un periodo di tempo limitato le commissioni sono coperte",
   "deposit": "Deposito",
   "feeInfoBottomSheet": {
     "feesInfo_sameChain": "La commissione di rete viene richiesta dalla rete per elaborare la transazione.",

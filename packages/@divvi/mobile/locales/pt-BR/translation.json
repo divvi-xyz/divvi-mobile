@@ -1005,7 +1005,7 @@
   "request": "Solicitar",
   "requestToken": "Solicitar {{token}}",
   "requestSent": "Solicitação enviada",
-  "from": "de",
+  "from": "De",
   "verificationMessage": "Você pagou uma taxa para conectar sua conta. Bem-vindo à {{appName}}!",
   "receivedAmountFromCelo": "Você recebeu essa quantia do Faucet!",
   "dollarsSent": "Dólares Enviados",
@@ -1902,6 +1902,13 @@
       "addFundsButton": "Adicionar Fundos"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Tem certeza?",
+    "description": "Você está prestes a fazer uma troca muito desfavorável. Confirme que você gostaria de concluir a troca.",
+    "cancel": "Cancelar",
+    "confirm": "Deslize para trocar",
+    "confirmed": "Troca confirmada"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Trocar de",
     "swapTo": "Trocar para",
@@ -2636,12 +2643,19 @@
       "myPools": "Minhas pools",
       "explore": "Explorar"
     },
+    "withdrawConfirmation": {
+      "title": "Revisar saque",
+      "rewardClaiming": "Resgate de recompensa",
+      "withdrawing": "Sacando",
+      "pool": "Pool da {{providerName}}",
+      "yieldRate": "{{apy}}% de taxa de rendimento est."
+    },
     "depositConfirmation": {
-      "title": "Depósito de revisão",
-      "depositing": "Depósito",
+      "title": "Revisar depósito",
+      "depositing": "Depositando",
       "into": "Para",
-      "pool": "{{providerName}} Piscina",
-      "yieldRate": "{{apy}}% taxa de rendimento est.",
+      "pool": "Pool da {{providerName}}",
+      "yieldRate": "{{apy}}% de taxa de rendimento est.",
       "swapAndDeposit": "Trocar e depositar",
       "disclaimer": "Ao depositar criptomoedas em um pool da {{providerName}}, você aceita os riscos associados ao uso da {{providerName}}. <0>Termos e condições</0>",
       "noTermsUrlDisclaimer": "Você é responsável por suas ações em {{appName}}. {{appName}} se isenta da responsabilidade por seus ativos ou interações com {{providerName}}. Você pode consultar os documentos do {{providerName}} <0>aqui</0> e nossos Termos e Condições <1>aqui</1>."
@@ -2868,6 +2882,7 @@
   "reviewTransaction": {
     "title": "Revisão Enviar",
     "totalPlusFees": "Total mais taxas",
+    "totalLessFees": "Total menos taxas",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Taxa de rede máx.",
@@ -2887,10 +2902,10 @@
   "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
   "tokenAndLocalAmountApprox_noFiatPrice": "≈ $t(tokenAmount)",
-  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "Mais informações",
   "breakdown": "Detalhamento",
-  "gasSubsidized": "As taxas são cobertas por um período limitado",
+  "gasSubsidized": "As taxas são cobertas por tempo limitado",
   "deposit": "Depósito",
   "feeInfoBottomSheet": {
     "feesInfo_sameChain": "A taxa de rede é exigida pela rede para processar a transação.",

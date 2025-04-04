@@ -1005,7 +1005,7 @@
   "request": "İste",
   "requestToken": "{{token}} iste",
   "requestSent": "İstek gönderildi",
-  "from": "kullanıcısından",
+  "from": "Bu Token’dan",
   "verificationMessage": "Hesabınızı bağlamak için bir ücret ödediniz. {{appName}}'a hoş geldiniz!",
   "receivedAmountFromCelo": "Faucet'ten bu miktarı aldınız!",
   "dollarsSent": "Gönderilen Dolar",
@@ -1902,6 +1902,13 @@
       "addFundsButton": "Bakiye Ekle"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Emin misiniz?",
+    "description": "Çok elverişsiz bir takas yapmak üzeresiniz. Lütfen takası tamamlamak istediğinizi onaylayın.",
+    "cancel": "İptal",
+    "confirm": "Takas için Kaydırın",
+    "confirmed": "Takas Onaylandı"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Takas kaynağı",
     "swapTo": "Takas hedefi",
@@ -2636,12 +2643,19 @@
       "myPools": "Havuzlarım",
       "explore": "Açık Havuzları Keşfet"
     },
+    "withdrawConfirmation": {
+      "title": "Çekimi İncele",
+      "rewardClaiming": "Ödül Talep Etme",
+      "withdrawing": "Çekiliyor",
+      "pool": "{{providerName}} Havuz",
+      "yieldRate": "{{apy}}% tahmini getiri oranı"
+    },
     "depositConfirmation": {
-      "title": "Depozitoyu İncele",
-      "depositing": "Para Yatırma",
+      "title": "Yatırımı İncele",
+      "depositing": "Yatırılıyor",
       "into": "İçine",
       "pool": "{{providerName}} Havuz",
-      "yieldRate": "{{apy}}tahmini getiri oranı",
+      "yieldRate": "{{apy}}% tahmini getiri oranı",
       "swapAndDeposit": "Swap ve Para Yatırma",
       "disclaimer": "Bir {{providerName}} havuzuna kripto yatırarak {{providerName}} kullanımıyla ilişkili riskleri kabul etmiş olursunuz. <0>Şartlar ve Koşullar</0>",
       "noTermsUrlDisclaimer": "{{appName}} uygulamasındaki eylemlerinizden siz sorumlusunuz. {{appName}}, varlıklarınız veya {{providerName}} ile etkileşimlerinizden doğabilecek tüm sorumluluğu reddeder. {{providerName}} sağlayıcısına ait belgeleri <0>buradan</0> ve Hüküm ve Koşullarımızı ise <1>buradan</1> inceleyebilirsiniz."
@@ -2868,6 +2882,7 @@
   "reviewTransaction": {
     "title": "İnceleme Gönder",
     "totalPlusFees": "Toplam Artı Ücretler",
+    "totalLessFees": "Toplam Eksi Ücretler",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Maks. Ağ Ücreti",
@@ -2887,7 +2902,7 @@
   "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
   "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
-  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "Daha fazla bilgi",
   "breakdown": "Dağılım",
   "gasSubsidized": "Ücretler sınırlı bir süre için karşılanır",

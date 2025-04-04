@@ -1900,6 +1900,13 @@
       "addFundsButton": "添加资金"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "您确定吗？",
+    "description": "您即将进行非常不利的交换。请确认您是否愿意完成交换。",
+    "cancel": "取消",
+    "confirm": "滑动以交换",
+    "confirmed": "交换已确认"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "交换自",
     "swapTo": "交换至",
@@ -2634,12 +2641,19 @@
       "myPools": "我的池",
       "explore": "探索打开"
     },
+    "withdrawConfirmation": {
+      "title": "查看提取",
+      "rewardClaiming": "奖励领取",
+      "withdrawing": "正在提取",
+      "pool": "{{providerName}} 池",
+      "yieldRate": "{{apy}}% 估计收益率"
+    },
     "depositConfirmation": {
-      "title": "审查存款",
-      "depositing": "存款",
-      "into": "进入",
-      "pool": "{{providerName}} 游泳池",
-      "yieldRate": "{{apy}}估计收益率",
+      "title": "查看存入",
+      "depositing": "正在存款",
+      "into": "到",
+      "pool": "{{providerName}} 池",
+      "yieldRate": "{{apy}}% 估计收益率",
       "swapAndDeposit": "交换与存款",
       "disclaimer": "向 {{providerName}} 池存入加密货币，即表示您接受使用 {{providerName}} 的相关风险。<0>条款和条件</0>",
       "noTermsUrlDisclaimer": "您要对自己在 {{appName}} 上的行为负责。{{appName}} 不对您的资产或与 {{providerName}} 的互动承担任何责任。您可以在<0>此处</0>查看 {{providerName}} 的文件，在<1>此处</1>查看我们的条款和条件。"
@@ -2866,6 +2880,7 @@
   "reviewTransaction": {
     "title": "审查发送",
     "totalPlusFees": "加费用共计",
+    "totalLessFees": "减费用共计",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "最高网络费用",
@@ -2888,7 +2903,7 @@
   "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "更多信息",
   "breakdown": "细目",
-  "gasSubsidized": "在有限的时间内支付费用",
+  "gasSubsidized": "在一定时间内可免除费用",
   "deposit": "存款",
   "feeInfoBottomSheet": {
     "feesInfo_sameChain": "使用网络处理交易需支付网络费用。",
