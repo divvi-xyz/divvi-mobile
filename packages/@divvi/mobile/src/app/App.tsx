@@ -21,7 +21,8 @@ import { persistor, store } from 'src/redux/store'
 import Logger from 'src/utils/Logger'
 
 Logger.overrideConsoleLogs()
-Logger.cleanupOldLogs()
+// No need to await this, errors are handled internally
+void Logger.cleanupOldLogs()
 
 const defaultErrorHandler = ErrorUtils.getGlobalHandler()
 ErrorUtils.setGlobalHandler((e, isFatal) => {
