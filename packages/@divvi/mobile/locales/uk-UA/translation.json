@@ -1866,7 +1866,7 @@
       "appFeeValue": "<0></0> <1>(<0></0>)</1>",
       "appFeeValue_withoutPriceUsd": "<0></0>",
       "appFeeValue_free": "Безплатно",
-      "appFeeValue_placeholder": "-",
+      "appFeeValue_placeholder": "-\n\n\n",
       "appFeeInfo": "{{appName}} Комісія\n\nКомісія {{appName}} в розмірі {{appFeePercentage}} % покликана поліпшити ваш досвід, щоб обміни проходили швидко, надійно та безпечно.",
       "appFeeInfo_free": "{{appName}} Комісія\n\nКомісія за цей своп не стягується.",
       "appFeeInfo_placeholder": "{{appName}} Комісія\n\nКомісія розраховується на основі отриманої вами цінової пропозиції.",
@@ -1908,9 +1908,9 @@
   },
   "swapUnfavorableRateBottomSheet": {
     "title": "Ви впевнені?",
-    "description": "Ви збираєтеся здійснити дуже невигідний обмін. Будь ласка, підтвердіть, що ви бажаєте завершити обмін.",
+    "description": "Ви збираєтеся здійснити дуже невигідний обмін. Будь ласка, підтвердьте, що ви бажаєте завершити обмін.",
     "cancel": "Скасувати",
-    "confirm": "Перемістити на інший бік",
+    "confirm": "Проведіть для обміну",
     "confirmed": "Обмін підтверджено"
   },
   "swapTransactionDetailPage": {
@@ -2648,18 +2648,18 @@
       "explore": "Переглянути"
     },
     "withdrawConfirmation": {
-      "title": "Відгукнутись Вивести",
+      "title": "Переглянути зняття",
       "rewardClaiming": "Отримання винагороди",
-      "withdrawing": "Відкликання",
-      "pool": "{{providerName}} Басейн",
-      "yieldRate": "{{apy}}% ест. ставка дохідності"
+      "withdrawing": "Зняття",
+      "pool": "Пул {{providerName}}",
+      "yieldRate": "{{apy}}% розр. ставка дохідності"
     },
     "depositConfirmation": {
-      "title": "Депозит для перегляду",
-      "depositing": "Поповнення рахунку",
-      "into": "На",
-      "pool": "{{providerName}} Басейн",
-      "yieldRate": "{{apy}}% ест. ставка дохідності",
+      "title": "Переглянути депозит",
+      "depositing": "Депозит",
+      "into": "В",
+      "pool": "Пул {{providerName}}",
+      "yieldRate": "{{apy}}% розр. ставка дохідності",
       "swapAndDeposit": "Обмін і внесення депозиту",
       "disclaimer": "Вносячи криптовалюту в пул {{providerName}}, ви приймаєте ризики, пов’язані з використанням {{providerName}}. <0>Правила та Умови</0>",
       "noTermsUrlDisclaimer": "Ви несете відповідальність за свої дії в {{appName}}. {{appName}} знімає із себе відповідальність за ваші активи або взаємодію з {{providerName}}. Ви можете ознайомитися з документами {{providerName}} <0>тут</0> і переглянути наші Правила та Умови <1>тут</1>."
@@ -2909,7 +2909,7 @@
   "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "Докладніше",
   "breakdown": "Розбір",
-  "gasSubsidized": "Збори покриваються протягом обмеженого часу",
+  "gasSubsidized": "Комісії за транзакції покриваються протягом обмеженого періоду",
   "deposit": "Депозит",
   "feeInfoBottomSheet": {
     "feesInfo_sameChain": "Комісія мережі стягується за оброблення транзакції.",
