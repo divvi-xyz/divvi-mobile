@@ -1906,7 +1906,7 @@
     "title": "Emin misiniz?",
     "description": "Çok elverişsiz bir takas yapmak üzeresiniz. Lütfen takası tamamlamak istediğinizi onaylayın.",
     "cancel": "İptal",
-    "confirm": "Değiştirmek için Kaydırın",
+    "confirm": "Takas için Kaydırın",
     "confirmed": "Takas Onaylandı"
   },
   "swapTransactionDetailPage": {
@@ -2644,18 +2644,18 @@
       "explore": "Açık Havuzları Keşfet"
     },
     "withdrawConfirmation": {
-      "title": "Para Çekmeyi İncele",
+      "title": "Çekimi İncele",
       "rewardClaiming": "Ödül Talep Etme",
-      "withdrawing": "Geri çekilme",
+      "withdrawing": "Çekiliyor",
       "pool": "{{providerName}} Havuz",
-      "yieldRate": "{{apy}}tahmini getiri oranı"
+      "yieldRate": "{{apy}}% tahmini getiri oranı"
     },
     "depositConfirmation": {
-      "title": "Depozitoyu İncele",
-      "depositing": "Para Yatırma",
+      "title": "Yatırımı İncele",
+      "depositing": "Yatırılıyor",
       "into": "İçine",
       "pool": "{{providerName}} Havuz",
-      "yieldRate": "{{apy}}tahmini getiri oranı",
+      "yieldRate": "{{apy}}% tahmini getiri oranı",
       "swapAndDeposit": "Swap ve Para Yatırma",
       "disclaimer": "Bir {{providerName}} havuzuna kripto yatırarak {{providerName}} kullanımıyla ilişkili riskleri kabul etmiş olursunuz. <0>Şartlar ve Koşullar</0>",
       "noTermsUrlDisclaimer": "{{appName}} uygulamasındaki eylemlerinizden siz sorumlusunuz. {{appName}}, varlıklarınız veya {{providerName}} ile etkileşimlerinizden doğabilecek tüm sorumluluğu reddeder. {{providerName}} sağlayıcısına ait belgeleri <0>buradan</0> ve Hüküm ve Koşullarımızı ise <1>buradan</1> inceleyebilirsiniz."
@@ -2902,7 +2902,7 @@
   "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
   "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
-  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "Daha fazla bilgi",
   "breakdown": "Dağılım",
   "gasSubsidized": "Ücretler sınırlı bir süre için karşılanır",
