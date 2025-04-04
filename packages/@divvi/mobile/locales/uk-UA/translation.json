@@ -2648,9 +2648,9 @@
       "explore": "Переглянути"
     },
     "withdrawConfirmation": {
-      "title": "Переглянути зняття",
+      "title": "Переглянути виведення",
       "rewardClaiming": "Отримання винагороди",
-      "withdrawing": "Зняття",
+      "withdrawing": "Виведення",
       "pool": "Пул {{providerName}}",
       "yieldRate": "{{apy}}% розр. ставка дохідності"
     },
@@ -2935,8 +2935,8 @@
     },
     "inAppIndicatorLabel": "Демонстраційний режим"
   },
-  "celoDollarAmount_0": "<0></0> Село Долар",
-  "celoDollarAmount_1": "<0></0> Долари Село.",
-  "celoDollarAmount_2": "<0></0> Долари Село.",
-  "celoDollarAmount_3": "Celo Dollars"
+  "celoDollarAmount_0": "<0></0> дол. Celo",
+  "celoDollarAmount_1": "<0></0> дол. Celo",
+  "celoDollarAmount_2": "<0></0> дол. Celo",
+  "celoDollarAmount_3": "<0></0> дол. Celo"
 }
