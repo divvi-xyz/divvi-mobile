@@ -1904,10 +1904,10 @@
   },
   "swapUnfavorableRateBottomSheet": {
     "title": "Bist Du sicher?",
-    "description": "Du bist im Begriff, einen sehr ungünstigen Tausch vorzunehmen. Bitte bestätige, dass du den Tausch abschließen möchtest.",
+    "description": "Du bist im Begriff, einen äußerst ungünstigen Tausch vorzunehmen. Bitte bestätige, dass du den Tausch durchführen möchtest.",
     "cancel": "Abbrechen",
-    "confirm": "Dia zum Tauschen",
-    "confirmed": "Tausch Bestätigt"
+    "confirm": "Zum Tauschen streichen",
+    "confirmed": "Tausch bestätigt"
   },
   "swapTransactionDetailPage": {
     "swapFrom": "Tausch von",
@@ -2644,18 +2644,18 @@
       "explore": "Offen erforschen"
     },
     "withdrawConfirmation": {
-      "title": "Überprüfung Zurückziehen",
-      "rewardClaiming": "Belohnung einfordern",
-      "withdrawing": "Rückzug",
-      "pool": "{{providerName}} Pool",
-      "yieldRate": "{{apy}}% geschätzter Ausbeutesatz"
+      "title": "Abheben überprüfen",
+      "rewardClaiming": "Reward beanspruchen",
+      "withdrawing": "Abheben",
+      "pool": "{{providerName}}-Pool",
+      "yieldRate": "{{apy}} % geschätzte Rendite"
     },
     "depositConfirmation": {
-      "title": "Überprüfung Kaution",
-      "depositing": "Einzahlen",
-      "into": "In",
-      "pool": "{{providerName}} Pool",
-      "yieldRate": "{{apy}}% geschätzter Ausbeutesatz",
+      "title": "Einzahlung überprüfen",
+      "depositing": "Einzahlung",
+      "into": "in den",
+      "pool": "{{providerName}}-Pool",
+      "yieldRate": "{{apy}} % geschätzte Rendite",
       "swapAndDeposit": "Tausch und Einzahlung",
       "disclaimer": "Indem du Krypto in einen {{providerName}}-Pool einzahlst, akzeptierst du die Risiken, die mit der Nutzung von {{providerName}} verbunden sind. <0>Allgemeine Nutzungsbedingungen</0>",
       "noTermsUrlDisclaimer": "Du bist für deine Handlungen in {{appName}} verantwortlich. {{appName}} lehnt jede Verantwortung für dein Vermögen oder deine Interaktionen mit {{providerName}} ab. Du kannst die Dokumente von {{providerName}} <0>hier</0> und unsere allgemeinen Geschäftsbedingungen <1>hier</1> einsehen."
@@ -2882,7 +2882,7 @@
   "reviewTransaction": {
     "title": "Rückblick Senden",
     "totalPlusFees": "Gesamt plus Gebühren",
-    "totalLessFees": "Gesamt abzüglich Gebühren",
+    "totalLessFees": "Gesamtbetrag abzgl. Gebühren",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Maximale Netzwerkgebühr",
@@ -2902,10 +2902,10 @@
   "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
   "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
-  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "Weitere Informationen",
   "breakdown": "Zusammenfassung",
-  "gasSubsidized": "Die Gebühren werden für eine begrenzte Zeit übernommen",
+  "gasSubsidized": "Die Gebühren werden für eine begrenzte Zeit übernommen.",
   "deposit": "Einzahlung",
   "feeInfoBottomSheet": {
     "feesInfo_sameChain": "Das Netzwerk verlangt eine Netzwerkgebühr, damit es die Transaktion verarbeiten kann.",
