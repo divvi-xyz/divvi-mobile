@@ -903,7 +903,7 @@
     "learnMore": {
       "buttonLabel": "Tôi có cần kết nối không?",
       "title": "Tôi có cần kết nối không?",
-      "body": "Connecting your phone number will allow you to send money to friends in your address book and other phone numbers. \n\nIf you choose to skip this step you won’t be able to access your contacts and you will only be able to send money via QR code or wallet address."
+      "body": "Khi kết nối số điện thoại, bạn sẽ có thể gửi tiền cho bạn bè trong danh bạ và số điện thoại khác. \n\nNếu chọn bỏ qua bước này, bạn sẽ không truy cập được vào danh bạ và chỉ có thể gửi tiền bằng mã QR hoặc địa chỉ ví."
     },
     "skip": {
       "title": "Bạn có chắc chắn không?",
@@ -919,8 +919,8 @@
     "codeInputPlaceholder": "123456",
     "helpDialog": {
       "title": "Trợ giúp",
-      "body": "We sent an SMS to your phone number. Please check your text messages to find the 6 digit code. \n\nIf you’re having trouble receiving messages, you can skip this step for now and try again later.",
-      "bodyCloudBackupOnboarding": "We sent an SMS to your phone number. Please check your text messages to find the 6 digit code. \n\nIf you’re having trouble receiving messages, we recommend backing up with a Recovery Phrase. You can try signing in with your email and phone later.",
+      "body": "Chúng tôi đã gửi tin nhắn SMS đến số điện thoại của bạn. Vui lòng kiểm tra tin nhắn văn bản để tìm mã gồm 6 chữ số. \n\nNếu gặp sự cố khi nhận tin nhắn, bạn có thể tạm thời bỏ qua bước này và thử lại sau.",
+      "bodyCloudBackupOnboarding": "Chúng tôi đã gửi tin nhắn SMS đến số điện thoại của bạn. Vui lòng kiểm tra tin nhắn văn bản để tìm mã gồm 6 chữ số. \n\nNếu gặp sự cố khi nhận tin nhắn, bạn nên sao lưu bằng Cụm từ khôi phục. Bạn có thể thử đăng nhập bằng email và số điện thoại của bạn sau.",
       "skip": "Bỏ qua",
       "dismiss": "Quay lại",
       "useRecoveryPhrase": "Sử dụng Cụm từ khôi phục"
@@ -2649,11 +2649,11 @@
       "yieldRate": "{{apy}}% est. yield rate"
     },
     "depositConfirmation": {
-      "title": "Review Deposit",
-      "depositing": "Depositing",
-      "into": "Into",
-      "pool": "{{providerName}} Pool",
-      "yieldRate": "{{apy}}% est. yield rate",
+      "title": "Xem lại thông tin nạp tiền",
+      "depositing": "Đang nạp tiền",
+      "into": "Vào",
+      "pool": "Quỹ {{providerName}}",
+      "yieldRate": "{{apy}}% mức sinh lợi ước tính",
       "swapAndDeposit": "Trao đổi và nạp",
       "disclaimer": "Khi nạp tiền điện tử vào bể {{providerName}}, bạn chấp nhận các rủi ro liên quan đến việc sử dụng {{providerName}}. <0>Điều khoản và điều kiện</0>",
       "noTermsUrlDisclaimer": "Bạn phải tự chịu trách nhiệm cho những hành động của mình trong {{appName}}. {{appName}} tuyên bố miễn trừ mọi trách nhiệm đối với tài sản hoặc hoạt động tương tác của bạn với {{providerName}}. Bạn có thể xem lại các tài liệu của {{providerName}} <0>tại đây</0> và các Điều khoản và Điều kiện của chúng tôi <1>tại đây</1>."
@@ -2758,7 +2758,7 @@
       "poweredBy": "Do {{providerName}} cung cấp",
       "deposited": "Đã cung cấp",
       "depositAndEarnings": "Nạp tiền & Thu nhập",
-      "safety": "Safety"
+      "safety": "An toàn"
     },
     "poolFilters": {
       "allPools": "Tất cả các quỹ",
@@ -2864,21 +2864,21 @@
     "tokenDescription": "{{tokenName}} trên {{tokenNetwork}}"
   },
   "gasFeeWarning": {
-    "title": "You need more {{tokenSymbol}} for gas fees",
-    "title_Dapp": "You have an insufficient gas token balance",
-    "descriptionMaxAmount_Send": "Add {{tokenSymbol}} for gas fees or lower the amount you're sending",
-    "descriptionMaxAmount_Swap": "Add {{tokenSymbol}} for gas fees or lower the amount you're swapping",
-    "descriptionMaxAmount_Deposit": "Add {{tokenSymbol}} for gas fees or lower the amount you're depositing",
-    "descriptionMaxAmount_Withdraw": "Add {{tokenSymbol}} for gas fees or lower the amount you're withdrawing",
-    "descriptionDapp": "Add {{tokenSymbol}} to complete this transaction",
+    "title": "Bạn cần thêm {{tokenSymbol}} để trả phí gas",
+    "title_Dapp": "Số dư token gas của bạn không đủ",
+    "descriptionMaxAmount_Send": "Nạp thêm {{tokenSymbol}} để trả phí gas hoặc giảm số tiền cần gửi",
+    "descriptionMaxAmount_Swap": "Nạp thêm {{tokenSymbol}} để trả phí gas hoặc giảm số tiền cần trao đổi",
+    "descriptionMaxAmount_Deposit": "Nạp thêm {{tokenSymbol}} để trả phí gas hoặc giảm số tiền cần nạp",
+    "descriptionMaxAmount_Withdraw": "Nạp thêm {{tokenSymbol}} để trả phí gas hoặc giảm số tiền cần rút",
+    "descriptionDapp": "Nạp thêm {{tokenSymbol}} để hoàn tất giao dịch này",
     "ctaBuy": "Mua {{tokenSymbol}}",
-    "ctaAction_Send": "Send smaller amount",
+    "ctaAction_Send": "Gửi số tiền nhỏ hơn",
     "ctaAction_Swap": "Trao đổi số tiền nhỏ hơn",
-    "ctaAction_Deposit": "Deposit smaller amount",
-    "ctaAction_Withdraw": "Withdraw smaller amount"
+    "ctaAction_Deposit": "Nạp số tiền nhỏ hơn",
+    "ctaAction_Withdraw": "Rút số tiền nhỏ hơn"
   },
   "reviewTransaction": {
-    "title": "Review Send",
+    "title": "Xem lại thông tin gửi tiền",
     "totalPlusFees": "Total Plus Fees",
     "totalLessFees": "Total Less Fees",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
