@@ -1,6 +1,7 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import * as Sentry from '@sentry/react-native'
 import BigNumber from 'bignumber.js'
+import 'intl-pluralrules'
 import * as React from 'react'
 import { LogBox, StatusBar } from 'react-native'
 import { Auth0Provider } from 'react-native-auth0'
@@ -13,11 +14,23 @@ import { PersistGate } from 'redux-persist/integration/react'
 import AppInitGate from 'src/app/AppInitGate'
 import ErrorBoundary from 'src/app/ErrorBoundary'
 import { getAppConfig } from 'src/appConfig'
-import { AUTH0_CLIENT_ID, AUTH0_DOMAIN, isE2EEnv } from 'src/config'
+import { AUTH0_CLIENT_ID, AUTH0_DOMAIN, SENTRY_ENABLED, isE2EEnv } from 'src/config'
 import i18n from 'src/i18n'
 import NavigatorWrapper from 'src/navigator/NavigatorWrapper'
 import { persistor, store } from 'src/redux/store'
 import Logger from 'src/utils/Logger'
+
+Logger.overrideConsoleLogs()
+Logger.cleanupOldLogs()
+
+const defaultErrorHandler = ErrorUtils.getGlobalHandler()
+ErrorUtils.setGlobalHandler((e, isFatal) => {
+  if (SENTRY_ENABLED) {
+    Sentry.captureException(e)
+  }
+  Logger.error('RootErrorHandler', `Unhandled error. isFatal: ${isFatal}`, e)
+  defaultErrorHandler(e, isFatal)
+})
 
 Logger.debug('App/init', 'Current Language: ' + i18n.language)
 
