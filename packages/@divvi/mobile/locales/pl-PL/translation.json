@@ -1908,7 +1908,7 @@
   },
   "swapUnfavorableRateBottomSheet": {
     "title": "Czy na pewno?",
-    "description": "Zamierzasz dokonać bardzo niekorzystnej wymiany. Potwierdź, że chcesz dokończyć wymianę.",
+    "description": "Zamierzasz dokonać bardzo niekorzystnej zamiany. Potwierdź, że chcesz dokończyć zamianę.",
     "cancel": "Anuluj",
     "confirm": "Przesuń, aby zamienić",
     "confirmed": "Zamiana potwierdzona"
@@ -2648,9 +2648,9 @@
       "explore": "Przeglądaj otwarte"
     },
     "withdrawConfirmation": {
-      "title": "Przejrzyj wypłatę",
+      "title": "Sprawdź wypłatę",
       "rewardClaiming": "Odbieranie nagród",
-      "withdrawing": "Wycofanie się",
+      "withdrawing": "Wypłacanie",
       "pool": "{{providerName}} Basen",
       "yieldRate": "{{apy}}% est. stopa zwrotu"
     },
@@ -2886,7 +2886,7 @@
   "reviewTransaction": {
     "title": "Wyślij recenzję",
     "totalPlusFees": "Razem plus opłaty",
-    "totalLessFees": "Suma pomniejszona o opłaty",
+    "totalLessFees": "Razem minus opłaty",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Maksymalna opłata sieciowa",
