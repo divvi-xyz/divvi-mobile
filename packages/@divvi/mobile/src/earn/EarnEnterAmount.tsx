@@ -340,10 +340,10 @@ export default function EarnEnterAmount({ route }: Props) {
     })
 
     if (isWithdrawal) {
-      return navigate(Screens.EarnConfirmationScreen, {
+      return navigate(Screens.EarnWithdrawConfirmationScreen, {
         pool,
         mode,
-        inputAmount: processedAmounts.token.bignum.toString(),
+        inputTokenAmount: processedAmounts.token.bignum.toString(),
         useMax: selectedPercentage === 1,
       })
     }

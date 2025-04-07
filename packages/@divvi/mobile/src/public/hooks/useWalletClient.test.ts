@@ -16,7 +16,7 @@ describe('useWalletClient', () => {
     const mockWalletClient = {} as any
     mockGetWalletClient.mockResolvedValueOnce(mockWalletClient)
 
-    const { result } = renderHook(() => useWalletClient({ networkId: 'celo-alfajores' }))
+    const { result } = renderHook(() => useWalletClient({ networkId: 'celo-mainnet' }))
 
     await waitFor(() => expect(result.current.data).toEqual(mockWalletClient))
     expect(mockGetWalletClient).toHaveBeenCalledTimes(1)
@@ -27,7 +27,7 @@ describe('useWalletClient', () => {
     const mockError = new Error('Failed to get wallet client')
     mockGetWalletClient.mockRejectedValueOnce(mockError)
 
-    const { result } = renderHook(() => useWalletClient({ networkId: 'celo-alfajores' }))
+    const { result } = renderHook(() => useWalletClient({ networkId: 'celo-mainnet' }))
 
     await waitFor(() => expect(result.current.error).toBe(mockError))
     expect(result.current.status).toEqual('error')

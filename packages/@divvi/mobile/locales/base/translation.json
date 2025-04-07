@@ -1005,7 +1005,7 @@
   "request": "Request",
   "requestToken": "Request {{token}}",
   "requestSent": "Request Sent",
-  "from": "from",
+  "from": "From",
   "verificationMessage": "You paid a fee to connect your account. Welcome to {{appName}}!",
   "receivedAmountFromCelo": "You received this amount from the Faucet!",
   "dollarsSent": "Dollars Sent",
@@ -1904,6 +1904,13 @@
       "addFundsButton": "Add Funds"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Are you sure?",
+    "description": "You are about to make a very unfavorable swap. Please confirm that you would like to complete the swap.",
+    "cancel": "Cancel",
+    "confirm": "Slide to Swap",
+    "confirmed": "Swap Confirmed"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Swap from",
     "swapTo": "Swap to",
@@ -2638,6 +2645,13 @@
       "myPools": "My Pools",
       "explore": "Explore Open"
     },
+    "withdrawConfirmation": {
+      "title": "Review Withdraw",
+      "rewardClaiming": "Reward Claiming",
+      "withdrawing": "Withdrawing",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% est. yield rate"
+    },
     "depositConfirmation": {
       "title": "Review Deposit",
       "depositing": "Depositing",
@@ -2870,6 +2884,7 @@
   "reviewTransaction": {
     "title": "Review Send",
     "totalPlusFees": "Total Plus Fees",
+    "totalLessFees": "Total Less Fees",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Max Network Fee",

@@ -129,7 +129,7 @@ export async function prepareWithdrawTransactionsWithSwap({
   }
 }
 
-// Used on the EarnConfirmationScreen.tsx
+// Used on the EarnWithdrawConfirmationScreen.tsx
 export async function prepareWithdrawAndClaimTransactions({
   walletAddress,
   feeCurrencies,

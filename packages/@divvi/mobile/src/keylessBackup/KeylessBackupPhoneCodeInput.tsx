@@ -13,7 +13,7 @@ import KeylessBackupCancelButton from 'src/keylessBackup/KeylessBackupCancelButt
 import { useVerifyPhoneNumber } from 'src/keylessBackup/hooks'
 import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
 import { HeaderTitleWithSubtitle } from 'src/navigator/Headers'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { TopBarTextButton } from 'src/navigator/TopBarButton'
 import { StackParamList } from 'src/navigator/types'
@@ -48,7 +48,9 @@ function HelpInfoBottomSheet({
       keylessBackupFlow,
       origin,
     })
-    keylessBackupFlow === KeylessBackupFlow.Setup ? navigateHome() : navigate(Screens.ImportSelect)
+    keylessBackupFlow === KeylessBackupFlow.Setup
+      ? navigateInitialTab()
+      : navigate(Screens.ImportSelect)
   }
 
   const onUseRecoveryPhrase = () => {

@@ -2,12 +2,12 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, Text, View } from 'react-native'
-import { FiatExchangeEvents } from 'src/analytics/Events'
 import AppAnalytics from 'src/analytics/AppAnalytics'
+import { FiatExchangeEvents } from 'src/analytics/Events'
 import Button from 'src/components/Button'
 import { fiatExchange } from 'src/images/Images'
 import { noHeaderGestureDisabled } from 'src/navigator/Headers'
-import { navigateHome } from 'src/navigator/NavigationService'
+import { navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { typeScale } from 'src/styles/fonts'
@@ -50,7 +50,7 @@ function CashInSuccessScreen({ route }: Props) {
           style={styles.button}
           text={t('continue')}
           accessibilityLabel={t('continue') ?? undefined}
-          onPress={navigateHome}
+          onPress={navigateInitialTab}
           testID={'SuccessContinue'}
         />
       </View>

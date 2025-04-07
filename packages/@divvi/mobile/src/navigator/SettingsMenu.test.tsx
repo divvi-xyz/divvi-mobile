@@ -11,15 +11,9 @@ import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import MockedNavigator from 'test/MockedNavigator'
 import { createMockStore } from 'test/utils'
-import { mockE164Number } from 'test/values'
+import { mockAppConfig, mockE164Number } from 'test/values'
 
 jest.mock('src/statsig')
-jest.mocked(getFeatureGate).mockImplementation((gate) => {
-  if (gate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2) {
-    return false
-  }
-  throw new Error('Unexpected gate')
-})
 jest.mocked(getDynamicConfigParams).mockReturnValue({})
 
 jest.mock('statsig-react-native', () => ({
@@ -34,15 +28,15 @@ jest.mock('src/config', () => ({
 }))
 
 describe('SettingsMenu', () => {
-  const defaultAppConfig = {
-    displayName: 'Test App',
-    deepLinkUrlScheme: 'testapp',
-    registryName: 'test',
-  }
   beforeEach(() => {
     jest.clearAllMocks()
     jest.mocked(getAppConfig).mockReturnValue({
-      ...defaultAppConfig,
+      ...mockAppConfig,
+      features: {
+        walletConnect: {
+          projectId: 'some-project-id',
+        },
+      },
       experimental: {
         inviteFriends: true,
         zendeskConfig: {
@@ -50,6 +44,12 @@ describe('SettingsMenu', () => {
           projectName: 'test',
         },
       },
+    })
+    jest.mocked(getFeatureGate).mockImplementation((gate) => {
+      if (gate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2) {
+        return false
+      }
+      throw new Error('Unexpected gate')
     })
   })
 
@@ -70,8 +70,33 @@ describe('SettingsMenu', () => {
     expect(getByTestId('SettingsMenu/Legal')).toBeTruthy()
     expect(getByTestId('SettingsMenu/Version')).toBeTruthy()
   })
+  it('does not show the wallet connect item if the disable feature gate is set', () => {
+    jest.mocked(getFeatureGate).mockImplementation((gate) => {
+      if (gate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2) {
+        return true
+      }
+      throw new Error('Unexpected gate')
+    })
+    const store = createMockStore()
+    const { queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator component={SettingsMenu}></MockedNavigator>
+      </Provider>
+    )
+    expect(queryByTestId('SettingsMenu/ConnectedDapps')).toBeFalsy()
+  })
+  it('does not show the wallet connect item if the project id is not set', () => {
+    jest.mocked(getAppConfig).mockReturnValue(mockAppConfig)
+    const store = createMockStore()
+    const { queryByTestId } = render(
+      <Provider store={store}>
+        <MockedNavigator component={SettingsMenu}></MockedNavigator>
+      </Provider>
+    )
+    expect(queryByTestId('SettingsMenu/ConnectedDapps')).toBeFalsy()
+  })
   it('does not show the invite item if the feature is disabled', () => {
-    jest.mocked(getAppConfig).mockReturnValue(defaultAppConfig)
+    jest.mocked(getAppConfig).mockReturnValue(mockAppConfig)
     const store = createMockStore()
     const { queryByTestId } = render(
       <Provider store={store}>
@@ -81,7 +106,7 @@ describe('SettingsMenu', () => {
     expect(queryByTestId('SettingsMenu/Invite')).toBeFalsy()
   })
   it('does not show the help item if help links are not set and contact support is disabled', () => {
-    jest.mocked(getAppConfig).mockReturnValue(defaultAppConfig)
+    jest.mocked(getAppConfig).mockReturnValue(mockAppConfig)
     const store = createMockStore()
     const { queryByTestId } = render(
       <Provider store={store}>
@@ -173,7 +198,7 @@ describe('SettingsMenu', () => {
   it('navigates to the profile submenu if phone number verification is enabled', () => {
     jest
       .mocked(getAppConfig)
-      .mockReturnValue({ ...defaultAppConfig, experimental: { phoneNumberVerification: true } })
+      .mockReturnValue({ ...mockAppConfig, experimental: { phoneNumberVerification: true } })
 
     const { getByTestId } = render(
       <Provider store={createMockStore()}>

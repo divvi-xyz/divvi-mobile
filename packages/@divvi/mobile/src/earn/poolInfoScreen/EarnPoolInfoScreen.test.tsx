@@ -414,7 +414,7 @@ describe('EarnPoolInfoScreen', () => {
     expect(getByTestId('Earn/BeforeDepositBottomSheet')).toBeVisible()
   })
 
-  it('navigate to EarnConfirmationScreen when Withdraw button is tapped, no rewards and cannot partial withdraw', () => {
+  it('navigate to EarnWithdrawConfirmationScreen when Withdraw button is tapped, no rewards and cannot partial withdraw', () => {
     jest
       .mocked(getFeatureGate)
       .mockImplementation(
@@ -438,10 +438,9 @@ describe('EarnPoolInfoScreen', () => {
       networkId: 'arbitrum-sepolia',
       depositTokenId: mockEarnPositions[0].dataProps.depositTokenId,
     })
-    expect(navigate).toHaveBeenCalledWith(Screens.EarnConfirmationScreen, {
+    expect(navigate).toHaveBeenCalledWith(Screens.EarnWithdrawConfirmationScreen, {
       pool: { ...mockEarnPositions[0], balance: '100' },
       mode: 'exit',
-      useMax: true,
     })
   })
   it('open WithdrawBottomSheet when Withdraw button pressed, check that expected options exist', () => {

@@ -3,13 +3,13 @@ import { FetchMock } from 'jest-fetch-mock'
 import React from 'react'
 import { Provider } from 'react-redux'
 import { showError } from 'src/alert/actions'
-import { KeylessBackupEvents } from 'src/analytics/Events'
 import AppAnalytics from 'src/analytics/AppAnalytics'
+import { KeylessBackupEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import KeylessBackupPhoneCodeInput from 'src/keylessBackup/KeylessBackupPhoneCodeInput'
 import { appKeyshareIssued } from 'src/keylessBackup/slice'
 import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
-import { navigate, navigateHome } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import networkConfig from 'src/web3/networkConfig'
 import MockedNavigator from 'test/MockedNavigator'
@@ -226,7 +226,7 @@ describe('KeylessBackupPhoneCodeInput', () => {
 
     fireEvent.press(getByTestId('KeylessBackupPhoneCodeInputHelp'))
     fireEvent.press(getByTestId('KeylessBackupPhoneCodeInput/HelpInfoBottomSheet/SecondaryCta'))
-    expect(navigateHome).toHaveBeenCalledWith()
+    expect(navigateInitialTab).toHaveBeenCalledWith()
     expect(AppAnalytics.track).toHaveBeenCalledWith(
       KeylessBackupEvents.cab_phone_verification_help_skip,
       { keylessBackupFlow: KeylessBackupFlow.Setup, origin: KeylessBackupOrigin.Settings }

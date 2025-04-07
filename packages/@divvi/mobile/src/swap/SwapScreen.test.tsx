@@ -1265,6 +1265,7 @@ describe('SwapScreen', () => {
       txCount: 2,
       swapType: 'same-chain',
       swapId: mockSwapId,
+      isUnfavorableRate: false,
     })
   })
 

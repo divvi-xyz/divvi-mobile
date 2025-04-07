@@ -3,10 +3,10 @@ import { fireEvent, render, waitFor, within } from '@testing-library/react-nativ
 import React from 'react'
 import { Share } from 'react-native'
 import { Provider } from 'react-redux'
-import { JumpstartEvents } from 'src/analytics/Events'
 import AppAnalytics from 'src/analytics/AppAnalytics'
+import { JumpstartEvents } from 'src/analytics/Events'
 import JumpstartShareLink from 'src/jumpstart/JumpstartShareLink'
-import { navigateHome } from 'src/navigator/NavigationService'
+import { navigateInitialTab } from 'src/navigator/NavigationService'
 import MockedNavigator from 'test/MockedNavigator'
 import { createMockStore } from 'test/utils'
 import { mockCusdTokenId } from 'test/values'
@@ -169,13 +169,13 @@ describe('JumpstartShareLink', () => {
     await waitFor(() =>
       expect(queryByText('jumpstartShareLinkScreen.navigationWarning.title')).toBeFalsy()
     )
-    expect(navigateHome).not.toHaveBeenCalled()
+    expect(navigateInitialTab).not.toHaveBeenCalled()
     expect(AppAnalytics.track).toHaveBeenCalledWith(JumpstartEvents.jumpstart_share_dismiss_close)
 
     fireEvent.press(getByTestId('JumpstartShareLink/CloseButton'))
     // should navigate away if the user taps on the secondary action
     fireEvent.press(getByText('jumpstartShareLinkScreen.navigationWarning.ctaNavigate'))
-    await waitFor(() => expect(navigateHome).toHaveBeenCalled())
+    await waitFor(() => expect(navigateInitialTab).toHaveBeenCalled())
     expect(AppAnalytics.track).toHaveBeenCalledWith(JumpstartEvents.jumpstart_share_confirm_close)
   })
 })

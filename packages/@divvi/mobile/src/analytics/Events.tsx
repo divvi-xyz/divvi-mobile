@@ -533,6 +533,8 @@ export enum SwapEvents {
   swap_show_fund_your_wallet = 'swap_show_fund_your_wallet',
   swap_add_funds = 'swap_add_funds',
   swap_switch_tokens = 'swap_switch_tokens',
+  swap_unfavorable_rate_warning_displayed = 'swap_unfavorable_rate_warning_displayed',
+  swap_unfavorable_rate_warning_cancelled = 'swap_unfavorable_rate_warning_cancelled',
 }
 
 export enum CeloNewsEvents {
@@ -666,6 +668,7 @@ export enum EarnEvents {
   earn_withdraw_submit_error = 'earn_withdraw_submit_error',
   earn_withdraw_submit_cancel = 'earn_withdraw_submit_cancel',
   earn_withdraw_add_gas_press = 'earn_withdraw_add_gas_press',
+  earn_withdraw_provider_info_press = 'earn_withdraw_provider_info_press',
   earn_info_learn_press = 'earn_info_learn_press',
   earn_info_earn_press = 'earn_info_earn_press',
   earn_home_learn_more_press = 'earn_home_learn_more_press',

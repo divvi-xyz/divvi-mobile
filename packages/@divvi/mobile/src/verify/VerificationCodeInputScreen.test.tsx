@@ -7,7 +7,7 @@ import SmsRetriever from 'react-native-sms-retriever'
 import { Provider } from 'react-redux'
 import { showError } from 'src/alert/actions'
 import { ErrorMessages } from 'src/app/ErrorMessages'
-import { navigate, popToScreen } from 'src/navigator/NavigationService'
+import { navigate, navigateInitialTab, popToScreen } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { goToNextOnboardingScreen } from 'src/onboarding/steps'
 import { sleep } from 'src/utils/sleep'
@@ -170,7 +170,7 @@ describe('VerificationCodeInputScreen', () => {
     await act(() => {
       jest.runOnlyPendingTimers()
     })
-    expect(navigate).toHaveBeenCalledWith(Screens.TabHome)
+    expect(navigateInitialTab).toHaveBeenCalledWith()
     expect(popToScreen).not.toHaveBeenCalled()
     expect(goToNextOnboardingScreen).not.toHaveBeenCalled()
   })

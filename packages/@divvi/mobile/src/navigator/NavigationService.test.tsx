@@ -7,8 +7,7 @@ import Button from 'src/components/Button'
 import {
   navigate,
   navigateBack,
-  navigateHome,
-  navigateHomeAndThenToScreen,
+  navigateInitialTab,
   navigationRef,
   navigatorIsReadyRef,
 } from 'src/navigator/NavigationService'
@@ -21,8 +20,8 @@ const TestScreen = ({ route }: NativeStackScreenProps<ParamListBase>) => (
     <Text>Screen {route.name}</Text>
     <Button onPress={() => navigateBack()} text="Back" />
     <Button onPress={() => navigate(Screens.WithdrawSpend)} text="Go to Withdraw Spend" />
-    <Button onPress={() => navigateHomeAndThenToScreen(Screens.Profile)} text="Go to Profile" />
-    <Button onPress={() => navigateHome()} text="Go To Home" />
+    <Button onPress={() => navigate(Screens.Profile)} text="Go to Profile" />
+    <Button onPress={() => navigateInitialTab()} text="Go To Home" />
   </View>
 )
 
@@ -48,7 +47,7 @@ jest.unmock('@react-navigation/native')
 jest.mock('src/statsig')
 
 describe('NavigationService', () => {
-  it('navigate and navigateHome works correctly', async () => {
+  it('navigate and navigateInitialTab works correctly', async () => {
     const { getByText } = render(<MockedNavigator />)
     fireEvent.press(getByText('Go to Withdraw Spend'))
     await waitFor(() => expect(getByText('Screen WithdrawSpend')).toBeTruthy())
@@ -71,16 +70,5 @@ describe('NavigationService', () => {
     await waitFor(() => expect(getByText('Screen WithdrawSpend')).toBeTruthy())
     fireEvent.press(getByText('Back'))
     await waitFor(() => expect(getByText('Screen Profile')).toBeTruthy())
-  })
-
-  it('navigateHomeAndThenToScreen works correctly', async () => {
-    const { getByText } = render(<MockedNavigator />)
-
-    fireEvent.press(getByText('Go to Withdraw Spend'))
-    await waitFor(() => expect(getByText('Screen WithdrawSpend')).toBeTruthy())
-    fireEvent.press(getByText('Go to Profile'))
-    await waitFor(() => expect(getByText('Screen Profile')).toBeTruthy())
-    fireEvent.press(getByText('Back'))
-    await waitFor(() => expect(getByText('Screen TabNavigator')).toBeTruthy())
   })
 })

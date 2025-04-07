@@ -88,12 +88,6 @@ export type StackParamList = {
     pool: EarnPosition
     mode?: Extract<EarnActiveMode, 'deposit' | 'swap-deposit' | 'withdraw'>
   }
-  [Screens.EarnConfirmationScreen]: {
-    pool: EarnPosition
-    mode: Extract<EarnActiveMode, 'claim-rewards' | 'exit' | 'withdraw'>
-    inputAmount?: string
-    useMax: boolean
-  }
   [Screens.EarnDepositConfirmationScreen]: {
     preparedTransaction: SerializablePreparedTransactionsPossible
     inputTokenInfo: SerializedTokenBalance
@@ -102,6 +96,18 @@ export type StackParamList = {
     mode: Extract<EarnActiveMode, 'deposit' | 'swap-deposit'>
     swapTransaction?: SwapTransaction
   }
+  [Screens.EarnWithdrawConfirmationScreen]:
+    | {
+        mode: Extract<EarnActiveMode, 'claim-rewards' | 'exit'>
+        pool: EarnPosition
+      }
+    | {
+        mode: Extract<EarnActiveMode, 'withdraw'>
+        pool: EarnPosition
+        inputTokenAmount: string
+        useMax: boolean
+      }
+
   [Screens.EarnHome]: { activeEarnTab?: EarnTabType } | undefined
   [Screens.TabEarn]: { activeEarnTab?: EarnTabType } | undefined
   [Screens.EarnPoolInfoScreen]: { pool: EarnPosition }
@@ -299,9 +305,9 @@ export type StackParamList = {
   [Screens.TabDiscover]: {} | undefined
   [Screens.TabHome]: {} | undefined
   [Screens.TabWallet]: { activeAssetTab?: AssetTabType } | undefined
-  [Screens.TabNavigator]: {
-    initialScreen?: Screens.TabHome | Screens.TabWallet | Screens.TabDiscover
-  }
+  [Screens.TabNavigator]:
+    | { initialScreen?: Screens.TabHome | Screens.TabWallet | Screens.TabDiscover | string }
+    | undefined
   [Screens.TokenDetails]: { tokenId: string }
   [Screens.TokenImport]: undefined
   [Screens.TransactionDetailsScreen]: {

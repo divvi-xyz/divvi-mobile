@@ -1216,7 +1216,11 @@ interface SwapEventsProperties {
     percentage: number // 0 to 100
   }
   [SwapEvents.swap_gas_fees_learn_more]: undefined
-  [SwapEvents.swap_review_submit]: SwapQuoteEvent & Web3LibraryProps & Partial<SwapTxsProperties>
+  [SwapEvents.swap_review_submit]: SwapQuoteEvent &
+    Web3LibraryProps &
+    Partial<SwapTxsProperties> & {
+      isUnfavorableRate: boolean
+    }
   [SwapEvents.swap_execute_success]:
     | ({ swapType: 'same-chain' } & SwapQuoteEvent &
         SwapTimeMetrics &
@@ -1292,6 +1296,14 @@ interface SwapEventsProperties {
     fromTokenId: string | undefined
     toTokenId: string | undefined
   }
+  [SwapEvents.swap_unfavorable_rate_warning_displayed]: Omit<
+    SwapQuoteEvent,
+    'swapId' | 'allowanceTarget'
+  >
+  [SwapEvents.swap_unfavorable_rate_warning_cancelled]: Omit<
+    SwapQuoteEvent,
+    'swapId' | 'allowanceTarget'
+  >
 }
 
 interface CeloNewsEventsProperties {
@@ -1650,6 +1662,7 @@ interface EarnEventsProperties {
   }
   [EarnEvents.earn_withdraw_submit_cancel]: EarnWithdrawProperties
   [EarnEvents.earn_withdraw_add_gas_press]: EarnCommonProperties & { gasTokenId: string }
+  [EarnEvents.earn_withdraw_provider_info_press]: EarnWithdrawProperties
   [EarnEvents.earn_info_learn_press]: undefined
   [EarnEvents.earn_info_earn_press]: undefined
   [EarnEvents.earn_home_learn_more_press]: undefined

@@ -43,7 +43,7 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
         backgroundSecondary?: string
         backgroundTertiary?: string
         backgroundScrim?: string
-
+        backgroundSplash?: string
         // text, icons, and other content
         contentPrimary?: string
         contentSecondary?: string
@@ -101,6 +101,7 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
         brandGradientLeft?: string
         brandGradientRight?: string
         contentOnboardingComplete?: string
+        backgroundOnboardingComplete?: string
       }
 
       assets?: {
@@ -108,6 +109,8 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
         welcomeLogo?: React.ComponentType<any>
         welcomeBackgroundImage?: ImageSourcePropType
         onboardingSuccessImage?: ImageSourcePropType
+        onboardingSuccessBackgroundImage?: ImageSourcePropType
+        splashBackgroundImage?: ImageSourcePropType
         brandLogo?: React.ComponentType<{
           size?: number
           color?: string
@@ -249,10 +252,11 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     otaTranslations?: {
       crowdinDistributionHash: string
     }
-    // statsig feature gate defaults
+    // statsig feature gate / dynamic config defaults
     showPositions?: boolean
     showImportTokensFlow?: boolean
     showSwapTokenFilters?: boolean
+    enableSwapAppFee?: boolean
   }
 
   divviProtocol?: {
@@ -264,14 +268,8 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
 // TODO: we'll use this type throughout the framework once we're able to make bigger refactor, eliminating the current NetworkId enum
 export type NetworkId =
   | 'celo-mainnet'
-  | 'celo-alfajores'
   | 'ethereum-mainnet'
-  | 'ethereum-sepolia'
   | 'arbitrum-one'
-  | 'arbitrum-sepolia'
   | 'op-mainnet'
-  | 'op-sepolia'
   | 'polygon-pos-mainnet'
-  | 'polygon-pos-amoy'
   | 'base-mainnet'
-  | 'base-sepolia'

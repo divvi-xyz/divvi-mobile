@@ -5,7 +5,7 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { OnboardingEvents } from 'src/analytics/Events'
 import CancelButton from 'src/components/CancelButton'
 import Dialog from 'src/components/Dialog'
-import { navigateHome } from 'src/navigator/NavigationService'
+import { navigateInitialTab } from 'src/navigator/NavigationService'
 import colors from 'src/styles/colors'
 
 interface Props {
@@ -32,7 +32,7 @@ export default function CancelConfirm({ screen }: Props) {
   const onProcrastinate = React.useCallback(() => {
     setOpenState(false)
     // Specify fromModal to avoid app crash
-    navigateHome(true)
+    navigateInitialTab(true)
     AppAnalytics.track(OnboardingEvents.backup_delay_confirm)
   }, [screen, secondaryText])
 

@@ -9,17 +9,11 @@
 ```ts
 type NetworkId =
   | 'celo-mainnet'
-  | 'celo-alfajores'
   | 'ethereum-mainnet'
-  | 'ethereum-sepolia'
   | 'arbitrum-one'
-  | 'arbitrum-sepolia'
   | 'op-mainnet'
-  | 'op-sepolia'
   | 'polygon-pos-mainnet'
-  | 'polygon-pos-amoy'
   | 'base-mainnet'
-  | 'base-sepolia'
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:265](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L265)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:269](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L269)

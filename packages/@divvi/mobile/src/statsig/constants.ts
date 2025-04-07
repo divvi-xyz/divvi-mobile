@@ -77,10 +77,11 @@ export const DynamicConfigs = {
     configName: StatsigDynamicConfigs.SWAP_CONFIG,
     defaultValues: {
       maxSlippagePercentage: '0.3',
-      enableAppFee: true,
+      enableAppFee: appConfig.experimental?.enableSwapAppFee ?? true,
       popularTokenIds: [] as string[],
       enabled: true,
       priceImpactWarningThreshold: 4,
+      minReceivedFiatWarningPercent: 95,
     },
   },
   [StatsigDynamicConfigs.CICO_TOKEN_INFO]: {

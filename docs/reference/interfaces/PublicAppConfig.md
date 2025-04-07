@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:258](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L258)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:262](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L262)
 
 #### protocolIds
 
@@ -71,7 +71,7 @@ referrerId: string
 optional experimental: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:204](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L204)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:207](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L207)
 
 Experimental features that may change or be removed in future versions.
 These features are not part of the stable configuration API and should be used with caution.
@@ -130,6 +130,12 @@ optional showLearnMore: boolean;
 
 ```ts
 optional showSafetyScoreOnPoolCard: boolean;
+```
+
+#### enableSwapAppFee?
+
+```ts
+optional enableSwapAppFee: boolean;
 ```
 
 #### firebase?
@@ -290,7 +296,7 @@ projectName: string
 optional features: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:155](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L155)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:158](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L158)
 
 #### cloudBackup?
 
@@ -384,7 +390,7 @@ optional locales: Partial<{
 }>;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:176](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L176)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:179](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L179)
 
 Optional copies overwrite. This field should contain the same language keys as @interxyz/mobile.
 TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
@@ -397,7 +403,7 @@ TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
 optional networks: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:193](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L193)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:196](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L196)
 
 #### enabledNetworkIds?
 
@@ -423,7 +429,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:25](https://github.com/
 optional screens: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:138](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L138)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:141](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L141)
 
 #### custom()?
 
@@ -607,10 +613,22 @@ optional brandLogo: ComponentType<{
 optional noEarnPoolsLogo: ComponentType<any>;
 ```
 
+##### default.assets.onboardingSuccessBackgroundImage?
+
+```ts
+optional onboardingSuccessBackgroundImage: ImageSourcePropType;
+```
+
 ##### default.assets.onboardingSuccessImage?
 
 ```ts
 optional onboardingSuccessImage: ImageSourcePropType;
+```
+
+##### default.assets.splashBackgroundImage?
+
+```ts
+optional splashBackgroundImage: ImageSourcePropType;
 ```
 
 ##### default.assets.welcomeBackgroundImage?
@@ -637,6 +655,12 @@ optional colors: object;
 optional accent: string;
 ```
 
+##### default.colors.backgroundOnboardingComplete?
+
+```ts
+optional backgroundOnboardingComplete: string;
+```
+
 ##### default.colors.backgroundPrimary?
 
 ```ts
@@ -653,6 +677,12 @@ optional backgroundScrim: string;
 
 ```ts
 optional backgroundSecondary: string;
+```
+
+##### default.colors.backgroundSplash?
+
+```ts
+optional backgroundSplash: string;
 ```
 
 ##### default.colors.backgroundTertiary?

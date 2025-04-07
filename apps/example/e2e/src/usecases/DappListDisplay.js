@@ -9,10 +9,10 @@ export default DappListDisplay = () => {
   beforeAll(async () => {
     dappList = await fetchDappList()
     dappToTest = {
-      dapp: dappList.applications.find((dapp) => dapp.id === 'nftviewer'),
+      dapp: dappList.applications.find((dapp) => dapp.id === 'uniswap'),
       index: dappList.applications
         .filter((dapp) => dapp[device.getPlatform() === 'ios' ? 'listOnIos' : 'listOnAndroid'])
-        .findIndex((dapp) => dapp.id === 'nftviewer'),
+        .findIndex((dapp) => dapp.id === 'uniswap'),
     }
   })
 

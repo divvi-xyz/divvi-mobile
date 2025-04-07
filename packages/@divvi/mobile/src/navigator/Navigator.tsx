@@ -31,11 +31,11 @@ import BackupQuiz, { navOptionsForQuiz } from 'src/backup/BackupQuiz'
 import DappShortcutTransactionRequest from 'src/dapps/DappShortcutTransactionRequest'
 import DappShortcutsRewards from 'src/dapps/DappShortcutsRewards'
 import DappsScreen from 'src/dapps/DappsScreen'
-import EarnConfirmationScreen from 'src/earn/EarnConfirmationScreen'
 import EarnDepositConfirmationScreen from 'src/earn/EarnDepositConfirmationScreen'
 import EarnEnterAmount from 'src/earn/EarnEnterAmount'
 import EarnHome from 'src/earn/EarnHome'
 import EarnInfoScreen from 'src/earn/EarnInfoScreen'
+import EarnWithdrawConfirmationScreen from 'src/earn/EarnWithdrawConfirmationScreen'
 import EarnPoolInfoScreen from 'src/earn/poolInfoScreen/EarnPoolInfoScreen'
 import BidaliScreen from 'src/fiatExchanges/BidaliScreen'
 import CashInSuccess from 'src/fiatExchanges/CashInSuccess'
@@ -536,13 +536,13 @@ const earnScreens = (Navigator: typeof Stack) => (
   <>
     <Navigator.Screen name={Screens.EarnHome} component={EarnHome} options={headerWithBackButton} />
     <Navigator.Screen
-      name={Screens.EarnConfirmationScreen}
-      component={EarnConfirmationScreen}
-      options={headerWithBackButton}
-    />
-    <Navigator.Screen
       name={Screens.EarnDepositConfirmationScreen}
       component={EarnDepositConfirmationScreen}
+      options={noHeader}
+    />
+    <Navigator.Screen
+      name={Screens.EarnWithdrawConfirmationScreen}
+      component={EarnWithdrawConfirmationScreen}
       options={noHeader}
     />
     <Navigator.Screen
