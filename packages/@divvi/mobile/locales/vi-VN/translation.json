@@ -2645,8 +2645,8 @@
       "title": "Review Withdraw",
       "rewardClaiming": "Reward Claiming",
       "withdrawing": "Withdrawing",
-      "pool": "{{providerName}} Pool",
-      "yieldRate": "{{apy}}% est. yield rate"
+      "pool": "Quỹ {{providerName}}",
+      "yieldRate": "{{apy}}% mức sinh lợi ước tính"
     },
     "depositConfirmation": {
       "title": "Xem lại thông tin nạp tiền",
@@ -2879,7 +2879,7 @@
   },
   "reviewTransaction": {
     "title": "Xem lại thông tin gửi tiền",
-    "totalPlusFees": "Total Plus Fees",
+    "totalPlusFees": "Tổng phí tăng",
     "totalLessFees": "Total Less Fees",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
@@ -2913,21 +2913,21 @@
   },
   "demoMode": {
     "confirmEnter": {
-      "title": "Demo Mode",
-      "info": "You are about to enter into demo mode. You are free to explore the features of the app without completing any transactions",
-      "cta": "Enter Demo"
+      "title": "Chế độ thử nghiệm",
+      "info": "Bạn sắp vào chế độ thử nghiệm. Bạn có thể thoải mái khám phá các tính năng của ứng dụng mà không cần hoàn tất bất kỳ giao dịch nào",
+      "cta": "Vào chế độ thử nghiệm"
     },
     "confirmExit": {
-      "title": "In Demo Mode",
-      "info": "You are currently viewing the app in demo mode",
-      "cta": "Exit Demo"
+      "title": "Trong chế độ thử nghiệm",
+      "info": "Bạn đang xem ứng dụng trong chế độ thử nghiệm",
+      "cta": "Thoát chế độ thử nghiệm"
     },
     "restrictedAccess": {
-      "title": "In Demo Mode",
-      "info": "You can't complete this action because you are viewing the app in demo mode",
-      "cta": "Exit Demo"
+      "title": "Trong chế độ thử nghiệm",
+      "info": "Bạn không thể hoàn tất hành động này vì bạn đang xem ứng dụng trong chế độ thử nghiệm",
+      "cta": "Thoát chế độ thử nghiệm"
     },
-    "inAppIndicatorLabel": "Demo Mode"
+    "inAppIndicatorLabel": "Chế độ thử nghiệm"
   },
   "celoDollarAmount_0": "&amp;lt;0&amp;gt;&amp;lt;/0&amp;gt; Đô la Celo"
 }
