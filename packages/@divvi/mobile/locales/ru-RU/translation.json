@@ -1009,7 +1009,7 @@
   "request": "Запросить",
   "requestToken": "Запросить {{token}}",
   "requestSent": "Запрос отправлен",
-  "from": "от",
+  "from": "От кого",
   "verificationMessage": "Вы заплатили комиссию за подключение своего аккаунта. Добро пожаловать в {{appName}}!",
   "receivedAmountFromCelo": "Вы получили эту сумму от Faucet!",
   "dollarsSent": "Отправленные доллары",
@@ -1906,6 +1906,13 @@
       "addFundsButton": "Внести средства"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Вы уверены?",
+    "description": "Вы собираетесь совершить очень невыгодный обмен. Подтвердите, что желаете выполнить обмен.",
+    "cancel": "Отмена",
+    "confirm": "Понизить для обмена",
+    "confirmed": "Обмен подтвержден"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Что обменять",
     "swapTo": "На что обменять",
@@ -2640,12 +2647,19 @@
       "myPools": "Мои пулы",
       "explore": "Исследуйте открытые"
     },
+    "withdrawConfirmation": {
+      "title": "Проверить вывод",
+      "rewardClaiming": "Заявка на вознаграждение",
+      "withdrawing": "Вывод",
+      "pool": "Пул {{providerName}}",
+      "yieldRate": "{{apy}}% расч. доходности"
+    },
     "depositConfirmation": {
-      "title": "Обзорный депозит",
-      "depositing": "Пополнение счета",
+      "title": "Проверить внесение",
+      "depositing": "Внесение",
       "into": "В",
-      "pool": "{{providerName}} Бассейн",
-      "yieldRate": "{{apy}}% расчетной нормы выхода",
+      "pool": "Пул {{providerName}}",
+      "yieldRate": "{{apy}}% расч. доходности",
       "swapAndDeposit": "Обмен и пополнение счета",
       "disclaimer": "Внося криптовалюту на счет в пуле {{providerName}}, вы принимаете риски, связанные с использованием {{providerName}}. <0>Положения и условия</0>",
       "noTermsUrlDisclaimer": "Вы несете ответственность за свои действия в {{appName}}. {{appName}} отказывается от ответственности за ваши активы или взаимодействия с {{providerName}}. С документами {{providerName}} можно ознакомиться <0>здесь</0>, а с нашими Положениями и условиями <1>здесь</1>."
@@ -2872,6 +2886,7 @@
   "reviewTransaction": {
     "title": "Обзор Отправить",
     "totalPlusFees": "Итого плюс сборы",
+    "totalLessFees": "Итого за вычетом комиссий",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Максимальная комиссия сеть",
@@ -2891,10 +2906,10 @@
   "localAmountApprox_noFiatPrice": "≈ $t(localAmount_noFiatPrice)",
   "tokenAndLocalAmountApprox": "≈ {{tokenAmount}} {{tokenSymbol}} <0>({{localCurrencySymbol}}{{localAmount}})</0>",
   "tokenAndLocalAmountApprox_noFiatPrice": "≈ {{tokenAmount}} {{tokenSymbol}}",
-  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
+  "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "Дополнительная информация",
   "breakdown": "Разбивка",
-  "gasSubsidized": "Плата за услуги покрывается в течение ограниченного времени",
+  "gasSubsidized": "Комиссии компенсируются в течение ограниченного времени",
   "deposit": "Депозит",
   "feeInfoBottomSheet": {
     "feesInfo_sameChain": "Комиссия сообщества требуется сообществу для обработки транзакции.",

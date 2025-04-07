@@ -1009,7 +1009,7 @@
   "request": "Żądanie",
   "requestToken": "Zażądaj {{token}}",
   "requestSent": "Żądanie wysłane",
-  "from": "od",
+  "from": "Od",
   "verificationMessage": "Opłata za podłączenie konta została przesłana. Witaj w aplikacji {{appName}}!",
   "receivedAmountFromCelo": "Otrzymujesz tę kwotę ze strony Faucet!",
   "dollarsSent": "Przesłane dolary",
@@ -1906,6 +1906,13 @@
       "addFundsButton": "Dodaj środki"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Czy na pewno?",
+    "description": "Zamierzasz dokonać bardzo niekorzystnej zamiany. Potwierdź, że chcesz dokończyć zamianę.",
+    "cancel": "Anuluj",
+    "confirm": "Przesuń, aby zamienić",
+    "confirmed": "Zamiana potwierdzona"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Zamień z",
     "swapTo": "Zamień na",
@@ -2640,6 +2647,13 @@
       "myPools": "Moje pule",
       "explore": "Przeglądaj otwarte"
     },
+    "withdrawConfirmation": {
+      "title": "Sprawdź wypłatę",
+      "rewardClaiming": "Odbieranie nagród",
+      "withdrawing": "Wypłacanie",
+      "pool": "{{providerName}} Basen",
+      "yieldRate": "{{apy}}% est. stopa zwrotu"
+    },
     "depositConfirmation": {
       "title": "Przegląd depozytu",
       "depositing": "Deponowanie",
@@ -2872,6 +2886,7 @@
   "reviewTransaction": {
     "title": "Wyślij recenzję",
     "totalPlusFees": "Razem plus opłaty",
+    "totalLessFees": "Razem minus opłaty",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Maksymalna opłata sieciowa",

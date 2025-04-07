@@ -1005,7 +1005,7 @@
   "request": "Demander",
   "requestToken": "Demander {{token}}",
   "requestSent": "Demande envoyée",
-  "from": "de",
+  "from": "De",
   "verificationMessage": "Vous avez payé des frais pour connecter votre compte. Bienvenue sur {{appName}}!",
   "receivedAmountFromCelo": "Vous avez reçu ce montant de la part du Faucet !",
   "dollarsSent": "Dollars envoyés",
@@ -1902,6 +1902,13 @@
       "addFundsButton": "Ajouter des fonds"
     }
   },
+  "swapUnfavorableRateBottomSheet": {
+    "title": "Êtes-vous sûr ?",
+    "description": "Vous êtes sur le point de faire un échange très défavorable. Veuillez confirmer que vous souhaitez effectuer cet échange.",
+    "cancel": "Annuler",
+    "confirm": "Glisser pour échanger",
+    "confirmed": "Échange confirmé"
+  },
   "swapTransactionDetailPage": {
     "swapFrom": "Échanger de",
     "swapTo": "Échanger pour",
@@ -2636,11 +2643,18 @@
       "myPools": "Mes pools",
       "explore": "Découvrir Open"
     },
+    "withdrawConfirmation": {
+      "title": "Vérifier le retrait",
+      "rewardClaiming": "Demander une récompense",
+      "withdrawing": "Retrait",
+      "pool": "{{providerName}} Pool",
+      "yieldRate": "{{apy}}% taux de rendement est."
+    },
     "depositConfirmation": {
-      "title": "Dépôt de bilan",
+      "title": "Vérifier le dépôt",
       "depositing": "Dépôt",
-      "into": "Dans",
-      "pool": "{{providerName}} Piscine",
+      "into": "Vers",
+      "pool": "{{providerName}} Pool",
       "yieldRate": "{{apy}}% taux de rendement est.",
       "swapAndDeposit": "Échange et dépôt",
       "disclaimer": "En déposant des crypto-monnaies dans un pool {{providerName}}, vous acceptez les risques associés à l'utilisation de {{providerName}}. <0>Conditions Générales</0>",
@@ -2868,6 +2882,7 @@
   "reviewTransaction": {
     "title": "Révision Envoyer",
     "totalPlusFees": "Total plus frais",
+    "totalLessFees": "Total moins les frais",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Frais de réseau maximum",
@@ -2890,7 +2905,7 @@
   "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} -> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "Plus d'informations",
   "breakdown": "Répartition",
-  "gasSubsidized": "Les frais sont couverts pour une durée limitée",
+  "gasSubsidized": "Les frais sont pris en charge pour une durée limitée",
   "deposit": "Dépôt",
   "feeInfoBottomSheet": {
     "feesInfo_sameChain": "Les frais de réseau sont exigés par le réseau pour traiter la transaction.",
