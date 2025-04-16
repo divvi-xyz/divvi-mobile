@@ -2644,7 +2644,7 @@
     "withdrawConfirmation": {
       "title": "Xem lại thông tin rút tiền",
       "rewardClaiming": "Đang nhận tiền thưởng",
-      "withdrawing": "Withdrawing",
+      "withdrawing": "Đang rút tiền",
       "pool": "Quỹ {{providerName}}",
       "yieldRate": "{{apy}}% mức sinh lợi ước tính"
     },
