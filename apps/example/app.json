@@ -4,8 +4,9 @@
     // For more complex conditional configs, consider using app.config.js/ts instead.
     "name": "Divvi",
     "slug": "divvi",
-    // TODO: use an Divvi scheme
-    "scheme": "celo",
+    // Main scheme should be first (see usage in index.tsx)
+    // TODO: use a Divvi scheme
+    "scheme": ["celo", "wc"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
