@@ -6,6 +6,7 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { BuilderHooksEvents, DappShortcutsEvents } from 'src/analytics/Events'
 import { HooksEnablePreviewOrigin } from 'src/analytics/types'
 import { ErrorMessages } from 'src/app/ErrorMessages'
+import { isRegistrationTransaction } from 'src/divviProtocol/registerReferral'
 import i18n from 'src/i18n'
 import { currentLanguageSelector } from 'src/i18n/selectors'
 import { isBottomSheetVisible, navigateBack } from 'src/navigator/NavigationService'
@@ -324,7 +325,7 @@ export function* executeShortcutSaga({
       shortcut.networkId,
       // We can't really create standby transactions for shortcuts
       // since we don't have the necessary information
-      preparedTransactions.map(() => () => null)
+      preparedTransactions.filter((tx) => !isRegistrationTransaction(tx)).map(() => () => null)
     )
 
     yield* put(executeShortcutSuccess(id))
