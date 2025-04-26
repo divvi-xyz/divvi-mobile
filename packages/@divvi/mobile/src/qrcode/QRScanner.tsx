@@ -1,16 +1,26 @@
-import React, { useState } from 'react'
+import { CameraView, useCameraPermissions } from 'expo-camera'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { RNCamera } from 'react-native-camera'
+import {
+  Dimensions,
+  Keyboard,
+  Linking,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { useSafeAreaFrame, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Defs, Mask, Rect, Svg } from 'react-native-svg'
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import Modal from 'src/components/Modal'
 import TextButton from 'src/components/TextButton'
-import NotAuthorizedView from 'src/qrcode/NotAuthorizedView'
 import { QrCode } from 'src/send/types'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
+import variables from 'src/styles/variables'
 
 interface QRScannerProps {
   onQRCodeDetected: (qrCode: QrCode) => void
@@ -18,7 +28,6 @@ interface QRScannerProps {
 
 const SeeThroughOverlay = () => {
   const { width, height } = useSafeAreaFrame()
-
   const margin = 40
   const centerBoxSize = width - margin * 2
   const centerBoxBorderRadius = 8
@@ -49,10 +58,48 @@ const SeeThroughOverlay = () => {
   )
 }
 
+const PermissionDeniedView = () => {
+  const { t } = useTranslation()
+  const { width, height } = Dimensions.get('screen')
+
+  const openSettings = () => {
+    Linking.openSettings()
+  }
+
+  return (
+    <View
+      style={[
+        {
+          height,
+          width,
+        },
+        styles.permissionContainer,
+      ]}
+    >
+      <View style={styles.permissionsDeniedView}>
+        <Text style={styles.permissionText} testID="CameraPermissionDeniedText">
+          {t('cameraNotAuthorizedDescription')}
+        </Text>
+      </View>
+      <View>
+        <Button
+          testID="OpenSettingsButton"
+          text={t('cameraSettings')}
+          onPress={openSettings}
+          size={BtnSizes.FULL}
+          type={BtnTypes.SECONDARY}
+        />
+      </View>
+    </View>
+  )
+}
+
 export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
   const { t } = useTranslation()
   const inset = useSafeAreaInsets()
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { width, height } = Dimensions.get('screen')
+  const [permission, requestPermission] = useCameraPermissions()
+
   const isEmulator = DeviceInfo.useIsEmulator ? DeviceInfo.useIsEmulator().result : false
 
   /**
@@ -62,10 +109,17 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
   const [value, setValue] = useState('')
   const [displayEntryModal, setDisplayEntryModal] = useState(false)
 
-  const openModal = () => {
-    setDisplayEntryModal(true)
+  useEffect(() => {
+    if (!permission || !permission.granted) {
+      requestPermission()
+    }
+  }, [permission])
+
+  if (!permission || !permission.granted) {
+    return <PermissionDeniedView />
   }
 
+  const openModal = () => setDisplayEntryModal(true)
   const closeModal = () => {
     setDisplayEntryModal(false)
     setValue('')
@@ -94,19 +148,13 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
   )
 
   return (
-    <RNCamera
-      style={styles.camera}
-      type={RNCamera.Constants.Type.back}
-      onBarCodeRead={onQRCodeDetected}
-      barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-      flashMode={RNCamera.Constants.FlashMode.auto}
-      captureAudio={false}
-      autoFocus={RNCamera.Constants.AutoFocus.on}
-      // Passing null here since we want the default system message
-      // @ts-ignore
-      androidCameraPermissionOptions={null}
-      notAuthorizedView={<NotAuthorizedView />}
-      testID={'Camera'}
+    <CameraView
+      onBarcodeScanned={onQRCodeDetected}
+      barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+      style={{ height, width }}
+      facing="back"
+      mute={true} // Needs to be set otherwise microphone permission is requested
+      responsiveOrientationWhenOrientationLocked
     >
       <SeeThroughOverlay />
 
@@ -139,15 +187,11 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
           </TextButton>
         </View>
       </Modal>
-    </RNCamera>
+    </CameraView>
   )
 }
 
 const styles = StyleSheet.create({
-  camera: {
-    flex: 1,
-    overflow: 'hidden',
-  },
   infoText: {
     position: 'absolute',
     left: 9,
@@ -184,5 +228,19 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     color: colors.contentSecondary,
+  },
+  permissionContainer: {
+    flex: 1,
+    padding: variables.contentPadding,
+    backgroundColor: colors.backgroundSplash,
+  },
+  permissionsDeniedView: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  permissionText: {
+    ...typeScale.bodyMedium,
+    color: colors.contentTertiary,
+    textAlign: 'center',
   },
 })
