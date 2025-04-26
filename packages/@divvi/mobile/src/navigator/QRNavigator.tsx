@@ -71,8 +71,6 @@ function ScannerScene({ route }: ScannerSceneProps) {
   // There a special treatment for when we haven't asked the user for camera permission yet.
   // In that case we want to wait for the screen to be fully focused before enabling the camera so the
   // prompt doesn't show up in the middle of the slide animation.
-  // Indeed, enabling the camera directly triggers the permission prompt with the current version of
-  // react-native-camera.
   const enableCamera = isFocused || hasAskedCameraPermission || wasFocused
 
   const onQRCodeDetectedWrapper = (qrCode: QrCode) => {
