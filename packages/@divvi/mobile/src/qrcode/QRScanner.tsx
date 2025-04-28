@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   permissionContainer: {
     flex: 1,
     padding: variables.contentPadding,
-    backgroundColor: colors.backgroundSplash,
+    backgroundColor: colors.backgroundScrim,
   },
   permissionsDeniedView: {
     flexGrow: 1,
