@@ -6,6 +6,9 @@ import MockedNavigator from 'test/MockedNavigator'
 import { createMockStore } from 'test/utils'
 
 jest.mock('src/qrcode/StyledQRGen', () => jest.fn().mockReturnValue(''))
+jest.mock('expo-camera', () => ({
+  CameraView: 'CameraView',
+}))
 
 const mockStore = createMockStore({
   web3: {
