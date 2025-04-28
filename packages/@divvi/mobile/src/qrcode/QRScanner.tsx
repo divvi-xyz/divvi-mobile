@@ -63,7 +63,7 @@ const PermissionDeniedView = () => {
   const { width, height } = Dimensions.get('screen')
 
   const openSettings = () => {
-    Linking.openSettings()
+    void Linking.openSettings()
   }
 
   return (
@@ -100,7 +100,8 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
   const { width, height } = Dimensions.get('screen')
   const [permission, requestPermission] = useCameraPermissions()
 
-  const isEmulator = DeviceInfo.useIsEmulator ? DeviceInfo.useIsEmulator().result : false
+  const deviceInfo = DeviceInfo.useIsEmulator()
+  const isEmulator = deviceInfo?.result ?? false
 
   /**
    * Emulator only. When in the emulator we want to be able
@@ -111,7 +112,7 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
 
   useEffect(() => {
     if (!permission || !permission.granted) {
-      requestPermission()
+      void requestPermission()
     }
   }, [permission])
 
