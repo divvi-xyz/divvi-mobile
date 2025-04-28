@@ -100,8 +100,8 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
   const { width, height } = Dimensions.get('screen')
   const [permission, requestPermission] = useCameraPermissions()
 
-  const deviceInfo = DeviceInfo.useIsEmulator()
-  const isEmulator = deviceInfo?.result ?? false
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const isEmulator = DeviceInfo.useIsEmulator ? DeviceInfo.useIsEmulator().result : false
 
   /**
    * Emulator only. When in the emulator we want to be able
