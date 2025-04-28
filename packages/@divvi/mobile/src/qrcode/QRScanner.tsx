@@ -156,6 +156,7 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
       facing="back"
       mute={true} // Needs to be set otherwise microphone permission is requested
       responsiveOrientationWhenOrientationLocked
+      testID="Camera"
     >
       <SeeThroughOverlay />
 
