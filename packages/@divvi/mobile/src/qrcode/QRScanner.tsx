@@ -97,7 +97,6 @@ const PermissionDeniedView = () => {
 export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
   const { t } = useTranslation()
   const inset = useSafeAreaInsets()
-  const { width, height } = Dimensions.get('screen')
   const [permission, requestPermission] = useCameraPermissions()
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -149,15 +148,16 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
   )
 
   return (
-    <CameraView
-      onBarcodeScanned={onQRCodeDetected}
-      barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-      style={{ height, width }}
-      facing="back"
-      mute={true} // Needs to be set otherwise microphone permission is requested
-      responsiveOrientationWhenOrientationLocked
-      testID="Camera"
-    >
+    <View>
+      <CameraView
+        onBarcodeScanned={onQRCodeDetected}
+        barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+        style={StyleSheet.absoluteFillObject}
+        facing="back"
+        mute={true} // Needs to be set otherwise microphone permission is requested
+        responsiveOrientationWhenOrientationLocked
+        testID="Camera"
+      />
       <SeeThroughOverlay />
 
       <View>
@@ -189,7 +189,7 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
           </TextButton>
         </View>
       </Modal>
-    </CameraView>
+    </View>
   )
 }
 
