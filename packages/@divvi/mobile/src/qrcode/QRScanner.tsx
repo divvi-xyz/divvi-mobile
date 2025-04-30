@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
-import { useSafeAreaFrame, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Defs, Mask, Rect, Svg } from 'react-native-svg'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import Modal from 'src/components/Modal'
@@ -27,7 +27,7 @@ interface QRScannerProps {
 }
 
 const SeeThroughOverlay = () => {
-  const { width, height } = useSafeAreaFrame()
+  const { width, height } = Dimensions.get('screen')
   const margin = 40
   const centerBoxSize = width - margin * 2
   const centerBoxBorderRadius = 8
@@ -38,44 +38,36 @@ const SeeThroughOverlay = () => {
   // Node that the Mask component is using hard coded color values solely to
   // create the "cutout" effect.
   return (
-    <Svg height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
-      <Defs>
-        <Mask id="mask" x="0" y="0" height="100%" width="100%">
-          <Rect height="100%" width="100%" fill="#FFFFFF" />
-          <Rect
-            x={margin}
-            y={(height - centerBoxSize) / 2}
-            rx={centerBoxBorderRadius}
-            ry={centerBoxBorderRadius}
-            width={centerBoxSize}
-            height={centerBoxSize}
-            fill="#000000"
-          />
-        </Mask>
-      </Defs>
-      <Rect height="100%" width="100%" fill={`${colors.backgroundScrim}80`} mask="url(#mask)" />
-    </Svg>
+    <View style={{ width, height }}>
+      <Svg height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
+        <Defs>
+          <Mask id="mask" x="0" y="0" height="100%" width="100%">
+            <Rect height="100%" width="100%" fill="#FFFFFF" />
+            <Rect
+              x={margin}
+              y={(height - centerBoxSize) / 2}
+              rx={centerBoxBorderRadius}
+              ry={centerBoxBorderRadius}
+              width={centerBoxSize}
+              height={centerBoxSize}
+              fill="#000000"
+            />
+          </Mask>
+        </Defs>
+        <Rect height="100%" width="100%" fill={`${colors.backgroundScrim}80`} mask="url(#mask)" />
+      </Svg>
+    </View>
   )
 }
 
 const PermissionDeniedView = () => {
   const { t } = useTranslation()
-  const { width, height } = Dimensions.get('screen')
-
   const openSettings = () => {
     void Linking.openSettings()
   }
 
   return (
-    <View
-      style={[
-        {
-          height,
-          width,
-        },
-        styles.permissionContainer,
-      ]}
-    >
+    <View style={[StyleSheet.absoluteFillObject, styles.permissionContainer]}>
       <View style={styles.permissionsDeniedView}>
         <Text style={styles.permissionText} testID="CameraPermissionDeniedText">
           {t('cameraNotAuthorizedDescription')}
