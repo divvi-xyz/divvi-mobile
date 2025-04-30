@@ -46,7 +46,7 @@ describe('Given QR Scanner', () => {
 
     it('Then should be able to handle Celo pay QR', async () => {
       // Use instead of waitForElementById as the element is not visible behind opacity overlay
-      await waitForElementById('CameraScanInfo', { tap: true })
+      await element(by.text('Center code in the box above')).tap()
       await waitForElementById('ManualInput')
       await element(by.id('ManualInput')).replaceText(
         'celo://wallet/pay?address=0xe5F5363e31351C38ac82DBAdeaD91Fd5a7B08846'
@@ -61,7 +61,7 @@ describe('Given QR Scanner', () => {
 
     it('Then should handle address only QR', async () => {
       // Use instead of waitForElementById as the element is not visible behind opacity overlay
-      await waitForElementById('CameraScanInfo', { tap: true })
+      await element(by.text('Center code in the box above')).tap()
       await waitForElementById('ManualInput')
       await element(by.id('ManualInput')).replaceText('0xe5F5363e31351C38ac82DBAdeaD91Fd5a7B08846')
       await waitForElementById('ManualSubmit')
