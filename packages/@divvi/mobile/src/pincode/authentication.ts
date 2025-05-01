@@ -412,13 +412,3 @@ export async function ensureCorrectPassword(
     return false
   }
 }
-
-export async function removeAccountLocally(account: string) {
-  clearPasswordCaches()
-  return Promise.all([
-    removeStoredItem(STORAGE_KEYS.PEPPER),
-    removeStoredItem(passwordHashStorageKey(account)),
-    removeStoredItem(STORAGE_KEYS.PIN),
-    removeStoredItem(STORAGE_KEYS.SIGNED_MESSAGE),
-  ])
-}
