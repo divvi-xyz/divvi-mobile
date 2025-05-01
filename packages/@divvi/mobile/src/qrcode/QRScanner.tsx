@@ -5,6 +5,7 @@ import {
   Dimensions,
   Keyboard,
   Linking,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -20,6 +21,7 @@ import TextButton from 'src/components/TextButton'
 import { QrCode } from 'src/send/types'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
+import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
 
 interface QRScannerProps {
@@ -73,7 +75,7 @@ const PermissionDeniedView = () => {
           {t('cameraNotAuthorizedDescription')}
         </Text>
       </View>
-      <View>
+      <View style={styles.iosButtonWrapper}>
         <Button
           testID="OpenSettingsButton"
           text={t('cameraSettings')}
@@ -237,4 +239,11 @@ const styles = StyleSheet.create({
     color: colors.contentTertiary,
     textAlign: 'center',
   },
+  // iOS specific styles otherwise button is pinned to bottom of screen
+  iosButtonWrapper: Platform.select({
+    ios: {
+      marginBottom: Spacing.Large32,
+    },
+    default: {},
+  }),
 })
