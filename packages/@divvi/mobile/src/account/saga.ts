@@ -1,7 +1,12 @@
 import firebase from '@react-native-firebase/app'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
-import { Actions, initializeAccountSuccess, saveSignedMessage } from 'src/account/actions'
+import {
+  Actions,
+  ClearStoredAccountAction,
+  initializeAccountSuccess,
+  saveSignedMessage,
+} from 'src/account/actions'
 import { choseToRestoreAccountSelector } from 'src/account/selectors'
 import { updateAccountRegistration } from 'src/account/updateAccountRegistration'
 import { showError } from 'src/alert/actions'
@@ -10,6 +15,7 @@ import { OnboardingEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { phoneNumberVerificationCompleted } from 'src/app/actions'
 import { inviterAddressSelector } from 'src/app/selectors'
+import { clearStoredMnemonic } from 'src/backup/utils'
 import { FIREBASE_ENABLED } from 'src/config'
 import { firebaseSignOut } from 'src/firebase/firebase'
 import { currentLanguageSelector } from 'src/i18n/selectors'
@@ -20,8 +26,11 @@ import {
   Actions as OnboardingActions,
   UpdateStatsigAndNavigateAction,
 } from 'src/onboarding/actions'
-import { clearPasswordCaches } from 'src/pincode/PasswordCache'
-import { retrieveSignedMessage, storeSignedMessage } from 'src/pincode/authentication'
+import {
+  removeAccountLocally,
+  retrieveSignedMessage,
+  storeSignedMessage,
+} from 'src/pincode/authentication'
 import { persistor } from 'src/redux/store'
 import { patchUpdateStatsigUser } from 'src/statsig'
 import { clearStoredItems } from 'src/storage/keychain'
@@ -40,10 +49,10 @@ const TAG = 'account/saga'
 
 export const SENTINEL_MIGRATE_COMMENT = '__CELO_MIGRATE_TX__'
 
-function* clearStoredAccountSaga() {
+function* clearStoredAccountSaga({ account }: ClearStoredAccountAction) {
   try {
-    yield* call(clearPasswordCaches)
-    yield* call(clearStoredItems)
+    yield* call(removeAccountLocally, account)
+    yield* call(clearStoredMnemonic)
     yield* call(AppAnalytics.reset)
     yield* call(clearStoredAccounts)
 
@@ -234,8 +243,8 @@ export function* watchUpdateStatsigAndNavigate() {
 }
 
 export function* watchClearStoredAccount() {
-  yield* take(Actions.CLEAR_STORED_ACCOUNT)
-  yield* call(clearStoredAccountSaga)
+  const action = (yield* take(Actions.CLEAR_STORED_ACCOUNT)) as ClearStoredAccountAction
+  yield* call(clearStoredAccountSaga, action)
 }
 
 export function* watchInitializeAccount() {

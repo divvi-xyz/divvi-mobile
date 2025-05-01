@@ -5,7 +5,7 @@ import { OnboardingEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { getPassword } from 'src/pincode/authentication'
 import { useDispatch, useSelector } from 'src/redux/hooks'
-import { retrieveStoredItem, storeItem } from 'src/storage/keychain'
+import { removeStoredItem, retrieveStoredItem, storeItem } from 'src/storage/keychain'
 import Logger from 'src/utils/Logger'
 import { CELO_DERIVATION_PATH_BASE, generateKeys } from 'src/utils/account'
 import { aesDecrypt, aesEncrypt } from 'src/utils/aes'
@@ -29,6 +29,10 @@ export async function storeMnemonic(mnemonic: string, account: string | null, pa
   const passwordToUse = password ?? (await getPassword(account))
   const encryptedMnemonic = await encryptMnemonic(mnemonic, passwordToUse)
   return storeItem({ key: MNEMONIC_STORAGE_KEY, value: encryptedMnemonic })
+}
+
+export async function clearStoredMnemonic() {
+  await removeStoredItem(MNEMONIC_STORAGE_KEY)
 }
 
 export async function getStoredMnemonic(
