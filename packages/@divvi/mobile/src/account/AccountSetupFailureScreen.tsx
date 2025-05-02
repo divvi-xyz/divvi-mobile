@@ -1,13 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import RNExitApp from 'react-native-exit-app'
 import AccountErrorScreen from 'src/account/AccountErrorScreen'
 import { noHeaderGestureDisabled } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+import { updateLastOnboardingScreen } from 'src/onboarding/actions'
+import { useDispatch } from 'src/redux/hooks'
 
 function AccounSetupFailureScreen() {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(updateLastOnboardingScreen(Screens.Welcome)) // reset onboarding flow
+  }, [])
 
   const onPressCloseApp = () => {
     RNExitApp.exitApp()
