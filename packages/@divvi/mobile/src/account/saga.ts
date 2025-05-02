@@ -256,7 +256,7 @@ export function* watchSignedMessage() {
   yield* call(handleUpdateAccountRegistration)
 }
 
-export function* watchOnboardingStart() {
+function* watchOnboardingStart() {
   yield* takeLeading(
     [Actions.CHOOSE_CREATE_ACCOUNT, Actions.CHOOSE_RESTORE_ACCOUNT],
     safely(clearStoredItemsSaga)
