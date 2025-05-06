@@ -1,17 +1,6 @@
-export const registryContractAbi = [
+export const divviRegistryContractAbi = [
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        internalType: 'uint48',
-        name: 'transferDelay',
-        type: 'uint48',
-      },
-    ],
+    inputs: [],
     stateMutability: 'nonpayable',
     type: 'constructor',
   },
@@ -66,17 +55,92 @@ export const registryContractAbi = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'protocolId',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'bytes32',
-        name: 'referrerId',
-        type: 'bytes32',
+        internalType: 'address',
+        name: 'target',
+        type: 'address',
       },
     ],
-    name: 'ReferrerNotRegistered',
+    name: 'AddressEmptyCode',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'provider',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'consumer',
+        type: 'address',
+      },
+    ],
+    name: 'AgreementAlreadyExists',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'implementation',
+        type: 'address',
+      },
+    ],
+    name: 'ERC1967InvalidImplementation',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ERC1967NonPayable',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'entity',
+        type: 'address',
+      },
+    ],
+    name: 'EntityAlreadyExists',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'entity',
+        type: 'address',
+      },
+    ],
+    name: 'EntityDoesNotExist',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'FailedCall',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidInitialization',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'NotInitializing',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'provider',
+        type: 'address',
+      },
+    ],
+    name: 'ProviderRequiresApproval',
     type: 'error',
   },
   {
@@ -96,24 +160,19 @@ export const registryContractAbi = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'UUPSUnauthorizedCallContext',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'bytes32',
-        name: 'protocolId',
+        name: 'slot',
         type: 'bytes32',
-      },
-      {
-        internalType: 'bytes32',
-        name: 'referrerId',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'userAddress',
-        type: 'address',
       },
     ],
-    name: 'UserAlreadyRegistered',
+    name: 'UUPSUnsupportedProxiableUUID',
     type: 'error',
   },
   {
@@ -170,22 +229,47 @@ export const registryContractAbi = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'protocolId',
-        type: 'bytes32',
+        indexed: false,
+        internalType: 'uint64',
+        name: 'version',
+        type: 'uint64',
       },
+    ],
+    name: 'Initialized',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         indexed: true,
-        internalType: 'bytes32',
-        name: 'referrerId',
-        type: 'bytes32',
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
       },
       {
         indexed: true,
         internalType: 'address',
-        name: 'userAddress',
+        name: 'rewardsProvider',
         type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'rewardsConsumer',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'chainId',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'txHash',
+        type: 'bytes32',
       },
     ],
     name: 'ReferralRegistered',
@@ -196,30 +280,99 @@ export const registryContractAbi = [
     inputs: [
       {
         indexed: true,
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'rewardsProvider',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'rewardsConsumer',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'chainId',
+        type: 'string',
+      },
+      {
+        indexed: false,
         internalType: 'bytes32',
-        name: 'referrerId',
+        name: 'txHash',
         type: 'bytes32',
       },
       {
         indexed: false,
-        internalType: 'bytes32[]',
-        name: 'protocolIds',
-        type: 'bytes32[]',
+        internalType: 'enum DivviRegistry.ReferralStatus',
+        name: 'status',
+        type: 'uint8',
       },
+    ],
+    name: 'ReferralSkipped',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
-        indexed: false,
-        internalType: 'uint256[]',
-        name: 'rewardRates',
-        type: 'uint256[]',
-      },
-      {
-        indexed: false,
+        indexed: true,
         internalType: 'address',
-        name: 'rewardAddress',
+        name: 'entity',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'bool',
+        name: 'requiresApproval',
+        type: 'bool',
+      },
+    ],
+    name: 'RequiresApprovalForRewardsAgreements',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'rewardsProvider',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'rewardsConsumer',
         type: 'address',
       },
     ],
-    name: 'ReferrerRegistered',
+    name: 'RewardsAgreementRegistered',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'entity',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'bool',
+        name: 'requiresApproval',
+        type: 'bool',
+      },
+    ],
+    name: 'RewardsEntityRegistered',
     type: 'event',
   },
   {
@@ -298,6 +451,19 @@ export const registryContractAbi = [
     type: 'event',
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'implementation',
+        type: 'address',
+      },
+    ],
+    name: 'Upgraded',
+    type: 'event',
+  },
+  {
     inputs: [],
     name: 'DEFAULT_ADMIN_ROLE',
     outputs: [
@@ -312,7 +478,73 @@ export const registryContractAbi = [
   },
   {
     inputs: [],
+    name: 'REFERRAL_REGISTRAR_ROLE',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'UPGRADE_INTERFACE_VERSION',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'acceptDefaultAdminTransfer',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'user',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'rewardsProvider',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'rewardsConsumer',
+            type: 'address',
+          },
+          {
+            internalType: 'bytes32',
+            name: 'txHash',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'string',
+            name: 'chainId',
+            type: 'string',
+          },
+        ],
+        internalType: 'struct DivviRegistry.ReferralData[]',
+        name: 'referrals',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'batchRegisterReferral',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -392,79 +624,22 @@ export const registryContractAbi = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'providerId',
-        type: 'bytes32',
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
       },
-    ],
-    name: 'getProtocols',
-    outputs: [
-      {
-        internalType: 'bytes32[]',
-        name: '',
-        type: 'bytes32[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'protocolId',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getReferrers',
-    outputs: [
-      {
-        internalType: 'bytes32[]',
-        name: '',
-        type: 'bytes32[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'referrerId',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getRewardAddress',
-    outputs: [
       {
         internalType: 'address',
-        name: '',
+        name: 'provider',
         type: 'address',
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'protocolId',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'bytes32',
-        name: 'referrerId',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getRewardRate',
+    name: 'getReferringConsumer',
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: 'address',
+        name: 'consumer',
+        type: 'address',
       },
     ],
     stateMutability: 'view',
@@ -493,35 +668,6 @@ export const registryContractAbi = [
     inputs: [
       {
         internalType: 'bytes32',
-        name: 'protocolId',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'bytes32',
-        name: 'referrerId',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getUsers',
-    outputs: [
-      {
-        internalType: 'address[]',
-        name: '',
-        type: 'address[]',
-      },
-      {
-        internalType: 'uint256[]',
-        name: '',
-        type: 'uint256[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
         name: 'role',
         type: 'bytes32',
       },
@@ -534,6 +680,30 @@ export const registryContractAbi = [
     name: 'grantRole',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'provider',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'consumer',
+        type: 'address',
+      },
+    ],
+    name: 'hasAgreement',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: 'exists',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -564,21 +734,58 @@ export const registryContractAbi = [
     inputs: [
       {
         internalType: 'address',
-        name: 'userAddress',
+        name: 'owner',
         type: 'address',
       },
       {
-        internalType: 'bytes32[]',
-        name: 'protocolIds',
-        type: 'bytes32[]',
+        internalType: 'uint48',
+        name: 'transferDelay',
+        type: 'uint48',
       },
     ],
-    name: 'isUserRegistered',
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'entity',
+        type: 'address',
+      },
+    ],
+    name: 'isEntityRegistered',
     outputs: [
       {
-        internalType: 'bool[]',
-        name: '',
-        type: 'bool[]',
+        internalType: 'bool',
+        name: 'registered',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'provider',
+        type: 'address',
+      },
+    ],
+    name: 'isUserReferredToProvider',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: 'isReferred',
+        type: 'bool',
       },
     ],
     stateMutability: 'view',
@@ -634,19 +841,27 @@ export const registryContractAbi = [
     type: 'function',
   },
   {
-    inputs: [
+    inputs: [],
+    name: 'proxiableUUID',
+    outputs: [
       {
         internalType: 'bytes32',
-        name: 'referrerId',
+        name: '',
         type: 'bytes32',
       },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
       {
-        internalType: 'bytes32[]',
-        name: 'protocolIds',
-        type: 'bytes32[]',
+        internalType: 'address',
+        name: 'rewardsProvider',
+        type: 'address',
       },
     ],
-    name: 'registerReferrals',
+    name: 'registerAgreementAsConsumer',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -654,27 +869,25 @@ export const registryContractAbi = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'referrerId',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'bytes32[]',
-        name: 'protocolIds',
-        type: 'bytes32[]',
-      },
-      {
-        internalType: 'uint256[]',
-        name: 'rewardRates',
-        type: 'uint256[]',
-      },
-      {
         internalType: 'address',
-        name: 'rewardAddress',
+        name: 'rewardsConsumer',
         type: 'address',
       },
     ],
-    name: 'registerReferrer',
+    name: 'registerAgreementAsProvider',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bool',
+        name: 'requiresApproval',
+        type: 'bool',
+      },
+    ],
+    name: 'registerRewardsEntity',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -695,6 +908,25 @@ export const registryContractAbi = [
     name: 'renounceRole',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'entity',
+        type: 'address',
+      },
+    ],
+    name: 'requiresApprovalForAgreements',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: 'requiresApproval',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -725,6 +957,19 @@ export const registryContractAbi = [
   {
     inputs: [
       {
+        internalType: 'bool',
+        name: 'requiresApproval',
+        type: 'bool',
+      },
+    ],
+    name: 'setRequiresApprovalForRewardsAgreements',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'bytes4',
         name: 'interfaceId',
         type: 'bytes4',
@@ -741,4 +986,22 @@ export const registryContractAbi = [
     stateMutability: 'view',
     type: 'function',
   },
-] as const
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newImplementation',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes',
+        name: 'data',
+        type: 'bytes',
+      },
+    ],
+    name: 'upgradeToAndCall',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+]

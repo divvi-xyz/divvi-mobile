@@ -3556,6 +3556,21 @@
             ],
             "type": "string"
         },
+        "ReferralState": {
+            "additionalProperties": false,
+            "properties": {
+                "successfulReferrals": {
+                    "additionalProperties": {
+                        "type": "boolean"
+                    },
+                    "type": "object"
+                }
+            },
+            "required": [
+                "successfulReferrals"
+            ],
+            "type": "object"
+        },
         "RelayerTypes.ProtocolOptions": {
             "additionalProperties": false,
             "properties": {
@@ -4636,9 +4651,6 @@
                 "appState": {
                     "$ref": "#/definitions/AppState"
                 },
-                "divviRegistrations": {
-                    "$ref": "#/definitions/{\"celo-mainnet\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"celo-alfajores\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"ethereum-mainnet\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"ethereum-sepolia\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"arbitrum-one\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"arbitrum-sepolia\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"op-mainnet\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"op-sepolia\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"polygon-pos-mainnet\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"polygon-pos-amoy\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"base-mainnet\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"base-sepolia\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;}"
-                },
                 "googleMobileServicesAvailable": {
                     "type": "boolean"
                 },
@@ -4719,7 +4731,6 @@
                 "activeScreen",
                 "analyticsEnabled",
                 "appState",
-                "divviRegistrations",
                 "hapticFeedbackEnabled",
                 "hideBalances",
                 "inAppReviewLastInteractionTimestamp",
@@ -6686,216 +6697,6 @@
             ],
             "type": "object"
         },
-        "{\"celo-mainnet\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"celo-alfajores\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"ethereum-mainnet\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"ethereum-sepolia\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"arbitrum-one\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"arbitrum-sepolia\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"op-mainnet\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"op-sepolia\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"polygon-pos-mainnet\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"polygon-pos-amoy\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"base-mainnet\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;\"base-sepolia\"?:(\"aave\"|\"aerodrome\"|\"allbridge\"|\"beefy\"|\"celo\"|\"fonbnk\"|\"mento\"|\"somm\"|\"vana\")[]|undefined;}": {
-            "additionalProperties": false,
-            "properties": {
-                "arbitrum-one": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "arbitrum-sepolia": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "base-mainnet": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "base-sepolia": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "celo-alfajores": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "celo-mainnet": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "ethereum-mainnet": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "ethereum-sepolia": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "op-mainnet": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "op-sepolia": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "polygon-pos-amoy": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "polygon-pos-mainnet": {
-                    "items": {
-                        "enum": [
-                            "aave",
-                            "aerodrome",
-                            "allbridge",
-                            "beefy",
-                            "celo",
-                            "fonbnk",
-                            "mento",
-                            "somm",
-                            "vana"
-                        ],
-                        "type": "string"
-                    },
-                    "type": "array"
-                }
-            },
-            "type": "object"
-        },
         "{swap?:boolean|undefined;\"create-wallet\"?:boolean|undefined;\"create-live-link\"?:boolean|undefined;\"deposit-earn\"?:boolean|undefined;}": {
             "additionalProperties": false,
             "properties": {
@@ -6997,6 +6798,9 @@
         "dapps": {
             "$ref": "#/definitions/State_16"
         },
+        "divviProtocol": {
+            "$ref": "#/definitions/ReferralState"
+        },
         "earn": {
             "$ref": "#/definitions/State_25"
         },
@@ -7093,6 +6897,7 @@
         "alert",
         "app",
         "dapps",
+        "divviProtocol",
         "earn",
         "fiatConnect",
         "fiatExchanges",

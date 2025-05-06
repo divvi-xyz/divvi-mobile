@@ -1,7 +1,4 @@
-import {
-  isRegistrationTransaction,
-  sendPreparedRegistrationTransaction,
-} from 'src/divviProtocol/registerReferral'
+import { submitDivviReferralIfNeeded } from 'src/divviProtocol/register'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { CANCELLED_PIN_INPUT } from 'src/pincode/authentication'
@@ -57,13 +54,8 @@ export function* sendPreparedTransactions(
   }
 
   const preparedTransactions: TransactionRequest[] = []
-  let preparedRegistrationTransaction: TransactionRequest | null = null
   getPreparedTransactions(serializablePreparedTransactions).forEach((tx) => {
-    if (isRegistrationTransaction(tx)) {
-      preparedRegistrationTransaction = tx
-    } else {
-      preparedTransactions.push(tx)
-    }
+    preparedTransactions.push(tx)
   })
 
   if (preparedTransactions.length !== createBaseStandbyTransactions.length) {
@@ -90,18 +82,7 @@ export function* sendPreparedTransactions(
     blockTag: 'pending',
   })
 
-  // if there is a registration transaction, send it first so that the
-  // subsequent transactions can have the referral attribution
-  if (preparedRegistrationTransaction) {
-    yield* call(
-      sendPreparedRegistrationTransaction,
-      preparedRegistrationTransaction,
-      networkId,
-      wallet,
-      nonce++
-    )
-  }
-
+  const chainId = yield* call([wallet, 'getChainId'])
   const txHashes: Hash[] = []
   for (let i = 0; i < preparedTransactions.length; i++) {
     const preparedTransaction = preparedTransactions[i]
@@ -120,6 +101,15 @@ export function* sendPreparedTransactions(
       'Successfully sent transaction to the network',
       hash
     )
+
+    if (i === 0) {
+      yield* call(submitDivviReferralIfNeeded, {
+        walletAddress: wallet.account.address,
+        txHash: hash,
+        chainId,
+        transactionRequest: preparedTransaction,
+      })
+    }
 
     const tokensById = yield* select(tokensByIdSelector)
     const feeCurrencyId = getFeeCurrencyToken([preparedTransaction], networkId, tokensById)?.tokenId

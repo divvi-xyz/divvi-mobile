@@ -53,5 +53,3 @@ export const showNotificationSpotlightSelector = (state: RootState) =>
 export const hideWalletBalancesSelector = (state: RootState) => state.app.hideBalances
 
 export const pendingDeepLinkSelector = (state: RootState) => state.app.pendingDeepLinks[0] ?? null
-
-export const divviRegistrationsSelector = (state: RootState) => state.app.divviRegistrations

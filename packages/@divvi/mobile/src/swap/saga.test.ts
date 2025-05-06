@@ -39,6 +39,9 @@ import { Address, decodeFunctionData } from 'viem'
 import { getTransactionCount } from 'viem/actions'
 
 jest.mock('src/statsig')
+jest.mock('src/divviProtocol/register', () => ({
+  submitDivviReferralIfNeeded: jest.fn().mockResolvedValue(true),
+}))
 
 const loggerErrorSpy = jest.spyOn(Logger, 'error')
 
@@ -278,6 +281,7 @@ describe(swapSubmitSaga, () => {
     sendRawTransaction: jest.fn(async () => {
       return `0x${++sendCallCount}`
     }),
+    getChainId: jest.fn(() => NetworkId['celo-alfajores']),
   } as any as ViemWallet
 
   const mockSwapTxReceipt = {

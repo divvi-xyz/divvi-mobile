@@ -75,10 +75,11 @@ const App = createApp({
       </>
     ),
   },
-  divviProtocol: {
-    protocolIds: ['somm'],
-    referrerId: 'ExampleApp',
-  },
+  // Register at https://app.divvi.xyz/
+  // divviProtocol: {
+  //   divviId: '',
+  //   campaignIds: [''],
+  // },
 
   // Special cases to cover experimental features with e2e tests
   ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
