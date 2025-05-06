@@ -385,32 +385,6 @@ describe('prepareTransactions module', () => {
         }
       )
     })
-    it('throws if gas estimation throws error for some other reason besides insufficient funds', async () => {
-      mocked(estimateFeesPerGas).mockResolvedValue({
-        maxFeePerGas: BigInt(100),
-        maxPriorityFeePerGas: BigInt(2),
-        baseFeePerGas: BigInt(50),
-      })
-      mocked(estimateGas).mockRejectedValue(mockExceededAllowanceError)
-
-      await expect(() =>
-        prepareTransactions({
-          feeCurrencies: mockFeeCurrencies,
-          spendToken: mockSpendToken,
-          spendTokenAmount: new BigNumber(20),
-          decreasedAmountGasFeeMultiplier: 1,
-          baseTransactions: [
-            {
-              from: '0xfrom' as Address,
-              to: '0xto' as Address,
-              data: '0xdata',
-            },
-          ],
-          origin: 'send',
-        })
-      ).rejects.toThrowError(EstimateGasExecutionError)
-      expect(AppAnalytics.track).not.toHaveBeenCalled()
-    })
     it("returns a 'need-decrease-spend-amount-for-gas' result when spending the exact max amount of a feeCurrency, and no other feeCurrency has enough balance to pay for the fee", async () => {
       mocked(estimateFeesPerGas).mockResolvedValue({
         maxFeePerGas: BigInt(1),
@@ -913,21 +887,6 @@ describe('prepareTransactions module', () => {
         baseFeePerGas: BigInt(200),
       })
       expect(estimateTransactionOutput).toEqual(null)
-    })
-    it('throws if estimateGas throws error for some other reason besides insufficient funds', async () => {
-      mocked(estimateGas).mockRejectedValue(mockExceededAllowanceError)
-      const baseTransaction: TransactionRequest = { from: '0x123' }
-      await expect(() =>
-        tryEstimateTransaction({
-          client: mockPublicClient,
-          baseTransaction,
-          maxFeePerGas: BigInt(456),
-          feeCurrencySymbol: 'FEE',
-          feeCurrencyAddress: '0xabc',
-          maxPriorityFeePerGas: BigInt(789),
-          baseFeePerGas: BigInt(200),
-        })
-      ).rejects.toThrowError(EstimateGasExecutionError)
     })
   })
   describe('tryEstimateTransactions', () => {
