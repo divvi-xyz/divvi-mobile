@@ -36,6 +36,17 @@ export async function getDivviData({ walletAddress }: { walletAddress: Address }
   return getDataSuffix({ consumer, providers })
 }
 
+/**
+ * Submits a referral to the Divvi protocol if the transaction data ends with the appropriate suffix.
+ * This function handles the referral submission process, including retry logic for failed submissions
+ * and updating the Redux store with successful referrals.
+ *
+ * @param {Object} params - The parameters for submitting a referral
+ * @param {Address} params.walletAddress - The wallet address of the user
+ * @param {Address} params.txHash - The transaction hash
+ * @param {number} params.chainId - The chain ID for the transaction
+ * @param {TransactionRequest} params.transactionRequest - The transaction request to check for referral suffix
+ */
 export async function submitDivviReferralIfNeeded({
   walletAddress,
   txHash,
