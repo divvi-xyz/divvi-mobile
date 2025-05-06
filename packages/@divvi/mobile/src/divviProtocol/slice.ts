@@ -36,10 +36,6 @@ const divviProtocolSlice = createSlice({
 
 export const { markReferralSuccessful } = divviProtocolSlice.actions
 
-// Selectors
-export const selectSuccessfulReferrals = (state: RootState) =>
-  state.divviProtocol.successfulReferrals
-
 export const selectIsReferralSuccessful = (
   state: RootState,
   divviId: string,
