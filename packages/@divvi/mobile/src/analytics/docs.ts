@@ -215,6 +215,7 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   [OnboardingEvents.protect_wallet_complete]: ``,
   [OnboardingEvents.link_phone_number]: `User chooses to link phone number for CPV after recovery flow`,
   [OnboardingEvents.link_phone_number_later]: `User chooses not to link phone number for CPV after recovery flow`,
+  [OnboardingEvents.stale_keychain_items_cleared]: `Stale keychain items where found during onboarding and cleared`,
 
   // Events emitted in the CPV flow
   [PhoneVerificationEvents.phone_verification_skip_confirm]: `when skip is confirmed from the dialog in the phone number input screen`,

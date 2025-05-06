@@ -92,7 +92,7 @@ export async function listStoredItems() {
   }
 }
 
-export async function clearStoredItems() {
+export async function clearStoredItems(): Promise<string[]> {
   const items = await listStoredItems()
   const promises = items.map((item) => removeStoredItem(item))
   const results = await Promise.allSettled(promises)
@@ -102,4 +102,6 @@ export async function clearStoredItems() {
       Logger.error(TAG, `Failed to remove stored item: ${items[index]}`, result.reason)
     }
   })
+
+  return items
 }

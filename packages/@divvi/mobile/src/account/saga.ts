@@ -102,7 +102,11 @@ export function* initializeAccountSaga() {
 export function* clearStoredItemsSaga() {
   Logger.debug(TAG + '@clearKeychainItems', 'Clearing keychain items')
   try {
-    yield* call(clearStoredItems)
+    const staleItems = yield* call(clearStoredItems)
+    yield* call([AppAnalytics, 'track'], OnboardingEvents.stale_keychain_items_cleared, {
+      staleItems,
+      staleItemsCount: staleItems.length,
+    })
   } catch (err) {
     const error = ensureError(err)
     Logger.error(TAG + '@clearKeychainItems', 'Failed to clear keychain items', error)

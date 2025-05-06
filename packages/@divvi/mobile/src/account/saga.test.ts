@@ -218,10 +218,15 @@ describe('initializeAccount', () => {
 })
 
 describe('clearStoredItemsSaga', () => {
-  it('should call clearStoredItems', async () => {
+  it('should call clearStoredItems and track analytics event', async () => {
+    const mockStaleItems = ['item1', 'item2']
     await expectSaga(clearStoredItemsSaga)
-      .provide([[call(clearStoredItems), undefined]])
+      .provide([[call(clearStoredItems), mockStaleItems]])
       .call(clearStoredItems)
+      .call([AppAnalytics, 'track'], OnboardingEvents.stale_keychain_items_cleared, {
+        staleItems: mockStaleItems,
+        staleItemsCount: mockStaleItems.length,
+      })
       .run()
   })
 
