@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:262](https://github.com/divvixyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L262)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:262](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L262)
 
 #### campaignIds?
 
