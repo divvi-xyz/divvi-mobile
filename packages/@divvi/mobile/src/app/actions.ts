@@ -168,7 +168,6 @@ export type ActionTypes =
   | NotificationSpotlightSeen
   | ToggleHideBalances
   | DeepLinkDeferred
-  | DivviRegistrationCompleted
 
 export const setAppState = (state: string): SetAppState => ({
   type: Actions.SET_APP_STATE,
