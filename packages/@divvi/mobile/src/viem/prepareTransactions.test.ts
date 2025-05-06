@@ -75,12 +75,6 @@ describe('prepareTransactions module', () => {
     }),
     {}
   )
-  const mockExceededAllowanceError = new EstimateGasExecutionError(
-    new ExecutionRevertedError({
-      cause: new BaseError("transfer value exceeded sender's allowance for spender"),
-    }),
-    {}
-  )
   const mockInvalidInputRpcError = new EstimateGasExecutionError(
     new InvalidInputRpcError(
       new BaseError('test mock', { details: 'gas required exceeds allowance' })
