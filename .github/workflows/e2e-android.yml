@@ -101,8 +101,6 @@ jobs:
       - name: Check E2E wallet balance
         run: NODE_OPTIONS='--unhandled-rejections=strict' yarn ts-node ./e2e/scripts/check-e2e-wallet-balance.ts
         working-directory: apps/example
-        env:
-          E2E_WALLET_PRIVATE_KEY: ${{ steps.google-secrets.outputs.E2E_WALLET_PRIVATE_KEY }}
       - name: Create Detox Build
         run: yarn run e2e:build:android-release
         working-directory: apps/example
