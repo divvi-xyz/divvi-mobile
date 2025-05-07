@@ -126,22 +126,20 @@ export async function wipe1155AssetsForAddress(address: string): Promise<void> {
       }).extend(publicActions)
 
       for (const { contractAddress, tokenId } of result) {
-        await client
-          .simulateContract({
-            address: contractAddress,
-            abi: erc1155Abi,
-            functionName: 'safeTransferFrom',
-            args: [
-              account.address,
-              BURN_ADDRESS,
-              BigInt(tokenId),
-              BigInt(1), // amount
-              '0x', // empty data
-            ],
-          })
-          .then(({ request }) => client.writeContract(request))
-          .then((hash) => client.waitForTransactionReceipt({ hash }))
-          .catch(console.error)
+        const { request } = await client.simulateContract({
+          address: contractAddress,
+          abi: erc1155Abi,
+          functionName: 'safeTransferFrom',
+          args: [
+            account.address,
+            BURN_ADDRESS,
+            BigInt(tokenId),
+            BigInt(1), // amount
+            '0x', // empty data
+          ],
+        })
+        const hash = await client.writeContract(request)
+        await client.waitForTransactionReceipt({ hash })
       }
     } catch (error) {
       console.error(`Error wiping NFTs for ${networkId}:`, error)
