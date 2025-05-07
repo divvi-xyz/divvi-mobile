@@ -115,6 +115,10 @@ export async function wipe1155AssetsForAddress(address: string): Promise<void> {
         result: { contractAddress: Hex; tokenId: string }[]
       }
 
+      if (result.length) {
+        console.log(`Processing ${result.length} ERC-1155 NFTs for ${networkId}`)
+      }
+
       const client = createWalletClient({
         account,
         chain,
@@ -138,10 +142,6 @@ export async function wipe1155AssetsForAddress(address: string): Promise<void> {
           .then(({ request }) => client.writeContract(request))
           .then((hash) => client.waitForTransactionReceipt({ hash }))
           .catch(console.error)
-      }
-
-      if (result.length) {
-        console.log(`Wiped ${result.length} ERC-1155 NFTs for ${networkId}`)
       }
     } catch (error) {
       console.error(`Error wiping NFTs for ${networkId}:`, error)
