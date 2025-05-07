@@ -8,6 +8,9 @@ on:
         default: 'warning'
       tags:
         description: 'E2E Wipe NFTs'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   wipe-nfts:
