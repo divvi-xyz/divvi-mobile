@@ -256,12 +256,12 @@ function _getStepInfo({ firstScreenInStep, navigator, dispatch, props }: GetStep
         origin: KeylessBackupOrigin.Onboarding,
       })
     } else {
-      dispatch(initializeAccount())
       if (skipProtectWallet) {
         navigateToPhoneVerificationOrFinish()
       } else {
         wrapNavigate(Screens.ProtectWallet)
       }
+      dispatch(initializeAccount())
     }
   }
 
