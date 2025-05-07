@@ -121,26 +121,25 @@ export async function wipe1155AssetsForAddress(address: string): Promise<void> {
         transport: http(),
       }).extend(publicActions)
 
-      await Promise.all(
-        result.map(({ contractAddress, tokenId }) =>
-          client
-            .simulateContract({
-              address: contractAddress,
-              abi: erc1155Abi,
-              functionName: 'safeTransferFrom',
-              args: [
-                account.address,
-                BURN_ADDRESS,
-                BigInt(tokenId),
-                BigInt(1), // amount
-                '0x', // empty data
-              ],
-            })
-            .then(({ request }) => client.writeContract(request))
-            .then((hash) => client.waitForTransactionReceipt({ hash }))
-            .catch(console.error)
-        )
-      )
+      for (const { contractAddress, tokenId } of result) {
+        await client
+          .simulateContract({
+            address: contractAddress,
+            abi: erc1155Abi,
+            functionName: 'safeTransferFrom',
+            args: [
+              account.address,
+              BURN_ADDRESS,
+              BigInt(tokenId),
+              BigInt(1), // amount
+              '0x', // empty data
+            ],
+          })
+          .then(({ request }) => client.writeContract(request))
+          .then((hash) => client.waitForTransactionReceipt({ hash }))
+          .catch(console.error)
+      }
+
       if (result.length) {
         console.log(`Wiped ${result.length} ERC-1155 NFTs for ${networkId}`)
       }
