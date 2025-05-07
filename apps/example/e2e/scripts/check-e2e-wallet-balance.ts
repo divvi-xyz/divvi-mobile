@@ -1,5 +1,5 @@
 import { E2E_TEST_FAUCET, E2E_TEST_WALLET, E2E_TEST_WALLET_SECURE_SEND } from './consts'
-import { checkBalance, getCeloTokensBalance } from './utils'
+import { checkBalance, getCeloTokensBalance, wipe1155AssetsForAddress } from './utils'
 ;(async () => {
   console.log(`E2E_TEST_WALLET: ${E2E_TEST_WALLET}`)
   console.table(await getCeloTokensBalance(E2E_TEST_WALLET))
@@ -11,4 +11,7 @@ import { checkBalance, getCeloTokensBalance } from './utils'
 
   console.log(`E2E_TEST_FACUET: ${E2E_TEST_FAUCET}`)
   console.table(await getCeloTokensBalance(E2E_TEST_FAUCET))
+
+  console.log('Wiping 1155 assets for E2E_TEST_WALLET')
+  await wipe1155AssetsForAddress(E2E_TEST_WALLET)
 })()
