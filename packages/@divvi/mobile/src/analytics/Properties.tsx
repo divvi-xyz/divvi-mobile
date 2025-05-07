@@ -410,6 +410,10 @@ interface OnboardingEventsProperties {
   [OnboardingEvents.protect_wallet_complete]: undefined
   [OnboardingEvents.link_phone_number]: undefined
   [OnboardingEvents.link_phone_number_later]: undefined
+  [OnboardingEvents.stale_keychain_items_cleared]: {
+    staleItems: string[]
+    staleItemsCount: number
+  }
 }
 
 interface PhoneVerificationEventsProperties {
