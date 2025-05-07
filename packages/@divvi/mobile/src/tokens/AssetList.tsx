@@ -273,6 +273,7 @@ export default function AssetList({
 
   return (
     <AnimatedSectionList
+      testID="Assets/SectionList"
       contentContainerStyle={[
         { minHeight: variables.height, opacity: listHeaderHeight > 0 ? 1 : 0 },
         activeTab === AssetTabType.Collectibles &&
