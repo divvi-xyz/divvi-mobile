@@ -11,6 +11,7 @@ const config: KnipConfig = {
         'e2e:build:android-release', // used in workflows to build the example app
         'typecheck', // used in workflows to typecheck the example app
         'build:plugin', // used in postinstall script
+        'ts-node', // used in workflows run by github actions from the example app dir
       ],
       ignoreDependencies: [
         '@actions/github', // used in workflows
