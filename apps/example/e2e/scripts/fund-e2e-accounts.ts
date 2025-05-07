@@ -249,7 +249,7 @@ async function wipe1155AssetsForAddress(address: string): Promise<void> {
                 account.address,
                 BURN_ADDRESS,
                 BigInt(tokenId),
-                1n, // amount
+                BigInt(1), // amount
                 '0x', // empty data
               ],
             })
