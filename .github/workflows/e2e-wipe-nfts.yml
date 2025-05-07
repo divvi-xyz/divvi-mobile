@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/yarn-install
       - name: Wipe NFTs
-        run: NODE_OPTIONS='--unhandled-rejections=strict' yarn ts-node ./apps/example/e2e/scripts/wipe-nfts.ts
+        run: NODE_OPTIONS='--unhandled-rejections=strict' yarn ts-node ./e2e/scripts/wipe-nfts.ts
         working-directory: apps/example
         env:
           E2E_WALLET_PRIVATE_KEY: ${{ steps.google-secrets.outputs.E2E_WALLET_PRIVATE_KEY }}
