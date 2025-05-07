@@ -101,8 +101,9 @@ export default Assets = () => {
 
     describe.each(tokens)('For $symbol', ({ symbol, tokenId, learnMore, actions, moreActions }) => {
       it('navigates to asset details on tapping asset', async () => {
-        await element(by.id('Assets/SectionList')).scrollTo('bottom')
-        await waitForElementById(`TokenBalanceItemTouchable/${tokenId}`, { tap: true })
+        const elementId = `TokenBalanceItemTouchable/${tokenId}`
+        await scrollIntoView(elementId, 'Assets/SectionList')
+        await element(by.id(elementId)).tap()
         await waitForElementById('TokenDetails/AssetValue')
       })
 
