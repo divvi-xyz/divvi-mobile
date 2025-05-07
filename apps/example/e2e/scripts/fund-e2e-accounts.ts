@@ -258,6 +258,9 @@ async function wipe1155AssetsForAddress(address: string): Promise<void> {
             .catch(console.error)
         )
       )
+      if (result.length) {
+        console.log(`Wiped ${result.length} ERC-1155 NFTs for ${networkId}`)
+      }
     } catch (error) {
       console.error(`Error wiping NFTs for ${networkId}:`, error)
     }
