@@ -201,6 +201,8 @@ export enum OnboardingEvents {
 
   link_phone_number = 'link_phone_number',
   link_phone_number_later = 'link_phone_number_later',
+
+  stale_keychain_items_cleared = 'stale_keychain_items_cleared',
 }
 
 // Events emitted in the CPV flow
