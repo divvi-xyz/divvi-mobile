@@ -1,0 +1,40 @@
+name: E2E Wipe NFTs
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+      tags:
+        description: 'E2E Wipe NFTs'
+
+jobs:
+  wipe-nfts:
+    name: wipe-nfts
+    runs-on: ubuntu-latest
+    env:
+      # `if` conditions can't directly access secrets, so we use a workaround
+      # See https://docs.github.com/en/actions/security-guides/encrypted-secrets#using-encrypted-secrets-in-a-workflow
+      SECRETS_AVAILABLE: ${{ secrets.SECRETS_AVAILABLE }}
+      BASH_ENV: ~/.profile
+    steps:
+      - uses: google-github-actions/auth@v2
+        if: ${{ env.SECRETS_AVAILABLE }}
+        with:
+          project_id: celo-mobile-mainnet
+          credentials_json: ${{ secrets.MAINNET_SERVICE_ACCOUNT_KEY }}
+      - name: Google Secrets
+        if: ${{ env.SECRETS_AVAILABLE }}
+        id: google-secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2.2.2
+        with:
+          secrets: |-
+            E2E_WALLET_PRIVATE_KEY:projects/1027349420744/secrets/E2E_WALLET_PRIVATE_KEY
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/yarn-install
+      - name: Wipe NFTs
+        run: NODE_OPTIONS='--unhandled-rejections=strict' yarn ts-node ./e2e/scripts/wipe-nfts.ts
+        working-directory: apps/example
+        env:
+          E2E_WALLET_PRIVATE_KEY: ${{ steps.google-secrets.outputs.E2E_WALLET_PRIVATE_KEY }}
