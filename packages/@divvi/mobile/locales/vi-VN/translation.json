@@ -1902,10 +1902,10 @@
   },
   "swapUnfavorableRateBottomSheet": {
     "title": "Bạn có chắc chắn không?",
-    "description": "You are about to make a very unfavorable swap. Please confirm that you would like to complete the swap.",
+    "description": "Bạn sắp thực hiện một giao dịch trao đổi rất bất lợi. Vui lòng xác nhận rằng bạn muốn hoàn tất giao dịch trao đổi này.",
     "cancel": "Hủy",
-    "confirm": "Slide to Swap",
-    "confirmed": "Swap Confirmed"
+    "confirm": "Trượt để trao đổi",
+    "confirmed": "Đã xác nhận giao dịch trao đổi"
   },
   "swapTransactionDetailPage": {
     "swapFrom": "Trao đổi từ",
@@ -2642,11 +2642,11 @@
       "explore": "Khám phá các quỹ đang mở"
     },
     "withdrawConfirmation": {
-      "title": "Review Withdraw",
-      "rewardClaiming": "Reward Claiming",
-      "withdrawing": "Withdrawing",
-      "pool": "{{providerName}} Pool",
-      "yieldRate": "{{apy}}% est. yield rate"
+      "title": "Xem lại thông tin rút tiền",
+      "rewardClaiming": "Đang nhận tiền thưởng",
+      "withdrawing": "Đang rút tiền",
+      "pool": "Quỹ {{providerName}}",
+      "yieldRate": "{{apy}}% mức sinh lợi ước tính"
     },
     "depositConfirmation": {
       "title": "Xem lại thông tin nạp tiền",
@@ -2879,8 +2879,8 @@
   },
   "reviewTransaction": {
     "title": "Xem lại thông tin gửi tiền",
-    "totalPlusFees": "Total Plus Fees",
-    "totalLessFees": "Total Less Fees",
+    "totalPlusFees": "Tổng phí tăng",
+    "totalLessFees": "Tổng phí giảm",
     "multipleTokensWithPlusSign": "≈ {{amount1}} {{symbol1}} + {{amount2}} {{symbol2}}"
   },
   "maxNetworkFee": "Phí mạng tối đa",
@@ -2903,7 +2903,7 @@
   "tokenIntoTokenAmount": "{{tokenAmountFrom}} {{tokenSymbolFrom}} –> {{tokenAmountTo}} {{tokenSymbolTo}}",
   "moreInformation": "Thông tin bổ sung",
   "breakdown": "Chi tiết",
-  "gasSubsidized": "Fees are covered for a limited time",
+  "gasSubsidized": "Miễn các khoản phí trong thời gian có hạn",
   "deposit": "Nạp tiền",
   "feeInfoBottomSheet": {
     "feesInfo_sameChain": "Phí mạng là khoản phí bắt buộc để mạng có thể xử lý giao dịch.",
@@ -2913,21 +2913,21 @@
   },
   "demoMode": {
     "confirmEnter": {
-      "title": "Demo Mode",
-      "info": "You are about to enter into demo mode. You are free to explore the features of the app without completing any transactions",
-      "cta": "Enter Demo"
+      "title": "Chế độ thử nghiệm",
+      "info": "Bạn sắp vào chế độ thử nghiệm. Bạn có thể thoải mái khám phá các tính năng của ứng dụng mà không cần hoàn tất bất kỳ giao dịch nào",
+      "cta": "Vào chế độ thử nghiệm"
     },
     "confirmExit": {
-      "title": "In Demo Mode",
-      "info": "You are currently viewing the app in demo mode",
-      "cta": "Exit Demo"
+      "title": "Trong chế độ thử nghiệm",
+      "info": "Bạn đang xem ứng dụng trong chế độ thử nghiệm",
+      "cta": "Thoát chế độ thử nghiệm"
     },
     "restrictedAccess": {
-      "title": "In Demo Mode",
-      "info": "You can't complete this action because you are viewing the app in demo mode",
-      "cta": "Exit Demo"
+      "title": "Trong chế độ thử nghiệm",
+      "info": "Bạn không thể hoàn tất hành động này vì bạn đang xem ứng dụng trong chế độ thử nghiệm",
+      "cta": "Thoát chế độ thử nghiệm"
     },
-    "inAppIndicatorLabel": "Demo Mode"
+    "inAppIndicatorLabel": "Chế độ thử nghiệm"
   },
   "celoDollarAmount_0": "&amp;lt;0&amp;gt;&amp;lt;/0&amp;gt; Đô la Celo"
 }
