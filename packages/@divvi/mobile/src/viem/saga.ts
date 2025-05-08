@@ -1,4 +1,4 @@
-import { submitDivviReferralIfNeeded } from 'src/divviProtocol/register'
+import { submitDivviReferralIfNeededSaga } from 'src/divviProtocol/saga'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { CANCELLED_PIN_INPUT } from 'src/pincode/authentication'
@@ -103,8 +103,7 @@ export function* sendPreparedTransactions(
     )
 
     if (i === 0) {
-      yield* call(submitDivviReferralIfNeeded, {
-        walletAddress: wallet.account.address,
+      yield* call(submitDivviReferralIfNeededSaga, {
         txHash: hash,
         chainId,
         transactionRequest: preparedTransaction,
