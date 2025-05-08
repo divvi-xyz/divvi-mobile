@@ -1,24 +1,35 @@
-import React, { useState } from 'react'
+import { CameraView, useCameraPermissions } from 'expo-camera'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { RNCamera } from 'react-native-camera'
+import {
+  Dimensions,
+  Keyboard,
+  Linking,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import DeviceInfo from 'react-native-device-info'
-import { useSafeAreaFrame, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Defs, Mask, Rect, Svg } from 'react-native-svg'
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import Modal from 'src/components/Modal'
 import TextButton from 'src/components/TextButton'
-import NotAuthorizedView from 'src/qrcode/NotAuthorizedView'
 import { QrCode } from 'src/send/types'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
+import { Spacing } from 'src/styles/styles'
+import variables from 'src/styles/variables'
 
 interface QRScannerProps {
   onQRCodeDetected: (qrCode: QrCode) => void
 }
 
 const SeeThroughOverlay = () => {
-  const { width, height } = useSafeAreaFrame()
-
+  const { width, height } = Dimensions.get('screen')
   const margin = 40
   const centerBoxSize = width - margin * 2
   const centerBoxBorderRadius = 8
@@ -29,29 +40,59 @@ const SeeThroughOverlay = () => {
   // Node that the Mask component is using hard coded color values solely to
   // create the "cutout" effect.
   return (
-    <Svg height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
-      <Defs>
-        <Mask id="mask" x="0" y="0" height="100%" width="100%">
-          <Rect height="100%" width="100%" fill="#FFFFFF" />
-          <Rect
-            x={margin}
-            y={(height - centerBoxSize) / 2}
-            rx={centerBoxBorderRadius}
-            ry={centerBoxBorderRadius}
-            width={centerBoxSize}
-            height={centerBoxSize}
-            fill="#000000"
-          />
-        </Mask>
-      </Defs>
-      <Rect height="100%" width="100%" fill={`${colors.backgroundScrim}80`} mask="url(#mask)" />
-    </Svg>
+    <View style={{ width, height }}>
+      <Svg height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
+        <Defs>
+          <Mask id="mask" x="0" y="0" height="100%" width="100%">
+            <Rect height="100%" width="100%" fill="#FFFFFF" />
+            <Rect
+              x={margin}
+              y={(height - centerBoxSize) / 2}
+              rx={centerBoxBorderRadius}
+              ry={centerBoxBorderRadius}
+              width={centerBoxSize}
+              height={centerBoxSize}
+              fill="#000000"
+            />
+          </Mask>
+        </Defs>
+        <Rect height="100%" width="100%" fill={`${colors.backgroundScrim}80`} mask="url(#mask)" />
+      </Svg>
+    </View>
+  )
+}
+
+const PermissionDeniedView = () => {
+  const { t } = useTranslation()
+  const openSettings = () => {
+    void Linking.openSettings()
+  }
+
+  return (
+    <View style={[StyleSheet.absoluteFillObject, styles.permissionContainer]}>
+      <View style={styles.permissionsDeniedView}>
+        <Text style={styles.permissionText} testID="CameraPermissionDeniedText">
+          {t('cameraNotAuthorizedDescription')}
+        </Text>
+      </View>
+      <View style={styles.iosButtonWrapper}>
+        <Button
+          testID="OpenSettingsButton"
+          text={t('cameraSettings')}
+          onPress={openSettings}
+          size={BtnSizes.FULL}
+          type={BtnTypes.SECONDARY}
+        />
+      </View>
+    </View>
   )
 }
 
 export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
   const { t } = useTranslation()
   const inset = useSafeAreaInsets()
+  const [permission, requestPermission] = useCameraPermissions()
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const isEmulator = DeviceInfo.useIsEmulator ? DeviceInfo.useIsEmulator().result : false
 
@@ -62,10 +103,17 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
   const [value, setValue] = useState('')
   const [displayEntryModal, setDisplayEntryModal] = useState(false)
 
-  const openModal = () => {
-    setDisplayEntryModal(true)
+  useEffect(() => {
+    if (!permission || !permission.granted) {
+      void requestPermission()
+    }
+  }, [permission])
+
+  if (!permission || !permission.granted) {
+    return <PermissionDeniedView />
   }
 
+  const openModal = () => setDisplayEntryModal(true)
   const closeModal = () => {
     setDisplayEntryModal(false)
     setValue('')
@@ -94,20 +142,16 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
   )
 
   return (
-    <RNCamera
-      style={styles.camera}
-      type={RNCamera.Constants.Type.back}
-      onBarCodeRead={onQRCodeDetected}
-      barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-      flashMode={RNCamera.Constants.FlashMode.auto}
-      captureAudio={false}
-      autoFocus={RNCamera.Constants.AutoFocus.on}
-      // Passing null here since we want the default system message
-      // @ts-ignore
-      androidCameraPermissionOptions={null}
-      notAuthorizedView={<NotAuthorizedView />}
-      testID={'Camera'}
-    >
+    <View>
+      <CameraView
+        onBarcodeScanned={onQRCodeDetected}
+        barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+        style={StyleSheet.absoluteFillObject}
+        facing="back"
+        mute={true} // Needs to be set otherwise microphone permission is requested
+        responsiveOrientationWhenOrientationLocked
+        testID="Camera"
+      />
       <SeeThroughOverlay />
 
       <View>
@@ -139,15 +183,11 @@ export default function QRScanner({ onQRCodeDetected }: QRScannerProps) {
           </TextButton>
         </View>
       </Modal>
-    </RNCamera>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  camera: {
-    flex: 1,
-    overflow: 'hidden',
-  },
   infoText: {
     position: 'absolute',
     left: 9,
@@ -185,4 +225,25 @@ const styles = StyleSheet.create({
   cancelButton: {
     color: colors.contentSecondary,
   },
+  permissionContainer: {
+    flex: 1,
+    padding: variables.contentPadding,
+    backgroundColor: colors.backgroundScrim,
+  },
+  permissionsDeniedView: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  permissionText: {
+    ...typeScale.bodyMedium,
+    color: colors.contentTertiary,
+    textAlign: 'center',
+  },
+  // iOS specific styles otherwise button is pinned to bottom of screen
+  iosButtonWrapper: Platform.select({
+    ios: {
+      marginBottom: Spacing.Large32,
+    },
+    default: {},
+  }),
 })
