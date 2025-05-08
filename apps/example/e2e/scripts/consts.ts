@@ -1,4 +1,5 @@
 import { providers, utils } from 'ethers'
+import { arbitrum, base, celo, mainnet, optimism, polygon } from 'viem/chains'
 import { Token } from './types'
 
 export const E2E_TEST_WALLET = '0xebf95355cc5ea643179a02337f3f943fd8dd2bcb'
@@ -29,3 +30,23 @@ export const TOKENS_BY_SYMBOL: Record<string, Token> = {
 }
 
 export const provider = new providers.JsonRpcProvider('https://forno.celo.org/')
+
+export const E2E_TEST_NFT_API_URL = 'https://api.mainnet.valora.xyz/getNfts'
+
+export enum NetworkId {
+  'celo-mainnet' = 'celo-mainnet',
+  'ethereum-mainnet' = 'ethereum-mainnet',
+  'arbitrum-one' = 'arbitrum-one',
+  'op-mainnet' = 'op-mainnet',
+  'polygon-pos-mainnet' = 'polygon-pos-mainnet',
+  'base-mainnet' = 'base-mainnet',
+}
+
+export const DIVVI_NETWORK_IDS_TO_VIEM_CHAINS = {
+  [NetworkId['arbitrum-one']]: arbitrum,
+  [NetworkId['base-mainnet']]: base,
+  [NetworkId['celo-mainnet']]: celo,
+  [NetworkId['ethereum-mainnet']]: mainnet,
+  [NetworkId['op-mainnet']]: optimism,
+  [NetworkId['polygon-pos-mainnet']]: polygon,
+}
