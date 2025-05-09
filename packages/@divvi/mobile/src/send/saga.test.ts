@@ -38,6 +38,10 @@ import {
 } from 'test/values'
 import { getTransactionCount } from 'viem/actions'
 
+jest.mock('src/divviProtocol/register', () => ({
+  submitDivviReferralIfNeeded: jest.fn().mockResolvedValue(true),
+}))
+
 const mockNewTransactionContext = jest.fn()
 
 jest.mock('src/transactions/types', () => {
@@ -88,6 +92,7 @@ describe(sendPaymentSaga, () => {
     account: { address: mockAccount },
     signTransaction: jest.fn(),
     sendRawTransaction: jest.fn(),
+    getChainId: jest.fn(),
   } as any as ViemWallet
   const mockTxHash: `0x${string}` = '0x12345678901234'
   const mockTxReceipt = {

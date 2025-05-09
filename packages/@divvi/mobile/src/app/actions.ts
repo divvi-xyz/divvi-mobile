@@ -1,7 +1,5 @@
 import { BIOMETRY_TYPE } from '@divvi/react-native-keychain'
-import { SupportedProtocolId } from 'src/divviProtocol/constants'
 import { Screens } from 'src/navigator/Screens'
-import { NetworkId } from 'src/transactions/types'
 
 // https://facebook.github.io/react-native/docs/appstate
 export enum AppState {
@@ -33,7 +31,6 @@ export enum Actions {
   IN_APP_REVIEW_REQUESTED = 'APP/IN_APP_REVIEW_REQUESTED',
   NOTIFICATION_SPOTLIGHT_SEEN = 'APP/NOTIFICATION_SPOTLIGHT_SEEN',
   TOGGLE_HIDE_BALANCES = 'APP/TOGGLE_HIDE_BALANCES',
-  DIVVI_REGISTRATION_COMPLETED = 'APP/DIVVI_REGISTRATION_COMPLETED',
 }
 
 export interface SetAppState {
@@ -147,12 +144,6 @@ interface ToggleHideBalances {
   type: Actions.TOGGLE_HIDE_BALANCES
 }
 
-interface DivviRegistrationCompleted {
-  type: Actions.DIVVI_REGISTRATION_COMPLETED
-  networkId: NetworkId
-  protocolIds: SupportedProtocolId[]
-}
-
 export type ActionTypes =
   | SetAppState
   | SetSupportedBiometryType
@@ -176,7 +167,6 @@ export type ActionTypes =
   | NotificationSpotlightSeen
   | ToggleHideBalances
   | DeepLinkDeferred
-  | DivviRegistrationCompleted
 
 export const setAppState = (state: string): SetAppState => ({
   type: Actions.SET_APP_STATE,
@@ -321,16 +311,5 @@ export const notificationSpotlightSeen = (): NotificationSpotlightSeen => {
 export const toggleHideBalances = (): ToggleHideBalances => {
   return {
     type: Actions.TOGGLE_HIDE_BALANCES,
-  }
-}
-
-export const divviRegistrationCompleted = (
-  networkId: NetworkId,
-  protocolIds: SupportedProtocolId[]
-): DivviRegistrationCompleted => {
-  return {
-    type: Actions.DIVVI_REGISTRATION_COMPLETED,
-    networkId,
-    protocolIds,
   }
 }

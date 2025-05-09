@@ -2,10 +2,8 @@ import { BIOMETRY_TYPE } from '@divvi/react-native-keychain'
 import { Platform } from 'react-native'
 import { Actions, ActionTypes, AppState } from 'src/app/actions'
 import { DEEP_LINK_URL_SCHEME } from 'src/config'
-import { SupportedProtocolId } from 'src/divviProtocol/constants'
 import { Screens } from 'src/navigator/Screens'
 import { getRehydratePayload, REHYDRATE, RehydrateAction } from 'src/redux/persist-helper'
-import { NetworkId } from 'src/transactions/types'
 
 const PERSISTED_DEEP_LINKS = [
   'https://valoraapp.com/share',
@@ -34,9 +32,6 @@ interface State {
   showNotificationSpotlight: boolean
   hideBalances: boolean
   pendingDeepLinks: PendingDeepLink[]
-  divviRegistrations: {
-    [networkId in NetworkId]?: SupportedProtocolId[]
-  }
 }
 
 interface PendingDeepLink {
@@ -64,7 +59,6 @@ const initialState = {
   showNotificationSpotlight: false,
   hideBalances: false,
   pendingDeepLinks: [],
-  divviRegistrations: {},
 }
 
 function getPersistedDeepLinks(deepLinks: PendingDeepLink[]) {
@@ -210,17 +204,6 @@ export const appReducer = (
         pendingDeepLinks: state.pendingDeepLinks.filter(
           (pendingDeepLink) => pendingDeepLink.url !== action.deepLink
         ),
-      }
-    case Actions.DIVVI_REGISTRATION_COMPLETED:
-      return {
-        ...state,
-        divviRegistrations: {
-          ...state.divviRegistrations,
-          [action.networkId]: [
-            ...(state.divviRegistrations[action.networkId] ?? []),
-            ...action.protocolIds,
-          ],
-        },
       }
     default:
       return state

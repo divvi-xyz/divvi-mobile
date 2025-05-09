@@ -3694,6 +3694,18 @@ export const v247Schema = {
   home: _.omit(v246Schema.home, 'cleverTapInboxMessages'),
 }
 
+export const v248Schema = {
+  ...v247Schema,
+  _persist: {
+    ...v247Schema._persist,
+    version: 248,
+  },
+  divviProtocol: {
+    referrals: {},
+  },
+  app: _.omit(v247Schema.app, 'divviRegistrations'),
+}
+
 export function getLatestSchema(): Partial<RootState> {
-  return v247Schema as Partial<RootState>
+  return v248Schema as Partial<RootState>
 }

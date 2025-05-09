@@ -2,6 +2,7 @@ import { reducer as account } from 'src/account/reducer'
 import { reducer as alert } from 'src/alert/reducer'
 import { appReducer as app } from 'src/app/reducers'
 import dappsReducer from 'src/dapps/slice'
+import divviProtocolReducer from 'src/divviProtocol/slice'
 import earnReducer from 'src/earn/slice'
 import { reducer as fiatExchanges } from 'src/fiatExchanges/reducer'
 import fiatConnectReducer from 'src/fiatconnect/slice'
@@ -52,4 +53,5 @@ export const reducersList = {
   jumpstart: jumpstartReducer,
   points: pointsReducer,
   earn: earnReducer,
+  divviProtocol: divviProtocolReducer,
 } as const
