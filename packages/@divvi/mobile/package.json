@@ -53,7 +53,7 @@
     "build": "tsc --noEmit",
     "build:plugin": "rimraf plugin/build && tsc --build plugin",
     "docs": "typedoc",
-    "test": "export TZ=UTC && jest",
+    "test": "export TZ=UTC && jest --silent",
     "test:ci": "yarn test --coverage --maxWorkers=3",
     "test:watch": "yarn test --watch --maxWorkers=4",
     "test:verbose": "export TZ=UTC && jest --verbose",
