@@ -2039,7 +2039,7 @@ export const migrations = {
   248: (state: any) => ({
     ...state,
     divviProtocol: {
-      successfulReferrals: {},
+      referrals: {},
     },
     app: _.omit(state.app, 'divviRegistrations'),
   }),

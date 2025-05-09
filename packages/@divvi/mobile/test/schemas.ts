@@ -3701,7 +3701,7 @@ export const v248Schema = {
     version: 248,
   },
   divviProtocol: {
-    successfulReferrals: {},
+    referrals: {},
   },
   app: _.omit(v247Schema.app, 'divviRegistrations'),
 }

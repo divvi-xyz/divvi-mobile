@@ -3540,6 +3540,10 @@
             ],
             "type": "string"
         },
+        "Record<string,Referral>": {
+            "additionalProperties": false,
+            "type": "object"
+        },
         "Record<string,[string,...string[]]>": {
             "additionalProperties": false,
             "type": "object"
@@ -3559,15 +3563,12 @@
         "ReferralState": {
             "additionalProperties": false,
             "properties": {
-                "successfulReferrals": {
-                    "additionalProperties": {
-                        "type": "boolean"
-                    },
-                    "type": "object"
+                "referrals": {
+                    "$ref": "#/definitions/Record<string,Referral>"
                 }
             },
             "required": [
-                "successfulReferrals"
+                "referrals"
             ],
             "type": "object"
         },

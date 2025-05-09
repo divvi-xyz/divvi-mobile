@@ -6,7 +6,7 @@ import { tokensByIdSelector } from 'src/tokens/selectors'
 import { BaseStandbyTransaction, addStandbyTransaction } from 'src/transactions/slice'
 import { NetworkId } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
-import { TransactionRequest, getFeeCurrencyToken } from 'src/viem/prepareTransactions'
+import { getFeeCurrencyToken } from 'src/viem/prepareTransactions'
 import {
   SerializableTransactionRequest,
   getPreparedTransactions,
@@ -53,10 +53,7 @@ export function* sendPreparedTransactions(
     throw CANCELLED_PIN_INPUT
   }
 
-  const preparedTransactions: TransactionRequest[] = []
-  getPreparedTransactions(serializablePreparedTransactions).forEach((tx) => {
-    preparedTransactions.push(tx)
-  })
+  const preparedTransactions = getPreparedTransactions(serializablePreparedTransactions)
 
   if (preparedTransactions.length !== createBaseStandbyTransactions.length) {
     throw new Error('Mismatch in number of prepared transactions and standby transaction creators')

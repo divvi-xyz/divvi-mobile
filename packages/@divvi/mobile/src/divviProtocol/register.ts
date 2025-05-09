@@ -10,19 +10,20 @@ import { hasReferralSucceededSelector } from './slice'
  *
  * @returns A data suffix string for providers where the user is not yet referred, or empty string if no referrals needed
  */
-export async function getDivviData() {
+export function getDivviData() {
   const config = getAppConfig()
   const consumer = config.divviProtocol?.divviId
   const providers = config.divviProtocol?.campaignIds
 
   if (!consumer || !providers || !providers.length) {
-    return ''
+    return null
   }
 
   // Check if this combination has already been successfully referred
   const state = store.getState()
   if (hasReferralSucceededSelector(state, consumer, providers)) {
-    return ''
+    Logger.info('DivviProtocol', `${consumer} has already referred ${providers.join(', ')}`)
+    return null
   }
 
   Logger.info('DivviProtocol', `${consumer} is referring to ${providers.join(', ')}`)

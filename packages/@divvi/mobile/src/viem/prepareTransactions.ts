@@ -310,14 +310,12 @@ export async function prepareTransactions({
     )
   }
 
-  // Attach divvi data to the first transaction
+  // Attach divvi data to the first transaction if divvi is enabled
+  // and there has not yet been a successful divvi referral
   if (baseTransactions.length > 0) {
-    const walletAddress = baseTransactions[0].from
-    if (walletAddress) {
-      const divviData = await getDivviData({ walletAddress })
-      if (divviData) {
-        baseTransactions[0].data += divviData
-      }
+    const divviData = getDivviData()
+    if (divviData) {
+      baseTransactions[0].data += divviData
     }
   }
 

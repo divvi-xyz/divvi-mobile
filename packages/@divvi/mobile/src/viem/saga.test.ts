@@ -3,7 +3,7 @@ import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { EffectProviders, StaticProvider, throwError } from 'redux-saga-test-plan/providers'
 import { call } from 'redux-saga/effects'
-import { submitDivviReferralIfNeeded } from 'src/divviProtocol/register'
+import { submitDivviReferralIfNeededSaga } from 'src/divviProtocol/saga'
 import { BaseStandbyTransaction, addStandbyTransaction } from 'src/transactions/slice'
 import { NetworkId, TokenTransactionTypeV2 } from 'src/transactions/types'
 import { ViemWallet } from 'src/viem/getLockableWallet'
@@ -23,8 +23,8 @@ import {
 } from 'test/values'
 import { getTransactionCount } from 'viem/actions'
 
-jest.mock('src/divviProtocol/register', () => ({
-  submitDivviReferralIfNeeded: jest.fn().mockResolvedValue(true),
+jest.mock('src/divviProtocol/saga', () => ({
+  submitDivviReferralIfNeededSaga: jest.fn().mockResolvedValue(true),
 }))
 
 const preparedTransactions: TransactionRequest[] = [
@@ -93,7 +93,7 @@ describe('sendPreparedTransactions', () => {
     sendRawTransaction: jest.fn(async () => {
       return `0xmockTxHash${++sendCallCount}`
     }),
-    getChainId: jest.fn(() => NetworkId['celo-alfajores']),
+    getChainId: 42220,
   } as any as ViemWallet
 
   function createDefaultProviders() {
@@ -121,8 +121,7 @@ describe('sendPreparedTransactions', () => {
       .withState(createMockStore({}).getState())
       .provide(createDefaultProviders())
       .call(getViemWallet, networkConfig.viemChain.celo, false)
-      .call(submitDivviReferralIfNeeded, {
-        walletAddress: mockAccount,
+      .call(submitDivviReferralIfNeededSaga, {
         txHash: '0xmockTxHash1',
         chainId: networkConfig.defaultNetworkId,
         transactionRequest: preparedTransactions[0],

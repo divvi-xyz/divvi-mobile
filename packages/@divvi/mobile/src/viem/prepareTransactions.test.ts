@@ -59,7 +59,7 @@ jest.mock('src/divviProtocol/register')
 
 beforeEach(() => {
   jest.clearAllMocks()
-  jest.mocked(getDivviData).mockResolvedValue('')
+  jest.mocked(getDivviData).mockReturnValue(null)
 })
 
 describe('prepareTransactions module', () => {
@@ -143,7 +143,7 @@ describe('prepareTransactions module', () => {
   const mockPublicClient = {} as unknown as jest.Mocked<(typeof publicClient)[Network.Celo]>
   describe('prepareTransactions function', () => {
     it('attaches divvi data to the first transaction', async () => {
-      jest.mocked(getDivviData).mockResolvedValue('divviData')
+      jest.mocked(getDivviData).mockReturnValue('divviData')
       mocked(estimateFeesPerGas).mockResolvedValue({
         maxFeePerGas: BigInt(100),
         maxPriorityFeePerGas: BigInt(2),
@@ -184,7 +184,6 @@ describe('prepareTransactions module', () => {
           },
         ],
       })
-      expect(AppAnalytics.track).not.toHaveBeenCalled()
     })
 
     it('throws if trying to sendAmount > sendToken balance', async () => {

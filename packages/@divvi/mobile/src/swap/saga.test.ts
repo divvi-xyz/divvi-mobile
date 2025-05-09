@@ -281,7 +281,7 @@ describe(swapSubmitSaga, () => {
     sendRawTransaction: jest.fn(async () => {
       return `0x${++sendCallCount}`
     }),
-    getChainId: jest.fn(() => NetworkId['celo-alfajores']),
+    getChainId: 42220,
   } as any as ViemWallet
 
   const mockSwapTxReceipt = {

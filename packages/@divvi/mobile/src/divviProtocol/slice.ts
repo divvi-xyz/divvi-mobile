@@ -1,3 +1,4 @@
+import { getDataSuffix } from '@divvi/referral-sdk'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'src/redux/store'
 import { Address } from 'viem'
@@ -5,37 +6,36 @@ import { Address } from 'viem'
 interface Referral {
   txHash: Address
   chainId: number
-  divviId: string
-  campaignIds: string[]
+  divviId: Address
+  campaignIds: Address[]
+  status: 'pending' | 'successful' | 'cancelled'
 }
 
 interface ReferralState {
-  pendingReferral: Referral | null
-  successfulReferrals: Record<string, boolean> // key is `${divviId}-${campaignIds} where campaignIds are sorted`
+  referrals: Record<string, Referral>
 }
 
 const initialState: ReferralState = {
-  pendingReferral: null,
-  successfulReferrals: {},
+  referrals: {},
 }
 const divviProtocolSlice = createSlice({
   name: 'divviProtocol',
   initialState,
   reducers: {
     referralSubmitted: (state, action: PayloadAction<Referral>) => {
-      state.pendingReferral = action.payload
+      const { divviId, campaignIds } = action.payload
+      const key = getDataSuffix({ consumer: divviId, providers: campaignIds })
+      state.referrals[key] = action.payload
     },
     referralSuccessful: (state, action: PayloadAction<Referral>) => {
       const { divviId, campaignIds } = action.payload
-
-      state.pendingReferral = null
-
-      const sortedCampaignIds = [...campaignIds].sort()
-      const key = `${divviId}-${sortedCampaignIds.join(',')}`
-      state.successfulReferrals[key] = true
+      const key = getDataSuffix({ consumer: divviId, providers: campaignIds })
+      state.referrals[key].status = 'successful'
     },
     referralCancelled: (state, action: PayloadAction<Referral>) => {
-      state.pendingReferral = null
+      const { divviId, campaignIds } = action.payload
+      const key = getDataSuffix({ consumer: divviId, providers: campaignIds })
+      state.referrals[key].status = 'cancelled'
     },
   },
 })
@@ -45,16 +45,15 @@ export const { referralSubmitted, referralSuccessful, referralCancelled } =
 
 export const hasReferralSucceededSelector = (
   state: RootState,
-  divviId: string,
-  campaignIds: string[]
+  divviId: Address,
+  campaignIds: Address[]
 ) => {
-  const sortedCampaignIds = [...campaignIds].sort()
-  const key = `${divviId}-${sortedCampaignIds.join(',')}`
-  return state.divviProtocol.successfulReferrals[key] ?? false
+  const key = getDataSuffix({ consumer: divviId, providers: campaignIds })
+  return state.divviProtocol.referrals[key]?.status === 'successful'
 }
 
-export const selectSuccessfulReferrals = (state: RootState) => {
-  return state.divviProtocol.successfulReferrals
+export const selectReferrals = (state: RootState) => {
+  return state.divviProtocol.referrals
 }
 
 export default divviProtocolSlice.reducer

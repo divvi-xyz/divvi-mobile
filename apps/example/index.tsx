@@ -75,7 +75,7 @@ const App = createApp({
       </>
     ),
   },
-  // Register at https://app.divvi.xyz/
+  // Find your divviId and campaignIds at https://app.divvi.xyz/
   // divviProtocol: {
   //   divviId: '',
   //   campaignIds: [''],

@@ -207,7 +207,7 @@ describe('store state', () => {
           "recentDappIds": [],
         },
         "divviProtocol": {
-          "successfulReferrals": {},
+          "referrals": {},
         },
         "earn": {
           "depositStatus": "idle",

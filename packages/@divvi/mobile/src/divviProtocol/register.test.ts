@@ -1,11 +1,10 @@
-import { getDataSuffix, submitReferral } from '@divvi/referral-sdk'
+import { getDataSuffix } from '@divvi/referral-sdk'
 import { getAppConfig } from 'src/appConfig'
 import { PublicAppConfig } from 'src/public'
 import { RootState, store } from 'src/redux/store'
-import Logger from 'src/utils/Logger'
 import { Address } from 'viem'
-import { getDivviData, submitDivviReferralIfNeeded } from './register'
-import { markReferralSuccessful, selectIsReferralSuccessful } from './slice'
+import { getDivviData } from './register'
+import { hasReferralSucceededSelector } from './slice'
 
 // Mock dependencies
 jest.mock('src/appConfig')
@@ -14,19 +13,13 @@ jest.mock('src/utils/Logger')
 jest.mock('src/redux/store', () => ({
   store: {
     getState: jest.fn(),
-    dispatch: jest.fn(),
   },
 }))
 jest.mock('./slice', () => ({
-  selectIsReferralSuccessful: jest.fn(),
-  markReferralSuccessful: jest.fn((payload) => ({
-    type: 'divviProtocol/markReferralSuccessful',
-    payload,
-  })),
+  hasReferralSucceededSelector: jest.fn(),
 }))
 
 describe('getDivviData', () => {
-  const mockWalletAddress = '0x1234567890123456789012345678901234567890'
   const mockConsumer: Address = '0xconsumer123456789012345678901234567890123456'
   const mockProviders: Address[] = [
     '0xprovider1123456789012345678901234567890123456',
@@ -43,162 +36,36 @@ describe('getDivviData', () => {
     } as PublicAppConfig)
   })
 
-  it('should return empty string if no consumer or providers in config', async () => {
+  it('should return null if no consumer or providers in config', () => {
     jest.mocked(getAppConfig).mockReturnValue({
       divviProtocol: {},
     } as PublicAppConfig)
 
-    const result = await getDivviData({ walletAddress: mockWalletAddress })
-    expect(result).toBe('')
+    const result = getDivviData()
+    expect(result).toBeNull()
   })
 
-  it('should return empty string if referral is already successful', async () => {
+  it('should return null if referral is already successful', () => {
     jest.mocked(store.getState).mockReturnValue({} as RootState)
-    jest.mocked(selectIsReferralSuccessful).mockReturnValue(true)
+    jest.mocked(hasReferralSucceededSelector).mockReturnValue(true)
 
-    const result = await getDivviData({ walletAddress: mockWalletAddress })
-    expect(result).toBe('')
-    expect(selectIsReferralSuccessful).toHaveBeenCalledWith({}, mockConsumer, mockProviders)
+    const result = getDivviData()
+    expect(result).toBeNull()
+    expect(hasReferralSucceededSelector).toHaveBeenCalledWith({}, mockConsumer, mockProviders)
   })
 
-  it('should return data suffix if referral is not yet successful', async () => {
+  it('should return data suffix if referral is not yet successful', () => {
     jest.mocked(store.getState).mockReturnValue({} as RootState)
-    jest.mocked(selectIsReferralSuccessful).mockReturnValue(false)
+    jest.mocked(hasReferralSucceededSelector).mockReturnValue(false)
 
     const mockDataSuffix = 'mock-suffix'
     jest.mocked(getDataSuffix).mockReturnValue(mockDataSuffix)
 
-    const result = await getDivviData({ walletAddress: mockWalletAddress })
+    const result = getDivviData()
     expect(result).toBe(mockDataSuffix)
     expect(getDataSuffix).toHaveBeenCalledWith({
       consumer: mockConsumer,
       providers: mockProviders,
     })
-  })
-})
-
-describe('submitDivviReferralIfNeeded', () => {
-  const mockWalletAddress = '0x1234567890123456789012345678901234567890'
-  const mockTxHash = '0xtxhash123456789012345678901234567890123456'
-  const mockChainId = 10
-  const mockConsumer: Address = '0xconsumer123456789012345678901234567890123456'
-  const mockProviders: Address[] = [
-    '0xprovider1123456789012345678901234567890123456',
-    '0xprovider2123456789012345678901234567890123456',
-  ]
-
-  beforeEach(() => {
-    jest.clearAllMocks()
-    jest.useFakeTimers()
-    jest.mocked(getAppConfig).mockReturnValue({
-      divviProtocol: {
-        divviId: mockConsumer,
-        campaignIds: mockProviders,
-      },
-    } as PublicAppConfig)
-  })
-
-  afterEach(() => {
-    jest.useRealTimers()
-  })
-
-  it('should not submit referral if no consumer or providers in config', async () => {
-    jest.mocked(getAppConfig).mockReturnValue({
-      divviProtocol: {},
-    } as PublicAppConfig)
-
-    await submitDivviReferralIfNeeded({
-      walletAddress: mockWalletAddress,
-      txHash: mockTxHash,
-      chainId: mockChainId,
-      transactionRequest: { data: '0x123' },
-    })
-
-    expect(submitReferral).not.toHaveBeenCalled()
-  })
-
-  it('should not submit referral if transaction data does not end with divvi suffix', async () => {
-    const mockDataSuffix = 'mock-suffix'
-    jest.mocked(getDataSuffix).mockReturnValue(mockDataSuffix)
-
-    await submitDivviReferralIfNeeded({
-      walletAddress: mockWalletAddress,
-      txHash: mockTxHash,
-      chainId: mockChainId,
-      transactionRequest: { data: '0x123' },
-    })
-
-    expect(submitReferral).not.toHaveBeenCalled()
-  })
-
-  it('should submit referral and mark as successful if transaction data ends with divvi suffix', async () => {
-    const mockDataSuffix = 'mock-suffix'
-    jest.mocked(getDataSuffix).mockReturnValue(mockDataSuffix)
-    jest.mocked(submitReferral).mockResolvedValue({} as Response)
-
-    await submitDivviReferralIfNeeded({
-      walletAddress: mockWalletAddress,
-      txHash: mockTxHash,
-      chainId: mockChainId,
-      transactionRequest: { data: `0x123${mockDataSuffix}` },
-    })
-
-    expect(submitReferral).toHaveBeenCalledWith({
-      txHash: mockTxHash,
-      chainId: mockChainId,
-    })
-    expect(store.dispatch).toHaveBeenCalledWith(
-      markReferralSuccessful({
-        divviId: mockConsumer,
-        campaignIds: mockProviders,
-      })
-    )
-  })
-
-  it('should retry submission if first attempt fails with retry error', async () => {
-    const mockDataSuffix = 'mock-suffix'
-    jest.mocked(getDataSuffix).mockReturnValue(mockDataSuffix)
-    jest
-      .mocked(submitReferral)
-      .mockRejectedValueOnce(new Error('Client should retry the request'))
-      .mockResolvedValueOnce({} as Response)
-
-    const promise = submitDivviReferralIfNeeded({
-      walletAddress: mockWalletAddress,
-      txHash: mockTxHash,
-      chainId: mockChainId,
-      transactionRequest: { data: `0x123${mockDataSuffix}` },
-    })
-
-    // Fast-forward timers
-    await jest.runAllTimersAsync()
-    await promise
-
-    expect(submitReferral).toHaveBeenCalledTimes(2)
-    expect(store.dispatch).toHaveBeenCalledWith(
-      markReferralSuccessful({
-        divviId: mockConsumer,
-        campaignIds: mockProviders,
-      })
-    )
-  })
-
-  it('should handle errors in submitReferral gracefully', async () => {
-    const mockDataSuffix = 'mock-suffix'
-    jest.mocked(getDataSuffix).mockReturnValue(mockDataSuffix)
-    jest.mocked(submitReferral).mockRejectedValue(new Error('Submit failed'))
-
-    await submitDivviReferralIfNeeded({
-      walletAddress: mockWalletAddress,
-      txHash: mockTxHash,
-      chainId: mockChainId,
-      transactionRequest: { data: `0x123${mockDataSuffix}` },
-    })
-
-    expect(Logger.error).toHaveBeenCalledWith(
-      'DivviProtocol',
-      `Error submitting referral for consumer ${mockConsumer} referring the user ${mockWalletAddress} to ${mockProviders.join(', ')}`,
-      expect.any(Error)
-    )
   })
 })

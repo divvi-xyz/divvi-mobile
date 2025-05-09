@@ -39,12 +39,10 @@ To enable Divvi Protocol integration, add the `divviProtocol` configuration to y
 ```typescript
 const App = createApp({
   // ... basic config
+  // Find your divviId and campaignIds at https://app.divvi.xyz/
   divviProtocol: {
-    divviId: '0xB76375c15b506D6Ee27a89Cc54feAF28D3A329F7',
-    campaignIds: [
-      '0x9c1733aee92f643D7f17F8118E14992590280EB6',
-      '0x212535865F11Db2790bA0842539A3C33e11f3972',
-    ],
+    divviId: '0xyour_divvi_id',
+    campaignIds: ['0xcampaign_id_1', '0xcampaign_id_2'],
   },
 })
 ```
