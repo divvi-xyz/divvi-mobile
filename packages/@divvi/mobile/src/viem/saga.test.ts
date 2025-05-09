@@ -93,7 +93,7 @@ describe('sendPreparedTransactions', () => {
     sendRawTransaction: jest.fn(async () => {
       return `0xmockTxHash${++sendCallCount}`
     }),
-    getChainId: 42220,
+    getChainId: jest.fn(() => 42220),
   } as any as ViemWallet
 
   function createDefaultProviders() {
@@ -123,7 +123,7 @@ describe('sendPreparedTransactions', () => {
       .call(getViemWallet, networkConfig.viemChain.celo, false)
       .call(submitDivviReferralIfNeededSaga, {
         txHash: '0xmockTxHash1',
-        chainId: networkConfig.defaultNetworkId,
+        chainId: 42220,
         transactionRequest: preparedTransactions[0],
       })
       .put(
