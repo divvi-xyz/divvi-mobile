@@ -1,7 +1,16 @@
 import { Contract, providers, utils, Wallet } from 'ethers'
-import { Address, createPublicClient, erc20Abi, http } from 'viem'
+import {
+  Address,
+  createPublicClient,
+  createWalletClient,
+  erc20Abi,
+  Hex,
+  http,
+  publicActions,
+} from 'viem'
+import { privateKeyToAccount } from 'viem/accounts'
 import { celo } from 'viem/chains'
-import { REFILL_TOKENS } from './consts'
+import { DIVVI_NETWORK_IDS_TO_VIEM_CHAINS, E2E_TEST_NFT_API_URL, REFILL_TOKENS } from './consts'
 import { Token } from './types'
 
 export async function checkBalance(
@@ -74,4 +83,66 @@ export async function transferToken(
   }
 
   return receipt
+}
+
+export async function wipe1155AssetsForAddress(address: string): Promise<void> {
+  const BURN_ADDRESS: Address = '0x000000000000000000000000000000000000dEaD'
+
+  const account = privateKeyToAccount(process.env.E2E_WALLET_PRIVATE_KEY as Hex)
+
+  const erc1155Abi = [
+    {
+      inputs: [
+        { internalType: 'address', name: 'from', type: 'address' },
+        { internalType: 'address', name: 'to', type: 'address' },
+        { internalType: 'uint256', name: 'id', type: 'uint256' },
+        { internalType: 'uint256', name: 'amount', type: 'uint256' },
+        { internalType: 'bytes', name: 'data', type: 'bytes' },
+      ],
+      name: 'safeTransferFrom',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+  ]
+
+  for (const [networkId, chain] of Object.entries(DIVVI_NETWORK_IDS_TO_VIEM_CHAINS)) {
+    try {
+      const response = await fetch(
+        `${E2E_TEST_NFT_API_URL}?address=${address}&networkId=${networkId}`
+      )
+      const { result } = (await response.json()) as {
+        result: { contractAddress: Hex; tokenId: string }[]
+      }
+
+      if (result.length) {
+        console.log(`Processing ${result.length} ERC-1155 NFTs for ${networkId}`)
+      }
+
+      const client = createWalletClient({
+        account,
+        chain,
+        transport: http(),
+      }).extend(publicActions)
+
+      for (const { contractAddress, tokenId } of result) {
+        const { request } = await client.simulateContract({
+          address: contractAddress,
+          abi: erc1155Abi,
+          functionName: 'safeTransferFrom',
+          args: [
+            account.address,
+            BURN_ADDRESS,
+            BigInt(tokenId),
+            BigInt(1), // amount
+            '0x', // empty data
+          ],
+        })
+        const hash = await client.writeContract(request)
+        await client.waitForTransactionReceipt({ hash })
+      }
+    } catch (error) {
+      console.error(`Error wiping NFTs for ${networkId}:`, error)
+    }
+  }
 }
