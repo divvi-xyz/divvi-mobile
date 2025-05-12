@@ -42,16 +42,16 @@ optional divviProtocol: object;
 
 Defined in: [packages/@divvi/mobile/src/public/types.tsx:262](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L262)
 
-#### campaignIds?
+#### campaignIds
 
 ```ts
-optional campaignIds: `0x${string}`[];
+campaignIds: `0x${string}`[];
 ```
 
-#### divviId?
+#### divviId
 
 ```ts
-optional divviId: `0x${string}`;
+divviId: `0x${string}`
 ```
 
 ---
