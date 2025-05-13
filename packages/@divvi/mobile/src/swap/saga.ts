@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SwapEvents } from 'src/analytics/Events'
 import { SwapTimeMetrics, SwapTxsReceiptProperties } from 'src/analytics/Properties'
-import { isRegistrationTransaction } from 'src/divviProtocol/registerReferral'
 import { navigateInitialTab } from 'src/navigator/NavigationService'
 import { CANCELLED_PIN_INPUT } from 'src/pincode/authentication'
 import { vibrateError } from 'src/styles/hapticFeedback'
@@ -88,9 +87,7 @@ export function* swapSubmitSaga(action: PayloadAction<SwapInfo>) {
   } = quote
   const amountType = updatedField === Field.TO ? ('buyAmount' as const) : ('sellAmount' as const)
   const amount = swapAmount[updatedField]
-  const preparedTransactions = getPreparedTransactions(
-    serializablePreparedTransactions.filter((tx) => !isRegistrationTransaction(tx))
-  )
+  const preparedTransactions = getPreparedTransactions(serializablePreparedTransactions)
 
   const tokensById = yield* select(tokensByIdSelector)
   const fromToken = tokensById[fromTokenId]
