@@ -49,6 +49,7 @@ jobs:
           echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
           echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
           echo "$ANDROID_HOME/emulator" >> $GITHUB_PATH
+          echo "ANDROID_SDK_ROOT=" >> $GITHUB_ENV
       # See https://namespace.so/docs/actions/nscloud-cache-action
       - name: Cache
         uses: namespacelabs/nscloud-cache-action@v1
@@ -102,10 +103,6 @@ jobs:
       - name: Check E2E wallet balance
         run: NODE_OPTIONS='--unhandled-rejections=strict' yarn ts-node ./e2e/scripts/check-e2e-wallet-balance.ts
         working-directory: apps/example
-      - name: Override ANDROID_SDK_ROOT
-        run: |
-          # Avoid conflicts where different paths are used by removing ANDROID_SDK_ROOT
-          echo "ANDROID_SDK_ROOT=" >> $GITHUB_ENV
       - name: Create Detox Build
         run: yarn run e2e:build:android-release
         working-directory: apps/example
