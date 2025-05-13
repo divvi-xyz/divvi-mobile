@@ -143,7 +143,7 @@ describe('store state', () => {
       {
         "_persist": {
           "rehydrated": true,
-          "version": 247,
+          "version": 248,
         },
         "account": {
           "acceptedTerms": false,
@@ -179,7 +179,6 @@ describe('store state', () => {
           "activeScreen": "Main",
           "analyticsEnabled": true,
           "appState": "Active",
-          "divviRegistrations": {},
           "googleMobileServicesAvailable": undefined,
           "hapticFeedbackEnabled": true,
           "hideBalances": false,
@@ -206,6 +205,9 @@ describe('store state', () => {
           "favoriteDappIds": [],
           "mostPopularDappIds": [],
           "recentDappIds": [],
+        },
+        "divviProtocol": {
+          "referrals": {},
         },
         "earn": {
           "depositStatus": "idle",

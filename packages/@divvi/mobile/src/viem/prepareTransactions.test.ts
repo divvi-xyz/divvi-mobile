@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { TransactionEvents } from 'src/analytics/Events'
-import { createRegistrationTransactionIfNeeded } from 'src/divviProtocol/registerReferral'
+import { getDivviData } from 'src/divviProtocol/register'
 import { TokenBalanceWithAddress } from 'src/tokens/slice'
 import { Network, NetworkId } from 'src/transactions/types'
 import { estimateFeesPerGas } from 'src/viem/estimateFeesPerGas'
@@ -55,11 +55,11 @@ jest.mock('src/viem/index', () => ({
     arbitrum: {} as unknown as jest.Mocked<(typeof publicClient)[Network.Arbitrum]>,
   },
 }))
-jest.mock('src/divviProtocol/registerReferral')
+jest.mock('src/divviProtocol/register')
 
 beforeEach(() => {
   jest.clearAllMocks()
-  jest.mocked(createRegistrationTransactionIfNeeded).mockResolvedValue(null)
+  jest.mocked(getDivviData).mockReturnValue(null)
 })
 
 describe('prepareTransactions module', () => {
@@ -142,20 +142,21 @@ describe('prepareTransactions module', () => {
   }
   const mockPublicClient = {} as unknown as jest.Mocked<(typeof publicClient)[Network.Celo]>
   describe('prepareTransactions function', () => {
-    it('adds divvi registration transactions to the prepared transactions if needed', async () => {
-      mocked(createRegistrationTransactionIfNeeded).mockResolvedValue({
-        data: '0xregistrationData',
-        to: '0xregistrationTarget',
-      })
+    it('attaches divvi data to the first transaction', async () => {
+      jest.mocked(getDivviData).mockReturnValue('divviData')
       mocked(estimateFeesPerGas).mockResolvedValue({
-        maxFeePerGas: BigInt(1),
+        maxFeePerGas: BigInt(100),
         maxPriorityFeePerGas: BigInt(2),
-        baseFeePerGas: BigInt(1),
+        baseFeePerGas: BigInt(50),
       })
-      mocked(estimateGas).mockResolvedValue(BigInt(500))
+      mocked(estimateGas).mockResolvedValue(BigInt(1_000))
+
+      // max gas fee is 100 * 1k = 100k units, too high for either fee currency
 
       const result = await prepareTransactions({
         feeCurrencies: mockFeeCurrencies,
+        spendToken: mockSpendToken,
+        spendTokenAmount: new BigNumber(45_000),
         decreasedAmountGasFeeMultiplier: 1,
         baseTransactions: [
           {
@@ -164,30 +165,24 @@ describe('prepareTransactions module', () => {
             data: '0xdata',
           },
         ],
+        isGasSubsidized: true,
         origin: 'send',
       })
       expect(result).toStrictEqual({
         type: 'possible',
+        feeCurrency: mockFeeCurrencies[0],
         transactions: [
           {
             from: '0xfrom',
             to: '0xto',
-            data: '0xdata',
-            gas: BigInt(500),
-            maxFeePerGas: BigInt(1),
+            data: '0xdatadivviData',
+
+            gas: BigInt(1000),
+            maxFeePerGas: BigInt(100),
             maxPriorityFeePerGas: BigInt(2),
-            _baseFeePerGas: BigInt(1),
-          },
-          {
-            data: '0xregistrationData',
-            to: '0xregistrationTarget',
-            gas: BigInt(500),
-            maxFeePerGas: BigInt(1),
-            maxPriorityFeePerGas: BigInt(2),
-            _baseFeePerGas: BigInt(1),
+            _baseFeePerGas: BigInt(50),
           },
         ],
-        feeCurrency: mockFeeCurrencies[0],
       })
     })
 

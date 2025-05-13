@@ -42,25 +42,16 @@ optional divviProtocol: object;
 
 Defined in: [packages/@divvi/mobile/src/public/types.tsx:262](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L262)
 
-#### protocolIds
+#### campaignIds
 
 ```ts
-protocolIds: (
-  | "aave"
-  | "aerodrome"
-  | "allbridge"
-  | "beefy"
-  | "celo"
-  | "fonbnk"
-  | "mento"
-  | "somm"
-  | "vana")[];
+campaignIds: `0x${string}`[];
 ```
 
-#### referrerId
+#### divviId
 
 ```ts
-referrerId: string
+divviId: `0x${string}`
 ```
 
 ---
