@@ -4,7 +4,7 @@ import { PublicAppConfig } from 'src/public'
 import { RootState, store } from 'src/redux/store'
 import { Address } from 'viem'
 import { getDivviData } from './register'
-import { hasReferralSucceededSelector } from './slice'
+import { hasReferralSucceededSelector, selectReferrals } from './slice'
 
 // Mock dependencies
 jest.mock('src/appConfig')
@@ -17,6 +17,7 @@ jest.mock('src/redux/store', () => ({
 }))
 jest.mock('./slice', () => ({
   hasReferralSucceededSelector: jest.fn(),
+  selectReferrals: jest.fn(),
 }))
 
 describe('getDivviData', () => {
@@ -54,9 +55,35 @@ describe('getDivviData', () => {
     expect(hasReferralSucceededSelector).toHaveBeenCalledWith({}, mockConsumer, mockProviders)
   })
 
-  it('should return data suffix if referral is not yet successful', () => {
+  it('should return null if referral is pending', () => {
     jest.mocked(store.getState).mockReturnValue({} as RootState)
     jest.mocked(hasReferralSucceededSelector).mockReturnValue(false)
+
+    const mockDataSuffix = 'mock-suffix'
+    jest.mocked(getDataSuffix).mockReturnValue(mockDataSuffix)
+    jest.mocked(selectReferrals).mockReturnValue({
+      [mockDataSuffix]: {
+        txHash: '0x123',
+        chainId: 1,
+        divviId: mockConsumer,
+        campaignIds: mockProviders,
+        status: 'pending',
+      },
+    })
+
+    const result = getDivviData()
+    expect(result).toBeNull()
+    expect(selectReferrals).toHaveBeenCalledWith({})
+    expect(getDataSuffix).toHaveBeenCalledWith({
+      consumer: mockConsumer,
+      providers: mockProviders,
+    })
+  })
+
+  it('should return data suffix if referral is not yet successful and not pending', () => {
+    jest.mocked(store.getState).mockReturnValue({} as RootState)
+    jest.mocked(hasReferralSucceededSelector).mockReturnValue(false)
+    jest.mocked(selectReferrals).mockReturnValue({})
 
     const mockDataSuffix = 'mock-suffix'
     jest.mocked(getDataSuffix).mockReturnValue(mockDataSuffix)
