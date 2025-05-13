@@ -92,6 +92,9 @@ jobs:
           # Allow the emulator to use /dev/kvm
           sudo adduser $USER kvm
           sudo chown $USER /dev/kvm
+
+          # Avoid conflicts where different paths are used by removing ANDROID_SDK_ROOT
+          unset ANDROID_SDK_ROOT
         shell: bash
       - name: Setup emulator
         run: >
