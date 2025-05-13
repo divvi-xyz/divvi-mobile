@@ -93,8 +93,6 @@ jobs:
           sudo adduser $USER kvm
           sudo chown $USER /dev/kvm
 
-          # Avoid conflicts where different paths are used by removing ANDROID_SDK_ROOT
-          unset ANDROID_SDK_ROOT
         shell: bash
       - name: Setup emulator
         run: >
@@ -104,6 +102,10 @@ jobs:
       - name: Check E2E wallet balance
         run: NODE_OPTIONS='--unhandled-rejections=strict' yarn ts-node ./e2e/scripts/check-e2e-wallet-balance.ts
         working-directory: apps/example
+      - name: Override ANDROID_SDK_ROOT
+        run: |
+          # Avoid conflicts where different paths are used by removing ANDROID_SDK_ROOT
+          echo "ANDROID_SDK_ROOT=" >> $GITHUB_ENV
       - name: Create Detox Build
         run: yarn run e2e:build:android-release
         working-directory: apps/example
