@@ -93,7 +93,6 @@ jobs:
           # Allow the emulator to use /dev/kvm
           sudo adduser $USER kvm
           sudo chown $USER /dev/kvm
-
         shell: bash
       - name: Setup emulator
         run: >
