@@ -33,6 +33,7 @@ export const FeatureGates = {
   [StatsigFeatureGates.SHOW_NEW_ENTER_AMOUNT_FOR_SWAP]: true,
   [StatsigFeatureGates.ALLOW_CROSS_CHAIN_SWAP_AND_DEPOSIT]: false,
   [StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2]: false,
+  [StatsigFeatureGates.SHOW_DIVVI_SLICES_BOTTOM_SHEET]: false,
 } satisfies { [key in StatsigFeatureGates]: boolean }
 
 export const ExperimentConfigs = {
@@ -161,6 +162,10 @@ export const DynamicConfigs = {
     defaultValues: {
       inviteRewardsVersion: 'none',
     },
+  },
+  [StatsigDynamicConfigs.DIVVI_SLICES_BOTTOM_SHEET_CONFIG]: {
+    configName: StatsigDynamicConfigs.DIVVI_SLICES_BOTTOM_SHEET_CONFIG,
+    defaultValues: {} as { url?: string },
   },
 } satisfies {
   [key in StatsigDynamicConfigs]: {
