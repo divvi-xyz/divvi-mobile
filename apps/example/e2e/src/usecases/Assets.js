@@ -94,7 +94,14 @@ export default Assets = () => {
     it('switching tabs displays corresponding assets', async () => {
       await expect(element(by.id('TokenBalanceItem')).atIndex(0)).toBeVisible()
       await element(by.id('Assets/TabBarItem')).atIndex(1).tap()
-      await waitForElementById('Assets/NoNfts')
+      // Check if an NFT image is visible
+      // If not, check if the no NFTs message is visible
+      // This is a workaround for the fact that the NFT gallery can be populated with spam NFTs
+      try {
+        await waitForElementById('NftGallery/NftImage')
+      } catch {
+        await waitForElementById('Assets/NoNfts')
+      }
       await element(by.id('Assets/TabBarItem')).atIndex(0).tap()
       await expect(element(by.id('TokenBalanceItem')).atIndex(0)).toBeVisible()
     })
