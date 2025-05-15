@@ -98,7 +98,7 @@ export default Assets = () => {
       // If not, check if the no NFTs message is visible
       // This is a workaround for the fact that the NFT gallery can be populated with spam NFTs
       try {
-        await waitForElementById('NftGallery/NftImage')
+        await expect(element(by.id('NftGroup')).atIndex(0)).toBeVisible()
       } catch {
         await waitForElementById('Assets/NoNfts')
       }
