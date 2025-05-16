@@ -126,12 +126,8 @@ describe('SendConfirmation', () => {
 
     // renders token and amount details
     expect(getByTestId('SendConfirmationToken/Label')).toHaveTextContent('sending')
-    expect(getByTestId('SendConfirmationToken/PrimaryValue')).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"1.00","tokenSymbol":"cUSD"}'
-    )
-    expect(getByTestId('SendConfirmationToken/SecondaryValue')).toHaveTextContent(
-      'localAmount, {"localAmount":"1.33","localCurrencySymbol":"₱"}'
-    )
+    expect(getByTestId('SendConfirmationToken/PrimaryValue')).toHaveTextContent('1.00 cUSD')
+    expect(getByTestId('SendConfirmationToken/SecondaryValue')).toHaveTextContent('₱1.33')
 
     // renders recipient details
     expect(getByTestId('SendConfirmationRecipient/Label')).toHaveTextContent('to')

@@ -28,6 +28,7 @@ import {
 } from 'src/components/ReviewTransaction'
 import RowDivider from 'src/components/RowDivider'
 import { formatValueToDisplay } from 'src/components/TokenDisplay'
+import { LocalAmountDisplay, TokenAmountDisplay } from 'src/components/TokenDisplayV2'
 import TokenIcon from 'src/components/TokenIcon'
 import Touchable from 'src/components/Touchable'
 import { APP_NAME } from 'src/config'
@@ -268,15 +269,18 @@ export default function EarnDepositConfirmationScreen({ route: { params } }: Pro
             testID="EarnDepositConfirmationToken"
             label={t('earnFlow.depositConfirmation.depositing')}
             icon={<TokenIcon token={inputTokenInfo} />}
-            primaryValue={t('tokenAmount', {
-              tokenAmount: formatValueToDisplay(depositAmount.tokenAmount),
-              tokenSymbol: depositAmount.tokenInfo?.symbol,
-            })}
-            secondaryValue={t('localAmount', {
-              localAmount: formatValueToDisplay(depositAmount.localAmount ?? new BigNumber(0)),
-              localCurrencySymbol,
-              context: depositAmount.localAmount ? undefined : 'noFiatPrice',
-            })}
+            primaryValue={
+              <TokenAmountDisplay
+                tokenAmount={depositAmount.tokenAmount}
+                tokenId={depositAmount.tokenInfo?.tokenId}
+              />
+            }
+            secondaryValue={
+              <LocalAmountDisplay
+                tokenAmount={depositAmount.tokenAmount}
+                tokenId={depositAmount.tokenInfo?.tokenId}
+              />
+            }
           />
 
           <ReviewSummaryItem
