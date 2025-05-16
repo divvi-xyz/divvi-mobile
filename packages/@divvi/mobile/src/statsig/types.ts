@@ -11,6 +11,7 @@ export enum StatsigDynamicConfigs {
   DEMO_MODE_CONFIG = 'demo_mode_config',
   FIAT_CONNECT_CONFIG = 'fiat_connect_config',
   INVITE_REWARDS_CONFIG = 'invite_rewards_config',
+  DIVVI_SLICES_BOTTOM_SHEET_CONFIG = 'divvi_slices_bottom_sheet_config',
 }
 
 export enum StatsigFeatureGates {
@@ -34,6 +35,7 @@ export enum StatsigFeatureGates {
   SHOW_NEW_ENTER_AMOUNT_FOR_SWAP = 'show_new_enter_amount_for_swap',
   ALLOW_CROSS_CHAIN_SWAP_AND_DEPOSIT = 'allow_cross_chain_swap_and_deposit',
   DISABLE_WALLET_CONNECT_V2 = 'disable_wallet_connect_v2',
+  SHOW_DIVVI_SLICES_BOTTOM_SHEET = 'show_divvi_slices_bottom_sheet',
 }
 
 export enum StatsigExperiments {
