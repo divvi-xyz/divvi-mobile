@@ -210,7 +210,7 @@ export default function AssetList({
 
   const NftGroup = ({ item }: { item: NftWithNetworkId[] }) => {
     return (
-      <View style={styles.nftsPairingContainer}>
+      <View testID="NftGroup" style={styles.nftsPairingContainer}>
         {item.map((nft, index) => (
           <NftItem key={index} item={nft} />
         ))}

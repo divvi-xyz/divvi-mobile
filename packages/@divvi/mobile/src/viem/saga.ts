@@ -1,7 +1,4 @@
-import {
-  isRegistrationTransaction,
-  sendPreparedRegistrationTransaction,
-} from 'src/divviProtocol/registerReferral'
+import { submitDivviReferralIfNeededSaga } from 'src/divviProtocol/saga'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { CANCELLED_PIN_INPUT } from 'src/pincode/authentication'
@@ -9,7 +6,7 @@ import { tokensByIdSelector } from 'src/tokens/selectors'
 import { BaseStandbyTransaction, addStandbyTransaction } from 'src/transactions/slice'
 import { NetworkId } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
-import { TransactionRequest, getFeeCurrencyToken } from 'src/viem/prepareTransactions'
+import { getFeeCurrencyToken } from 'src/viem/prepareTransactions'
 import {
   SerializableTransactionRequest,
   getPreparedTransactions,
@@ -56,15 +53,7 @@ export function* sendPreparedTransactions(
     throw CANCELLED_PIN_INPUT
   }
 
-  const preparedTransactions: TransactionRequest[] = []
-  let preparedRegistrationTransaction: TransactionRequest | null = null
-  getPreparedTransactions(serializablePreparedTransactions).forEach((tx) => {
-    if (isRegistrationTransaction(tx)) {
-      preparedRegistrationTransaction = tx
-    } else {
-      preparedTransactions.push(tx)
-    }
-  })
+  const preparedTransactions = getPreparedTransactions(serializablePreparedTransactions)
 
   if (preparedTransactions.length !== createBaseStandbyTransactions.length) {
     throw new Error('Mismatch in number of prepared transactions and standby transaction creators')
@@ -90,18 +79,7 @@ export function* sendPreparedTransactions(
     blockTag: 'pending',
   })
 
-  // if there is a registration transaction, send it first so that the
-  // subsequent transactions can have the referral attribution
-  if (preparedRegistrationTransaction) {
-    yield* call(
-      sendPreparedRegistrationTransaction,
-      preparedRegistrationTransaction,
-      networkId,
-      wallet,
-      nonce++
-    )
-  }
-
+  const chainId = yield* call([wallet, 'getChainId'])
   const txHashes: Hash[] = []
   for (let i = 0; i < preparedTransactions.length; i++) {
     const preparedTransaction = preparedTransactions[i]
@@ -120,6 +98,14 @@ export function* sendPreparedTransactions(
       'Successfully sent transaction to the network',
       hash
     )
+
+    if (i === 0) {
+      yield* call(submitDivviReferralIfNeededSaga, {
+        txHash: hash,
+        chainId,
+        transactionRequest: preparedTransaction,
+      })
+    }
 
     const tokensById = yield* select(tokensByIdSelector)
     const feeCurrencyId = getFeeCurrencyToken([preparedTransaction], networkId, tokensById)?.tokenId

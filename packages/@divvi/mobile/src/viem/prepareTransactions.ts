@@ -3,7 +3,7 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { TransactionEvents } from 'src/analytics/Events'
 import { TransactionOrigin } from 'src/analytics/types'
 import { STATIC_GAS_PADDING } from 'src/config'
-import { createRegistrationTransactionIfNeeded } from 'src/divviProtocol/registerReferral'
+import { getDivviData } from 'src/divviProtocol/register'
 import {
   NativeTokenBalance,
   TokenBalance,
@@ -269,13 +269,6 @@ export async function prepareTransactions({
   isGasSubsidized?: boolean
   origin: TransactionOrigin
 }): Promise<PreparedTransactionsResult> {
-  const registrationTx = await createRegistrationTransactionIfNeeded({
-    networkId: feeCurrencies[0].networkId,
-  })
-  if (registrationTx) {
-    baseTransactions.push(registrationTx)
-  }
-
   if (!spendToken && spendTokenAmount.isGreaterThan(0)) {
     throw new Error(
       `prepareTransactions requires a spendToken if spendTokenAmount is greater than 0. spendTokenAmount: ${spendTokenAmount.toString()}`
@@ -292,6 +285,16 @@ export async function prepareTransactions({
       }`
     )
   }
+
+  // Attach divvi data to the first transaction if divvi is enabled
+  // and there has not yet been a successful divvi referral
+  if (baseTransactions.length > 0) {
+    const divviData = getDivviData()
+    if (divviData) {
+      baseTransactions[0].data += divviData
+    }
+  }
+
   const gasFees: Array<{
     feeCurrency: TokenBalance
     maxGasFeeInDecimal: BigNumber
