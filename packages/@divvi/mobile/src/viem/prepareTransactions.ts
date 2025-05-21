@@ -16,17 +16,7 @@ import Logger from 'src/utils/Logger'
 import { appPublicClient, publicClient } from 'src/viem'
 import { estimateFeesPerGas } from 'src/viem/estimateFeesPerGas'
 import { networkIdToNetwork } from 'src/web3/networkConfig'
-import {
-  Address,
-  Client,
-  EstimateGasExecutionError,
-  ExecutionRevertedError,
-  InsufficientFundsError,
-  InvalidInputRpcError,
-  TransactionRequestEIP1559,
-  encodeFunctionData,
-  erc20Abi,
-} from 'viem'
+import { Address, Client, TransactionRequestEIP1559, encodeFunctionData, erc20Abi } from 'viem'
 import { estimateGas } from 'viem/actions'
 import { TransactionRequestCIP64 } from 'viem/chains'
 
@@ -127,8 +117,6 @@ export function getFeeCurrencyAddress(feeCurrency: TokenBalance): Address | unde
  *   checks comparing the user's balance to send/swap amounts need to be done somewhere else to be able to give
  *   coherent error messages to the user when they lack the funds to perform a transaction.
  *
- * Throws other kinds of errors (e.g. if execution is reverted for some other reason)
- *
  * @param client
  * @param baseTransaction
  * @param maxFeePerGas
@@ -177,20 +165,8 @@ export async function tryEstimateTransaction({
       baseFeePerGas,
     })
   } catch (e) {
-    if (
-      e instanceof EstimateGasExecutionError &&
-      (e.cause instanceof InsufficientFundsError ||
-        (e.cause instanceof ExecutionRevertedError && // viem does not reliably label node errors as InsufficientFundsError when the user has enough to pay for the transfer, but not for the transfer + gas
-          (/transfer value exceeded balance of sender/.test(e.cause.details) ||
-            /transfer amount exceeds balance/.test(e.cause.details))) ||
-        (e.cause instanceof InvalidInputRpcError &&
-          /gas required exceeds allowance/.test(e.cause.details)))
-    ) {
-      // too much gas was needed
-      Logger.warn(TAG, `Couldn't estimate gas with feeCurrency ${feeCurrencySymbol}`, e)
-      return null
-    }
-    throw e
+    Logger.warn(TAG, `Couldn't estimate gas with feeCurrency ${feeCurrencySymbol}`, e)
+    return null
   }
 
   return tx
