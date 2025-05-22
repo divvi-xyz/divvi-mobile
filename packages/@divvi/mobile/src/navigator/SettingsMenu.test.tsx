@@ -8,6 +8,7 @@ import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import SettingsMenu from 'src/navigator/SettingsMenu'
 import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
+import StatsigClientSingleton from 'src/statsig/client'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import MockedNavigator from 'test/MockedNavigator'
 import { createMockStore } from 'test/utils'
@@ -16,16 +17,28 @@ import { mockAppConfig, mockE164Number } from 'test/values'
 jest.mock('src/statsig')
 jest.mocked(getDynamicConfigParams).mockReturnValue({})
 
-jest.mock('statsig-react-native', () => ({
-  Statsig: {
-    getStableID: jest.fn().mockReturnValue('stableId'),
-  },
-}))
+jest.mock('src/statsig/client')
 
+jest.mock('src/utils/Logger')
 jest.mock('src/config', () => ({
   ...jest.requireActual('src/config'),
-  STATSIG_ENABLED: true,
+  STATSIG_ENABLED: jest.fn().mockReturnValue(true),
+  STATSIG_API_KEY: 'test-api-key',
+  STATSIG_ENV: 'test',
+  APP_REGISTRY_NAME: 'test',
 }))
+
+jest.mock('src/statsig/selector', () => ({
+  getDefaultStatsigUser: jest.fn().mockReturnValue({
+    userID: 'test-user-id',
+    custom: {},
+  }),
+}))
+
+// Mock StatsigClientSingleton
+const mockGetContext = jest.fn().mockReturnValue({ stableID: 'stableId' })
+const mockGetInstance = jest.fn().mockReturnValue({ getContext: mockGetContext })
+jest.spyOn(StatsigClientSingleton, 'getInstance').mockImplementation(mockGetInstance)
 
 describe('SettingsMenu', () => {
   beforeEach(() => {

@@ -1,3 +1,4 @@
+import { StatsigClientRN } from '@statsig/react-native-bindings'
 import { LaunchArguments } from 'react-native-launch-arguments'
 import * as config from 'src/config'
 import { store } from 'src/redux/store'
@@ -12,19 +13,18 @@ import {
 } from 'src/statsig/index'
 import { StatsigDynamicConfigs, StatsigExperiments, StatsigFeatureGates } from 'src/statsig/types'
 import Logger from 'src/utils/Logger'
-import { EvaluationReason } from 'statsig-js'
-import { Statsig } from 'statsig-react-native'
 import { getMockStoreData } from 'test/utils'
+import StatsigClientSingleton from './client'
 
 jest.mock('src/redux/store', () => ({ store: { getState: jest.fn() } }))
-jest.mock('statsig-react-native')
 jest.mock('src/utils/Logger')
+jest.mock('./client')
 
 const mockConfig = jest.mocked(config)
-
 const mockStore = jest.mocked(store)
 const MOCK_ACCOUNT = '0x000000000000000000000000000000000000000000'
 const MOCK_START_ONBOARDING_TIME = 1680563877
+
 mockStore.getState.mockImplementation(() =>
   getMockStoreData({
     web3: { account: MOCK_ACCOUNT },
@@ -33,13 +33,39 @@ mockStore.getState.mockImplementation(() =>
 )
 
 describe('Statsig helpers', () => {
-  beforeEach(() => {
+  let mockInstance: {
+    getDynamicConfig: jest.Mock
+    getExperiment: jest.Mock
+    checkGate: jest.Mock
+    updateUser: jest.Mock
+  }
+
+  beforeEach(async () => {
     jest.clearAllMocks()
     mockConfig.STATSIG_ENABLED = true
     // Reset gate overrides before each test
     jest.mocked(LaunchArguments.value).mockReturnValue({ statsigGateOverrides: 'dummy=true' })
     setupOverridesFromLaunchArgs()
+
+    // Initialize Statsig client before each test
+    mockInstance = {
+      getDynamicConfig: jest.fn().mockReturnValue({
+        get: jest.fn().mockReturnValue('value'),
+      }),
+      getExperiment: jest.fn().mockReturnValue({
+        get: jest.fn().mockReturnValue('value'),
+        checkGate: jest.fn().mockReturnValue('value'),
+      }),
+      checkGate: jest.fn(),
+      updateUser: jest.fn(),
+    }
+    jest.spyOn(StatsigClientSingleton, 'isInitialized').mockReturnValue(true)
+    jest
+      .spyOn(StatsigClientSingleton, 'getInstance')
+      .mockReturnValue(mockInstance as unknown as StatsigClientRN)
+    jest.spyOn(StatsigClientSingleton, 'updateUser').mockImplementation(mockInstance.updateUser)
   })
+
   describe('data validation', () => {
     it.each(Object.entries(ExperimentConfigs))(
       `ExperimentConfigs.%s has correct experimentName`,
@@ -54,9 +80,10 @@ describe('Statsig helpers', () => {
       }
     )
   })
+
   describe('getExperimentParams', () => {
     it('returns default values if getting statsig experiment throws error', () => {
-      ;(Statsig.getExperiment as jest.Mock).mockImplementation(() => {
+      mockInstance.getExperiment.mockImplementation(() => {
         throw new Error('mock error')
       })
       const defaultValues = { param1: 'defaultValue1', param2: 'defaultValue2' }
@@ -65,6 +92,7 @@ describe('Statsig helpers', () => {
       expect(Logger.warn).toHaveBeenCalled()
       expect(output).toEqual(defaultValues)
     })
+
     it('returns Statsig values if no error is thrown', () => {
       const getMock = jest.fn().mockImplementation((paramName: string, _defaultValue: string) => {
         if (paramName === 'param1') {
@@ -75,42 +103,28 @@ describe('Statsig helpers', () => {
           throw new Error('unexpected param name')
         }
       })
-      ;(Statsig.getExperiment as jest.Mock).mockImplementation(() => ({
+      mockInstance.getExperiment.mockReturnValue({
         get: getMock,
-        getEvaluationDetails: () => ({ reason: EvaluationReason.Network }),
-      }))
+      })
       const defaultValues = { param1: 'defaultValue1', param2: 'defaultValue2' }
       const experimentName = 'mock_experiment_name' as StatsigExperiments
       const output = getExperimentParams({ experimentName, defaultValues })
       expect(Logger.warn).not.toHaveBeenCalled()
-      expect(Statsig.getExperiment).toHaveBeenCalledWith(experimentName)
+      expect(mockInstance.getExperiment).toHaveBeenCalledWith(experimentName)
       expect(getMock).toHaveBeenCalledWith('param1', 'defaultValue1')
       expect(getMock).toHaveBeenCalledWith('param2', 'defaultValue2')
       expect(output).toEqual({ param1: 'statsigValue1', param2: 'statsigValue2' })
     })
+
     it('returns values and logs error if sdk uninitialized', () => {
-      const getMock = jest.fn().mockImplementation((paramName: string, _defaultValue: string) => {
-        if (paramName === 'param1') {
-          return 'statsigValue1'
-        } else if (paramName === 'param2') {
-          return 'statsigValue2'
-        } else {
-          throw new Error('unexpected param name')
-        }
-      })
-      ;(Statsig.getExperiment as jest.Mock).mockImplementation(() => ({
-        get: getMock,
-        getEvaluationDetails: () => ({ reason: EvaluationReason.Uninitialized }),
-      }))
+      jest.spyOn(StatsigClientSingleton, 'isInitialized').mockReturnValue(false)
       const defaultValues = { param1: 'defaultValue1', param2: 'defaultValue2' }
       const experimentName = 'mock_experiment_name' as StatsigExperiments
       const output = getExperimentParams({ experimentName, defaultValues })
       expect(Logger.warn).toHaveBeenCalled()
-      expect(Statsig.getExperiment).toHaveBeenCalledWith(experimentName)
-      expect(getMock).toHaveBeenCalledWith('param1', 'defaultValue1')
-      expect(getMock).toHaveBeenCalledWith('param2', 'defaultValue2')
-      expect(output).toEqual({ param1: 'statsigValue1', param2: 'statsigValue2' })
+      expect(output).toEqual(defaultValues)
     })
+
     it('returns default values if statsig is not enabled', () => {
       mockConfig.STATSIG_ENABLED = false
       const defaultValues = { param1: 'defaultValue1', param2: 'defaultValue2' }
@@ -123,27 +137,30 @@ describe('Statsig helpers', () => {
 
   describe('getFeatureGate', () => {
     it('returns false if getting statsig feature gate throws error', () => {
-      jest.mocked(Statsig.checkGate).mockImplementation(() => {
+      mockInstance.checkGate.mockImplementation(() => {
         throw new Error('mock error')
       })
       const output = getFeatureGate(StatsigFeatureGates.APP_REVIEW)
       expect(Logger.warn).toHaveBeenCalled()
       expect(output).toEqual(false)
     })
+
     it('returns Statsig values if no error is thrown', () => {
-      jest.mocked(Statsig.checkGate).mockImplementation(() => true)
+      mockInstance.checkGate.mockReturnValue(true)
       const output = getFeatureGate(StatsigFeatureGates.APP_REVIEW)
       expect(Logger.warn).not.toHaveBeenCalled()
       expect(output).toEqual(true)
     })
+
     it('returns gate overrides if set', () => {
-      jest.mocked(Statsig.checkGate).mockImplementation(() => true)
+      mockInstance.checkGate.mockReturnValue(true)
       jest
         .mocked(LaunchArguments.value)
         .mockReturnValue({ statsigGateOverrides: 'app_review=false' })
       setupOverridesFromLaunchArgs()
       expect(getFeatureGate(StatsigFeatureGates.APP_REVIEW)).toEqual(false)
     })
+
     it('returns default values if statsig is not enabled', () => {
       mockConfig.STATSIG_ENABLED = false
       const output = getFeatureGate(StatsigFeatureGates.APP_REVIEW)
@@ -154,7 +171,7 @@ describe('Statsig helpers', () => {
 
   describe('getDynamicConfigParams', () => {
     it('returns default values if getting statsig dynamic config throws error', () => {
-      ;(Statsig.getConfig as jest.Mock).mockImplementation(() => {
+      mockInstance.getDynamicConfig.mockImplementation(() => {
         throw new Error('mock error')
       })
       const defaultValues = { param1: 'defaultValue1', param2: 'defaultValue2' }
@@ -163,6 +180,7 @@ describe('Statsig helpers', () => {
       expect(Logger.warn).toHaveBeenCalled()
       expect(output).toEqual(defaultValues)
     })
+
     it('returns Statsig values if no error is thrown', () => {
       const getMock = jest.fn().mockImplementation((paramName: string, _defaultValue: string) => {
         if (paramName === 'param1') {
@@ -173,42 +191,28 @@ describe('Statsig helpers', () => {
           throw new Error('unexpected param name')
         }
       })
-      ;(Statsig.getConfig as jest.Mock).mockImplementation(() => ({
+      mockInstance.getDynamicConfig.mockReturnValue({
         get: getMock,
-        getEvaluationDetails: () => ({ reason: EvaluationReason.Network }),
-      }))
+      })
       const defaultValues = { param1: 'defaultValue1', param2: 'defaultValue2' }
       const configName = 'mock_config' as StatsigDynamicConfigs
       const output = getDynamicConfigParams({ configName, defaultValues })
       expect(Logger.warn).not.toHaveBeenCalled()
-      expect(Statsig.getConfig).toHaveBeenCalledWith(configName)
+      expect(mockInstance.getDynamicConfig).toHaveBeenCalledWith(configName)
       expect(getMock).toHaveBeenCalledWith('param1', 'defaultValue1')
       expect(getMock).toHaveBeenCalledWith('param2', 'defaultValue2')
       expect(output).toEqual({ param1: 'statsigValue1', param2: 'statsigValue2' })
     })
+
     it('returns values and logs error if sdk uninitialized', () => {
-      const getMock = jest.fn().mockImplementation((paramName: string, _defaultValue: string) => {
-        if (paramName === 'param1') {
-          return 'statsigValue1'
-        } else if (paramName === 'param2') {
-          return 'statsigValue2'
-        } else {
-          throw new Error('unexpected param name')
-        }
-      })
-      ;(Statsig.getConfig as jest.Mock).mockImplementation(() => ({
-        get: getMock,
-        getEvaluationDetails: () => ({ reason: EvaluationReason.Uninitialized }),
-      }))
+      jest.spyOn(StatsigClientSingleton, 'isInitialized').mockReturnValue(false)
       const defaultValues = { param1: 'defaultValue1', param2: 'defaultValue2' }
       const configName = 'mock_config' as StatsigDynamicConfigs
       const output = getDynamicConfigParams({ configName, defaultValues })
       expect(Logger.warn).toHaveBeenCalled()
-      expect(Statsig.getConfig).toHaveBeenCalledWith(configName)
-      expect(getMock).toHaveBeenCalledWith('param1', 'defaultValue1')
-      expect(getMock).toHaveBeenCalledWith('param2', 'defaultValue2')
-      expect(output).toEqual({ param1: 'statsigValue1', param2: 'statsigValue2' })
+      expect(output).toEqual(defaultValues)
     })
+
     it('returns default values if statsig is not enabled', () => {
       mockConfig.STATSIG_ENABLED = false
       const defaultValues = { param1: 'defaultValue1', param2: 'defaultValue2' }
@@ -218,6 +222,7 @@ describe('Statsig helpers', () => {
       expect(Logger.warn).not.toHaveBeenCalled()
     })
   })
+
   describe('patchUpdateStatsigUser', () => {
     let mockDateNow: jest.SpyInstance
 
@@ -230,10 +235,10 @@ describe('Statsig helpers', () => {
     })
 
     it('logs an error if statsig throws', async () => {
-      jest.mocked(Statsig.updateUser).mockRejectedValue(new Error())
+      mockInstance.updateUser.mockRejectedValue(new Error())
       await patchUpdateStatsigUser()
-      expect(Statsig.updateUser).toHaveBeenCalledTimes(1)
-      expect(Statsig.updateUser).toHaveBeenCalledWith({
+      expect(mockInstance.updateUser).toHaveBeenCalledTimes(1)
+      expect(mockInstance.updateUser).toHaveBeenCalledWith({
         userID: MOCK_ACCOUNT.toLowerCase(),
         custom: {
           startOnboardingTime: MOCK_START_ONBOARDING_TIME,
@@ -242,10 +247,11 @@ describe('Statsig helpers', () => {
       })
       expect(Logger.error).toHaveBeenCalledTimes(1)
     })
-    it('uses default values when passed no parameters', async () => {
+
+    it('uses default values from redux store when passed no parameters', async () => {
       await patchUpdateStatsigUser()
-      expect(Statsig.updateUser).toHaveBeenCalledTimes(1)
-      expect(Statsig.updateUser).toHaveBeenCalledWith({
+      expect(mockInstance.updateUser).toHaveBeenCalledTimes(1)
+      expect(mockInstance.updateUser).toHaveBeenCalledWith({
         userID: MOCK_ACCOUNT.toLowerCase(),
         custom: {
           startOnboardingTime: MOCK_START_ONBOARDING_TIME,
@@ -253,56 +259,77 @@ describe('Statsig helpers', () => {
         },
       })
     })
-    it('overrides custom fields when passed', async () => {
+
+    it('merges custom fields with defaults when passed', async () => {
       const statsigUser = {
         custom: {
-          startOnboardingTime: 1680563880,
           otherCustomProperty: 'foo',
-          loadTime: 12345,
         },
       }
       await patchUpdateStatsigUser(statsigUser)
-      expect(Statsig.updateUser).toHaveBeenCalledTimes(1)
-      expect(Statsig.updateUser).toHaveBeenCalledWith({
+      expect(mockInstance.updateUser).toHaveBeenCalledTimes(1)
+      expect(mockInstance.updateUser).toHaveBeenCalledWith({
         userID: MOCK_ACCOUNT.toLowerCase(),
-        custom: statsigUser.custom,
+        custom: {
+          startOnboardingTime: MOCK_START_ONBOARDING_TIME,
+          otherCustomProperty: 'foo',
+          loadTime: 1234,
+        },
       })
     })
+
     it('overrides user ID when passed', async () => {
       const statsigUser = {
         userID: 'some address',
         custom: {
-          startOnboardingTime: 1680563880,
           otherCustomProperty: 'foo',
-          loadTime: 12345,
         },
       }
       await patchUpdateStatsigUser(statsigUser)
-      expect(Statsig.updateUser).toHaveBeenCalledTimes(1)
-      expect(Statsig.updateUser).toHaveBeenCalledWith(statsigUser)
-    })
-    it('uses custom and default fields', async () => {
-      const statsigUser = {
-        custom: {
-          otherCustomProperty1: 'foo',
-          otherCustomProperty2: 'bar',
-        },
-      }
-      await patchUpdateStatsigUser(statsigUser)
-      expect(Statsig.updateUser).toHaveBeenCalledTimes(1)
-      expect(Statsig.updateUser).toHaveBeenCalledWith({
-        userID: MOCK_ACCOUNT.toLowerCase(),
+      expect(mockInstance.updateUser).toHaveBeenCalledTimes(1)
+      expect(mockInstance.updateUser).toHaveBeenCalledWith({
+        userID: 'some address',
         custom: {
           startOnboardingTime: MOCK_START_ONBOARDING_TIME,
-          ...statsigUser.custom,
+          otherCustomProperty: 'foo',
           loadTime: 1234,
         },
       })
     })
+
+    it('overrides default custom fields when explicitly provided', async () => {
+      const statsigUser = {
+        custom: {
+          startOnboardingTime: 1680563880,
+          otherCustomProperty: 'foo',
+        },
+      }
+      await patchUpdateStatsigUser(statsigUser)
+      expect(mockInstance.updateUser).toHaveBeenCalledTimes(1)
+      expect(mockInstance.updateUser).toHaveBeenCalledWith({
+        userID: MOCK_ACCOUNT.toLowerCase(),
+        custom: {
+          startOnboardingTime: 1680563880,
+          otherCustomProperty: 'foo',
+          loadTime: 1234,
+        },
+      })
+    })
+
     it('does not update user if statsig is not enabled', async () => {
       mockConfig.STATSIG_ENABLED = false
       await patchUpdateStatsigUser()
-      expect(Statsig.updateUser).not.toHaveBeenCalled()
+      expect(mockInstance.updateUser).not.toHaveBeenCalled()
+    })
+
+    it('does not update user if statsig is not initialized', async () => {
+      jest.spyOn(StatsigClientSingleton, 'isInitialized').mockReturnValue(false)
+      await patchUpdateStatsigUser()
+      expect(mockInstance.updateUser).not.toHaveBeenCalled()
+      expect(Logger.warn).toHaveBeenCalledWith(
+        expect.any(String),
+        'patchUpdateStatsigUser: SDK is uninitialized when updating user'
+      )
     })
   })
 
