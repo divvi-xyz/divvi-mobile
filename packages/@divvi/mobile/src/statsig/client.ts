@@ -52,13 +52,14 @@ class StatsigClientSingleton {
       // Convert the user to match the new StatsigUser type
       const statsigUser: StatsigUser = {
         userID: defaultUser.userID?.toString(),
+        customIDs: {
+          stableID: overrideStableID,
+        },
         custom: defaultUser.custom,
       }
 
       this.instance = new StatsigClientRN(STATSIG_API_KEY, statsigUser, {
         environment: STATSIG_ENV,
-        // @ts-ignore - overrideStableID is supported but not in types
-        overrideStableID,
       })
 
       await this.instance.initializeAsync()

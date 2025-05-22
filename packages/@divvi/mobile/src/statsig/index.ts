@@ -27,7 +27,7 @@ function getParams<T extends Record<string, StatsigParameter>>({
 }: {
   config: DynamicConfig
   defaultValues: T
-}): T {
+}) {
   type Parameter = keyof T
   type DefaultValue = T[Parameter]
   const output = {} as T
