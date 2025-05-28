@@ -12,6 +12,7 @@ import {
 } from 'src/statsig/types'
 import Logger from 'src/utils/Logger'
 import StatsigClientSingleton from './client'
+
 const TAG = 'Statsig'
 
 let gateOverrides: { [key: string]: boolean } = {}

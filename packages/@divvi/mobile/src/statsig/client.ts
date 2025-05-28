@@ -52,9 +52,6 @@ class StatsigClientSingleton {
       // Convert the user to match the new StatsigUser type
       const statsigUser: StatsigUser = {
         userID: defaultUser.userID?.toString(),
-        customIDs: {
-          stableID: overrideStableID,
-        },
         custom: defaultUser.custom,
       }
 
@@ -63,6 +60,11 @@ class StatsigClientSingleton {
       })
 
       await this.instance.initializeAsync()
+      await this.updateUser({
+        customIDs: {
+          stableID: overrideStableID,
+        },
+      })
       this.initialized = true
       Logger.info(TAG, 'Statsig client initialized successfully')
     } catch (error) {
@@ -82,6 +84,7 @@ class StatsigClientSingleton {
       const mergedUser: StatsigUser = {
         userID: (user?.userID ?? defaultUser.userID)?.toString(),
         custom: { ...defaultUser.custom, ...user?.custom },
+        customIDs: { ...user?.customIDs },
       }
       await this.instance.updateUserAsync(mergedUser)
     } catch (error) {
