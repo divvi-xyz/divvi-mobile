@@ -51,10 +51,12 @@ describe('StatsigClient', () => {
     await StatsigClientSingleton.updateUser({
       userID: 'test-user-id',
       custom: { test: 'test' },
+      customIDs: { stableID: 'custom-stable-id' },
     })
     expect(StatsigClientRN.prototype.updateUserAsync).toHaveBeenCalledWith({
       userID: 'test-user-id',
       custom: { test: 'test' },
+      customIDs: { stableID: 'custom-stable-id' },
     })
   })
 })
