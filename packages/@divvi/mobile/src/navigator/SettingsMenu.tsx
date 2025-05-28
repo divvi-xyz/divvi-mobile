@@ -43,6 +43,7 @@ import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
+import StatsigClientSingleton from 'src/statsig/client'
 import { DynamicConfigs } from 'src/statsig/constants'
 import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
 import Colors from 'src/styles/colors'
@@ -53,7 +54,6 @@ import Logger from 'src/utils/Logger'
 import { parsePhoneNumber } from 'src/utils/phoneNumbers'
 import { selectSessions } from 'src/walletConnect/selectors'
 import { walletAddressSelector } from 'src/web3/selectors'
-import { Statsig } from 'statsig-react-native'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SettingsMenu>
 
@@ -179,7 +179,9 @@ export default function SettingsMenu({ route }: Props) {
     if (!devModeActive) {
       return null
     } else {
-      const statsigStableId = STATSIG_ENABLED ? Statsig.getStableID() : 'statsig-not-enabled'
+      const statsigStableId = STATSIG_ENABLED
+        ? StatsigClientSingleton.getInstance().getContext().stableID
+        : 'statsig-not-enabled'
       return (
         <View style={styles.devSettings}>
           <Touchable onPress={onCopyText(sessionId)} style={styles.devSettingsItem}>

@@ -16,15 +16,13 @@ import {
   FIREBASE_ENABLED,
   isE2EEnv,
   SEGMENT_API_KEY,
-  STATSIG_API_KEY,
   STATSIG_ENABLED,
   STATSIG_ENV,
 } from 'src/config'
 import { store } from 'src/redux/store'
-import { getDefaultStatsigUser } from 'src/statsig'
+import StatsigClientSingleton from 'src/statsig/client'
 import { ensureError } from 'src/utils/ensureError'
 import Logger from 'src/utils/Logger'
-import { Statsig } from 'statsig-react-native'
 import { sha256 } from 'viem'
 
 const TAG = 'AppAnalytics'
@@ -134,19 +132,14 @@ class AppAnalytics {
       Logger.info(TAG, 'Segment API key not present, skipping setup')
     }
 
-    if (STATSIG_ENABLED && STATSIG_API_KEY) {
+    if (STATSIG_ENABLED) {
       try {
-        const statsigUser = getDefaultStatsigUser()
         if (!this.segmentClient) {
           throw new Error('segmentClient is undefined, cannot get anonymous ID')
         }
         const overrideStableID = this.segmentClient.userInfo.get().anonymousId
         Logger.debug(TAG, 'Statsig stable ID', overrideStableID)
-        await Statsig.initialize(STATSIG_API_KEY, statsigUser, {
-          // StableID should match Segment anonymousId
-          overrideStableID,
-          environment: STATSIG_ENV,
-        })
+        await StatsigClientSingleton.initialize(overrideStableID)
       } catch (error) {
         Logger.warn(TAG, `Statsig setup error`, error)
       }

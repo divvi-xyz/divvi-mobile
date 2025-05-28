@@ -4,9 +4,8 @@ import AppAnalyticsModule from 'src/analytics/AppAnalytics'
 import { OnboardingEvents } from 'src/analytics/Events'
 import * as config from 'src/config'
 import { store } from 'src/redux/store'
-import { getDefaultStatsigUser, getFeatureGate } from 'src/statsig'
+import StatsigClientSingleton from 'src/statsig/client'
 import { NetworkId } from 'src/transactions/types'
-import { Statsig } from 'statsig-react-native'
 import { getMockStoreData } from 'test/utils'
 import {
   mockCeloAddress,
@@ -25,8 +24,7 @@ jest.mock('@segment/analytics-react-native-plugin-adjust')
 jest.mock('@segment/analytics-react-native-plugin-firebase')
 jest.mock('@sentry/react-native', () => ({ init: jest.fn() }))
 jest.mock('src/redux/store', () => ({ store: { getState: jest.fn() } }))
-jest.mock('statsig-react-native')
-jest.mock('src/statsig')
+jest.mock('src/statsig/client')
 jest.mock('src/web3/networkConfig', () => {
   const originalModule = jest.requireActual('src/web3/networkConfig')
   return {
@@ -210,7 +208,6 @@ describe('AppAnalytics', () => {
     mockConfig.SEGMENT_API_KEY = 'segment-key'
     mockConfig.ENABLED_NETWORK_IDS = ['celo-alfajores']
     mockStore.getState.mockImplementation(() => state)
-    jest.mocked(getFeatureGate).mockReturnValue(true)
   })
 
   describe('init', () => {
@@ -226,19 +223,14 @@ describe('AppAnalytics', () => {
     })
 
     it('creates statsig client on initialization with default statsig user', async () => {
-      jest.mocked(getDefaultStatsigUser).mockReturnValue({ userID: 'someUserId' })
       await AppAnalytics.init()
-      expect(Statsig.initialize).toHaveBeenCalledWith(
-        'statsig-key',
-        { userID: 'someUserId' },
-        { environment: { tier: 'development' }, overrideStableID: 'anonId' }
-      )
+      expect(StatsigClientSingleton.initialize).toHaveBeenCalledWith('anonId')
     })
 
     it('does not initialize statsig if STATSIG_ENABLED is false', async () => {
       mockConfig.STATSIG_ENABLED = false
       await AppAnalytics.init()
-      expect(Statsig.initialize).not.toHaveBeenCalled()
+      expect(StatsigClientSingleton.initialize).not.toHaveBeenCalled()
     })
   })
 
