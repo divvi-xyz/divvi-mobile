@@ -3706,6 +3706,17 @@ export const v248Schema = {
   app: _.omit(v247Schema.app, 'divviRegistrations'),
 }
 
+export const v249Schema = {
+  ...v248Schema,
+  _persist: {
+    ...v248Schema._persist,
+    version: 249,
+  },
+  home: {
+    ...v248Schema.home,
+    hasSeenDivviBottomSheet: false,
+  },
+}
 export function getLatestSchema(): Partial<RootState> {
-  return v248Schema as Partial<RootState>
+  return v249Schema as Partial<RootState>
 }

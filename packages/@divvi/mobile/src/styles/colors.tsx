@@ -61,6 +61,7 @@ const colors = {
 
   // brand colors for decorative elements
   accent: '#1AB775', // Accent color for emphasizing key elements, such as highlights, icons, or decorative details.
+  secondaryAccent: '#D6FE21', // Secondary accent color for emphasizing key elements, such as highlights, icons, or decorative details.
   brandGradientLeft: '#26d98a', // Starting color for the brand gradient, used in backgrounds or borders to reinforce brand identity.
   brandGradientRight: '#ffd52c', // Ending color for the brand gradient, used in backgrounds or borders to reinforce brand identity.
   contentOnboardingComplete: '#FFFFFF', // Text and image color for onboarding completion screen

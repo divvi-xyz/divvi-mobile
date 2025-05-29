@@ -47,6 +47,8 @@ export enum HomeEvents {
   nft_celebration_animation_displayed = 'nft_celebration_animation_displayed',
   nft_reward_accept = 'nft_reward_accept',
   nft_reward_dismiss = 'nft_reward_dismiss',
+  divvi_bottom_sheet_displayed = 'divvi_bottom_sheet_displayed',
+  divvi_bottom_sheet_cta_pressed = 'divvi_bottom_sheet_cta_pressed',
 }
 
 export enum SettingsEvents {

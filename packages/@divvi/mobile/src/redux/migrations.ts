@@ -2043,4 +2043,11 @@ export const migrations = {
     },
     app: _.omit(state.app, 'divviRegistrations'),
   }),
+  249: (state: any) => ({
+    ...state,
+    home: {
+      ...state.home,
+      hasSeenDivviBottomSheet: false,
+    },
+  }),
 }

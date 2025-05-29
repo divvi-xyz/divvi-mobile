@@ -22,6 +22,7 @@ import NftCelebration from 'src/home/celebration/NftCelebration'
 import NftReward from 'src/home/celebration/NftReward'
 import {
   balancesLoadingSelector,
+  showDivviBottomSheetSelector,
   showNftCelebrationSelector,
   showNftRewardSelector,
 } from 'src/home/selectors'
@@ -37,6 +38,7 @@ import colors from 'src/styles/colors'
 import TransactionFeed from 'src/transactions/feed/TransactionFeed'
 import TransactionFeedV2 from 'src/transactions/feed/TransactionFeedV2'
 import { hasGrantedContactsPermission } from 'src/utils/contacts'
+import DivviBottomSheet from './DivviBottomSheet'
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList)
 
@@ -60,7 +62,8 @@ function TabHome(_props: Props) {
   const showNftCelebration = canShowNftCelebration && isFocused && !showNotificationSpotlight
   const canShowNftReward = useSelector(showNftRewardSelector)
   const showNftReward = canShowNftReward && isFocused && !showNotificationSpotlight
-
+  const canShowDivviBottomSheet = useSelector(showDivviBottomSheetSelector)
+  const showDivviBottomSheet = canShowDivviBottomSheet && isFocused && !showNotificationSpotlight
   const showZerionTransactionFeed = getFeatureGate(StatsigFeatureGates.SHOW_ZERION_TRANSACTION_FEED)
   const hideActionsCarousel = getAppConfig().experimental?.activity?.hideActionsCarousel ?? false
 
@@ -163,6 +166,7 @@ function TabHome(_props: Props) {
       )}
       {showNftCelebration && <NftCelebration />}
       {showNftReward && <NftReward />}
+      {showDivviBottomSheet && <DivviBottomSheet />}
     </SafeAreaView>
   )
 }
