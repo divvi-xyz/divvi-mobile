@@ -1,8 +1,9 @@
-import * as _ from 'lodash'
+import { DynamicConfig, StatsigUser } from '@statsig/react-native-bindings'
+import _ from 'lodash'
 import { LaunchArguments } from 'react-native-launch-arguments'
-import { startOnboardingTimeSelector } from 'src/account/selectors'
 import { ExpectedLaunchArgs, STATSIG_ENABLED } from 'src/config'
 import { FeatureGates } from 'src/statsig/constants'
+import { getDefaultStatsigUser } from 'src/statsig/selector'
 import {
   StatsigDynamicConfigs,
   StatsigExperiments,
@@ -10,9 +11,7 @@ import {
   StatsigParameter,
 } from 'src/statsig/types'
 import Logger from 'src/utils/Logger'
-import { walletAddressSelector } from 'src/web3/selectors'
-import { EvaluationReason } from 'statsig-js'
-import { DynamicConfig, Statsig, StatsigUser } from 'statsig-react-native'
+import StatsigClientSingleton from './client'
 
 const TAG = 'Statsig'
 
@@ -37,7 +36,7 @@ function getParams<T extends Record<string, StatsigParameter>>({
     Parameter,
     DefaultValue,
   ][]) {
-    output[param] = config.get(param as string, defaultValue)
+    output[param] = config.get(param as string, defaultValue) as DefaultValue
   }
   return output
 }
@@ -53,14 +52,17 @@ export function getExperimentParams<T extends Record<string, StatsigParameter>>(
     if (!STATSIG_ENABLED) {
       return defaultValues
     }
-    const experiment = Statsig.getExperiment(experimentName)
-    if (experiment.getEvaluationDetails().reason === EvaluationReason.Uninitialized) {
+    if (!StatsigClientSingleton.isInitialized()) {
       Logger.warn(
         TAG,
         'getExperimentParams: SDK is uninitialized when getting experiment',
-        experiment
+        experimentName
       )
+      return defaultValues
     }
+    const client = StatsigClientSingleton.getInstance()
+
+    const experiment = client.getExperiment(experimentName)
     return getParams({ config: experiment, defaultValues })
   } catch (error) {
     Logger.warn(
@@ -83,14 +85,17 @@ function _getDynamicConfigParams<T extends Record<string, StatsigParameter>>({
     if (!STATSIG_ENABLED) {
       return defaultValues
     }
-    const config = Statsig.getConfig(configName)
-    if (config.getEvaluationDetails().reason === EvaluationReason.Uninitialized) {
+    if (!StatsigClientSingleton.isInitialized()) {
       Logger.warn(
         TAG,
-        'getDynamicConfigParams: SDK is uninitialized when getting experiment',
-        config
+        'getDynamicConfigParams: SDK is uninitialized when getting config',
+        configName
       )
+      return defaultValues
     }
+    const client = StatsigClientSingleton.getInstance()
+
+    const config = client.getDynamicConfig(configName)
     return getParams({ config, defaultValues })
   } catch (error) {
     Logger.warn(TAG, `Error getting params for dynamic config: ${configName}`, error)
@@ -119,25 +124,16 @@ export function getFeatureGate(featureGateName: StatsigFeatureGates) {
     if (!STATSIG_ENABLED) {
       return defaultGateValue
     }
-    return Statsig.checkGate(featureGateName)
+    if (!StatsigClientSingleton.isInitialized()) {
+      Logger.warn(TAG, 'getFeatureGate: SDK is uninitialized when checking gate', featureGateName)
+      return defaultGateValue
+    }
+    const client = StatsigClientSingleton.getInstance()
+
+    return client.checkGate(featureGateName)
   } catch (error) {
     Logger.warn(TAG, `Error getting feature gate: ${featureGateName}`, error)
     return defaultGateValue
-  }
-}
-
-export function getDefaultStatsigUser(): StatsigUser {
-  // Inlined to avoid require cycles
-  // like src/statsig/index.ts -> src/redux/store.ts -> src/redux/sagas.ts -> src/positions/saga.ts -> src/statsig/index.ts
-  // and similar
-  const { store } = require('src/redux/store')
-  const state = store.getState()
-  return {
-    userID: walletAddressSelector(state) ?? undefined,
-    custom: {
-      startOnboardingTime: startOnboardingTimeSelector(state),
-      loadTime: Date.now(),
-    },
   }
 }
 
@@ -160,8 +156,12 @@ export async function patchUpdateStatsigUser(statsigUser?: StatsigUser) {
     if (!STATSIG_ENABLED) {
       return
     }
+    if (!StatsigClientSingleton.isInitialized()) {
+      Logger.warn(TAG, 'patchUpdateStatsigUser: SDK is uninitialized when updating user')
+      return
+    }
     const defaultUser = getDefaultStatsigUser()
-    await Statsig.updateUser(_.merge(defaultUser, statsigUser))
+    await StatsigClientSingleton.updateUser(_.merge(defaultUser, statsigUser))
   } catch (error) {
     Logger.error(TAG, 'Failed to update Statsig user', error)
   }
