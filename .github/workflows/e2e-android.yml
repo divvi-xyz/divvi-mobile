@@ -88,6 +88,7 @@ jobs:
           sdkmanager "platform-tools" "platforms;android-${{ env.ANDROID_COMPILE_SDK_VERSION }}"
 
           # Install Ninja
+          sudo apt-get update -y
           sudo apt-get install ninja-build
 
           # Allow the emulator to use /dev/kvm
