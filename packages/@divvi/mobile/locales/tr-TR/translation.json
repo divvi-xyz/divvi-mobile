@@ -2325,6 +2325,14 @@
     "exploreTokens": "Tüm tokenleri keşfedin",
     "exploreTokensBody": "{{appName}} uygulamasında 10'dan fazla token satın alabilirsiniz. Şunlara bir göz atın!"
   },
+  "divviBottomSheet": {
+    "title": "Şimdi divvi dilimleri kazanıyorsun!",
+    "body_part1": "Harika bir haber! Valora, Avrupa Birliği'nin",
+    "body_part2": "divvi ekosistemi. Yani, artık uygulamadaki eylemleriniz Valora puanları kazandırıyor",
+    "body_part3": "ve divvi dilimleri",
+    "body_part4": "Divvi dilimlerini keşfetmek ve kaç tane 'divvi'lendiğinizi görmek için aşağıya dokunun.",
+    "cta": "Divvi Dilimleri Hakkında Bilgi Edinin"
+  },
   "nftCelebration": {
     "bottomSheet": {
       "title": "Tebrikler!",
