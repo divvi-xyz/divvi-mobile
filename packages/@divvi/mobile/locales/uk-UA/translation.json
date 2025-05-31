@@ -2329,6 +2329,14 @@
     "exploreTokens": "Вивчити всі токени",
     "exploreTokensBody": "Ви можете купити понад 10+ токенів у {{appName}}. Спробуйте!"
   },
+  "divviBottomSheet": {
+    "title": "Тепер ви заробляєте скибочки divvi!",
+    "body_part1": "Чудові новини! Valora стала частиною",
+    "body_part2": "екосистеми divvi. Отже, тепер ваші дії в додатку заробляють бали Valora",
+    "body_part3": "і скибочками divvi",
+    "body_part4": "Натисніть нижче, щоб переглянути зрізи divvi і дізнатися, скільки разів вас \"розділили\".",
+    "cta": "Дізнатися більше про divvi Slices"
+  },
   "nftCelebration": {
     "bottomSheet": {
       "title": "Вітаємо!",

@@ -2325,6 +2325,14 @@
     "exploreTokens": "Explorar todos os tokens",
     "exploreTokensBody": "Você pode comprar mais de 10 tokens na {{appName}}. Confira!"
   },
+  "divviBottomSheet": {
+    "title": "Agora você está ganhando fatias de divisas!",
+    "body_part1": "Uma ótima notícia! Valora passou a fazer parte da equipe de",
+    "body_part2": "ecossistema divvi. Portanto, agora suas ações no aplicativo rendem pontos Valora",
+    "body_part3": "e fatias de divisão",
+    "body_part4": "Toque abaixo para explorar as fatias de divi e ver quantas você já foi \"divivido\".",
+    "cta": "Saiba mais sobre o divvi Slices"
+  },
   "nftCelebration": {
     "bottomSheet": {
       "title": "Parabéns!",
