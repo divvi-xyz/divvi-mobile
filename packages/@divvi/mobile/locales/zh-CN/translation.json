@@ -2323,6 +2323,14 @@
     "exploreTokens": "了解所有代币",
     "exploreTokensBody": "您可以在 {{appName}} 购买多达超过 10 个代币。快去试试吧！"
   },
+  "divviBottomSheet": {
+    "title": "您现在可以获得 divvi 切片！",
+    "body_part1": "好消息Valora 已成为",
+    "body_part2": "divvi 生态系统。因此，现在您在应用程序中的操作可以获得 Valora 积分",
+    "body_part3": "和 divvi 切片",
+    "body_part4": "点击下方探索 divvi 切片，看看你被 \"分割 \"了多少。",
+    "cta": "了解 divvi 切片"
+  },
   "nftCelebration": {
     "bottomSheet": {
       "title": "恭喜！",
