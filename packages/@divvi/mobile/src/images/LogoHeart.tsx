@@ -15,11 +15,18 @@ interface Props {
   testID?: string
   // Setting this to SvgProps['color'] for now as the Colors enum is not a part of the branding folder yet.
   color?: SvgProps['color']
+  translateY?: number
 }
 
-export default function LogoHeart({ size = 32, testID, color }: Props) {
+export default function LogoHeart({ size = 32, translateY = 0, testID, color }: Props) {
   return (
-    <Svg viewBox="0 0 889 889" width={size} height={size} testID={testID}>
+    <Svg
+      viewBox="0 0 889 889"
+      width={size}
+      height={size}
+      testID={testID}
+      style={{ transform: [{ translateY }] }}
+    >
       <Defs>
         <RadialGradient
           id="e"

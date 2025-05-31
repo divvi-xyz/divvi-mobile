@@ -42,6 +42,7 @@ export interface State {
   loading: boolean
   notifications: IdToNotification
   hasVisitedHome: boolean
+  hasSeenDivviBottomSheet: boolean
   nftCelebration: {
     networkId: NetworkId
     contractAddress: string
@@ -56,6 +57,7 @@ export const initialState = {
   loading: false,
   notifications: {},
   hasVisitedHome: false,
+  hasSeenDivviBottomSheet: false,
   nftCelebration: null,
 }
 
@@ -177,6 +179,11 @@ export const homeReducer = (
               ? NftCelebrationStatus.reminderDisplayed
               : NftCelebrationStatus.rewardDisplayed,
         },
+      }
+    case Actions.DIVVI_BOTTOM_SHEET_SEEN:
+      return {
+        ...state,
+        hasSeenDivviBottomSheet: true,
       }
     default:
       return state

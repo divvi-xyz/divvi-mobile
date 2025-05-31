@@ -85,6 +85,8 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   [HomeEvents.nft_celebration_animation_displayed]: `When user has seen an NFT celebration confetti animation`,
   [HomeEvents.nft_reward_accept]: `When user press "Use reward" button when presented with an NFT reward`,
   [HomeEvents.nft_reward_dismiss]: `When user dismiss the bottom sheet when presented with an NFT reward`,
+  [HomeEvents.divvi_bottom_sheet_displayed]: `When the Divvi bottom sheet is displayed to the user`,
+  [HomeEvents.divvi_bottom_sheet_cta_pressed]: `When the user presses the CTA button in the Divvi bottom sheet.`,
   [SettingsEvents.settings_profile_edit]: ``,
   [SettingsEvents.profile_generate_name]: ``,
   [SettingsEvents.profile_save]: ``,
