@@ -2323,6 +2323,14 @@
     "exploreTokens": "สำรวจโทเค็นทั้งหมด",
     "exploreTokensBody": "คุณสามารถซื้อโทเค็นได้สูงสุด 10+ รายการใน {{appName}} ไปดูเลย!"
   },
+  "divviBottomSheet": {
+    "title": "You're now earning divvi slices!",
+    "body_part1": "Great news! Valora has become a part of the",
+    "body_part2": "divvi ecosystem. So, now your actions in the app earn Valora points",
+    "body_part3": "and divvi slices",
+    "body_part4": "Tap below to explore divvi slices and see how many you've been 'divvi'ed up.",
+    "cta": "Learn About divvi Slices"
+  },
   "nftCelebration": {
     "bottomSheet": {
       "title": "ยินดีด้วย!",
