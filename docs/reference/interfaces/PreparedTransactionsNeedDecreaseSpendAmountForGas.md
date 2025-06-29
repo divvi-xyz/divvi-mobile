@@ -6,7 +6,7 @@
 
 # Interface: PreparedTransactionsNeedDecreaseSpendAmountForGas
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:50](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L50)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:40](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L40)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:50](https://
 decreasedSpendAmount: BigNumber
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:55](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L55)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:45](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L45)
 
 ---
 
@@ -26,7 +26,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:55](https://
 estimatedGasFeeInDecimal: BigNumber
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:54](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L54)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:44](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L44)
 
 ---
 
@@ -36,7 +36,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:54](https://
 feeCurrency: TokenBalance
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:52](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L52)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:42](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L42)
 
 ---
 
@@ -46,7 +46,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:52](https://
 maxGasFeeInDecimal: BigNumber
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:53](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L53)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:43](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L43)
 
 ---
 
@@ -56,4 +56,4 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:53](https://
 type: 'need-decrease-spend-amount-for-gas'
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:51](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L51)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:41](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L41)
