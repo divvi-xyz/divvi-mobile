@@ -35,14 +35,6 @@ const mockFetch = fetch as FetchMock
 jest.unmock('src/pincode/authentication')
 jest.mock('src/analytics/AppAnalytics')
 
-jest.mock('@react-native-firebase/app', () => ({
-  app: jest.fn(() => ({
-    messaging: () => ({
-      getToken: jest.fn().mockResolvedValue('someToken'),
-    }),
-  })),
-}))
-
 describe('handleUpdateAccountRegistration', () => {
   beforeEach(() => {
     jest.clearAllMocks()
