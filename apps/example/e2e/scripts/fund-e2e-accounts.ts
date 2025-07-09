@@ -170,7 +170,7 @@ const valoraTestFaucetSecret = process.env['E2E_TEST_FAUCET_SECRET']!
 
   // Set Amount To Send
   const amountToSend = '6'
-  const minBalance = 12
+  const minBalance = 20
 
   for (let i = 0; i < walletsToBeFunded.length; i++) {
     const walletAddress = walletsToBeFunded[i]
