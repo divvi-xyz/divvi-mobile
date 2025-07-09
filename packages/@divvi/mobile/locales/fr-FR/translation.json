@@ -2325,6 +2325,14 @@
     "exploreTokens": "Découvrir tous les jetons",
     "exploreTokensBody": "Vous pouvez acheter plus de 10 jetons sur {{appName}}. Découvrez-les !"
   },
+  "divviBottomSheet": {
+    "title": "Tu gagnes maintenant des tranches de divvi !",
+    "body_part1": "Excellente nouvelle ! Valora fait désormais partie de la",
+    "body_part2": "L'écosystème divvi. Ainsi, désormais, tes actions dans l'appli rapportent des points Valora",
+    "body_part3": "et divise les tranches",
+    "body_part4": "Tape ci-dessous pour explorer les tranches de divvi et voir combien tu as été \"divisé\".",
+    "cta": "En savoir plus sur les tranches divvi"
+  },
   "nftCelebration": {
     "bottomSheet": {
       "title": "Félicitations!",
