@@ -35,6 +35,10 @@ export default onRamps = () => {
   `('Should display $token provider(s) for $$amount', async ({ token, amount }) => {
     // We use multiTap as sometimes the network select renders above the bottom sheet
     // This appears to be a detox specific issue as it is not reproducible in a non detox build
+    await waitFor(element(by.id(`${token}Symbol`)))
+      .toBeVisible()
+      .whileElement(by.id('TokenBottomSheet/FlatList'))
+      .scroll(100, 'down')
     await multiTap(`${token}Symbol`)
     await waitForElementById('FiatExchangeInput')
     await element(by.id('FiatExchangeInput')).replaceText(`${amount}`)
