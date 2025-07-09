@@ -269,6 +269,7 @@ function TokenBottomSheet({
         ref={tokenListRef}
         data={tokenList}
         keyExtractor={(item) => item.tokenId}
+        testID="TokenBottomSheet/FlatList"
         contentContainerStyle={{
           paddingBottom: insets.bottom,
           backgroundColor: Colors.backgroundPrimary,
