@@ -3717,6 +3717,14 @@ export const v249Schema = {
     hasSeenDivviBottomSheet: false,
   },
 }
+export const v250Schema = {
+  ..._.omit(v249Schema, 'divviProtocol'),
+  _persist: {
+    ...v249Schema._persist,
+    version: 250,
+  },
+}
+
 export function getLatestSchema(): Partial<RootState> {
-  return v249Schema as Partial<RootState>
+  return v250Schema as Partial<RootState>
 }

@@ -75,10 +75,9 @@ const App = createApp({
       </>
     ),
   },
-  // Find your divviId and campaignIds at https://app.divvi.xyz/
+  // Find your divviId at https://app.divvi.xyz/
   // divviProtocol: {
   //   divviId: '',
-  //   campaignIds: [''],
   // },
 
   // Special cases to cover experimental features with e2e tests

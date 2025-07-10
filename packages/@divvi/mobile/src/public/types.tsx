@@ -261,7 +261,6 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
 
   divviProtocol?: {
     divviId: Address
-    campaignIds: Address[]
   }
 }
 

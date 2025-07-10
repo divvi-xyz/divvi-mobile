@@ -143,7 +143,7 @@ describe('store state', () => {
       {
         "_persist": {
           "rehydrated": true,
-          "version": 249,
+          "version": 250,
         },
         "account": {
           "acceptedTerms": false,
@@ -205,9 +205,6 @@ describe('store state', () => {
           "favoriteDappIds": [],
           "mostPopularDappIds": [],
           "recentDappIds": [],
-        },
-        "divviProtocol": {
-          "referrals": {},
         },
         "earn": {
           "depositStatus": "idle",

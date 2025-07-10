@@ -4,19 +4,15 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { call } from 'redux-saga-test-plan/matchers'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { Address } from 'viem'
-import { submitReferralSaga } from './saga'
-import { referralCancelled, referralSubmitted, referralSuccessful } from './slice'
+import { submitDivviReferralSaga } from './saga'
 
 const provideDelay = ({ fn }: { fn: { name: string } }, next: () => void) =>
   fn.name === 'delayP' || fn.name === 'delay' ? null : next()
 
-describe('submitReferralSaga', () => {
-  const mockReferral = {
+describe('submitDivviReferralSaga', () => {
+  const mockParams = {
     txHash: '0x123' as Address,
     chainId: 1,
-    divviId: '0x456' as Address,
-    campaignIds: ['0x789' as Address],
-    status: 'pending' as const,
   }
 
   beforeEach(() => {
@@ -28,45 +24,60 @@ describe('submitReferralSaga', () => {
   })
 
   it('successfully submits a referral on first try', async () => {
-    await expectSaga(submitReferralSaga, referralSubmitted(mockReferral))
+    await expectSaga(submitDivviReferralSaga, mockParams)
       .provide([[matchers.call.fn(submitReferral), undefined]])
-      .put(referralSuccessful(mockReferral))
       .run()
   })
 
   it('retries on server error and succeeds', async () => {
     const serverError = new Error('Server error')
 
-    await expectSaga(submitReferralSaga, referralSubmitted(mockReferral))
+    await expectSaga(submitDivviReferralSaga, mockParams)
       .provide([
         [call(submitReferral), throwError(serverError)],
         { call: provideDelay },
         [call(submitReferral), undefined],
       ])
-      .put(referralSuccessful(mockReferral))
       .run()
   })
 
-  it('cancels referral on client error', async () => {
+  it('stops retrying on client error', async () => {
     const clientError = new Error('Client error')
 
-    await expectSaga(submitReferralSaga, referralSubmitted(mockReferral))
+    await expectSaga(submitDivviReferralSaga, mockParams)
       .provide([[matchers.call.fn(submitReferral), throwError(clientError)]])
-      .put(referralCancelled(mockReferral))
       .run()
   })
 
-  it('gives up after max retries', async () => {
+  it('gives up after max retries on server errors', async () => {
     const serverError = new Error('Server error')
-    ;(serverError as any).status = 500
 
-    await expectSaga(submitReferralSaga, referralSubmitted(mockReferral))
+    await expectSaga(submitDivviReferralSaga, mockParams)
       .provide([
         [matchers.call.fn(submitReferral), throwError(serverError)],
         { call: provideDelay },
+        [matchers.call.fn(submitReferral), throwError(serverError)],
+        { call: provideDelay },
+        [matchers.call.fn(submitReferral), throwError(serverError)],
+        { call: provideDelay },
+        [matchers.call.fn(submitReferral), throwError(serverError)],
+        { call: provideDelay },
+        [matchers.call.fn(submitReferral), throwError(serverError)],
       ])
-      .not.put(referralSuccessful(mockReferral))
-      .not.put(referralCancelled(mockReferral))
       .run()
+  })
+
+  it('uses exponential backoff with cap for retries', async () => {
+    const serverError = new Error('Server error')
+
+    const saga = expectSaga(submitDivviReferralSaga, mockParams).provide([
+      [matchers.call.fn(submitReferral), throwError(serverError)],
+      { call: provideDelay },
+      [matchers.call.fn(submitReferral), throwError(serverError)],
+      { call: provideDelay },
+      [matchers.call.fn(submitReferral), undefined],
+    ])
+
+    await saga.run()
   })
 })

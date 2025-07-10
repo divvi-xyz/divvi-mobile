@@ -10,7 +10,6 @@ import { Actions as AppActions } from 'src/app/actions'
 import { appInit, appSaga, checkAndroidMobileServicesSaga } from 'src/app/saga'
 import { dappsSaga } from 'src/dapps/saga'
 import { fetchDappsListCompleted } from 'src/dapps/slice'
-import { divviProtocolSaga } from 'src/divviProtocol/saga'
 import { earnSaga } from 'src/earn/saga'
 import { fiatExchangesSaga } from 'src/fiatExchanges/saga'
 import { fiatConnectSaga } from 'src/fiatconnect/saga'
@@ -142,7 +141,6 @@ export function* rootSaga() {
     yield* spawn(priceHistorySaga)
     yield* spawn(pointsSaga)
     yield* spawn(earnSaga)
-    yield* spawn(divviProtocolSaga)
   } catch (error) {
     Logger.error('@rootSaga', 'Error while initializing sagas', error)
     // Propagate so it's handled by Sentry

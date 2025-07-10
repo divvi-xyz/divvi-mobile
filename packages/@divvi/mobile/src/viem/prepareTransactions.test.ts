@@ -1,7 +1,7 @@
+import { getReferralTag } from '@divvi/referral-sdk'
 import BigNumber from 'bignumber.js'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { TransactionEvents } from 'src/analytics/Events'
-import { getDivviData } from 'src/divviProtocol/register'
 import { TokenBalanceWithAddress } from 'src/tokens/slice'
 import { Network, NetworkId } from 'src/transactions/types'
 import { estimateFeesPerGas } from 'src/viem/estimateFeesPerGas'
@@ -35,6 +35,7 @@ import {
 import { estimateGas } from 'viem/actions'
 import mocked = jest.mocked
 
+jest.mock('@divvi/referral-sdk')
 jest.mock('src/viem/estimateFeesPerGas')
 jest.mock('viem', () => ({
   ...jest.requireActual('viem'),
@@ -55,11 +56,10 @@ jest.mock('src/viem/index', () => ({
     arbitrum: {} as unknown as jest.Mocked<(typeof publicClient)[Network.Arbitrum]>,
   },
 }))
-jest.mock('src/divviProtocol/register')
 
 beforeEach(() => {
   jest.clearAllMocks()
-  jest.mocked(getDivviData).mockReturnValue(null)
+  jest.mocked(getReferralTag).mockReturnValue('divviData')
 })
 
 describe('prepareTransactions module', () => {
@@ -142,8 +142,8 @@ describe('prepareTransactions module', () => {
   }
   const mockPublicClient = {} as unknown as jest.Mocked<(typeof publicClient)[Network.Celo]>
   describe('prepareTransactions function', () => {
-    it('attaches divvi data to the first transaction', async () => {
-      jest.mocked(getDivviData).mockReturnValue('divviData')
+    it('attaches divvi data to all transactions', async () => {
+      jest.mocked(getReferralTag).mockReturnValue('divviData')
       mocked(estimateFeesPerGas).mockResolvedValue({
         maxFeePerGas: BigInt(100),
         maxPriorityFeePerGas: BigInt(2),
@@ -162,7 +162,7 @@ describe('prepareTransactions module', () => {
           {
             from: '0xfrom' as Address,
             to: '0xto' as Address,
-            data: '0xdata',
+            data: '0xdatadivviData',
           },
         ],
         isGasSubsidized: true,
@@ -721,7 +721,6 @@ describe('prepareTransactions module', () => {
         baseFeePerGas: BigInt(1),
       })
       mocked(estimateGas).mockResolvedValue(BigInt(500))
-
       // for fee1 (native): gas fee is 0.5k units from first transaction, plus 0.1k units from second transaction
       const result = await prepareTransactions({
         feeCurrencies: mockFeeCurrencies,
