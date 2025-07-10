@@ -390,7 +390,7 @@ SOFTWARE.
 
 -----
 
-The following software may be included in this product: @divvi/cookies. A copy of the source code may be downloaded from git+https://github.com/divvi-xyz/cookies.git. This software contains the following license and notice below:
+The following software may be included in this product: @divvi/cookies. A copy of the source code may be downloaded from git+https://github.com/divvixyz/cookies.git. This software contains the following license and notice below:
 
 MIT License
 
@@ -416,7 +416,7 @@ SOFTWARE.
 
 -----
 
-The following software may be included in this product: @divvi/react-native-fs, react-native-fs. A copy of the source code may be downloaded from git+https@https://github.com/divvi-xyz/react-native-fs.git (@divvi/react-native-fs), git@github.com:itinance/react-native-fs.git (react-native-fs). This software contains the following license and notice below:
+The following software may be included in this product: @divvi/react-native-fs, react-native-fs. A copy of the source code may be downloaded from git+https@https://github.com/divvixyz/react-native-fs.git (@divvi/react-native-fs), git@github.com:itinance/react-native-fs.git (react-native-fs). This software contains the following license and notice below:
 
 The MIT License (MIT)
 
