@@ -1051,9 +1051,9 @@
     regenerator-runtime "^0.14.0"
 
 "@babel/runtime@^7.9.2":
-  version "7.27.1"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.27.1.tgz#9fce313d12c9a77507f264de74626e87fd0dc541"
-  integrity sha512-1x3D2xEk2fRo3PAhwQwu5UubzgiVWSXTBfWpVd2Mx2AzRqJuDJCsgaDVZ7HB5iGzDW1Hl1sWN2mFyKjmR9uAog==
+  version "7.27.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.27.6.tgz#ec4070a04d76bae8ddbb10770ba55714a417b7c6"
+  integrity sha512-vbavdySgbTTrmFE+EsiqUTzlOr5bzlnJtUv9PynGCAKvfQqjIXbvFdumPM/GxMDfyuGMJaJAU6TO4zc1Jf1i8Q==
 
 "@babel/template@^7.22.5", "@babel/template@^7.25.0", "@babel/template@^7.3.3":
   version "7.25.0"
@@ -13964,6 +13964,11 @@ react-native-animatable@1.3.3:
   dependencies:
     prop-types "^15.7.2"
 
+react-native-app-control@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-app-control/-/react-native-app-control-1.0.2.tgz#40f9e5a76cc56b44536d8e1cd6da4d9d0c5b248e"
+  integrity sha512-894KjiVLRG3+tlz93B/+LfAYcRv7ZSrObMMYFaE66rMRq/1H7EUyKH6Gf6631bACBDmN81KKK04rsnFP/lzIFQ==
+
 react-native-auth0@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/react-native-auth0/-/react-native-auth0-3.2.1.tgz#db73181980e374a50cbdd3f73edd8961b638d18e"
@@ -13988,11 +13993,6 @@ react-native-device-info@^13.2.0:
   version "13.2.0"
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-13.2.0.tgz#2b4026daf59dd08d82b6d65b63c18cb26f310ed2"
   integrity sha512-VpTxHZsEZ7kes2alaZkB31278KuSPXfTZ4TmCCN77+bYxNnaHUDiBiQ1TSoKAOp51b7gZ/7EvM4McfgHofcTBQ==
-
-react-native-exit-app@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-exit-app/-/react-native-exit-app-2.0.0.tgz#21d523580f0c1bf6793bc4e6d5771ba9347cd8e4"
-  integrity sha512-vr9e/8jgPcKCBw6qo0QLxfeMiTwExydghbYDqpLZYAGWR+6cbgnhvOxwdYj/JWR7ZtOALrRA4GMGSvU/ayxM7w==
 
 react-native-fast-image@^8.6.3:
   version "8.6.3"
