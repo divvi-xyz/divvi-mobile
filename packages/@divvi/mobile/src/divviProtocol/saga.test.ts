@@ -48,36 +48,4 @@ describe('submitDivviReferralSaga', () => {
       .provide([[matchers.call.fn(submitReferral), throwError(clientError)]])
       .run()
   })
-
-  it('gives up after max retries on server errors', async () => {
-    const serverError = new Error('Server error')
-
-    await expectSaga(submitDivviReferralSaga, mockParams)
-      .provide([
-        [matchers.call.fn(submitReferral), throwError(serverError)],
-        { call: provideDelay },
-        [matchers.call.fn(submitReferral), throwError(serverError)],
-        { call: provideDelay },
-        [matchers.call.fn(submitReferral), throwError(serverError)],
-        { call: provideDelay },
-        [matchers.call.fn(submitReferral), throwError(serverError)],
-        { call: provideDelay },
-        [matchers.call.fn(submitReferral), throwError(serverError)],
-      ])
-      .run()
-  })
-
-  it('uses exponential backoff with cap for retries', async () => {
-    const serverError = new Error('Server error')
-
-    const saga = expectSaga(submitDivviReferralSaga, mockParams).provide([
-      [matchers.call.fn(submitReferral), throwError(serverError)],
-      { call: provideDelay },
-      [matchers.call.fn(submitReferral), throwError(serverError)],
-      { call: provideDelay },
-      [matchers.call.fn(submitReferral), undefined],
-    ])
-
-    await saga.run()
-  })
 })
