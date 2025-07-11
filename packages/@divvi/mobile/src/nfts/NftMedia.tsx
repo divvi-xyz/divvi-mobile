@@ -156,9 +156,10 @@ export default function NftMedia({
       ) : !imageUrl ? (
         ErrorComponent
       ) : (
-        <View testID={testID}>
+        <View>
           <Image
             key={`${nft.contractAddress}-${nft.tokenId}-${reloadAttempt}`}
+            testID={testID}
             style={{
               borderRadius,
               height: shouldAutoScaleHeight ? scaledHeight : height,
