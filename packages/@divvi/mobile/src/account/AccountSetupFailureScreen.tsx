@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import RNExitApp from 'react-native-exit-app'
+import AppControl from 'react-native-app-control'
 import AccountErrorScreen from 'src/account/AccountErrorScreen'
 import { noHeaderGestureDisabled } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
@@ -17,7 +17,7 @@ function AccounSetupFailureScreen() {
   }, [])
 
   const onPressCloseApp = () => {
-    RNExitApp.exitApp()
+    AppControl.Exit()
   }
 
   const onPressContactSupport = () => {

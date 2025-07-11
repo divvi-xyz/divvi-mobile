@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import React from 'react'
-import RNExitApp from 'react-native-exit-app'
+import AppControl from 'react-native-app-control'
 import { Provider } from 'react-redux'
 import AccounSetupFailureScreen from 'src/account/AccountSetupFailureScreen'
 import { navigate } from 'src/navigator/NavigationService'
@@ -40,7 +40,7 @@ describe('AccountSetupFailureScreen', () => {
 
     fireEvent.press(getByText('closeApp'))
 
-    expect(RNExitApp.exitApp).toHaveBeenCalledTimes(1)
+    expect(AppControl.Exit).toHaveBeenCalledTimes(1)
   })
 
   it('should handle contact support', () => {

@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { useAsync } from 'react-async-hook'
 import { useTranslation } from 'react-i18next'
 import { BackHandler, Image, StyleSheet } from 'react-native'
-import RNExitApp from 'react-native-exit-app'
+import AppControl from 'react-native-app-control'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { PincodeType } from 'src/account/reducer'
 import { pincodeTypeSelector } from 'src/account/selectors'
@@ -55,7 +55,7 @@ function PincodeLock() {
 
   useEffect(() => {
     function hardwareBackPress() {
-      RNExitApp.exitApp()
+      AppControl.Exit()
       return true
     }
     const backHandler = BackHandler.addEventListener('hardwareBackPress', hardwareBackPress)
