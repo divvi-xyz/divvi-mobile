@@ -1,6 +1,6 @@
+import { Image } from 'expo-image'
 import React from 'react'
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import colors from 'src/styles/colors'
 import { getSupportedNetworkIds } from 'src/web3/utils'
 
@@ -70,7 +70,7 @@ export default function TokenIcon<
   return (
     <View testID={testID} style={viewStyle}>
       {token.imageUrl ? (
-        <FastImage
+        <Image
           source={{
             uri: token.imageUrl,
           }}
@@ -103,7 +103,7 @@ export default function TokenIcon<
       )}
 
       {!!token.networkIconUrl && showNetworkIcon && (
-        <FastImage
+        <Image
           source={{ uri: token.networkIconUrl }}
           style={[
             styles.networkImage,
