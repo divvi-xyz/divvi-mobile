@@ -176,16 +176,18 @@ export default function NftMedia({
               handleLoadSuccess()
             }}
             onError={handleLoadError}
-            contentFit={shouldAutoScaleHeight ? "contain" : "cover"}
+            contentFit={shouldAutoScaleHeight ? 'contain' : 'cover'}
           />
           {status === 'loading' && (
-            <View style={{ 
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-            }}>
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            >
               <Placeholder
                 height={shouldAutoScaleHeight ? scaledHeight : height}
                 width={width}
