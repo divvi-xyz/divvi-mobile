@@ -1,9 +1,10 @@
+import { getReferralTag } from '@divvi/referral-sdk'
 import BigNumber from 'bignumber.js'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { TransactionEvents } from 'src/analytics/Events'
 import { TransactionOrigin } from 'src/analytics/types'
+import { getAppConfig } from 'src/appConfig'
 import { STATIC_GAS_PADDING } from 'src/config'
-import { getDivviData } from 'src/divviProtocol/register'
 import {
   NativeTokenBalance,
   TokenBalance,
@@ -310,12 +311,20 @@ export async function prepareTransactions({
     )
   }
 
-  // Attach divvi data to the first transaction if divvi is enabled
-  // and there has not yet been a successful divvi referral
-  if (baseTransactions.length > 0) {
-    const divviData = getDivviData()
-    if (divviData) {
-      baseTransactions[0].data += divviData
+  // Attach divvi tag to all transactions if divvi is enabled
+  const config = getAppConfig()
+  if (config.divviProtocol) {
+    const walletAddress = baseTransactions[0].from
+    const referralTag =
+      walletAddress &&
+      getReferralTag({
+        consumer: config.divviProtocol.divviId,
+        user: walletAddress,
+      })
+    if (referralTag) {
+      baseTransactions.forEach((tx) => {
+        tx.data += referralTag
+      })
     }
   }
 

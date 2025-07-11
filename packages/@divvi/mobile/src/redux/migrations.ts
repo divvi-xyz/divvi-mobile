@@ -2050,4 +2050,7 @@ export const migrations = {
       hasSeenDivviBottomSheet: false,
     },
   }),
+  250: (state: any) => ({
+    ...(_.omit(state, 'divviProtocol') as any),
+  }),
 }

@@ -39,9 +39,6 @@ import { Address, decodeFunctionData } from 'viem'
 import { getTransactionCount } from 'viem/actions'
 
 jest.mock('src/statsig')
-jest.mock('src/divviProtocol/register', () => ({
-  submitDivviReferralIfNeeded: jest.fn().mockResolvedValue(true),
-}))
 
 const loggerErrorSpy = jest.spyOn(Logger, 'error')
 

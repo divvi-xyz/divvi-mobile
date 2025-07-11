@@ -125,7 +125,7 @@
   "dependencies": {
     "@badrap/result": "~0.2.13",
     "@crowdin/ota-client": "^2.0.1",
-    "@divvi/referral-sdk": "^1.0.0",
+    "@divvi/referral-sdk": "^2.2.0",
     "@fiatconnect/fiatconnect-sdk": "^0.5.74",
     "@fiatconnect/fiatconnect-types": "^13.3.11",
     "@gorhom/bottom-sheet": "^5.1.1",

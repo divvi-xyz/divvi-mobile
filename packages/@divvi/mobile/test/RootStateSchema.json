@@ -3540,10 +3540,6 @@
             ],
             "type": "string"
         },
-        "Record<string,Referral>": {
-            "additionalProperties": false,
-            "type": "object"
-        },
         "Record<string,[string,...string[]]>": {
             "additionalProperties": false,
             "type": "object"
@@ -3559,18 +3555,6 @@
                 "NotStarted"
             ],
             "type": "string"
-        },
-        "ReferralState": {
-            "additionalProperties": false,
-            "properties": {
-                "referrals": {
-                    "$ref": "#/definitions/Record<string,Referral>"
-                }
-            },
-            "required": [
-                "referrals"
-            ],
-            "type": "object"
         },
         "RelayerTypes.ProtocolOptions": {
             "additionalProperties": false,
@@ -6803,9 +6787,6 @@
         "dapps": {
             "$ref": "#/definitions/State_16"
         },
-        "divviProtocol": {
-            "$ref": "#/definitions/ReferralState"
-        },
         "earn": {
             "$ref": "#/definitions/State_25"
         },
@@ -6902,7 +6883,6 @@
         "alert",
         "app",
         "dapps",
-        "divviProtocol",
         "earn",
         "fiatConnect",
         "fiatExchanges",

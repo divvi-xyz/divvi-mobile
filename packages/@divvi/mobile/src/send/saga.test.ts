@@ -38,10 +38,6 @@ import {
 } from 'test/values'
 import { getTransactionCount } from 'viem/actions'
 
-jest.mock('src/divviProtocol/register', () => ({
-  submitDivviReferralIfNeeded: jest.fn().mockResolvedValue(true),
-}))
-
 const mockNewTransactionContext = jest.fn()
 
 jest.mock('src/transactions/types', () => {
