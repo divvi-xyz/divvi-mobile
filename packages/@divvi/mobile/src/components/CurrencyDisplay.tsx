@@ -183,7 +183,6 @@ export default function CurrencyDisplay({
     }
 
     return (
-      // @ts-expect-error - style is a valid ViewStyle
       <View style={[styles.bigContainer, style]} testID={testID}>
         {!hideSign && (
           <Text numberOfLines={1} style={[typeScale.bodyMedium, signStyle]}>
