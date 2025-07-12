@@ -5,7 +5,7 @@ import { Image as RNImage } from 'react-native'
 export const Image = React.forwardRef((props, ref) => {
   // Convert expo-image props to React Native Image props
   const { contentFit, source, onLoad, onError, ...otherProps } = props
-  
+
   return (
     <RNImage
       {...otherProps}
@@ -27,4 +27,4 @@ export const ImageBackground = React.forwardRef((props, ref) => {
 export default {
   Image,
   ImageBackground,
-} 
+}
