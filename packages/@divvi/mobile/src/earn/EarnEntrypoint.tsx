@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
+import { Image } from 'expo-image'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import { useSelector } from 'react-redux'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { EarnEvents } from 'src/analytics/Events'
@@ -71,7 +71,7 @@ export default function EarnEntrypoint() {
       >
         <>
           <View style={styles.row}>
-            <FastImage style={styles.image} source={earnCardBackground} />
+            <Image style={styles.image} source={earnCardBackground} />
             <View style={styles.textContainer}>
               <Text style={styles.title}>{t('earnFlow.entrypoint.title')}</Text>
               <Text style={styles.description}>
