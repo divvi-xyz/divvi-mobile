@@ -1,0 +1,57 @@
+# This patch is needed to fix the build error in expo@52.0.47
+# The error is caused by the use of the SharedRef type from expo/types
+# https://github.com/expo/expo/issues/34810#issuecomment-3034496901
+
+diff --git a/node_modules/expo/build/Expo.d.ts b/node_modules/expo/build/Expo.d.ts
+index b400b82..eb70a96 100644
+--- a/node_modules/expo/build/Expo.d.ts
++++ b/node_modules/expo/build/Expo.d.ts
+@@ -3,5 +3,6 @@ export { disableErrorHandling } from './errors/ExpoErrorManager';
+ export { default as registerRootComponent } from './launch/registerRootComponent';
+ export { isRunningInExpoGo, getExpoGoProjectConfig } from './environment/ExpoGo';
+ export { EventEmitter, SharedObject, SharedRef, NativeModule, requireNativeModule, requireOptionalNativeModule, requireNativeViewManager as requireNativeView, registerWebModule, reloadAppAsync, } from 'expo-modules-core';
++export type { SharedRef as SharedRefType, EventEmitter as EventEmitterType, NativeModule as NativeModuleType, SharedObject as SharedObjectType, } from 'expo-modules-core/types';
+ export { useEvent, useEventListener } from './hooks/useEvent';
+ //# sourceMappingURL=Expo.d.ts.map
+\ No newline at end of file
+diff --git a/node_modules/expo/build/types.d.ts b/node_modules/expo/build/types.d.ts
+deleted file mode 100644
+index 0929ace..0000000
+--- a/node_modules/expo/build/types.d.ts
++++ /dev/null
+@@ -1,2 +0,0 @@
+-export type * from 'expo-modules-core/types';
+-//# sourceMappingURL=types.d.ts.map
+\ No newline at end of file
+diff --git a/node_modules/expo/build/types.d.ts.map b/node_modules/expo/build/types.d.ts.map
+deleted file mode 100644
+index 890eb6c..0000000
+--- a/node_modules/expo/build/types.d.ts.map
++++ /dev/null
+@@ -1 +0,0 @@
+-{"version":3,"file":"types.d.ts","sourceRoot":"","sources":["../src/types.ts"],"names":[],"mappings":"AACA,mBAAmB,yBAAyB,CAAC"}
+\ No newline at end of file
+diff --git a/node_modules/expo/src/Expo.ts b/node_modules/expo/src/Expo.ts
+index 99c0154..271c118 100644
+--- a/node_modules/expo/src/Expo.ts
++++ b/node_modules/expo/src/Expo.ts
+@@ -20,4 +20,11 @@ export {
+   reloadAppAsync,
+ } from 'expo-modules-core';
+ 
++export type {
++  SharedRef as SharedRefType,
++  EventEmitter as EventEmitterType,
++  NativeModule as NativeModuleType,
++  SharedObject as SharedObjectType,
++} from 'expo-modules-core/types';
++
+ export { useEvent, useEventListener } from './hooks/useEvent';
+diff --git a/node_modules/expo/src/types.ts b/node_modules/expo/src/types.ts
+deleted file mode 100644
+index 846229d..0000000
+--- a/node_modules/expo/src/types.ts
++++ /dev/null
+@@ -1,2 +0,0 @@
+-// Re-exports type declarations that may conflict with classes (values) exported from the main index.ts
+-export type * from 'expo-modules-core/types';

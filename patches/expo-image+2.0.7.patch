@@ -1,0 +1,67 @@
+# This patch is needed to fix the build error in expo-image@2.0.7
+# The error is caused by the use of the SharedRef type from expo/types
+# https://github.com/expo/expo/issues/34810#issuecomment-3034496901
+
+diff --git a/node_modules/expo-image/build/Image.types.d.ts b/node_modules/expo-image/build/Image.types.d.ts
+index 493fd68..9f1e760 100644
+--- a/node_modules/expo-image/build/Image.types.d.ts
++++ b/node_modules/expo-image/build/Image.types.d.ts
+@@ -1,5 +1,4 @@
+-import type { NativeModule, SharedRef } from 'expo';
+-import type { SharedRef as SharedRefType } from 'expo/types';
++import type { NativeModule, SharedRef, SharedRefType } from 'expo';
+ import { ImageStyle as RNImageStyle, ViewProps, StyleProp, ViewStyle, View } from 'react-native';
+ import ExpoImage from './ExpoImage';
+ export type ImageSource = {
+diff --git a/node_modules/expo-image/build/utils.d.ts b/node_modules/expo-image/build/utils.d.ts
+index 78c5eba..1141cde 100644
+--- a/node_modules/expo-image/build/utils.d.ts
++++ b/node_modules/expo-image/build/utils.d.ts
+@@ -1,4 +1,4 @@
+-import type { SharedRef as SharedRefType } from 'expo/types';
++import type { SharedRefType } from 'expo';
+ import { ImageContentFit, ImageContentPosition, ImageContentPositionObject, ImageProps, ImageTransition } from './Image.types';
+ /**
+  * If the `contentFit` is not provided, it's resolved from the equivalent `resizeMode` prop
+diff --git a/node_modules/expo-image/build/web/useSourceSelection.d.ts b/node_modules/expo-image/build/web/useSourceSelection.d.ts
+index d267484..a37e7f6 100644
+--- a/node_modules/expo-image/build/web/useSourceSelection.d.ts
++++ b/node_modules/expo-image/build/web/useSourceSelection.d.ts
+@@ -1,4 +1,4 @@
+-import type { SharedRef as SharedRefType } from 'expo/types';
++import type { SharedRefType } from 'expo';
+ import React from 'react';
+ import { ImageSource } from '../Image.types';
+ export interface SrcSetSource extends ImageSource {
+diff --git a/node_modules/expo-image/src/Image.types.ts b/node_modules/expo-image/src/Image.types.ts
+index 63445be..7ad513e 100644
+--- a/node_modules/expo-image/src/Image.types.ts
++++ b/node_modules/expo-image/src/Image.types.ts
+@@ -1,5 +1,4 @@
+-import type { NativeModule, SharedRef } from 'expo';
+-import type { SharedRef as SharedRefType } from 'expo/types';
++import type { NativeModule, SharedRef, SharedRefType } from 'expo';
+ import { ImageStyle as RNImageStyle, ViewProps, StyleProp, ViewStyle, View } from 'react-native';
+ 
+ import ExpoImage from './ExpoImage';
+diff --git a/node_modules/expo-image/src/utils.ts b/node_modules/expo-image/src/utils.ts
+index 6006d57..e6dc1b2 100644
+--- a/node_modules/expo-image/src/utils.ts
++++ b/node_modules/expo-image/src/utils.ts
+@@ -1,5 +1,5 @@
+ import { SharedRef } from 'expo';
+-import type { SharedRef as SharedRefType } from 'expo/types';
++import type { SharedRefType } from 'expo';
+ 
+ import {
+   ImageContentFit,
+diff --git a/node_modules/expo-image/src/web/useSourceSelection.ts b/node_modules/expo-image/src/web/useSourceSelection.ts
+index 9c523e6..cfea0ad 100644
+--- a/node_modules/expo-image/src/web/useSourceSelection.ts
++++ b/node_modules/expo-image/src/web/useSourceSelection.ts
+@@ -1,4 +1,4 @@
+-import type { SharedRef as SharedRefType } from 'expo/types';
++import type { SharedRefType } from 'expo';
+ import React, { useState } from 'react';
+ 
+ import { ImageProps, ImageSource } from '../Image.types';
