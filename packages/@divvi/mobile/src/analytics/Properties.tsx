@@ -805,7 +805,6 @@ interface FiatExchangeEventsProperties {
     fiatAccountSchema: FiatAccountSchema
     provider: string
     flow: CICOFlow
-    step: 'one' | 'two'
   }
   [FiatExchangeEvents.cico_fc_link_account_provider_website]: {
     fiatAccountSchema: FiatAccountSchema

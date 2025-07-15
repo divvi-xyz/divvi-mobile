@@ -50,13 +50,13 @@ import SimplexScreen from 'src/fiatExchanges/SimplexScreen'
 import Spend, { spendScreenOptions } from 'src/fiatExchanges/Spend'
 import WithdrawSpend from 'src/fiatExchanges/WithdrawSpend'
 import FiatDetailsScreen from 'src/fiatconnect/FiatDetailsScreen'
-import KycLanding from 'src/fiatconnect/KycLanding'
 import FiatConnectLinkAccountScreen from 'src/fiatconnect/LinkAccountScreen'
 import FiatConnectRefetchQuoteScreen from 'src/fiatconnect/RefetchQuoteScreen'
 import FiatConnectReviewScreen from 'src/fiatconnect/ReviewScreen'
 import FiatConnectTransferStatusScreen from 'src/fiatconnect/TransferStatusScreen'
 import KycDenied from 'src/fiatconnect/kyc/KycDenied'
 import KycExpired from 'src/fiatconnect/kyc/KycExpired'
+import KycInactive from 'src/fiatconnect/kyc/KycInactive'
 import KycPending from 'src/fiatconnect/kyc/KycPending'
 import NotificationCenter from 'src/home/NotificationCenter'
 import { currentLanguageSelector } from 'src/i18n/selectors'
@@ -434,9 +434,9 @@ const settingsScreens = (Navigator: typeof Stack) => (
       component={FiatConnectLinkAccountScreen}
     />
     <Navigator.Screen
-      options={KycLanding.navigationOptions}
-      name={Screens.KycLanding}
-      component={KycLanding}
+      options={KycInactive.navigationOptions}
+      name={Screens.KycInactive}
+      component={KycInactive}
     />
     <Navigator.Screen
       options={headerWithBackButton}
