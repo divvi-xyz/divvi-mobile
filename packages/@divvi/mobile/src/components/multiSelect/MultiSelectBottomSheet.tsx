@@ -1,8 +1,8 @@
 import { BottomSheetModal, BottomSheetProps } from '@gorhom/bottom-sheet'
+import { Image } from 'expo-image'
 import React, { Dispatch, SetStateAction, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import { ScrollView } from 'react-native-gesture-handler'
 import BottomSheetBase from 'src/components/BottomSheetBase'
 import BottomSheetScrollView from 'src/components/BottomSheetScrollView'
@@ -143,7 +143,7 @@ function OptionLineItem({ onPress, text, iconUrl, isSelected }: OptionLineItemPr
       <Touchable style={styles.option} onPress={onPress}>
         <View style={styles.optionRow}>
           <View style={styles.leftColumn}>
-            <FastImage source={{ uri: iconUrl }} style={styles.icon} testID={`${text}-icon`} />
+            <Image source={{ uri: iconUrl }} style={styles.icon} testID={`${text}-icon`} />
           </View>
           <View style={styles.centerColumn}>
             <Text numberOfLines={1} style={styles.textStyle}>

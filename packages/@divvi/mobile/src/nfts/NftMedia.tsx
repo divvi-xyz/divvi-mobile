@@ -1,6 +1,6 @@
+import { Image } from 'expo-image'
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import Video, { ResizeMode } from 'react-native-video'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { NftEvents } from 'src/analytics/Events'
@@ -153,41 +153,52 @@ export default function NftMedia({
             <Placeholder mediaType="video" testID={`${testID}/VideoPlaceholder`} />
           </View>
         </View>
+      ) : !imageUrl ? (
+        ErrorComponent
       ) : (
-        <FastImage
-          key={`${nft.contractAddress}-${nft.tokenId}-${reloadAttempt}`}
-          testID={testID}
-          style={{
-            borderRadius,
-            height: shouldAutoScaleHeight ? scaledHeight : height,
-            width,
-          }}
-          source={{
-            uri: imageUrl,
-            headers: {
-              origin: networkConfig.nftsAppUrl,
-            },
-          }}
-          onLoad={({ nativeEvent: { width, height } }) => {
-            const aspectRatio = width / height
-            setScaledHeight(variables.width / aspectRatio)
-          }}
-          onLoadEnd={handleLoadSuccess}
-          onError={handleLoadError}
-          resizeMode={
-            shouldAutoScaleHeight ? FastImage.resizeMode.contain : FastImage.resizeMode.cover
-          }
-        >
+        <View>
+          <Image
+            key={`${nft.contractAddress}-${nft.tokenId}-${reloadAttempt}`}
+            testID={testID}
+            style={{
+              borderRadius,
+              height: shouldAutoScaleHeight ? scaledHeight : height,
+              width,
+            }}
+            source={{
+              uri: imageUrl,
+              headers: {
+                origin: networkConfig.nftsAppUrl,
+              },
+            }}
+            onLoad={({ source }) => {
+              const aspectRatio = source.width / source.height
+              setScaledHeight(variables.width / aspectRatio)
+              handleLoadSuccess()
+            }}
+            onError={handleLoadError}
+            contentFit={shouldAutoScaleHeight ? 'contain' : 'cover'}
+          />
           {status === 'loading' && (
-            <Placeholder
-              height={shouldAutoScaleHeight ? scaledHeight : height}
-              width={width}
-              borderRadius={borderRadius}
-              testID={`${testID}/ImagePlaceholder`}
-              mediaType="image"
-            />
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            >
+              <Placeholder
+                height={shouldAutoScaleHeight ? scaledHeight : height}
+                width={width}
+                borderRadius={borderRadius}
+                testID={`${testID}/ImagePlaceholder`}
+                mediaType="image"
+              />
+            </View>
           )}
-        </FastImage>
+        </View>
       )}
     </>
   )

@@ -1,8 +1,8 @@
 import { BottomSheetView } from '@gorhom/bottom-sheet'
+import { Image } from 'expo-image'
 import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { HomeEvents } from 'src/analytics/Events'
@@ -97,7 +97,7 @@ export default function DivviBottomSheet() {
               <LogoHeart size={Spacing.Regular16} translateY={3} />
               {' ' + t('divviBottomSheet.body_part3')}
               <View style={styles.inlineImageWrapper}>
-                <FastImage style={styles.inlineImage} source={divviPie} />
+                <Image style={styles.inlineImage} source={divviPie} />
               </View>
               {t('divviBottomSheet.body_part4')}
             </Text>
