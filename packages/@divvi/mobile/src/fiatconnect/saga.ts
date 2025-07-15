@@ -11,7 +11,6 @@ import {
   TransferResponse,
 } from '@fiatconnect/fiatconnect-types'
 import BigNumber from 'bignumber.js'
-import { KycStatus as PersonaKycStatus } from 'src/account/reducer'
 import { showError, showMessage } from 'src/alert/actions'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { FiatExchangeEvents } from 'src/analytics/Events'
@@ -47,7 +46,6 @@ import {
   fiatAccountUsed,
   kycTryAgain,
   kycTryAgainCompleted,
-  personaFinished,
   postKyc as postKycAction,
   refetchQuote,
   refetchQuoteCompleted,
@@ -86,8 +84,6 @@ import { Address, encodeFunctionData, erc20Abi } from 'viem'
 const TAG = 'FiatConnectSaga'
 
 const KYC_WAIT_TIME_MILLIS = 3000
-
-const PERSONA_SUCCESS_STATUSES = new Set([PersonaKycStatus.Approved, PersonaKycStatus.Completed])
 
 export function* handleFetchFiatConnectQuotes({
   payload: params,
@@ -644,40 +640,6 @@ export function* handleSelectFiatConnectQuote({
       })
       const fiatConnectKycStatus = getKycStatusResponse.kycStatus[kycSchema]
       switch (fiatConnectKycStatus) {
-        case FiatConnectKycStatus.KycNotCreated:
-          if (PERSONA_SUCCESS_STATUSES.has(getKycStatusResponse.persona)) {
-            // If user has Persona KYC on file, just submit it and continue to account management.
-            yield* call(postKyc, {
-              providerInfo: quote.quote.provider,
-              kycSchema,
-            })
-            // We also need to save a user's quote parameters so we can re-fetch if KYC takes a long
-            // time to process.
-            yield* put(
-              cacheQuoteParams({
-                providerId: quote.getProviderId(),
-                kycSchema,
-                cachedQuoteParams: {
-                  cryptoAmount: quote.getCryptoAmount(),
-                  fiatAmount: quote.getFiatAmount(),
-                  flow: quote.flow,
-                  cryptoType: quote.getCryptoCurrency(),
-                  fiatType: quote.getFiatType(),
-                },
-              })
-            )
-            break
-          } else {
-            // If no Persona KYC on file, navigate to Persona
-            navigate(Screens.KycLanding, {
-              flow: quote.flow,
-              quote,
-              personaKycStatus: getKycStatusResponse.persona,
-              step: 'one',
-            })
-            yield* put(selectFiatConnectQuoteCompleted())
-            return
-          }
         // If approved or pending, continue as normal and handle account management
         case FiatConnectKycStatus.KycApproved:
         case FiatConnectKycStatus.KycPending:
@@ -694,6 +656,14 @@ export function* handleSelectFiatConnectQuote({
           return
         case FiatConnectKycStatus.KycExpired:
           navigate(Screens.KycExpired, {
+            flow: quote.flow,
+            quote,
+          })
+          yield* put(selectFiatConnectQuoteCompleted())
+          return
+        // If KYC is not created, show placeholder screen
+        case FiatConnectKycStatus.KycNotCreated:
+          navigate(Screens.KycInactive, {
             flow: quote.flow,
             quote,
           })
@@ -766,8 +736,6 @@ export function* handlePostKyc({ payload }: ReturnType<typeof postKycAction>) {
     // kyc will be required, but will be pending with the provider because it was
     // just submitted.
     yield* call(_checkFiatAccountAndNavigate, { quote, isKycRequired: true, isKycApproved: false })
-    // clear persona status
-    yield* put(personaFinished())
   } catch (error) {
     // Error while attempting to post to kyc or selecting fiat account
     Logger.debug(
@@ -786,7 +754,6 @@ export function* handlePostKyc({ payload }: ReturnType<typeof postKycAction>) {
       amount: amount,
     })
     yield* delay(500) // to avoid screen flash
-    yield* put(personaFinished())
   }
 }
 
@@ -808,12 +775,11 @@ export function* _checkFiatAccountAndNavigate({
 
   // This is expected when the user has not yet created a fiatAccount with the provider
   if (!fiatAccount) {
-    // If the quote has kyc, navigate to the second step of the KycLanding page
+    // If the quote has kyc, navigate to the KYC placeholder screen
     if (isKycRequired) {
-      navigate(Screens.KycLanding, {
+      navigate(Screens.KycInactive, {
         quote,
         flow: quote.flow,
-        step: 'two',
       })
     } else {
       navigate(Screens.FiatConnectLinkAccount, {
@@ -1111,7 +1077,7 @@ export function* handleKycTryAgain({ payload }: ReturnType<typeof kycTryAgain>) 
       kycSchema,
     })
 
-    navigate(Screens.KycLanding, { quote, flow, step: 'one' })
+    navigate(Screens.KycInactive, { quote, flow })
   } catch (error) {
     Logger.error(TAG, 'Kyc try again failed', error)
     yield* put(showError(ErrorMessages.KYC_TRY_AGAIN_FAILED))

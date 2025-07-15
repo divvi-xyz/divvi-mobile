@@ -1,12 +1,11 @@
 import { FiatConnectApiClient } from '@fiatconnect/fiatconnect-sdk'
-import { KycSchema, KycStatus as FiatConnectKycStatus } from '@fiatconnect/fiatconnect-types'
+import { KycStatus as FiatConnectKycStatus, KycSchema } from '@fiatconnect/fiatconnect-types'
 import { FetchMock } from 'jest-fetch-mock/types'
-import { KycStatus as PersonaKycStatus } from 'src/account/reducer'
+
 import { FiatConnectProviderInfo } from 'src/fiatconnect'
 import { getFiatConnectClient } from 'src/fiatconnect/clients'
 import {
   AUTH_COOKIE,
-  createPersonaAccount,
   deleteKyc,
   getAuthHeaders,
   getKycStatus,
@@ -167,7 +166,6 @@ describe('In House Liquidity Calls', () => {
         kycStatus: {
           [KycSchema.PersonalDataAndDocuments]: FiatConnectKycStatus.KycApproved,
         },
-        persona: PersonaKycStatus.Approved,
       }
       jest
         .mocked(makeRequest)
@@ -254,54 +252,6 @@ describe('In House Liquidity Calls', () => {
         providerInfo: mockProviderInfo,
         path: '/fiatconnect/kyc/provider-id/PersonalDataAndDocuments',
         options: { method: 'DELETE' },
-      })
-    })
-  })
-
-  describe('createPersonaAccount', () => {
-    it('throws if response is not OK or 409', async () => {
-      jest.mocked(makeRequest).mockResolvedValueOnce(new Response('', { status: 418 }))
-      await expect(
-        createPersonaAccount({
-          walletAddress: 'some-address',
-        })
-      ).rejects.toEqual(
-        new Error('Got non-ok/409 response from IHL while creating Persona account: 418')
-      )
-      expect(makeRequest).toHaveBeenCalledWith({
-        path: '/persona/account/create',
-        options: {
-          method: 'POST',
-          body: '{"accountAddress":"some-address"}',
-        },
-      })
-    })
-    it('silently succeeds if response is OK', async () => {
-      jest.mocked(makeRequest).mockResolvedValueOnce(new Response())
-      const createPersonaAccountResponse = await createPersonaAccount({
-        walletAddress: 'some-address',
-      })
-      expect(createPersonaAccountResponse).toBeUndefined()
-      expect(makeRequest).toHaveBeenCalledWith({
-        path: '/persona/account/create',
-        options: {
-          method: 'POST',
-          body: '{"accountAddress":"some-address"}',
-        },
-      })
-    })
-    it('silently succeeds if response is 409', async () => {
-      jest.mocked(makeRequest).mockResolvedValueOnce(new Response('', { status: 409 }))
-      const createPersonaAccountResponse = await createPersonaAccount({
-        walletAddress: 'some-address',
-      })
-      expect(createPersonaAccountResponse).toBeUndefined()
-      expect(makeRequest).toHaveBeenCalledWith({
-        path: '/persona/account/create',
-        options: {
-          method: 'POST',
-          body: '{"accountAddress":"some-address"}',
-        },
       })
     })
   })

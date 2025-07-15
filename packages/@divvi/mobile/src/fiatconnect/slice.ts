@@ -73,7 +73,6 @@ export interface State {
       [kycSchema: string]: CachedQuoteParams
     }
   }
-  personaInProgress: boolean
 }
 
 export const initialState: State = {
@@ -89,7 +88,6 @@ export const initialState: State = {
   sendingFiatAccountStatus: SendingFiatAccountStatus.NotSending,
   kycTryAgainLoading: false,
   cachedQuoteParams: {},
-  personaInProgress: false,
 }
 
 export type FiatAccount = ObfuscatedFiatAccountData & {
@@ -330,14 +328,8 @@ export const slice = createSlice({
     kycTryAgainCompleted: (state) => {
       state.kycTryAgainLoading = false
     },
-    personaStarted: (state) => {
-      state.personaInProgress = true
-    },
     postKyc: (_state, action: PayloadAction<{ quote: FiatConnectQuote }>) => {
       // no state update
-    },
-    personaFinished: (state) => {
-      state.personaInProgress = false
     },
   },
   extraReducers: (builder) => {
@@ -352,7 +344,6 @@ export const slice = createSlice({
       selectFiatConnectQuoteLoading: false,
       sendingFiatAccountStatus: SendingFiatAccountStatus.NotSending,
       kycTryAgainLoading: false,
-      personaInProgress: false,
     }))
   },
 })
@@ -383,8 +374,6 @@ export const {
   kycTryAgain,
   kycTryAgainCompleted,
   cacheQuoteParams,
-  personaStarted,
-  personaFinished,
   postKyc,
 } = slice.actions
 

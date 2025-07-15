@@ -491,14 +491,6 @@ export enum WalletConnectEvents {
   wc_copy_request_payload = 'wc_copy_request_payload',
 }
 
-export enum CICOEvents {
-  persona_kyc_start = 'persona_kyc_start',
-  persona_kyc_success = 'persona_kyc_success',
-  persona_kyc_failed = 'persona_kyc_failed',
-  persona_kyc_cancel = 'persona_kyc_cancel',
-  persona_kyc_error = 'persona_kyc_error',
-}
-
 export enum DappExplorerEvents {
   dapp_impression = 'dapp_impression',
   dapp_open = 'dapp_open',

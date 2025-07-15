@@ -3725,6 +3725,15 @@ export const v250Schema = {
   },
 }
 
+export const v251Schema = {
+  ...v250Schema,
+  _persist: {
+    ...v250Schema._persist,
+    version: 251,
+  },
+  fiatConnect: _.omit(v250Schema.fiatConnect, 'personaInProgress'),
+}
+
 export function getLatestSchema(): Partial<RootState> {
-  return v250Schema as Partial<RootState>
+  return v251Schema as Partial<RootState>
 }

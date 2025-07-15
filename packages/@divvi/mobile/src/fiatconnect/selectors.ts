@@ -18,7 +18,6 @@ export const sendingFiatAccountStatusSelector = (state: RootState) =>
   state.fiatConnect.sendingFiatAccountStatus
 export const kycTryAgainLoadingSelector = (state: RootState) => state.fiatConnect.kycTryAgainLoading
 export const cachedQuoteParamsSelector = (state: RootState) => state.fiatConnect.cachedQuoteParams
-export const personaInProgressSelector = (state: RootState) => state.fiatConnect.personaInProgress
 export const getCachedFiatConnectTransferSelector =
   (txHash: string) =>
   (state: RootState): CachedTransferDetails | undefined =>

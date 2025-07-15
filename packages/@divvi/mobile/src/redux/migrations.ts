@@ -2053,4 +2053,8 @@ export const migrations = {
   250: (state: any) => ({
     ...(_.omit(state, 'divviProtocol') as any),
   }),
+  251: (state: any) => ({
+    ...state,
+    fiatConnect: _.omit(state.fiatConnect, 'personaInProgress'),
+  }),
 }

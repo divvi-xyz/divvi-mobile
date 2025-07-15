@@ -10,7 +10,6 @@ import {
   AssetsEvents,
   AuthenticationEvents,
   BuilderHooksEvents,
-  CICOEvents,
   CeloExchangeEvents,
   CeloNewsEvents,
   CoinbasePayEvents,
@@ -1037,14 +1036,6 @@ interface WalletConnectProperties {
   [WalletConnectEvents.wc_copy_request_payload]: WalletConnectRequestDefaultProperties
 }
 
-interface CICOEventsProperties {
-  [CICOEvents.persona_kyc_start]: undefined
-  [CICOEvents.persona_kyc_success]: undefined
-  [CICOEvents.persona_kyc_failed]: undefined
-  [CICOEvents.persona_kyc_cancel]: undefined
-  [CICOEvents.persona_kyc_error]: undefined
-}
-
 interface DappProperties {
   categories: string[]
   dappId: string
@@ -1713,7 +1704,6 @@ export type AnalyticsPropertiesList = AppEventsProperties &
   PerformanceProperties &
   NavigationProperties &
   WalletConnectProperties &
-  CICOEventsProperties &
   DappExplorerEventsProperties &
   WebViewEventsProperties &
   CoinbasePayEventsProperties &
