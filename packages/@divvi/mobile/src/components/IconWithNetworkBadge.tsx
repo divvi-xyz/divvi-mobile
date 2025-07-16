@@ -1,6 +1,6 @@
+import { Image } from 'expo-image'
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import { useSelector } from 'src/redux/hooks'
 import { networksIconSelector } from 'src/tokens/selectors'
 import { NetworkId } from 'src/transactions/types'
@@ -50,7 +50,7 @@ export default function IconWithNetworkBadge({
     <View>
       {children}
       {!!networkImageUrl && (
-        <FastImage
+        <Image
           source={{
             uri: networkImageUrl,
           }}
