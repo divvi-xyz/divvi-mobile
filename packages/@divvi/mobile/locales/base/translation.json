@@ -1615,14 +1615,13 @@
       "tryAgain": "Verify again",
       "switch": "Switch withdraw method"
     },
-    "tryAgainFailed": "There was an error clearing KYC information. Please try again"
-  },
-  "KycInactive": {
-    "title": "Identity Verification Required",
-    "description": "This payment method requires identity verification to comply with regulations.",
-    "provider": "Provider: {{provider}}",
-    "nextSteps": "Identity verification is unavailable. Please try a different payment method or check back later.",
-    "goBack": "Choose Different Method"
+    "tryAgainFailed": "There was an error clearing KYC information. Please try again",
+    "inactive": {
+      "title": "Identity verification is not available",
+      "description": "This payment method requires identity verification to comply with regulations.",
+      "provider": "Provider: {{provider}}",
+      "goBack": "Choose Different Method"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "Transaction Details",

@@ -2,21 +2,17 @@ import { RouteProp } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { FiatExchangeEvents } from 'src/analytics/Events'
 import BackButton from 'src/components/BackButton'
-import Button, { BtnTypes } from 'src/components/Button'
-import { getTranslationStrings } from 'src/fiatconnect/LinkAccountScreen'
-import i18n from 'src/i18n'
+import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
 import { emptyHeader } from 'src/navigator/Headers'
 import { navigateBack } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
-import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
-import { Spacing } from 'src/styles/styles'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.KycInactive>
 
@@ -35,22 +31,20 @@ export default function KycInactive({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>{t('KycInactive.title')}</Text>
-        <Text style={styles.description}>{t('KycInactive.description')}</Text>
-        <Text style={styles.providerName}>
-          {t('KycInactive.provider', { provider: quote.getProviderName() })}
-        </Text>
-        <Text style={styles.nextSteps}>{t('KycInactive.nextSteps')}</Text>
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          onPress={handleGoBack}
-          text={t('KycInactive.goBack')}
-          type={BtnTypes.SECONDARY}
-          style={styles.button}
-        />
-      </View>
+      <Text style={styles.title}>{t('fiatConnectKycStatusScreen.inactive.title')}</Text>
+      <Text testID="descriptionText" style={styles.description}>
+        {t('fiatConnectKycStatusScreen.inactive.description')}
+      </Text>
+      <Text style={styles.providerName}>
+        {t('fiatConnectKycStatusScreen.inactive.provider', { provider: quote.getProviderName() })}
+      </Text>
+      <Button
+        style={styles.button}
+        onPress={handleGoBack}
+        text={t('fiatConnectKycStatusScreen.inactive.goBack')}
+        type={BtnTypes.PRIMARY}
+        size={BtnSizes.MEDIUM}
+      />
     </SafeAreaView>
   )
 }
@@ -77,44 +71,28 @@ KycInactive.navigationOptions = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.backgroundPrimary,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: Spacing.Thick24,
-    paddingTop: Spacing.Thick24,
+    flexDirection: 'column',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
-    ...typeScale.titleMedium,
-    textAlign: 'center',
-    marginBottom: Spacing.Regular16,
-    color: colors.contentPrimary,
+    ...typeScale.titleSmall,
+    marginHorizontal: 16,
   },
   description: {
     ...typeScale.bodyMedium,
     textAlign: 'center',
-    marginBottom: Spacing.Regular16,
-    color: colors.contentSecondary,
+    marginVertical: 12,
+    marginHorizontal: 24,
   },
   providerName: {
     ...typeScale.bodyMedium,
     textAlign: 'center',
-    marginBottom: Spacing.Regular16,
-    color: colors.contentPrimary,
-    fontWeight: 'bold',
-  },
-  nextSteps: {
-    ...typeScale.bodySmall,
-    textAlign: 'center',
-    color: colors.contentSecondary,
-    marginBottom: Spacing.Thick24,
-  },
-  buttonContainer: {
-    paddingHorizontal: Spacing.Thick24,
-    paddingBottom: Spacing.Thick24,
+    marginVertical: 12,
+    marginHorizontal: 24,
   },
   button: {
-    marginTop: Spacing.Regular16,
+    marginTop: 12,
+    marginBottom: 100,
   },
 })
