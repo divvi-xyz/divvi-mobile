@@ -119,7 +119,9 @@ describe('KeychainAccounts', () => {
     it('fails with an invalid private key', async () => {
       await expect(
         accounts.addAccount('this is not a valid private key', 'password')
-      ).rejects.toThrowError('invalid private key, expected hex or 32 bytes, got string')
+      ).rejects.toThrowError(
+        'private key must be hex string or Uint8Array, cause: Error: hex string expected, got unpadded hex of length 31'
+      )
     })
     it('fails if the account already exists', async () => {
       await accounts.addAccount(mockPrivateKey, 'password')
