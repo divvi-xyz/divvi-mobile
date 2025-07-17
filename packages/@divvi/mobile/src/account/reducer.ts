@@ -51,7 +51,9 @@ interface UserContactDetails {
   thumbnailPath: string | null
 }
 
-// @knip/ignore: re-exported as FiatConnectKycStatus
+/*
+ * @public re-exported as FiatConnectKycStatus
+ */
 export enum KycStatus {
   Created = 'created',
   Completed = 'completed',
