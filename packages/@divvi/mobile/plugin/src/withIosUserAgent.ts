@@ -1,40 +1,35 @@
 // Inspired by https://github.com/expo/expo/blob/03e99016c9c5b9ad47864b204511ded2dec80375/packages/%40expo/config-plugins/src/ios/Maps.ts#L6
 import { ConfigPlugin, withAppDelegate } from '@expo/config-plugins'
 import { mergeContents, MergeResults } from '@expo/config-plugins/build/utils/generateCode'
-import {
-  APPLICATION_DID_FINISH_LAUNCHING_LINE_MATCHER,
-  APPLICATION_DID_FINISH_LAUNCHING_LINE_MATCHER_MULTILINE,
-} from './consts'
 
 function getUserAgentCode(appName: string) {
   return `
-RCTSetCustomNSURLSessionConfigurationProvider(^NSURLSessionConfiguration *{
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    
-    NSDictionary *infoDictionary = NSBundle.mainBundle.infoDictionary;
-    NSString *appVersion = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
-    UIDevice *device = UIDevice.currentDevice;
-    // Format we want: App/1.0.0 (iOS 15.0; iPhone)
-    NSString *userAgent = [NSString stringWithFormat:@"${appName}/%@ (%@ %@; %@)", appVersion, device.systemName, device.systemVersion, device.model];
-    configuration.HTTPAdditionalHeaders = @{ @"User-Agent": userAgent };
-    
-    return configuration;
-  });
+    RCTSetCustomNSURLSessionConfigurationProvider { () -> URLSessionConfiguration in
+      let configuration = URLSessionConfiguration.default
+      
+      let infoDictionary = Bundle.main.infoDictionary
+      let appVersion = infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+      let device = UIDevice.current
+      // Format we want: App/1.0.0 (iOS 15.0; iPhone)
+      let userAgent = "${appName}/\\(appVersion) (\\(device.systemName) \\(device.systemVersion); \\(device.model))"
+      configuration.httpAdditionalHeaders = ["User-Agent": userAgent]
+      
+      return configuration
+    }
 `
 }
 
 function addUserAgentCode(src: string, appName: string): MergeResults {
-  // tests if the opening `{` is in the new line
-  const isHeaderMultiline = APPLICATION_DID_FINISH_LAUNCHING_LINE_MATCHER_MULTILINE.test(src)
+  // Match just the opening brace line of the didFinishLaunchingWithOptions method
+  // This is simpler and more reliable than matching the entire function signature
+  const braceRegex = /\s*\) -> Bool \{\s*$/m
 
   return mergeContents({
     tag: '@divvi/mobile/app-delegate-user-agent-code',
     src,
     newSrc: getUserAgentCode(appName),
-    anchor: APPLICATION_DID_FINISH_LAUNCHING_LINE_MATCHER,
-    // new line will be inserted right below matched anchor
-    // or two lines, if the `{` is in the new line
-    offset: isHeaderMultiline ? 2 : 1,
+    anchor: braceRegex,
+    offset: 1, // after the opening brace line
     comment: '//',
   })
 }
@@ -45,9 +40,9 @@ function addUserAgentCode(src: string, appName: string): MergeResults {
  */
 export const withIosUserAgent: ConfigPlugin<{ appName?: string }> = (config, { appName }) => {
   return withAppDelegate(config, (config) => {
-    if (!['objc', 'objcpp'].includes(config.modResults.language)) {
+    if (config.modResults.language !== 'swift') {
       throw new Error(
-        `Cannot setup Divvi mobile because the project AppDelegate is not a supported language: ${config.modResults.language}`
+        `Cannot setup Divvi mobile because the project AppDelegate is not Swift: ${config.modResults.language}`
       )
     }
 
