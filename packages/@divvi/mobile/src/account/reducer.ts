@@ -51,7 +51,7 @@ interface UserContactDetails {
   thumbnailPath: string | null
 }
 
-/*
+/**
  * @public re-exported as FiatConnectKycStatus
  */
 export enum KycStatus {
