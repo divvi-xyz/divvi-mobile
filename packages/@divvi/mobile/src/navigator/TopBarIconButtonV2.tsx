@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import * as React from 'react'
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import AppAnalytics from 'src/analytics/AppAnalytics'

@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 /**
  * Used to assure switch case exhaustiveness in TypeScript
  */
