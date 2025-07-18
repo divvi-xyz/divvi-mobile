@@ -52,7 +52,7 @@ export default function PhoneNumberInput({
   editable = true,
 }: Props) {
   const shouldRequestPhoneNumberRef = useRef(internationalPhoneNumber.length === 0)
-  const phoneInputRef = useRef<any>()
+  const phoneInputRef = useRef<any>(undefined)
   const flagEmoji = country?.emoji
   const countryCallingCode = country?.countryCallingCode ?? ''
   const numberPlaceholder = country?.countryPhonePlaceholder.national ?? ''

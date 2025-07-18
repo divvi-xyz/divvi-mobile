@@ -7,7 +7,7 @@ import { Dapp } from 'src/dapps/types'
 
 const TOAST_DISMISS_TIMEOUT = 5000
 
-const useDappFavoritedToast = (sectionListRef: React.RefObject<SectionList>) => {
+const useDappFavoritedToast = (sectionListRef: React.RefObject<SectionList | null>) => {
   const { t } = useTranslation()
 
   // do not use favoritedDapp to show / hide the toast, as the content of the toast depends on the dapp name during transitions

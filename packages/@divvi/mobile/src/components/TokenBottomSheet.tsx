@@ -57,7 +57,7 @@ export type TokenBottomSheetProps = {
   wrapWithModalProvider?: boolean
 } & (
   | { isScreen: true; forwardedRef?: undefined }
-  | { forwardedRef: RefObject<BottomSheetModalRefType>; isScreen?: false }
+  | { forwardedRef: RefObject<BottomSheetModalRefType | null>; isScreen?: false }
 )
 
 interface TokenOptionProps {

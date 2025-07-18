@@ -43,7 +43,7 @@ export default class KeyboardAwareScrollView extends React.Component<Props> {
     return this.scrollViewRef.current
   }
 
-  focusInputOrDismissKeyboard(inputRef: React.RefObject<TextInput>) {
+  focusInputOrDismissKeyboard(inputRef: React.RefObject<TextInput | null>) {
     const input = inputRef.current
     if (input) {
       this.focusInputAndScrollIntoView(input, this.scrollViewRef.current)

@@ -8,7 +8,7 @@ import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 
 interface Props {
-  forwardedRef: React.RefObject<BottomSheetModal>
+  forwardedRef: React.RefObject<BottomSheetModal | null>
   title?: string | null
   titleStyle?: TextStyle
   description?: string | null

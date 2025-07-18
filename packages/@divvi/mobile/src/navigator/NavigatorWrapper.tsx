@@ -67,7 +67,7 @@ export const NavigatorWrapper = () => {
   const { minRequiredVersion } = getDynamicConfigParams(
     DynamicConfigs[StatsigDynamicConfigs.APP_CONFIG]
   )
-  const routeNameRef = React.useRef<string>()
+  const routeNameRef = React.useRef<string>(undefined)
   const inSanctionedCountry = useSelector(userInSanctionedCountrySelector)
   const demoModeEnabled = useSelector(demoModeEnabledSelector)
 

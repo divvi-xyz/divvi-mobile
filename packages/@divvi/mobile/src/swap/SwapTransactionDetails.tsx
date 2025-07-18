@@ -19,10 +19,10 @@ import { SwapFeeAmount } from 'src/swap/types'
 import { TokenBalance } from 'src/tokens/slice'
 
 interface Props {
-  exchangeRateInfoBottomSheetRef: React.RefObject<BottomSheetModalRefType>
-  feeInfoBottomSheetRef: React.RefObject<BottomSheetModalRefType>
-  slippageInfoBottomSheetRef: React.RefObject<BottomSheetModalRefType>
-  estimatedDurationBottomSheetRef: React.RefObject<BottomSheetModalRefType>
+  exchangeRateInfoBottomSheetRef: React.RefObject<BottomSheetModalRefType | null>
+  feeInfoBottomSheetRef: React.RefObject<BottomSheetModalRefType | null>
+  slippageInfoBottomSheetRef: React.RefObject<BottomSheetModalRefType | null>
+  estimatedDurationBottomSheetRef: React.RefObject<BottomSheetModalRefType | null>
   slippagePercentage: string
   fromToken?: TokenBalance
   toToken?: TokenBalance

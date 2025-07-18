@@ -29,7 +29,7 @@ export default function AddAssetsBottomSheet({
   description,
   testId,
 }: {
-  forwardedRef: RefObject<BottomSheetModalRefType>
+  forwardedRef: RefObject<BottomSheetModalRefType | null>
   actions: AddAssetsAction[]
   title: string
   description: string

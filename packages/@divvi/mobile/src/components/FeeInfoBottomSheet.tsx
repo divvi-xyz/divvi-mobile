@@ -19,7 +19,7 @@ import { useTokenToLocalAmount } from 'src/tokens/hooks'
 import type { TokenBalance } from 'src/tokens/slice'
 
 interface Props {
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   appFee?: AppFeeAmount
   crossChainFee?: SwapFeeAmount
   networkFee?: SwapFeeAmount
