@@ -28,7 +28,7 @@ export default class KeyboardAwareScrollView extends React.Component<Props> {
       // in the hierarchy, otherwise the scroll into view has no effect
       requestAnimationFrame(() => {
         const currentlyFocusedField = TextInput.State.currentlyFocusedInput()
-        this.scrollInputIntoView(currentlyFocusedField, this.scrollViewRef.current)
+        this.scrollInputIntoView(currentlyFocusedField as any, this.scrollViewRef.current)
       })
     })
   }

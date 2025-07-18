@@ -73,7 +73,7 @@ export const NavigatorWrapper = () => {
 
   const dispatch = useDispatch()
 
-  useLogger(navigationRef)
+  useLogger({ current: navigationRef.current as any })
   useDeepLinks()
 
   const updateRequired = React.useMemo(() => {

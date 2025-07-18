@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import * as React from 'react'
-import { ColorValue, StyleProp, StyleSheet, Text, TextStyle, View } from 'react-native'
+import { ColorValue, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import i18n from 'src/i18n'
 import { LocalCurrencyCode, LocalCurrencySymbol } from 'src/localCurrency/consts'
 import { convertCurrencyToLocalAmount } from 'src/localCurrency/convert'
@@ -183,7 +183,7 @@ export default function CurrencyDisplay({
     }
 
     return (
-      <View style={[styles.bigContainer, style]} testID={testID}>
+      <View style={[styles.bigContainer, StyleSheet.flatten(style) as ViewStyle]} testID={testID}>
         {!hideSign && (
           <Text numberOfLines={1} style={[typeScale.bodyMedium, signStyle]}>
             {sign}
