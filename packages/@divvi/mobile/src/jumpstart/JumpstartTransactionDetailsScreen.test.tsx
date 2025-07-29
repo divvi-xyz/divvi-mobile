@@ -183,7 +183,9 @@ describe('JumpstartTransactionDetailsScreen', () => {
     expect(getByTestId('JumpstartContent/ReclaimButton')).toHaveTextContent('reclaim', {
       exact: false,
     })
-    expect(getByTestId('JumpstartContent/ErrorNotification/FetchReclaimStatus')).toBeTruthy()
+    await waitFor(() =>
+      expect(getByTestId('JumpstartContent/ErrorNotification/FetchReclaimStatus')).toBeTruthy()
+    )
   })
 
   it(`shows the enabled reclaim button if the funds were not yet claimed`, async () => {

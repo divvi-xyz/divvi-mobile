@@ -1,6 +1,6 @@
 import { Result } from '@badrap/result'
 import { FiatAccountSchema, FiatAccountType } from '@fiatconnect/fiatconnect-types'
-import { fireEvent, render } from '@testing-library/react-native'
+import { fireEvent, render, waitFor } from '@testing-library/react-native'
 import _ from 'lodash'
 import * as React from 'react'
 import { Provider } from 'react-redux'
@@ -235,7 +235,7 @@ describe('FiatDetailsScreen', () => {
 
     expect(getByTestId('submitButton')).toBeDisabled()
   })
-  it('shows validation error if the input field does not fulfill the requirement after delay', () => {
+  it('shows validation error if the input field does not fulfill the requirement after delay', async () => {
     const { getByText, getByTestId, queryByTestId } = render(
       <Provider store={store}>
         <FiatDetailsScreen {...mockScreenPropsWithAllowedValues} />
@@ -252,7 +252,7 @@ describe('FiatDetailsScreen', () => {
     // after delay
     expect(queryByTestId(/errorMessage-.+/)).toBeFalsy()
     jest.advanceTimersByTime(1500)
-    expect(getByTestId('errorMessage-accountNumber')).toBeTruthy()
+    await waitFor(() => expect(getByTestId('errorMessage-accountNumber')).toBeTruthy())
     expect(getByText('fiatAccountSchema.accountNumber.errorMessageDigit')).toBeTruthy()
     expect(getByTestId('submitButton')).toBeDisabled()
   })
