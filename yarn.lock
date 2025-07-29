@@ -2998,7 +2998,7 @@
     "@pnpm/resolve-workspace-range" "5.0.1"
     ramda "npm:@pnpm/ramda@0.28.1"
 
-"@react-native-async-storage/async-storage@2.1.2", "@react-native-async-storage/async-storage@^2.1.1":
+"@react-native-async-storage/async-storage@^2.1.1", "@react-native-async-storage/async-storage@^2.1.2":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-2.2.0.tgz#a3aa565253e46286655560172f4e366e8969f5ad"
   integrity sha512-gvRvjR5JAaUZF8tv2Kcq/Gbt3JHwbKFYfmb445rhOj6NUMx3qPLixmDx5pZAyb9at1bYvJ4/eTUipU5aki45xw==
@@ -3714,7 +3714,7 @@
     "@sentry/utils" "7.119.1"
     localforage "^1.8.1"
 
-"@sentry/react-native@^5.36.0", "@sentry/react-native@~6.14.0":
+"@sentry/react-native@^5.36.0", "@sentry/react-native@^6.14.0":
   version "5.36.0"
   resolved "https://registry.yarnpkg.com/@sentry/react-native/-/react-native-5.36.0.tgz#25f84cbe6623f4c7f55d10c8c8ab8f985a759fbb"
   integrity sha512-MPTN5Wb6wEplIVydh2oXOdLJYqCAWKvncN5TBPN5OG8XdCsDqF7LyH2Sz+SK2T3hMPKESl3StAMhrrNSmHDbNg==
@@ -6212,6 +6212,11 @@ base-64@^0.1.0:
   resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
   integrity sha1-eAqZyE59YAJgNhURxId2E78k9rs=
 
+base-64@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-1.0.0.tgz#09d0f2084e32a3fd08c2475b973788eee6ae8f4a"
+  integrity sha512-kwDPIFCGx0NZHog36dj+tHiwP4QMzsZ3AgMViUBKI0+V5n4U0ufTCUMhnQ04diaRI8EX/QcPfql7zlhZ7j4zgg==
+
 base64-js@^1.2.3, base64-js@^1.3.1, base64-js@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
@@ -8438,7 +8443,7 @@ expo-updates-interface@~1.1.0:
   resolved "https://registry.yarnpkg.com/expo-updates-interface/-/expo-updates-interface-1.1.0.tgz#62497d4647b381da9fdb68868ed180203ae737ef"
   integrity sha512-DeB+fRe0hUDPZhpJ4X4bFMAItatFBUPjw/TVSbJsaf3Exeami+2qbbJhWkcTMoYHOB73nOIcaYcWXYJnCJXO0w==
 
-expo@^53.0.20:
+expo@53.0.20, expo@^53.0.20:
   version "53.0.20"
   resolved "https://registry.yarnpkg.com/expo/-/expo-53.0.20.tgz#e11b553322de313d47c407367d8d48d3a073e3cc"
   integrity sha512-Nh+HIywVy9KxT/LtH08QcXqrxtUOA9BZhsXn3KCsAYA+kNb80M8VKN8/jfQF+I6CgeKyFKJoPNsWgI0y0VBGrA==
@@ -10744,11 +10749,6 @@ just-diff@^6.0.0:
   resolved "https://registry.yarnpkg.com/just-diff/-/just-diff-6.0.2.tgz#03b65908543ac0521caf6d8eb85035f7d27ea285"
   integrity sha512-S59eriX5u3/QhMNq3v/gm8Kd0w8OS6Tz2FS1NG4blv+z0MuQcBRJyFWjdovM0Rad4/P4aUPFtnkNjMjyMlMSYA==
 
-jwt-decode@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-3.1.2.tgz#3fb319f3675a2df0c2895c8f5e9fa4b67b04ed59"
-  integrity sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==
-
 jwt-decode@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-4.0.0.tgz#2270352425fd413785b2faf11f6e755c5151bd4b"
@@ -13007,11 +13007,6 @@ prettier-plugin-java@^2.6.4:
     lodash "4.17.21"
     prettier "3.2.5"
 
-prettier-quick@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/prettier-quick/-/prettier-quick-0.0.5.tgz#10912263ede6e99872f4d3655b6a8a205265d4ce"
-  integrity sha512-5zOMSPAK7JQMNWjtxAy35XPgRN8TQY+khgpNhznQ30Zsv6V0hOIjre8X5cTrtdqa3NKZWWF1+TNS5+1LX/3a0w==
-
 prettier@3.2.5:
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.2.5.tgz#e52bc3090586e824964a8813b09aba6233b28368"
@@ -13363,15 +13358,13 @@ react-native-app-control@^1.0.2:
   resolved "https://registry.yarnpkg.com/react-native-app-control/-/react-native-app-control-1.0.2.tgz#40f9e5a76cc56b44536d8e1cd6da4d9d0c5b248e"
   integrity sha512-894KjiVLRG3+tlz93B/+LfAYcRv7ZSrObMMYFaE66rMRq/1H7EUyKH6Gf6631bACBDmN81KKK04rsnFP/lzIFQ==
 
-react-native-auth0@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/react-native-auth0/-/react-native-auth0-4.6.0.tgz#ba70128966ff3e1fdc58fe1ce3c2b8e6347c7d59"
-  integrity sha512-XO5m5J3Bh0f1jIn8ztkE5XOGhOmqX1SCVSIMqDvI6vvjZ/QI8TZdnY6kO+9vs32u38kAWw3eQtNM0liyPyOzKA==
+react-native-auth0@5.0.0-beta.3:
+  version "5.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/react-native-auth0/-/react-native-auth0-5.0.0-beta.3.tgz#3dda2c4d1335ab960b4a3fb2a02fa464c66e8f71"
+  integrity sha512-08RBRuBkSM7k4OpQw6DxEZOhMGJ0ZJDON05Uk7a19J2YKwaaqSr3rhb27hG6AmYRQIF97aOZU31OUdPT074Qtg==
   dependencies:
-    base-64 "^0.1.0"
-    jwt-decode "^3.1.2"
-    prettier-quick "^0.0.5"
-    prop-types "^15.8.1"
+    base-64 "^1.0.0"
+    jwt-decode "^4.0.0"
     url "^0.11.4"
 
 react-native-config@^1.5.5:
@@ -13401,7 +13394,7 @@ react-native-fs@^2.14.1:
     base-64 "^0.1.0"
     utf8 "^3.0.0"
 
-react-native-gesture-handler@^2.23.1, react-native-gesture-handler@~2.24.0:
+react-native-gesture-handler@^2.23.1, react-native-gesture-handler@^2.24.0:
   version "2.27.1"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.27.1.tgz#8865b2345f4c65536517f20cedc420481fc72d49"
   integrity sha512-57TUWerhdz589OcDD21e/YlL923Ma4OIpyWsP0hy7gItBCPm5d7qIUW7Yo/cS2wo1qDdOhJaNlvlBD1lDou1fA==
@@ -13464,7 +13457,7 @@ react-native-modal@^14.0.0-rc.1:
   dependencies:
     react-native-animatable "1.4.0"
 
-react-native-pager-view@6.7.1, react-native-pager-view@^6.4.1:
+react-native-pager-view@^6.4.1, react-native-pager-view@^6.7.1:
   version "6.8.1"
   resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.8.1.tgz#fa0ec09ea7c44190c7c013d75dd09fdc17b96100"
   integrity sha512-XIyVEMhwq7sZqM7GobOJZXxFCfdFgVNq/CFB2rZIRNRSVPJqE1k1fsc8xfQKfdzsp6Rpt6I7VOIvhmP7/YHdVg==
@@ -13514,7 +13507,7 @@ react-native-quick-crypto@0.7.7:
     string_decoder "^1.3.0"
     util "^0.12.5"
 
-react-native-reanimated@^3.15.1, react-native-reanimated@~3.17.4:
+react-native-reanimated@^3.15.1, react-native-reanimated@^3.17.4:
   version "3.18.0"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-3.18.0.tgz#0a246eab38a9e807887fe561a2868cfe85351f3c"
   integrity sha512-eVcNcqeOkMW+BUWAHdtvN3FKgC8J8wiEJkX6bNGGQaLS7m7e4amTfjIcqf/Ta+lerZLurmDaQ0lICI1CKPrb1Q==
@@ -13537,7 +13530,7 @@ react-native-restart@^0.0.27:
   resolved "https://registry.yarnpkg.com/react-native-restart/-/react-native-restart-0.0.27.tgz#43aa8210312c9dfa5ec7bd4b2f35238ad7972b19"
   integrity sha512-8KScVICrXwcTSJ1rjWkqVTHyEKQIttm5AIMGSK1QG1+RS5owYlE4z/1DykOTdWfVl9l16FIk0w9Xzk9ZO6jxlA==
 
-react-native-safe-area-context@5.4.0, react-native-safe-area-context@^5.5.1:
+react-native-safe-area-context@^5.4.0, react-native-safe-area-context@^5.5.1:
   version "5.5.2"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-5.5.2.tgz#a3c0e99385a45e31ef24d24358aa622cc9e1a069"
   integrity sha512-t4YVbHa9uAGf+pHMabGrb0uHrD5ogAusSu842oikJ3YKXcYp6iB4PTGl0EZNkUIR3pCnw/CXKn42OCfhsS0JIw==
@@ -13588,7 +13581,7 @@ react-native-svg-mock@^2.0.0:
   resolved "https://registry.yarnpkg.com/react-native-svg-mock/-/react-native-svg-mock-2.0.0.tgz#27f4793e860ec6cae783930e6afb54869f0a2ea9"
   integrity sha512-+Op91zndXy+fUHZlcYo2YU3RzW5yXvKXE/mqMgYOdJLLS2kWwZBjAGt+CiKGl/+ZKnJ8/h0TWiiT0vCSv2NxEA==
 
-react-native-svg@15.11.2, react-native-svg@^15.7.1:
+react-native-svg@^15.11.2, react-native-svg@^15.7.1:
   version "15.12.0"
   resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-15.12.0.tgz#0e2d476961e8b07f8c549fe4489c99b5130dc150"
   integrity sha512-iE25PxIJ6V0C6krReLquVw6R0QTsRTmEQc4K2Co3P6zsimU/jltcDBKYDy1h/5j9S/fqmMeXnpM+9LEWKJKI6A==
@@ -15570,15 +15563,15 @@ typescript-tuple@^2.2.1:
   dependencies:
     typescript-compare "^0.0.2"
 
+typescript@^5.8.3:
+  version "5.8.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.8.3.tgz#92f8a3e5e3cf497356f4178c34cd65a7f5e8440e"
+  integrity sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==
+
 typescript@~4.9.5:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
-
-typescript@~5.8.3:
-  version "5.8.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.8.3.tgz#92f8a3e5e3cf497356f4178c34cd65a7f5e8440e"
-  integrity sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==
 
 uc.micro@^2.0.0, uc.micro@^2.1.0:
   version "2.1.0"
