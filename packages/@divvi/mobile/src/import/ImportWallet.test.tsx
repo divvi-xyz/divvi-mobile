@@ -41,7 +41,9 @@ describe('ImportWallet', () => {
     )
 
     expect(wrapper.queryByTestId('HeaderSubTitle')).toBeFalsy()
-    expect(wrapper.getByTestId('ImportWalletBackupKeyInputField')).toHaveTextContent('')
+    expect(wrapper.getByTestId('ImportWalletBackupKeyInputField')).toHaveTextContent('', {
+      exact: false,
+    })
     expect(wrapper.getByTestId('ImportWalletButton')).toBeDisabled()
   })
 

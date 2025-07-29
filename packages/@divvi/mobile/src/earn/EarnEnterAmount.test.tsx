@@ -255,7 +255,7 @@ describe('EarnEnterAmount', () => {
       )
 
       expect(getByTestId('EarnEnterAmount/TokenSelect')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/TokenSelect')).toHaveTextContent('USDC')
+      expect(getByTestId('EarnEnterAmount/TokenSelect')).toHaveTextContent('USDC', { exact: false })
       expect(getByTestId('EarnEnterAmount/TokenSelect')).toBeDisabled()
       expect(queryByTestId('downArrowIcon')).toBeFalsy()
     })
@@ -270,7 +270,11 @@ describe('EarnEnterAmount', () => {
         DeviceEventEmitter.emit('keyboardDidShow', { endCoordinates: { height: 100 } })
       })
 
-      fireEvent.press(within(getByTestId('EarnEnterAmount/AmountOptions')).getByText('maxSymbol'))
+      fireEvent.press(
+        within(getByTestId('EarnEnterAmount/AmountOptions')).getByText('maxSymbol', {
+          exact: false,
+        })
+      )
       expect(getByTestId('EarnEnterAmount/TokenAmountInput').props.value).toBe('10') // balance
     })
 
@@ -281,7 +285,7 @@ describe('EarnEnterAmount', () => {
         </Provider>
       )
 
-      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '.25')
+      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '.25', { exact: false })
 
       await waitFor(() => expect(refreshPreparedTransactionsSpy).toHaveBeenCalledTimes(1))
       expect(refreshPreparedTransactionsSpy).toHaveBeenCalledWith({
@@ -318,19 +322,25 @@ describe('EarnEnterAmount', () => {
         </Provider>
       )
 
-      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '8')
+      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '8', { exact: false })
 
       await waitFor(() => expect(getByText('earnFlow.enterAmount.continue')).not.toBeDisabled())
 
-      expect(getByTestId('EnterAmountDepositDetails/Deposit/Label')).toHaveTextContent('deposit')
+      expect(getByTestId('EnterAmountDepositDetails/Deposit/Label')).toHaveTextContent('deposit', {
+        exact: false,
+      })
       expect(getByTestId('EnterAmountDepositDetails/Deposit/Value')).toHaveTextContent(
-        'tokenAndLocalAmount, {"tokenAmount":"8.00","localAmount":"10.64","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+        'tokenAndLocalAmount, {"tokenAmount":"8.00","localAmount":"10.64","tokenSymbol":"USDC","localCurrencySymbol":"₱"}',
+        { exact: false }
       )
 
       expect(getByTestId('EnterAmountDepositDetails/Fee/InfoIcon')).toBeTruthy()
-      expect(getByTestId('EnterAmountDepositDetails/Fee/Label')).toHaveTextContent('networkFee')
+      expect(getByTestId('EnterAmountDepositDetails/Fee/Label')).toHaveTextContent('networkFee', {
+        exact: false,
+      })
       expect(getByTestId('EnterAmountDepositDetails/Fee/Value')).toHaveTextContent(
-        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+        { exact: false }
       )
 
       fireEvent.press(getByText('earnFlow.enterAmount.continue'))
@@ -374,15 +384,19 @@ describe('EarnEnterAmount', () => {
       )
 
       expect(getByTestId('EarnEnterAmount/TokenSelect')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/TokenSelect')).toHaveTextContent('ETH')
+      expect(getByTestId('EarnEnterAmount/TokenSelect')).toHaveTextContent('ETH', { exact: false })
       expect(getByTestId('EarnEnterAmount/TokenSelect')).toBeEnabled()
       expect(getByTestId('downArrowIcon')).toBeTruthy()
       expect(getAllByTestId('TokenBalanceItem')).toHaveLength(2)
-      expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('ETH')
-      expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Arbitrum Sepolia')
-      expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('ARB')
-      expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('Arbitrum Sepolia')
-      expect(getByTestId('TokenBottomSheet')).not.toHaveTextContent('USDC')
+      expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('ETH', { exact: false })
+      expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Arbitrum Sepolia', {
+        exact: false,
+      })
+      expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('ARB', { exact: false })
+      expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('Arbitrum Sepolia', {
+        exact: false,
+      })
+      expect(getByTestId('TokenBottomSheet')).not.toHaveTextContent('USDC', { exact: false })
     })
 
     it('should show the token dropdown and allow the user to select a token from all chains if feature gate is on', async () => {
@@ -400,22 +414,34 @@ describe('EarnEnterAmount', () => {
       )
 
       expect(getByTestId('EarnEnterAmount/TokenSelect')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/TokenSelect')).toHaveTextContent('ETH')
+      expect(getByTestId('EarnEnterAmount/TokenSelect')).toHaveTextContent('ETH', { exact: false })
       expect(getByTestId('EarnEnterAmount/TokenSelect')).toBeEnabled()
       expect(getByTestId('downArrowIcon')).toBeTruthy()
       expect(getAllByTestId('TokenBalanceItem')).toHaveLength(6)
-      expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('ETH')
-      expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Arbitrum Sepolia')
-      expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('ARB')
-      expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('Arbitrum Sepolia')
-      expect(getAllByTestId('TokenBalanceItem')[2]).toHaveTextContent('CELO')
-      expect(getAllByTestId('TokenBalanceItem')[2]).toHaveTextContent('Celo Alfajores')
-      expect(getAllByTestId('TokenBalanceItem')[3]).toHaveTextContent('cUSD')
-      expect(getAllByTestId('TokenBalanceItem')[3]).toHaveTextContent('Celo Alfajores')
-      expect(getAllByTestId('TokenBalanceItem')[4]).toHaveTextContent('USDC')
-      expect(getAllByTestId('TokenBalanceItem')[4]).toHaveTextContent('Ethereum Sepolia')
-      expect(getAllByTestId('TokenBalanceItem')[5]).toHaveTextContent('POOF')
-      expect(getAllByTestId('TokenBalanceItem')[5]).toHaveTextContent('Celo Alfajores')
+      expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('ETH', { exact: false })
+      expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Arbitrum Sepolia', {
+        exact: false,
+      })
+      expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('ARB', { exact: false })
+      expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('Arbitrum Sepolia', {
+        exact: false,
+      })
+      expect(getAllByTestId('TokenBalanceItem')[2]).toHaveTextContent('CELO', { exact: false })
+      expect(getAllByTestId('TokenBalanceItem')[2]).toHaveTextContent('Celo Alfajores', {
+        exact: false,
+      })
+      expect(getAllByTestId('TokenBalanceItem')[3]).toHaveTextContent('cUSD', { exact: false })
+      expect(getAllByTestId('TokenBalanceItem')[3]).toHaveTextContent('Celo Alfajores', {
+        exact: false,
+      })
+      expect(getAllByTestId('TokenBalanceItem')[4]).toHaveTextContent('USDC', { exact: false })
+      expect(getAllByTestId('TokenBalanceItem')[4]).toHaveTextContent('Ethereum Sepolia', {
+        exact: false,
+      })
+      expect(getAllByTestId('TokenBalanceItem')[5]).toHaveTextContent('POOF', { exact: false })
+      expect(getAllByTestId('TokenBalanceItem')[5]).toHaveTextContent('Celo Alfajores', {
+        exact: false,
+      })
     })
 
     it('should default to the swappable token if only one is eligible and not show dropdown', async () => {
@@ -447,7 +473,7 @@ describe('EarnEnterAmount', () => {
       )
 
       expect(getByTestId('EarnEnterAmount/TokenSelect')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/TokenSelect')).toHaveTextContent('ARB')
+      expect(getByTestId('EarnEnterAmount/TokenSelect')).toHaveTextContent('ARB', { exact: false })
       expect(getByTestId('EarnEnterAmount/TokenSelect')).toBeDisabled()
       expect(queryByTestId('downArrowIcon')).toBeFalsy()
     })
@@ -459,7 +485,7 @@ describe('EarnEnterAmount', () => {
         </Provider>
       )
 
-      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '.25')
+      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '.25', { exact: false })
 
       await waitFor(() => expect(refreshPreparedTransactionsSpy).toHaveBeenCalledTimes(1))
       expect(refreshPreparedTransactionsSpy).toHaveBeenCalledWith({
@@ -494,7 +520,7 @@ describe('EarnEnterAmount', () => {
       )
 
       fireEvent.press(getAllByTestId('TokenBalanceItem')[2]) // select celo for cross chain swap
-      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '.25')
+      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '.25', { exact: false })
 
       await waitFor(() => expect(refreshPreparedTransactionsSpy).toHaveBeenCalledTimes(1))
       expect(refreshPreparedTransactionsSpy).toHaveBeenCalledWith({
@@ -537,24 +563,33 @@ describe('EarnEnterAmount', () => {
 
       expect(getByTestId('EnterAmountDepositDetails/Swap/InfoIcon')).toBeTruthy()
       expect(getByTestId('EnterAmountDepositDetails/Swap/Label')).toHaveTextContent(
-        'earnFlow.enterAmount.swap'
+        'earnFlow.enterAmount.swap',
+        { exact: false }
       )
       expect(getByTestId('EnterAmountDepositDetails/Swap/From')).toHaveTextContent(
-        'tokenAmount, {"tokenAmount":"0.00041","tokenSymbol":"ETH"}'
+        'tokenAmount, {"tokenAmount":"0.00041","tokenSymbol":"ETH"}',
+        { exact: false }
       )
       expect(getByTestId('EnterAmountDepositDetails/Swap/To')).toHaveTextContent(
-        'tokenAmount, {"tokenAmount":"1.00","tokenSymbol":"USDC"}'
+        'tokenAmount, {"tokenAmount":"1.00","tokenSymbol":"USDC"}',
+        { exact: false }
       )
 
-      expect(getByTestId('EnterAmountDepositDetails/Deposit/Label')).toHaveTextContent('deposit')
+      expect(getByTestId('EnterAmountDepositDetails/Deposit/Label')).toHaveTextContent('deposit', {
+        exact: false,
+      })
       expect(getByTestId('EnterAmountDepositDetails/Deposit/Value')).toHaveTextContent(
-        'tokenAndLocalAmount, {"tokenAmount":"1.00","localAmount":"1.33","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+        'tokenAndLocalAmount, {"tokenAmount":"1.00","localAmount":"1.33","tokenSymbol":"USDC","localCurrencySymbol":"₱"}',
+        { exact: false }
       )
 
       expect(getByTestId('EnterAmountDepositDetails/Fee/InfoIcon')).toBeTruthy()
-      expect(getByTestId('EnterAmountDepositDetails/Fee/Label')).toHaveTextContent('fees')
+      expect(getByTestId('EnterAmountDepositDetails/Fee/Label')).toHaveTextContent('fees', {
+        exact: false,
+      })
       expect(getByTestId('EnterAmountDepositDetails/Fee/Value')).toHaveTextContent(
-        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+        { exact: false }
       )
 
       expect(queryByTestId('EnterAmountDepositDetails/EstimatedDuration')).toBeFalsy()
@@ -615,38 +650,51 @@ describe('EarnEnterAmount', () => {
       )
 
       fireEvent.press(getAllByTestId('TokenBalanceItem')[2]) // select celo for cross chain swap
-      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '0.25')
+      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '0.25', {
+        exact: false,
+      })
 
       await waitFor(() => expect(getByText('earnFlow.enterAmount.continue')).not.toBeDisabled())
 
       expect(getByTestId('EnterAmountDepositDetails/Swap/InfoIcon')).toBeTruthy()
       expect(getByTestId('EnterAmountDepositDetails/Swap/Label')).toHaveTextContent(
-        'earnFlow.enterAmount.swap'
+        'earnFlow.enterAmount.swap',
+        { exact: false }
       )
       expect(getByTestId('EnterAmountDepositDetails/Swap/From')).toHaveTextContent(
-        'tokenAmount, {"tokenAmount":"0.25","tokenSymbol":"CELO"}'
+        'tokenAmount, {"tokenAmount":"0.25","tokenSymbol":"CELO"}',
+        { exact: false }
       )
       expect(getByTestId('EnterAmountDepositDetails/Swap/To')).toHaveTextContent(
-        'tokenAmount, {"tokenAmount":"1.00","tokenSymbol":"USDC"}'
+        'tokenAmount, {"tokenAmount":"1.00","tokenSymbol":"USDC"}',
+        { exact: false }
       )
 
-      expect(getByTestId('EnterAmountDepositDetails/Deposit/Label')).toHaveTextContent('deposit')
+      expect(getByTestId('EnterAmountDepositDetails/Deposit/Label')).toHaveTextContent('deposit', {
+        exact: false,
+      })
       expect(getByTestId('EnterAmountDepositDetails/Deposit/Value')).toHaveTextContent(
-        'tokenAndLocalAmount, {"tokenAmount":"1.00","localAmount":"1.33","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+        'tokenAndLocalAmount, {"tokenAmount":"1.00","localAmount":"1.33","tokenSymbol":"USDC","localCurrencySymbol":"₱"}',
+        { exact: false }
       )
 
       expect(getByTestId('EnterAmountDepositDetails/Fee/InfoIcon')).toBeTruthy()
-      expect(getByTestId('EnterAmountDepositDetails/Fee/Label')).toHaveTextContent('fees')
+      expect(getByTestId('EnterAmountDepositDetails/Fee/Label')).toHaveTextContent('fees', {
+        exact: false,
+      })
       expect(getByTestId('EnterAmountDepositDetails/Fee/Value')).toHaveTextContent(
-        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+        { exact: false }
       )
 
       expect(getByTestId('EnterAmountDepositDetails/EstimatedDuration/InfoIcon')).toBeTruthy()
       expect(getByTestId('EnterAmountDepositDetails/EstimatedDuration/Label')).toHaveTextContent(
-        'earnFlow.enterAmount.estimatedDuration'
+        'earnFlow.enterAmount.estimatedDuration',
+        { exact: false }
       )
       expect(getByTestId('EnterAmountDepositDetails/EstimatedDuration/Value')).toHaveTextContent(
-        'swapScreen.transactionDetails.estimatedTransactionTimeInMinutes, {"minutes":5}'
+        'swapScreen.transactionDetails.estimatedTransactionTimeInMinutes, {"minutes":5}',
+        { exact: false }
       )
 
       fireEvent.press(getByText('earnFlow.enterAmount.continue'))
@@ -687,7 +735,7 @@ describe('EarnEnterAmount', () => {
       )
 
       expect(getByTestId('EarnEnterAmount/TokenSelect')).toBeTruthy()
-      expect(getByTestId('EarnEnterAmount/TokenSelect')).toHaveTextContent('USDC')
+      expect(getByTestId('EarnEnterAmount/TokenSelect')).toHaveTextContent('USDC', { exact: false })
       expect(getByTestId('EarnEnterAmount/TokenSelect')).toBeDisabled()
       expect(queryByTestId('downArrowIcon')).toBeFalsy()
     })
@@ -702,7 +750,11 @@ describe('EarnEnterAmount', () => {
         DeviceEventEmitter.emit('keyboardDidShow', { endCoordinates: { height: 100 } })
       })
 
-      fireEvent.press(within(getByTestId('EarnEnterAmount/AmountOptions')).getByText('maxSymbol'))
+      fireEvent.press(
+        within(getByTestId('EarnEnterAmount/AmountOptions')).getByText('maxSymbol', {
+          exact: false,
+        })
+      )
       expect(getByTestId('EarnEnterAmount/TokenAmountInput').props.value).toBe('11') // balance * pool price per share
     })
 
@@ -716,7 +768,7 @@ describe('EarnEnterAmount', () => {
         </Provider>
       )
 
-      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '.25')
+      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '.25', { exact: false })
 
       await waitFor(() => expect(refreshPreparedTransactionsSpy).toHaveBeenCalledTimes(1))
       expect(refreshPreparedTransactionsSpy).toHaveBeenCalledWith({
@@ -754,17 +806,19 @@ describe('EarnEnterAmount', () => {
         </Provider>
       )
 
-      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '8')
+      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '8', { exact: false })
 
       await waitFor(() => expect(getByText('earnFlow.enterAmount.continue')).not.toBeDisabled())
 
       expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
       expect(getByTestId('EnterAmountWithdrawDetails/NetworkFee/InfoIcon')).toBeTruthy()
       expect(getByTestId('EnterAmountWithdrawDetails/NetworkFee/Label')).toHaveTextContent(
-        'networkFee'
+        'networkFee',
+        { exact: false }
       )
       expect(getByTestId('EnterAmountWithdrawDetails/NetworkFee/Value')).toHaveTextContent(
-        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+        'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+        { exact: false }
       )
 
       fireEvent.press(getByText('earnFlow.enterAmount.continue'))
@@ -812,7 +866,7 @@ describe('EarnEnterAmount', () => {
         </Provider>
       )
 
-      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '15')
+      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '15', { exact: false })
       expect(queryByTestId('EarnEnterAmount/NotEnoughBalanceWarning')).toBeFalsy()
       expect(getByTestId('EarnEnterAmount/Continue')).toBeEnabled()
     })
@@ -827,7 +881,9 @@ describe('EarnEnterAmount', () => {
         </Provider>
       )
 
-      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '20.001')
+      fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '20.001', {
+        exact: false,
+      })
       expect(getByTestId('EarnEnterAmount/NotEnoughBalanceWarning')).toBeTruthy()
       expect(getByTestId('EarnEnterAmount/Continue')).toBeDisabled()
     })
@@ -850,10 +906,12 @@ describe('EarnEnterAmount', () => {
 
       expect(getByTestId('EnterAmountWithdrawDetails/ClaimingReward-0')).toBeTruthy()
       expect(getByTestId('EnterAmountWithdrawDetails/ClaimingReward-0/Label')).toHaveTextContent(
-        'earnFlow.enterAmount.claimingReward'
+        'earnFlow.enterAmount.claimingReward',
+        { exact: false }
       )
       expect(getByTestId('EnterAmountWithdrawDetails/ClaimingReward-0/Value')).toHaveTextContent(
-        'tokenAndLocalAmount, {"tokenAmount":"0.01","localAmount":"0.016","tokenSymbol":"ARB","localCurrencySymbol":"₱"}'
+        'tokenAndLocalAmount, {"tokenAmount":"0.01","localAmount":"0.016","tokenSymbol":"ARB","localCurrencySymbol":"₱"}',
+        { exact: false }
       )
     })
 
@@ -895,7 +953,7 @@ describe('EarnEnterAmount', () => {
       </Provider>
     )
 
-    fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '12')
+    fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '12', { exact: false })
 
     expect(getByTestId('EarnEnterAmount/NotEnoughBalanceWarning')).toBeTruthy()
     expect(getByTestId('EarnEnterAmount/Continue')).toBeDisabled()
@@ -931,7 +989,7 @@ describe('EarnEnterAmount', () => {
       </Provider>
     )
 
-    fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '8')
+    fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '8', { exact: false })
 
     await waitFor(() =>
       expect(getByTestId('EarnEnterAmount/Continue')).toContainElement(
@@ -990,12 +1048,17 @@ describe('EarnEnterAmount', () => {
         DeviceEventEmitter.emit('keyboardDidShow', { endCoordinates: { height: 100 } })
       })
 
-      fireEvent.press(within(getByTestId('EarnEnterAmount/AmountOptions')).getByText('maxSymbol'))
+      fireEvent.press(
+        within(getByTestId('EarnEnterAmount/AmountOptions')).getByText('maxSymbol', {
+          exact: false,
+        })
+      )
       expect(getByTestId('EarnEnterAmount/TokenAmountInput').props.value).toBe(
         replaceSeparators('100,000.42')
       )
       expect(getByTestId('EarnEnterAmount/ExchangeAmount')).toHaveTextContent(
-        replaceSeparators('₱133,000.56')
+        replaceSeparators('₱133,000.56'),
+        { exact: false }
       )
     })
   })
@@ -1073,7 +1136,8 @@ describe('EarnEnterAmount', () => {
     })
     // Deposit value should now be decreasedSpendAmount from mockPreparedTransactionDecreaseSpend, which is 1
     expect(getByTestId('EnterAmountDepositDetails/Deposit/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"1.00","localAmount":"1.33","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"1.00","localAmount":"1.33","tokenSymbol":"USDC","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
   })
 
@@ -1097,12 +1161,14 @@ describe('EarnEnterAmount', () => {
 
     fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '1')
     fireEvent.press(getByTestId('EnterAmountDepositDetails/Fee'))
-    expect(getByTestId('FeeInfoBottomSheet')).toHaveTextContent('networkFee')
+    expect(getByTestId('FeeInfoBottomSheet')).toHaveTextContent('networkFee', { exact: false })
     expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(queryByTestId('FeeInfoBottomSheet/AppFee')).toBeFalsy()
     expect(queryByTestId('FeeInfoBottomSheet/EstimatedCrossChainFee')).toBeFalsy()
@@ -1130,15 +1196,18 @@ describe('EarnEnterAmount', () => {
 
     fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '1')
     fireEvent.press(getByTestId('EnterAmountDepositDetails/Fee'))
-    expect(getByTestId('FeeInfoBottomSheet')).toHaveTextContent('fees')
+    expect(getByTestId('FeeInfoBottomSheet')).toHaveTextContent('fees', { exact: false })
     expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('FeeInfoBottomSheet/AppFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"0.006","localAmount":"0.008","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"0.006","localAmount":"0.008","tokenSymbol":"USDC","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(queryByTestId('FeeInfoBottomSheet/EstimatedCrossChainFee')).toBeFalsy()
     expect(queryByTestId('FeeInfoBottomSheet/MaxCrossChainFee')).toBeFalsy()
@@ -1169,21 +1238,26 @@ describe('EarnEnterAmount', () => {
 
     fireEvent.changeText(getByTestId('EarnEnterAmount/TokenAmountInput'), '1')
     fireEvent.press(getByTestId('EnterAmountDepositDetails/Fee'))
-    expect(getByTestId('FeeInfoBottomSheet')).toHaveTextContent('fees')
+    expect(getByTestId('FeeInfoBottomSheet')).toHaveTextContent('fees', { exact: false })
     expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"0.000006","localAmount":"0.012","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('FeeInfoBottomSheet/AppFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"0.006","localAmount":"0.008","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"0.006","localAmount":"0.008","tokenSymbol":"USDC","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('FeeInfoBottomSheet/EstimatedCrossChainFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.0005","localAmount":"1.00","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.0005","localAmount":"1.00","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('FeeInfoBottomSheet/MaxCrossChainFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"0.001","localAmount":"2.00","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"0.001","localAmount":"2.00","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(
       getByText(

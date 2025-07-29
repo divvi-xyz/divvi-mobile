@@ -142,7 +142,9 @@ describe('JumpstartTransactionDetailsScreen', () => {
         'amountSent'
       )
     )
-    expect(getByTestId('JumpstartContent/AmountValue')).toHaveTextContent('10.00 cUSD')
+    expect(getByTestId('JumpstartContent/AmountValue')).toHaveTextContent('10.00 cUSD', {
+      exact: false,
+    })
     expect(fetchClaimStatus).toHaveBeenCalledWith(
       mockJumpstartAdddress,
       'celo-alfajores',
@@ -162,7 +164,9 @@ describe('JumpstartTransactionDetailsScreen', () => {
         'amountReceived'
       )
     )
-    expect(getByTestId('JumpstartContent/AmountValue')).toHaveTextContent('10.00 cUSD')
+    expect(getByTestId('JumpstartContent/AmountValue')).toHaveTextContent('10.00 cUSD', {
+      exact: false,
+    })
     expect(queryByTestId('JumpstartContent/ReclaimButton')).toBeFalsy()
   })
 
@@ -176,7 +180,9 @@ describe('JumpstartTransactionDetailsScreen', () => {
     })
 
     await waitFor(() => expect(getByTestId('JumpstartContent/ReclaimButton')).toBeDisabled())
-    expect(getByTestId('JumpstartContent/ReclaimButton')).toHaveTextContent('reclaim')
+    expect(getByTestId('JumpstartContent/ReclaimButton')).toHaveTextContent('reclaim', {
+      exact: false,
+    })
     expect(getByTestId('JumpstartContent/ErrorNotification/FetchReclaimStatus')).toBeTruthy()
   })
 
@@ -195,7 +201,9 @@ describe('JumpstartTransactionDetailsScreen', () => {
     })
 
     await waitFor(() => expect(getByTestId('JumpstartContent/ReclaimButton')).toBeEnabled())
-    expect(getByTestId('JumpstartContent/ReclaimButton')).toHaveTextContent('reclaim')
+    expect(getByTestId('JumpstartContent/ReclaimButton')).toHaveTextContent('reclaim', {
+      exact: false,
+    })
     expect(queryByTestId('JumpstartContent/ErrorNotification/FetchReclaimStatus')).toBeFalsy()
   })
 
@@ -212,7 +220,9 @@ describe('JumpstartTransactionDetailsScreen', () => {
     })
 
     await waitFor(() =>
-      expect(getByTestId('JumpstartContent/ReclaimButton')).toHaveTextContent('claimed')
+      expect(getByTestId('JumpstartContent/ReclaimButton')).toHaveTextContent('claimed', {
+        exact: false,
+      })
     )
     expect(getByTestId('JumpstartContent/ReclaimButton')).toBeDisabled()
   })

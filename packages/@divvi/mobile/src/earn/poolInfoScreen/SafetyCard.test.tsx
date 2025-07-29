@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react-native'
+import { fireEvent, render, within } from '@testing-library/react-native'
 import React from 'react'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { EarnEvents } from 'src/analytics/Events'
@@ -35,7 +35,8 @@ describe('SafetyCard', () => {
     expect(getAllByTestId('SafetyCard/Bar')).toHaveLength(3)
     expect(getByTestId('SafetyCard/ViewDetails')).toBeTruthy()
     expect(getByTestId('SafetyCard/ViewDetails')).toHaveTextContent(
-      'earnFlow.poolInfoScreen.viewMoreDetails'
+      'earnFlow.poolInfoScreen.viewMoreDetails',
+      { exact: false }
     )
   })
 
@@ -58,25 +59,27 @@ describe('SafetyCard', () => {
 
     expect(queryByTestId('SafetyCard/Risk')).toBeFalsy()
     expect(getByTestId('SafetyCard/ViewDetails')).toHaveTextContent(
-      'earnFlow.poolInfoScreen.viewMoreDetails'
+      'earnFlow.poolInfoScreen.viewMoreDetails',
+      { exact: false }
     )
 
     // expand
     fireEvent.press(getByTestId('SafetyCard/ViewDetails'))
     expect(getAllByTestId('SafetyCard/Risk')).toHaveLength(2)
     expect(getByTestId('SafetyCard/ViewDetails')).toHaveTextContent(
-      'earnFlow.poolInfoScreen.viewLessDetails'
+      'earnFlow.poolInfoScreen.viewLessDetails',
+      { exact: false }
     )
-    expect(getAllByTestId('SafetyCard/Risk')[0].children[0]).toContainElement(
-      getByTestId('SafetyCard/RiskPositive')
-    )
-    expect(getAllByTestId('SafetyCard/Risk')[0]).toHaveTextContent('Risk 1')
-    expect(getAllByTestId('SafetyCard/Risk')[0]).toHaveTextContent('Category 1')
-    expect(getAllByTestId('SafetyCard/Risk')[1].children[0]).toContainElement(
-      getByTestId('SafetyCard/RiskNegative')
-    )
-    expect(getAllByTestId('SafetyCard/Risk')[1]).toHaveTextContent('Risk 2')
-    expect(getAllByTestId('SafetyCard/Risk')[1]).toHaveTextContent('Category 2')
+    expect(
+      within(getAllByTestId('SafetyCard/Risk')[0]).queryByTestId('SafetyCard/RiskPositive')
+    ).toBeTruthy()
+    expect(getAllByTestId('SafetyCard/Risk')[0]).toHaveTextContent('Risk 1', { exact: false })
+    expect(getAllByTestId('SafetyCard/Risk')[0]).toHaveTextContent('Category 1', { exact: false })
+    expect(
+      within(getAllByTestId('SafetyCard/Risk')[1]).queryByTestId('SafetyCard/RiskNegative')
+    ).toBeTruthy()
+    expect(getAllByTestId('SafetyCard/Risk')[1]).toHaveTextContent('Risk 2', { exact: false })
+    expect(getAllByTestId('SafetyCard/Risk')[1]).toHaveTextContent('Category 2', { exact: false })
     expect(AppAnalytics.track).toHaveBeenCalledWith(EarnEvents.earn_pool_info_tap_safety_details, {
       action: 'expand',
       ...mockProps.commonAnalyticsProps,
@@ -87,7 +90,8 @@ describe('SafetyCard', () => {
     fireEvent.press(getByTestId('SafetyCard/ViewDetails'))
     expect(queryByTestId('SafetyCard/Risk')).toBeFalsy()
     expect(getByTestId('SafetyCard/ViewDetails')).toHaveTextContent(
-      'earnFlow.poolInfoScreen.viewMoreDetails'
+      'earnFlow.poolInfoScreen.viewMoreDetails',
+      { exact: false }
     )
     expect(AppAnalytics.track).toHaveBeenCalledWith(EarnEvents.earn_pool_info_tap_safety_details, {
       action: 'collapse',

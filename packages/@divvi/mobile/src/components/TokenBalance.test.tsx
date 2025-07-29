@@ -237,7 +237,7 @@ describe('AssetsTokenBalance', () => {
       </Provider>
     )
 
-    expect(getByTestId('TotalTokenBalance')).toHaveTextContent('₱55.74')
+    expect(getByTestId('TotalTokenBalance')).toHaveTextContent('₱55.74', { exact: false })
     expect(queryByText('totalAssetsInfo')).toBeFalsy()
 
     fireEvent.press(getByTestId('AssetsTokenBalance/Info'))
@@ -253,7 +253,7 @@ describe('AssetsTokenBalance', () => {
 
     expect(getByTestId('EyeIcon')).toBeTruthy()
     expect(getByText('bottomTabsNavigator.wallet.title')).toBeTruthy()
-    expect(getByTestId('TotalTokenBalance')).toHaveTextContent('₱55.74')
+    expect(getByTestId('TotalTokenBalance')).toHaveTextContent('₱55.74', { exact: false })
     expect(queryByText('AssetsTokenBalance/Info')).toBeFalsy()
   })
 

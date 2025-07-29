@@ -122,10 +122,14 @@ describe('SendConfirmation', () => {
     const { getByTestId } = renderScreen(mockSendConfirmationProps)
 
     // renders screen header
-    expect(getByTestId('CustomHeaderTitle')).toHaveTextContent('reviewTransaction.title')
+    expect(getByTestId('CustomHeaderTitle')).toHaveTextContent('reviewTransaction.title', {
+      exact: false,
+    })
 
     // renders token and amount details
-    expect(getByTestId('SendConfirmationToken/Label')).toHaveTextContent('sending')
+    expect(getByTestId('SendConfirmationToken/Label')).toHaveTextContent('sending', {
+      exact: false,
+    })
     expect(getByTestId('SendConfirmationToken/PrimaryValue')).toHaveTextContent(
       'tokenAmount, {"tokenAmount":"1.00","tokenSymbol":"cUSD"}'
     )
@@ -134,7 +138,7 @@ describe('SendConfirmation', () => {
     )
 
     // renders recipient details
-    expect(getByTestId('SendConfirmationRecipient/Label')).toHaveTextContent('to')
+    expect(getByTestId('SendConfirmationRecipient/Label')).toHaveTextContent('to', { exact: false })
     expect(getByTestId('SendConfirmationRecipient/PrimaryValue')).toHaveTextContent(
       '0x0000000000000000000000000000000000007E57'
     )
@@ -143,10 +147,14 @@ describe('SendConfirmation', () => {
     expect(getByTestId('SendConfirmationNetwork/Label')).toHaveTextContent(
       'transactionDetails.network'
     )
-    expect(getByTestId('SendConfirmationNetwork/Value')).toHaveTextContent('Celo Alfajores')
+    expect(getByTestId('SendConfirmationNetwork/Value')).toHaveTextContent('Celo Alfajores', {
+      exact: false,
+    })
 
     // renders fee details
-    expect(getByTestId('SendConfirmationFee/Label')).toHaveTextContent('networkFee')
+    expect(getByTestId('SendConfirmationFee/Label')).toHaveTextContent('networkFee', {
+      exact: false,
+    })
     expect(getByTestId('SendConfirmationFee/Value')).toHaveTextContent(
       'tokenAndLocalAmountApprox, {"tokenAmount":"0.01","localAmount":"0.067","tokenSymbol":"CELO","localCurrencySymbol":"₱"}'
     )
@@ -160,7 +168,7 @@ describe('SendConfirmation', () => {
     )
 
     // renders confirmation button
-    expect(getByTestId('ConfirmButton')).toHaveTextContent('send')
+    expect(getByTestId('ConfirmButton')).toHaveTextContent('send', { exact: false })
   })
 
   it('does not prepare a transaction on load by default', () => {

@@ -190,7 +190,7 @@
   "devDependencies": {
     "@sentry/types": "^7.111.0",
     "@testing-library/jest-native": "^5.4.3",
-    "@testing-library/react-native": "^12.7.2",
+    "@testing-library/react-native": "^13.2.1",
     "@tsconfig/node-lts": "^22.0.1",
     "@types/jest": "^29.5.3",
     "@types/node": "^20",

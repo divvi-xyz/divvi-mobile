@@ -41,7 +41,9 @@ describe('JumpstartShareLink', () => {
 
     expect(getByText('jumpstartShareLinkScreen.title')).toBeTruthy()
     expect(getByText('jumpstartShareLinkScreen.description, {"tokenSymbol":"cUSD"}')).toBeTruthy()
-    expect(getByTestId('JumpstartShareLink/LiveLink')).toHaveTextContent('https://some.link')
+    expect(getByTestId('JumpstartShareLink/LiveLink')).toHaveTextContent('https://some.link', {
+      exact: false,
+    })
     expect(
       within(getByTestId('JumpstartShareLink/ScrollView')).getByText(
         'jumpstartShareLinkScreen.ctaShare'

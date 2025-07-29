@@ -104,9 +104,9 @@ describe('SendEnterAmount', () => {
 
     const tokens = getAllByTestId('TokenBalanceItem')
     expect(tokens).toHaveLength(3)
-    expect(tokens[0]).toHaveTextContent('CELO')
-    expect(tokens[1]).toHaveTextContent('cEUR')
-    expect(tokens[2]).toHaveTextContent('cUSD')
+    expect(tokens[0]).toHaveTextContent('CELO', { exact: false })
+    expect(tokens[1]).toHaveTextContent('cEUR', { exact: false })
+    expect(tokens[2]).toHaveTextContent('cUSD', { exact: false })
   })
 
   it('should prepare transactions with the expected inputs', async () => {
@@ -195,7 +195,7 @@ describe('SendEnterAmount', () => {
       </Provider>
     )
 
-    expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cEUR')
+    expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cEUR', { exact: false })
     expect(getByTestId('SendEnterAmount/TokenSelect')).not.toBeDisabled()
   })
 
@@ -215,7 +215,7 @@ describe('SendEnterAmount', () => {
       </Provider>
     )
 
-    expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cUSD')
+    expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cUSD', { exact: false })
     expect(getByTestId('SendEnterAmount/TokenSelect')).not.toBeDisabled()
   })
 
@@ -229,7 +229,7 @@ describe('SendEnterAmount', () => {
       </Provider>
     )
 
-    expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cUSD')
+    expect(getByTestId('SendEnterAmount/TokenSelect')).toHaveTextContent('cUSD', { exact: false })
     expect(getByTestId('SendEnterAmount/TokenSelect')).toBeDisabled()
   })
 })

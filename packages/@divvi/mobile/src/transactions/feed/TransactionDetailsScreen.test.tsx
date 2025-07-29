@@ -329,13 +329,23 @@ describe('TransactionDetailsScreen', () => {
     const numberComponent = getByTestId('TransferSent/number')
     expect(getElementText(numberComponent)).toEqual(mockDisplayNumber2)
 
-    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('0.01 CELO')
-    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('€0.04') // the localAmount in the fee data is used
+    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('0.01 CELO', {
+      exact: false,
+    })
+    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('€0.04', {
+      exact: false,
+    }) // the localAmount in the fee data is used
 
     expect(getByText('amountSent')).toBeTruthy()
-    expect(getByTestId('TransferSent/AmountSentValue')).toHaveTextContent('10.00 cUSD')
-    expect(getByTestId('TransferSent/TransferTokenExchangeRate')).toHaveTextContent('€1.08') // the localAmount in the amount data is used
-    expect(getByTestId('TransferSent/AmountSentValueFiat')).toHaveTextContent('€9.26')
+    expect(getByTestId('TransferSent/AmountSentValue')).toHaveTextContent('10.00 cUSD', {
+      exact: false,
+    })
+    expect(getByTestId('TransferSent/TransferTokenExchangeRate')).toHaveTextContent('€1.08', {
+      exact: false,
+    }) // the localAmount in the amount data is used
+    expect(getByTestId('TransferSent/AmountSentValueFiat')).toHaveTextContent('€9.26', {
+      exact: false,
+    })
   })
 
   it('renders correctly for receives', async () => {
@@ -393,8 +403,12 @@ describe('TransactionDetailsScreen', () => {
     expect(getElementText(rate)).toEqual('1 cUSD ≈ 2.00 cEUR')
 
     // Includes the fee
-    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('0.10 cUSD')
-    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('₱0.13')
+    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('0.10 cUSD', {
+      exact: false,
+    })
+    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('₱0.13', {
+      exact: false,
+    })
   })
 
   it.each([TokenTransactionTypeV2.Sent, TokenTransactionTypeV2.Received] as const)(
@@ -552,8 +566,12 @@ describe('TransactionDetailsScreen', () => {
       })
 
       expect(getByText('transactionDetailsActions.showCompletedTransactionDetails')).toBeTruthy()
-      expect(getByTestId('EarnSwapDeposit/Swap/From')).toHaveTextContent('50.00 CELO')
-      expect(getByTestId('EarnSwapDeposit/Swap/To')).toHaveTextContent('10.00 USDC')
+      expect(getByTestId('EarnSwapDeposit/Swap/From')).toHaveTextContent('50.00 CELO', {
+        exact: false,
+      })
+      expect(getByTestId('EarnSwapDeposit/Swap/To')).toHaveTextContent('10.00 USDC', {
+        exact: false,
+      })
     })
 
     it(`renders details action for complete ${TokenTransactionTypeV2.EarnWithdraw} transaction`, () => {
@@ -703,7 +721,9 @@ describe('TransactionDetailsScreen', () => {
       expect(getByText('transactionDetailsActions.showCompletedTransactionDetails')).toBeTruthy()
       expect(getByTestId('DepositOrWithdraw/Swap/From')).toBeTruthy()
       expect(getByTestId('DepositOrWithdraw/Swap/To')).toBeTruthy()
-      expect(getByTestId('DepositOrWithdraw/Network')).toHaveTextContent('Celo Alfajores')
+      expect(getByTestId('DepositOrWithdraw/Network')).toHaveTextContent('Celo Alfajores', {
+        exact: false,
+      })
     })
 
     it('renders swap details for deposit with cross chain swap', () => {
@@ -737,7 +757,8 @@ describe('TransactionDetailsScreen', () => {
       expect(getByTestId('DepositOrWithdraw/Swap/From')).toBeTruthy()
       expect(getByTestId('DepositOrWithdraw/Swap/To')).toBeTruthy()
       expect(getByTestId('DepositOrWithdraw/Network')).toHaveTextContent(
-        'swapTransactionDetailPage.networkValue, {"fromNetwork":"Ethereum Sepolia","toNetwork":"Celo Alfajores"}'
+        'swapTransactionDetailPage.networkValue, {"fromNetwork":"Ethereum Sepolia","toNetwork":"Celo Alfajores"}',
+        { exact: false }
       )
     })
 
@@ -770,7 +791,9 @@ describe('TransactionDetailsScreen', () => {
         transaction: transactionWithFees,
       })
 
-      expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('0.10 CELO')
+      expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('0.10 CELO', {
+        exact: false,
+      })
     })
 
     it('renders fees correctly for cross chain swap and deposit', () => {
@@ -806,9 +829,15 @@ describe('TransactionDetailsScreen', () => {
       })
 
       expect(getAllByTestId('TransactionDetails/FeeRowItem')).toHaveLength(3)
-      expect(getAllByTestId('TransactionDetails/FeeRowItem')[0]).toHaveTextContent('0.10 CELO')
-      expect(getAllByTestId('TransactionDetails/FeeRowItem')[1]).toHaveTextContent('0.10 cUSD')
-      expect(getAllByTestId('TransactionDetails/FeeRowItem')[2]).toHaveTextContent('0.11 CELO')
+      expect(getAllByTestId('TransactionDetails/FeeRowItem')[0]).toHaveTextContent('0.10 CELO', {
+        exact: false,
+      })
+      expect(getAllByTestId('TransactionDetails/FeeRowItem')[1]).toHaveTextContent('0.10 cUSD', {
+        exact: false,
+      })
+      expect(getAllByTestId('TransactionDetails/FeeRowItem')[2]).toHaveTextContent('0.11 CELO', {
+        exact: false,
+      })
     })
   })
 
@@ -913,8 +942,12 @@ describe('TransactionDetailsScreen', () => {
     expect(
       getByText('transactionFeed.infiniteApprovalDescription, {"tokenSymbol":"USDC"}')
     ).toBeTruthy()
-    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('0.001 ETH')
-    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('₱2.81')
+    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('0.001 ETH', {
+      exact: false,
+    })
+    expect(getByTestId('TransactionDetails/FeeRowItem')).toHaveTextContent('₱2.81', {
+      exact: false,
+    })
   })
 
   it(`renders retry action for failed ${TokenTransactionTypeV2.Sent} transacton`, () => {
@@ -953,9 +986,9 @@ describe('TransactionDetailsScreen', () => {
     expect(getByText('transactionStatus.transactionIsCompleted')).toBeTruthy()
 
     expect(getByText('swapTransactionDetailPage.swapFrom')).toBeTruthy()
-    expect(getByTestId('SwapContent/swapFrom')).toHaveTextContent('0.099 cUSD')
+    expect(getByTestId('SwapContent/swapFrom')).toHaveTextContent('0.099 cUSD', { exact: false })
     expect(getByText('swapTransactionDetailPage.swapTo')).toBeTruthy()
-    expect(getByTestId('SwapContent/swapTo')).toHaveTextContent('0.00003 ETH')
+    expect(getByTestId('SwapContent/swapTo')).toHaveTextContent('0.00003 ETH', { exact: false })
     expect(getByText('swapTransactionDetailPage.network')).toBeTruthy()
     expect(
       getByText(
@@ -964,18 +997,20 @@ describe('TransactionDetailsScreen', () => {
     ).toBeTruthy()
 
     expect(getByText('swapTransactionDetailPage.rate')).toBeTruthy()
-    expect(getByTestId('SwapContent/rate')).toHaveTextContent('1 cUSD ≈ 0.0003 ETH')
+    expect(getByTestId('SwapContent/rate')).toHaveTextContent('1 cUSD ≈ 0.0003 ETH', {
+      exact: false,
+    })
 
     const [networkFee, appFee, crossChainFee] = getAllByTestId('TransactionDetails/FeeRowItem')
-    expect(networkFee).toHaveTextContent('transactionFeed.networkFee')
-    expect(networkFee).toHaveTextContent('0.0033 CELO')
-    expect(networkFee).toHaveTextContent('₱0.059')
-    expect(appFee).toHaveTextContent('transactionFeed.appFee')
-    expect(appFee).toHaveTextContent('0.0006 cUSD')
-    expect(appFee).toHaveTextContent('₱0.0008')
-    expect(crossChainFee).toHaveTextContent('transactionFeed.crossChainFee')
-    expect(crossChainFee).toHaveTextContent('0.38 CELO')
-    expect(crossChainFee).toHaveTextContent('₱6.74')
+    expect(networkFee).toHaveTextContent('transactionFeed.networkFee', { exact: false })
+    expect(networkFee).toHaveTextContent('0.0033 CELO', { exact: false })
+    expect(networkFee).toHaveTextContent('₱0.059', { exact: false })
+    expect(appFee).toHaveTextContent('transactionFeed.appFee', { exact: false })
+    expect(appFee).toHaveTextContent('0.0006 cUSD', { exact: false })
+    expect(appFee).toHaveTextContent('₱0.0008', { exact: false })
+    expect(crossChainFee).toHaveTextContent('transactionFeed.crossChainFee', { exact: false })
+    expect(crossChainFee).toHaveTextContent('0.38 CELO', { exact: false })
+    expect(crossChainFee).toHaveTextContent('₱6.74', { exact: false })
 
     fireEvent.press(getByText('viewOnAxelarScan'))
     expect(navigate).toHaveBeenCalledWith(Screens.WebViewScreen, {
@@ -994,16 +1029,18 @@ describe('TransactionDetailsScreen', () => {
     })
 
     expect(getByText('transactionStatus.transactionIsPending')).toBeTruthy()
-    expect(getByTestId('SwapContent/swapTo')).toHaveTextContent(`${APPROX_SYMBOL} 0.00003 ETH`)
+    expect(getByTestId('SwapContent/swapTo')).toHaveTextContent(`${APPROX_SYMBOL} 0.00003 ETH`, {
+      exact: false,
+    })
     expect(queryByText('swapTransactionDetailPage.rate')).toBeFalsy()
 
     const [networkFee, appFee, crossChainFee] = getAllByTestId('TransactionDetails/FeeRowItem')
-    expect(networkFee).toHaveTextContent(`${APPROX_SYMBOL} 0.0033 CELO`)
-    expect(networkFee).toHaveTextContent(`${APPROX_SYMBOL} ₱0.059`)
-    expect(appFee).toHaveTextContent('0.0006 cUSD') // app fee is always known
-    expect(appFee).toHaveTextContent('₱0.0008')
-    expect(crossChainFee).toHaveTextContent(`${APPROX_SYMBOL} 0.38 CELO`)
-    expect(crossChainFee).toHaveTextContent(`${APPROX_SYMBOL} ₱6.74`)
+    expect(networkFee).toHaveTextContent(`${APPROX_SYMBOL} 0.0033 CELO`, { exact: false })
+    expect(networkFee).toHaveTextContent(`${APPROX_SYMBOL} ₱0.059`, { exact: false })
+    expect(appFee).toHaveTextContent('0.0006 cUSD', { exact: false }) // app fee is always known
+    expect(appFee).toHaveTextContent('₱0.0008', { exact: false })
+    expect(crossChainFee).toHaveTextContent(`${APPROX_SYMBOL} 0.38 CELO`, { exact: false })
+    expect(crossChainFee).toHaveTextContent(`${APPROX_SYMBOL} ₱6.74`, { exact: false })
   })
 
   it(`renders a fallback swap to amount for a pending ${TokenTransactionTypeV2.CrossChainSwapTransaction} transacton`, () => {
@@ -1019,7 +1056,7 @@ describe('TransactionDetailsScreen', () => {
       },
     })
 
-    expect(getByTestId('SwapContent/swapTo')).toHaveTextContent('--')
+    expect(getByTestId('SwapContent/swapTo')).toHaveTextContent('--', { exact: false })
   })
 
   it(`renders the default network explorer link for failed ${TokenTransactionTypeV2.CrossChainSwapTransaction} transacton`, () => {

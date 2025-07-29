@@ -90,7 +90,7 @@ describe('AssetList', () => {
     expect(queryAllByTestId('PositionItem')).toHaveLength(0)
     expect(queryAllByTestId('NftItem')).toHaveLength(0)
     ;['POOF', 'TK3', 'TK1', 'CELO', 'ETH', 'cUSD'].map((symbol, index) => {
-      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(symbol)
+      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(symbol, { exact: false })
     })
   })
 

@@ -36,7 +36,7 @@ describe('ReviewTransaction', () => {
       </ReviewTransaction>
     )
 
-    expect(tree.getByTestId('Review')).toHaveTextContent('Custom Left Button')
+    expect(tree.getByTestId('Review')).toHaveTextContent('Custom Left Button', { exact: false })
   })
 })
 
@@ -52,10 +52,14 @@ describe('ReviewSummaryItem', () => {
       />
     )
 
-    expect(tree.getByTestId('MyItem/Label')).toHaveTextContent('Item Label')
-    expect(tree.getByTestId('MyItem/PrimaryValue')).toHaveTextContent('Item Primary Value')
-    expect(tree.getByTestId('MyItem/SecondaryValue')).toHaveTextContent('Item Secondary Value')
-    expect(tree.getByTestId('MyItem')).toHaveTextContent('Item Icon')
+    expect(tree.getByTestId('MyItem/Label')).toHaveTextContent('Item Label', { exact: false })
+    expect(tree.getByTestId('MyItem/PrimaryValue')).toHaveTextContent('Item Primary Value', {
+      exact: false,
+    })
+    expect(tree.getByTestId('MyItem/SecondaryValue')).toHaveTextContent('Item Secondary Value', {
+      exact: false,
+    })
+    expect(tree.getByTestId('MyItem')).toHaveTextContent('Item Icon', { exact: false })
   })
 
   it('does not render subtitle if not provided', () => {
@@ -80,8 +84,12 @@ describe('ReviewSummaryItemContact', () => {
     } as Recipient
     const tree = render(<ReviewSummaryItemContact recipient={recipient} testID="ContactItem" />)
 
-    expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent('John Doe')
-    expect(tree.getByTestId('ContactItem/SecondaryValue')).toHaveTextContent('+111111111')
+    expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent('John Doe', {
+      exact: false,
+    })
+    expect(tree.getByTestId('ContactItem/SecondaryValue')).toHaveTextContent('+111111111', {
+      exact: false,
+    })
   })
 
   it.each([
@@ -104,7 +112,10 @@ describe('ReviewSummaryItemContact', () => {
       const recipient = { displayNumber, e164PhoneNumber } as Recipient
       const tree = render(<ReviewSummaryItemContact recipient={recipient} testID="ContactItem" />)
 
-      expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent(expectedDisplayedValue)
+      expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent(
+        expectedDisplayedValue,
+        { exact: false }
+      )
       expect(tree.queryByTestId('ContactItem/SecondaryValue')).toBeNull()
     }
   )
@@ -115,7 +126,9 @@ describe('ReviewSummaryItemContact', () => {
     } as Recipient
     const tree = render(<ReviewSummaryItemContact recipient={recipient} testID="ContactItem" />)
 
-    expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent('0x123456789')
+    expect(tree.getByTestId('ContactItem/PrimaryValue')).toHaveTextContent('0x123456789', {
+      exact: false,
+    })
   })
 
   it('logs an error if no name/phone/address exist', () => {
@@ -147,7 +160,7 @@ describe('ReviewDetailsItem', () => {
       <ReviewDetailsItem type="plain-text" testID="DetailsItem" label="Label" value="Value" />
     )
     expect(tree.queryByTestId('DetailsItem/Loader')).toBeNull()
-    expect(tree.getByTestId('DetailsItem/Value')).toHaveTextContent('Value')
+    expect(tree.getByTestId('DetailsItem/Value')).toHaveTextContent('Value', { exact: false })
   })
 
   it.each([
@@ -456,6 +469,6 @@ describe('ReviewDetailsItemTotalValue', () => {
         </View>
       </Provider>
     )
-    expect(tree.getByTestId('Total')).toHaveTextContent(result)
+    expect(tree.getByTestId('Total')).toHaveTextContent(result, { exact: false })
   })
 })

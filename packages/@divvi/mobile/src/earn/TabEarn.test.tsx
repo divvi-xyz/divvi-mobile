@@ -124,8 +124,8 @@ describe('TabEarn', () => {
 
     const tabItems = queryAllByTestId('Earn/TabBarItem')
     expect(tabItems).toHaveLength(2)
-    expect(tabItems[0]).toHaveTextContent('earnFlow.poolFilters.allPools')
-    expect(tabItems[1]).toHaveTextContent('earnFlow.poolFilters.myPools')
+    expect(tabItems[0]).toHaveTextContent('earnFlow.poolFilters.allPools', { exact: false })
+    expect(tabItems[1]).toHaveTextContent('earnFlow.poolFilters.myPools', { exact: false })
   })
 
   it('correctly shows pool under my positions if has balance', () => {

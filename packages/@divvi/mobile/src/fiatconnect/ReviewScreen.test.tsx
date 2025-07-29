@@ -162,7 +162,7 @@ describe('ReviewScreen', () => {
           <FiatConnectReviewScreen {...props} />
         </Provider>
       )
-      expect(await findByTestId('txDetails-fee/value')).toHaveTextContent('$0.70')
+      expect(await findByTestId('txDetails-fee/value')).toHaveTextContent('$0.70', { exact: false })
     })
     it('shows the fees even if the prepared transaction has an error', async () => {
       mockPrepareERC20TransferTransaction.mockRejectedValue(new Error('some error'))
@@ -172,7 +172,7 @@ describe('ReviewScreen', () => {
           <FiatConnectReviewScreen {...props} />
         </Provider>
       )
-      expect(await findByTestId('txDetails-fee/value')).toHaveTextContent('$0.70')
+      expect(await findByTestId('txDetails-fee/value')).toHaveTextContent('$0.70', { exact: false })
     })
   })
 
@@ -354,7 +354,7 @@ describe('ReviewScreen', () => {
       )
 
       await waitFor(() =>
-        expect(getByTestId('LineItemRow/feeEstimateRow')).toHaveTextContent('---')
+        expect(getByTestId('LineItemRow/feeEstimateRow')).toHaveTextContent('---', { exact: false })
       )
     })
     it('shows expired dialog when quote is expired', async () => {
