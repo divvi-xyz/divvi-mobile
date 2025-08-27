@@ -4,6 +4,9 @@ import App from 'src/app/App'
 
 jest.mock('src/redux/store')
 jest.mock('react-native-screens')
+jest.mock('react-native-auth0', () => ({
+  Auth0Provider: ({ children }: { children: React.ReactNode }) => children,
+}))
 jest.mock('react-native-localize', () => ({
   getNumberFormatSettings: jest
     .fn()
