@@ -3,18 +3,18 @@ import * as Sentry from '@sentry/react-native'
 import BigNumber from 'bignumber.js'
 import 'intl-pluralrules'
 import * as React from 'react'
-import { LogBox, StatusBar } from 'react-native'
+import { LogBox, Platform, StatusBar } from 'react-native'
 import { Auth0Provider } from 'react-native-auth0'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { getNumberFormatSettings } from 'react-native-localize'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import { enableFreeze, enableScreens } from 'react-native-screens'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import AppInitGate from 'src/app/AppInitGate'
 import ErrorBoundary from 'src/app/ErrorBoundary'
 import { getAppConfig } from 'src/appConfig'
-import { AUTH0_CLIENT_ID, AUTH0_DOMAIN, SENTRY_ENABLED, isE2EEnv } from 'src/config'
+import { AUTH0_CLIENT_ID, AUTH0_DOMAIN, isE2EEnv, SENTRY_ENABLED } from 'src/config'
 import i18n from 'src/i18n'
 import NavigatorWrapper from 'src/navigator/NavigatorWrapper'
 import { persistor, store } from 'src/redux/store'
@@ -79,6 +79,7 @@ export class App extends React.Component<Props> {
   isConsumingInitialLink = false
   // TODO: add support for changing themes dynamically, here we are getting only the default theme colors.
   isDarkTheme = getAppConfig().themes?.default?.isDark
+  isAndroid = Platform.OS == 'android'
 
   async componentDidMount() {
     if (isE2EEnv) {
@@ -88,7 +89,11 @@ export class App extends React.Component<Props> {
 
   render() {
     return (
-      <SafeAreaProvider>
+      <SafeAreaProvider
+        // https://github.com/AppAndFlow/react-native-safe-area-context/issues/634#issuecomment-3003640605
+        style={this.isAndroid ? { marginTop: initialWindowMetrics?.insets.bottom } : {}}
+        initialSafeAreaInsets={initialWindowMetrics?.insets}
+      >
         <Provider store={store}>
           <PersistGate persistor={persistor}>
             <Auth0Provider domain={AUTH0_DOMAIN} clientId={AUTH0_CLIENT_ID}>
