@@ -1,13 +1,14 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import * as Sentry from '@sentry/react-native'
 import BigNumber from 'bignumber.js'
+import { StatusBar } from 'expo-status-bar'
 import 'intl-pluralrules'
 import * as React from 'react'
-import { LogBox, Platform, StatusBar } from 'react-native'
+import { LogBox, Platform } from 'react-native'
 import { Auth0Provider } from 'react-native-auth0'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { getNumberFormatSettings } from 'react-native-localize'
-import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { enableFreeze, enableScreens } from 'react-native-screens'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -89,11 +90,7 @@ export class App extends React.Component<Props> {
 
   render() {
     return (
-      <SafeAreaProvider
-        // https://github.com/AppAndFlow/react-native-safe-area-context/issues/634#issuecomment-3003640605
-        style={this.isAndroid ? { marginTop: initialWindowMetrics?.insets.bottom } : {}}
-        initialSafeAreaInsets={initialWindowMetrics?.insets}
-      >
+      <SafeAreaProvider>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
             <Auth0Provider domain={AUTH0_DOMAIN} clientId={AUTH0_CLIENT_ID}>
@@ -101,11 +98,7 @@ export class App extends React.Component<Props> {
                 appStartedMillis={this.props.appStartedMillis}
                 reactLoadTime={this.reactLoadTime}
               >
-                <StatusBar
-                  backgroundColor="transparent"
-                  barStyle={this.isDarkTheme ? 'light-content' : 'dark-content'}
-                  translucent
-                />
+                <StatusBar style={this.isDarkTheme ? 'light' : 'dark'} />
                 <ErrorBoundary>
                   <GestureHandlerRootView style={{ flex: 1 }}>
                     <BottomSheetModalProvider>
