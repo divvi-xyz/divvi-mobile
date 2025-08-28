@@ -20,8 +20,7 @@ function getUserAgentCode(appName: string) {
 }
 
 function addUserAgentCode(src: string, appName: string): MergeResults {
-  // Match just the opening brace line of the didFinishLaunchingWithOptions method
-  // This is simpler and more reliable than matching the entire function signature
+  // Match the opening brace line of the didFinishLaunchingWithOptions method
   const braceRegex = /\s*\) -> Bool \{\s*$/m
 
   return mergeContents({
