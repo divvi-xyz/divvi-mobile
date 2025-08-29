@@ -32,7 +32,8 @@
       "permissions": [
         // TODO: add all reasons for all permissions
         "android.permission.CAMERA"
-      ]
+      ],
+      "edgeToEdgeEnabled": true
     },
     "plugins": [
       [
