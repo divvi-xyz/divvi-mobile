@@ -71,7 +71,7 @@ describe('NetworkMultiSelectBottomSheet', () => {
         title: 'multiSelect.switchNetwork',
         mode: 'select-all-or-one',
       },
-      {}
+      undefined
     )
   })
 })

@@ -16,7 +16,7 @@ const OPTION_HEIGHT = 60
 const MAX_OPTIONS_IN_VIEW = 10.5
 
 export interface MultiSelectBottomSheetProps<T extends string> {
-  forwardedRef: React.RefObject<BottomSheetModal>
+  forwardedRef: React.RefObject<BottomSheetModal | null>
   onChange?: BottomSheetProps['onChange']
   onSelect?: (ids: T[]) => void
   onOpen?: () => void

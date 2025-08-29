@@ -232,7 +232,7 @@ function Actions({
   actions,
 }: {
   token: TokenBalance
-  bottomSheetRef: React.RefObject<BottomSheetModalRefType>
+  bottomSheetRef: React.RefObject<BottomSheetModalRefType | null>
   actions: TokenAction[]
 }) {
   const { t } = useTranslation()

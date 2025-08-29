@@ -19,7 +19,7 @@ import { SVG, shareQRCode } from 'src/send/actions'
 type Props = NativeStackScreenProps<StackParamList, Screens.ExchangeQR>
 
 export default function ExchangeQR({ route, navigation }: Props) {
-  const qrSvgRef = useRef<SVG>()
+  const qrSvgRef = useRef<SVG>(undefined)
   const { flow, exchanges } = route.params
   const dispatch = useDispatch()
 

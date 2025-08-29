@@ -124,7 +124,8 @@ describe('EarnWithdrawConfirmationScreen', () => {
     // screen header
     expect(getByTestId('BackChevron')).toBeTruthy()
     expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.title'
+      'earnFlow.withdrawConfirmation.title',
+      { exact: false }
     )
 
     // summary item for withdrawal
@@ -132,13 +133,16 @@ describe('EarnWithdrawConfirmationScreen', () => {
       within(getByTestId('EarnWithdrawConfirmation/Withdraw')).getByTestId('TokenIcon')
     ).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/Label')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.withdrawing'
+      'earnFlow.withdrawConfirmation.withdrawing',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/PrimaryValue')).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"11.83","tokenSymbol":"USDC"}'
+      'tokenAmount, {"tokenAmount":"11.83","tokenSymbol":"USDC"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/SecondaryValue')).toHaveTextContent(
-      'localAmount, {"localAmount":"15.73","localCurrencySymbol":"₱"}'
+      'localAmount, {"localAmount":"15.73","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // summary item for rewards
@@ -149,33 +153,42 @@ describe('EarnWithdrawConfirmationScreen', () => {
       'earnFlow.withdrawConfirmation.rewardClaiming'
     )
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/PrimaryValue`)).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}'
+      'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}',
+      { exact: false }
     )
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/SecondaryValue`)).toHaveTextContent(
-      'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}'
+      'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // summary item for pool
     expect(
       within(getByTestId('EarnWithdrawConfirmation/Pool')).getByTestId('TokenIcon')
     ).toBeTruthy()
-    expect(getByTestId('EarnWithdrawConfirmation/Pool/Label')).toHaveTextContent('from')
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/Label')).toHaveTextContent('from', {
+      exact: false,
+    })
     expect(getByTestId('EarnWithdrawConfirmation/Pool/PrimaryValue')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.pool, {"providerName":"Aave"}'
+      'earnFlow.withdrawConfirmation.pool, {"providerName":"Aave"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Pool/SecondaryValue')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.yieldRate, {"apy":"1.92"}'
+      'earnFlow.withdrawConfirmation.yieldRate, {"apy":"1.92"}',
+      { exact: false }
     )
 
     // details items
     expect(getByTestId('EarnWithdrawConfirmation/Details/Network/Label')).toHaveTextContent(
-      'network'
+      'network',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/Network/Value')).toHaveTextContent(
-      'Arbitrum Sepolia'
+      'Arbitrum Sepolia',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Label')).toHaveTextContent(
-      'networkFee'
+      'networkFee',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Loader')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/Loader')).toBeTruthy()
@@ -188,10 +201,12 @@ describe('EarnWithdrawConfirmationScreen', () => {
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/InfoIcon')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/InfoIcon')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/Value')).toHaveTextContent(
-      'localAmountApprox, {"localAmount":"15.66","localCurrencySymbol":"₱"}'
+      'localAmountApprox, {"localAmount":"15.66","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // fees info bottom sheet
@@ -205,20 +220,27 @@ describe('EarnWithdrawConfirmationScreen', () => {
       'earnFlow.withdrawConfirmation.withdrawing'
     )
     expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"11.83","localAmount":"15.73","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"11.83","localAmount":"15.73","tokenSymbol":"USDC","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
-    expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees')
+    expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees', {
+      exact: false,
+    })
     expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('TotalInfoBottomSheet/Total/Label')).toHaveTextContent(
-      'reviewTransaction.totalLessFees'
+      'reviewTransaction.totalLessFees',
+      { exact: false }
     )
     expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(
-      'localAmountApprox, {"localAmount":"15.66","localCurrencySymbol":"₱"}'
+      'localAmountApprox, {"localAmount":"15.66","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toHaveTextContent(
-      'earnFlow.collect.ctaExit'
+      'earnFlow.collect.ctaExit',
+      { exact: false }
     )
 
     expect(prepareWithdrawAndClaimTransactions).toHaveBeenCalledWith({
@@ -252,7 +274,8 @@ describe('EarnWithdrawConfirmationScreen', () => {
     // screen header
     expect(getByTestId('BackChevron')).toBeTruthy()
     expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.title'
+      'earnFlow.withdrawConfirmation.title',
+      { exact: false }
     )
 
     // summary item for withdrawal
@@ -263,36 +286,46 @@ describe('EarnWithdrawConfirmationScreen', () => {
       within(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0`)).getByTestId('TokenIcon')
     ).toBeTruthy()
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/Label`)).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.rewardClaiming'
+      'earnFlow.withdrawConfirmation.rewardClaiming',
+      { exact: false }
     )
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/PrimaryValue`)).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}'
+      'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}',
+      { exact: false }
     )
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/SecondaryValue`)).toHaveTextContent(
-      'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}'
+      'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // summary item for pool
     expect(
       within(getByTestId('EarnWithdrawConfirmation/Pool')).getByTestId('TokenIcon')
     ).toBeTruthy()
-    expect(getByTestId('EarnWithdrawConfirmation/Pool/Label')).toHaveTextContent('from')
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/Label')).toHaveTextContent('from', {
+      exact: false,
+    })
     expect(getByTestId('EarnWithdrawConfirmation/Pool/PrimaryValue')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.pool, {"providerName":"Aave"}'
+      'earnFlow.withdrawConfirmation.pool, {"providerName":"Aave"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Pool/SecondaryValue')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.yieldRate, {"apy":"1.92"}'
+      'earnFlow.withdrawConfirmation.yieldRate, {"apy":"1.92"}',
+      { exact: false }
     )
 
     // details items
     expect(getByTestId('EarnWithdrawConfirmation/Details/Network/Label')).toHaveTextContent(
-      'network'
+      'network',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/Network/Value')).toHaveTextContent(
-      'Arbitrum Sepolia'
+      'Arbitrum Sepolia',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Label')).toHaveTextContent(
-      'networkFee'
+      'networkFee',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Loader')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/Loader')).toBeTruthy()
@@ -305,37 +338,48 @@ describe('EarnWithdrawConfirmationScreen', () => {
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/InfoIcon')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/InfoIcon')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/Value')).toHaveTextContent(
-      'localAmountApprox, {"localAmount":"0.064","localCurrencySymbol":"- ₱"}'
+      'localAmountApprox, {"localAmount":"0.064","localCurrencySymbol":"- ₱"}',
+      { exact: false }
     )
 
     // fees info bottom sheet
     expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
-      'feeInfoBottomSheet.feesInfo, {"context":"sameChain"}'
+      'feeInfoBottomSheet.feesInfo, {"context":"sameChain"}',
+      { exact: false }
     )
 
     // total plus fees info bottom sheet
     expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Label')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.withdrawing'
+      'earnFlow.withdrawConfirmation.withdrawing',
+      { exact: false }
     )
     expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"11.83","localAmount":"15.73","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"11.83","localAmount":"15.73","tokenSymbol":"USDC","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
-    expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees')
+    expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees', {
+      exact: false,
+    })
     expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('TotalInfoBottomSheet/Total/Label')).toHaveTextContent(
-      'reviewTransaction.totalLessFees'
+      'reviewTransaction.totalLessFees',
+      { exact: false }
     )
     expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(
-      'localAmountApprox, {"localAmount":"0.064","localCurrencySymbol":"- ₱"}'
+      'localAmountApprox, {"localAmount":"0.064","localCurrencySymbol":"- ₱"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toHaveTextContent(
-      'earnFlow.collect.ctaReward'
+      'earnFlow.collect.ctaReward',
+      { exact: false }
     )
 
     expect(prepareClaimTransactions).toHaveBeenCalledWith({
@@ -375,7 +419,8 @@ describe('EarnWithdrawConfirmationScreen', () => {
     // screen header
     expect(getByTestId('BackChevron')).toBeTruthy()
     expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.title'
+      'earnFlow.withdrawConfirmation.title',
+      { exact: false }
     )
 
     // summary item for withdrawal
@@ -383,13 +428,16 @@ describe('EarnWithdrawConfirmationScreen', () => {
       within(getByTestId('EarnWithdrawConfirmation/Withdraw')).getByTestId('TokenIcon')
     ).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/Label')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.withdrawing'
+      'earnFlow.withdrawConfirmation.withdrawing',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/PrimaryValue')).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"5.91","tokenSymbol":"USDC"}'
+      'tokenAmount, {"tokenAmount":"5.91","tokenSymbol":"USDC"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/SecondaryValue')).toHaveTextContent(
-      'localAmount, {"localAmount":"7.86","localCurrencySymbol":"₱"}'
+      'localAmount, {"localAmount":"7.86","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // summary item for rewards
@@ -397,36 +445,46 @@ describe('EarnWithdrawConfirmationScreen', () => {
       within(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0`)).getByTestId('TokenIcon')
     ).toBeTruthy()
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/Label`)).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.rewardClaiming'
+      'earnFlow.withdrawConfirmation.rewardClaiming',
+      { exact: false }
     )
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/PrimaryValue`)).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}'
+      'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}',
+      { exact: false }
     )
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/SecondaryValue`)).toHaveTextContent(
-      'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}'
+      'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // summary item for pool
     expect(
       within(getByTestId('EarnWithdrawConfirmation/Pool')).getByTestId('TokenIcon')
     ).toBeTruthy()
-    expect(getByTestId('EarnWithdrawConfirmation/Pool/Label')).toHaveTextContent('from')
+    expect(getByTestId('EarnWithdrawConfirmation/Pool/Label')).toHaveTextContent('from', {
+      exact: false,
+    })
     expect(getByTestId('EarnWithdrawConfirmation/Pool/PrimaryValue')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.pool, {"providerName":"Aave"}'
+      'earnFlow.withdrawConfirmation.pool, {"providerName":"Aave"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Pool/SecondaryValue')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.yieldRate, {"apy":"1.92"}'
+      'earnFlow.withdrawConfirmation.yieldRate, {"apy":"1.92"}',
+      { exact: false }
     )
 
     // details items
     expect(getByTestId('EarnWithdrawConfirmation/Details/Network/Label')).toHaveTextContent(
-      'network'
+      'network',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/Network/Value')).toHaveTextContent(
-      'Arbitrum Sepolia'
+      'Arbitrum Sepolia',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Label')).toHaveTextContent(
-      'networkFee'
+      'networkFee',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Loader')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/Loader')).toBeTruthy()
@@ -439,37 +497,48 @@ describe('EarnWithdrawConfirmationScreen', () => {
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/InfoIcon')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/InfoIcon')).toBeTruthy()
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/Value')).toHaveTextContent(
-      'localAmountApprox, {"localAmount":"7.80","localCurrencySymbol":"₱"}'
+      'localAmountApprox, {"localAmount":"7.80","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // fees info bottom sheet
     expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
-      'feeInfoBottomSheet.feesInfo, {"context":"sameChain"}'
+      'feeInfoBottomSheet.feesInfo, {"context":"sameChain"}',
+      { exact: false }
     )
 
     // total plus fees info bottom sheet
     expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Label')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.withdrawing'
+      'earnFlow.withdrawConfirmation.withdrawing',
+      { exact: false }
     )
     expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"5.91","localAmount":"7.86","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"5.91","localAmount":"7.86","tokenSymbol":"USDC","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
-    expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees')
+    expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees', {
+      exact: false,
+    })
     expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('TotalInfoBottomSheet/Total/Label')).toHaveTextContent(
-      'reviewTransaction.totalLessFees'
+      'reviewTransaction.totalLessFees',
+      { exact: false }
     )
     expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(
-      'localAmountApprox, {"localAmount":"7.80","localCurrencySymbol":"₱"}'
+      'localAmountApprox, {"localAmount":"7.80","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toHaveTextContent(
-      'earnFlow.collect.ctaWithdraw'
+      'earnFlow.collect.ctaWithdraw',
+      { exact: false }
     )
 
     expect(prepareWithdrawTransactions).toHaveBeenCalledWith({
@@ -550,64 +619,78 @@ describe('EarnWithdrawConfirmationScreen', () => {
 
     // withdraw amount in USDC
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/PrimaryValue')).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"5.00","tokenSymbol":"USDC"}'
+      'tokenAmount, {"tokenAmount":"5.00","tokenSymbol":"USDC"}',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/Withdraw/SecondaryValue')).toHaveTextContent(
-      'localAmount, {"localAmount":"6.65","localCurrencySymbol":"₱"}'
+      'localAmount, {"localAmount":"6.65","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // Claimed Reward in ARB
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/PrimaryValue`)).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}'
+      'tokenAmount, {"tokenAmount":"0.01","tokenSymbol":"ARB"}',
+      { exact: false }
     )
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-0/SecondaryValue`)).toHaveTextContent(
-      'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}'
+      'localAmount, {"localAmount":"0.016","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // Claimed Reward in USDC
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-1/PrimaryValue`)).toHaveTextContent(
-      'tokenAmount, {"tokenAmount":"10.75","tokenSymbol":"USDC"}'
+      'tokenAmount, {"tokenAmount":"10.75","tokenSymbol":"USDC"}',
+      { exact: false }
     )
     expect(getByTestId(`EarnWithdrawConfirmation/RewardClaim-1/SecondaryValue`)).toHaveTextContent(
-      'localAmount, {"localAmount":"14.30","localCurrencySymbol":"₱"}'
+      'localAmount, {"localAmount":"14.30","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // Network Fee
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // Total
     expect(getByTestId('EarnWithdrawConfirmation/Details/Total/Value')).toHaveTextContent(
-      'localAmountApprox, {"localAmount":"20.88","localCurrencySymbol":"₱"}'
+      'localAmountApprox, {"localAmount":"20.88","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // Total bottom sheet withdrawing details
 
     // First label is withdrawing
     expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Label')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.withdrawing'
+      'earnFlow.withdrawConfirmation.withdrawing',
+      { exact: false }
     )
     // Withdraw amount in USDC + Claimed Reward in USDC
     expect(getByTestId('TotalInfoBottomSheet/Withdrawing-0/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"15.75","localAmount":"20.95","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"15.75","localAmount":"20.95","tokenSymbol":"USDC","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     // Second label is empty
     expect(getByTestId('TotalInfoBottomSheet/Withdrawing-1/Label')).toBeEmptyElement()
     // Claimed Reward in ARB
     expect(getByTestId('TotalInfoBottomSheet/Withdrawing-1/Value')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"0.01","localAmount":"0.016","tokenSymbol":"ARB","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"0.01","localAmount":"0.016","tokenSymbol":"ARB","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.06","localAmount":"0.08","tokenSymbol":"ETH","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('TotalInfoBottomSheet/Total/Label')).toHaveTextContent(
-      'reviewTransaction.totalLessFees'
+      'reviewTransaction.totalLessFees',
+      { exact: false }
     )
     // Total is the same as in details
     expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(
-      'localAmountApprox, {"localAmount":"20.88","localCurrencySymbol":"₱"}'
+      'localAmountApprox, {"localAmount":"20.88","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
   })
 
@@ -714,7 +797,8 @@ describe('EarnWithdrawConfirmationScreen', () => {
     })
 
     expect(getByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Caption')).toHaveTextContent(
-      'gasSubsidized'
+      'gasSubsidized',
+      { exact: false }
     )
   })
 
@@ -736,14 +820,16 @@ describe('EarnWithdrawConfirmationScreen', () => {
     // screen header
     expect(getByTestId('BackChevron')).toBeTruthy()
     expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.title'
+      'earnFlow.withdrawConfirmation.title',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
     await waitFor(() => {
       expect(queryByTestId('EarnWithdrawConfirmation/Details/NetworkFee/Loader')).toBeFalsy()
     })
     expect(getByTestId('EarnWithdrawConfirmation/PrepareError')).toHaveTextContent(
-      'earnFlow.collect.errorTitle'
+      'earnFlow.collect.errorTitle',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
   })
@@ -769,7 +855,8 @@ describe('EarnWithdrawConfirmationScreen', () => {
 
     expect(getByTestId('BackChevron')).toBeTruthy()
     expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.title'
+      'earnFlow.withdrawConfirmation.title',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
     await waitFor(() => {
@@ -849,7 +936,8 @@ describe('EarnWithdrawConfirmationScreen', () => {
 
     expect(getByTestId('BackChevron')).toBeTruthy()
     expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.title'
+      'earnFlow.withdrawConfirmation.title',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
     await waitFor(() => {
@@ -881,7 +969,8 @@ describe('EarnWithdrawConfirmationScreen', () => {
 
     expect(getByTestId('BackChevron')).toBeTruthy()
     expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
-      'earnFlow.withdrawConfirmation.title'
+      'earnFlow.withdrawConfirmation.title',
+      { exact: false }
     )
     expect(getByTestId('EarnWithdrawConfirmation/ConfirmButton')).toBeDisabled()
     await waitFor(() => {
@@ -889,7 +978,8 @@ describe('EarnWithdrawConfirmationScreen', () => {
     })
 
     expect(getByTestId('EarnWithdrawConfirmation/NoGasWarning')).toHaveTextContent(
-      'earnFlow.collect.noGasCta, {"symbol":"ETH","network":"Arbitrum Sepolia"}'
+      'earnFlow.collect.noGasCta, {"symbol":"ETH","network":"Arbitrum Sepolia"}',
+      { exact: false }
     )
     fireEvent.press(
       getByText('earnFlow.collect.noGasCta, {"symbol":"ETH","network":"Arbitrum Sepolia"}')

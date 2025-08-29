@@ -44,7 +44,7 @@ function SignInWithEmailBottomSheet({
 }: {
   keylessBackupFlow: KeylessBackupFlow
   origin: KeylessBackupOrigin
-  bottomSheetRef: React.RefObject<BottomSheetModalRefType>
+  bottomSheetRef: React.RefObject<BottomSheetModalRefType | null>
 }) {
   const { t } = useTranslation()
   const onboardingProps = useSelector(onboardingPropsSelector)
@@ -102,6 +102,7 @@ type Props = NativeStackScreenProps<StackParamList, Screens.SignInWithEmail>
 function SignInWithEmail({ route, navigation }: Props) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  // @ts-expect-error - clearCredentials is not typed in the auth0 library
   const { authorize, getCredentials, clearCredentials } = useAuth0()
   const { keylessBackupFlow, origin } = route.params
   const [loading, setLoading] = useState<null | OAuthProvider>(null)
@@ -148,6 +149,7 @@ function SignInWithEmail({ route, navigation }: Props) {
       provider,
     })
     try {
+      // Upgrade auth0 to 5.0.0-beta.4+ when https://github.com/auth0/react-native-auth0/pull/1256 is in a release
       // clear any existing saved credentials
       await clearCredentials()
 

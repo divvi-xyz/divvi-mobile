@@ -5,7 +5,6 @@ import devToolsEnhancer from 'redux-devtools-expo-dev-plugin'
 import { getStoredState, PersistConfig, persistReducer, persistStore } from 'redux-persist'
 import FSStorage from 'redux-persist-fs-storage'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
-import createSagaMiddleware from 'redux-saga'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { PerformanceEvents } from 'src/analytics/Events'
 import { apiMiddlewares } from 'src/redux/apiReducersList'
@@ -17,6 +16,10 @@ import { transactionFeedV2Api } from 'src/transactions/api'
 import { resetStateOnInvalidStoredAccount } from 'src/utils/accountChecker'
 import Logger from 'src/utils/Logger'
 import { ONE_MINUTE_IN_MILLIS } from 'src/utils/time'
+
+// https://github.com/redux-saga/redux-saga/issues/2709#issuecomment-2826585297
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const createSagaMiddleware = require('redux-saga').default
 
 export const timeBetweenStoreSizeEvents = ONE_MINUTE_IN_MILLIS
 // Set this to the epoch so that a redix_store_size event will always be emitted the first time
@@ -98,6 +101,7 @@ declare var window: any
 
 export const setupStore = (initialState?: ReducersRootState, config = persistConfig) => {
   const sagaMiddleware = createSagaMiddleware({
+    // @ts-expect-error: errorInfo is not typed with require import
     onError: (error, errorInfo) => {
       // Log the uncaught error so it's captured by Sentry
       // default just uses console.error

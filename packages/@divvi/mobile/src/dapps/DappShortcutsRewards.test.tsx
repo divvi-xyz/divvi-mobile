@@ -163,11 +163,12 @@ describe('DappShortcutsRewards', () => {
 
     const rewardCard = getAllByTestId('DappShortcutsRewards/Card')[0]
     expect(within(rewardCard).getByTestId('DappShortcutsRewards/RewardAmount')).toHaveTextContent(
-      '0.098 UBE, 0.95 CELO'
+      '0.098 UBE, 0.95 CELO',
+      { exact: false }
     )
     expect(
       within(rewardCard).getByTestId('DappShortcutsRewards/RewardAmountFiat')
-    ).toHaveTextContent('₱0.88') // USD value $0.66, mocked exchange rate 1.33
+    ).toHaveTextContent('₱0.88', { exact: false }) // USD value $0.66, mocked exchange rate 1.33
     expect(within(rewardCard).getByTestId('DappShortcutsRewards/ClaimButton')).toBeTruthy()
   })
 

@@ -46,9 +46,11 @@ describe('ExchangesBottomSheet', () => {
       />
     )
 
-    expect(getByTestId('Coinbase Pro-Touchable')).toHaveTextContent('Coinbase Pro')
-    expect(getByTestId('Bittrex-Touchable')).toHaveTextContent('Bittrex')
-    expect(getByTestId('KuCoin-Touchable')).toHaveTextContent('KuCoin')
+    expect(getByTestId('Coinbase Pro-Touchable')).toHaveTextContent('Coinbase Pro', {
+      exact: false,
+    })
+    expect(getByTestId('Bittrex-Touchable')).toHaveTextContent('Bittrex', { exact: false })
+    expect(getByTestId('KuCoin-Touchable')).toHaveTextContent('KuCoin', { exact: false })
   })
 
   it('fires callback on exchange press and navigates', () => {

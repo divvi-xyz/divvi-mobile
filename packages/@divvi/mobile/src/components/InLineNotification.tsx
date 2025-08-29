@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { type JSX } from 'react'
 import { GestureResponderEvent, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import Touchable from 'src/components/Touchable'
 import AttentionIcon from 'src/icons/Attention'

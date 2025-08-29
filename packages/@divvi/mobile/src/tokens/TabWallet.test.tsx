@@ -163,7 +163,7 @@ describe('TabWallet', () => {
 
     expect(getByTestId('AssetsTokenBalance')).toBeTruthy()
     expect(queryByTestId('AssetsTokenBalance/Info')).toBeFalsy()
-    expect(getByTestId('AssetsTokenBalance')).toHaveTextContent('₱21.03')
+    expect(getByTestId('AssetsTokenBalance')).toHaveTextContent('₱21.03', { exact: false })
 
     expect(getByTestId('Assets/TabBar')).toBeTruthy()
     expect(getAllByTestId('Assets/TabBarItem')).toHaveLength(2)
@@ -187,7 +187,7 @@ describe('TabWallet', () => {
 
     expect(getByTestId('AssetsTokenBalance')).toBeTruthy()
     expect(getByTestId('AssetsTokenBalance/Info')).toBeTruthy()
-    expect(getByTestId('AssetsTokenBalance')).toHaveTextContent('₱31.55')
+    expect(getByTestId('AssetsTokenBalance')).toHaveTextContent('₱31.55', { exact: false })
 
     expect(getByTestId('Assets/TabBar')).toBeTruthy()
     expect(getAllByTestId('Assets/TabBarItem')).toHaveLength(3)
@@ -233,7 +233,7 @@ describe('TabWallet', () => {
 
     expect(getByTestId('AssetsTokenBalance')).toBeTruthy()
     expect(queryByTestId('AssetsTokenBalance/Info')).toBeFalsy()
-    expect(getByTestId('AssetsTokenBalance')).toHaveTextContent('₱21.03')
+    expect(getByTestId('AssetsTokenBalance')).toHaveTextContent('₱21.03', { exact: false })
 
     expect(getByTestId('Assets/TabBar')).toBeTruthy()
     expect(getAllByTestId('Assets/TabBarItem')).toHaveLength(2)

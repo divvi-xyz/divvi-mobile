@@ -285,12 +285,14 @@ describe('TokenEnterAmount', () => {
       )
 
       expect(getByTestId('TokenEnterAmount/TokenName')).toHaveTextContent(
-        'tokenEnterAmount.tokenDescription, {"tokenName":"CELO","tokenNetwork":"Celo Alfajores"}'
+        'tokenEnterAmount.tokenDescription, {"tokenName":"CELO","tokenNetwork":"Celo Alfajores"}',
+        { exact: false }
       )
       expect(getByTestId('TokenEnterAmount/SwitchTokens')).toBeTruthy()
       expect(getByTestId('TokenEnterAmount/TokenSelect')).toBeTruthy()
       expect(getByTestId('TokenEnterAmount/TokenBalance')).toHaveTextContent(
-        'tokenEnterAmount.availableBalance'
+        'tokenEnterAmount.availableBalance',
+        { exact: false }
       )
     })
 

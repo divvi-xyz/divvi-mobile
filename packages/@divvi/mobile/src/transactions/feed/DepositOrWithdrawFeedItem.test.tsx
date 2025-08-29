@@ -95,7 +95,7 @@ describe('DepositOrWithdrawFeedItem', () => {
     expect(getByTestId('DepositOrWithdrawFeedItem/CROSS_CHAIN_DEPOSIT-amount-local')).toBeTruthy()
     expect(
       getByTestId('DepositOrWithdrawFeedItem/CROSS_CHAIN_DEPOSIT-amount-crypto')
-    ).toHaveTextContent('-100.00 cUSD')
+    ).toHaveTextContent('-100.00 cUSD', { exact: false })
   })
 
   it('displays app name when available', () => {

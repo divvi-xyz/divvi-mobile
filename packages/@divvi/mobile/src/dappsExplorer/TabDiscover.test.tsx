@@ -119,20 +119,30 @@ describe('TabDiscover', () => {
     )
 
     expect(mostPopularSectionResults.length).toBe(5)
-    expect(mostPopularSectionResults[0]).toHaveTextContent(dappsList[0].name)
-    expect(mostPopularSectionResults[0]).toHaveTextContent(dappsList[0].description)
+    expect(mostPopularSectionResults[0]).toHaveTextContent(dappsList[0].name, { exact: false })
+    expect(mostPopularSectionResults[0]).toHaveTextContent(dappsList[0].description, {
+      exact: false,
+    })
 
-    expect(mostPopularSectionResults[1]).toHaveTextContent(dappsList[1].name)
-    expect(mostPopularSectionResults[1]).toHaveTextContent(dappsList[1].description)
+    expect(mostPopularSectionResults[1]).toHaveTextContent(dappsList[1].name, { exact: false })
+    expect(mostPopularSectionResults[1]).toHaveTextContent(dappsList[1].description, {
+      exact: false,
+    })
 
-    expect(mostPopularSectionResults[2]).toHaveTextContent(dappsList[2].name)
-    expect(mostPopularSectionResults[2]).toHaveTextContent(dappsList[2].description)
+    expect(mostPopularSectionResults[2]).toHaveTextContent(dappsList[2].name, { exact: false })
+    expect(mostPopularSectionResults[2]).toHaveTextContent(dappsList[2].description, {
+      exact: false,
+    })
 
-    expect(mostPopularSectionResults[3]).toHaveTextContent(dappsList[3].name)
-    expect(mostPopularSectionResults[3]).toHaveTextContent(dappsList[3].description)
+    expect(mostPopularSectionResults[3]).toHaveTextContent(dappsList[3].name, { exact: false })
+    expect(mostPopularSectionResults[3]).toHaveTextContent(dappsList[3].description, {
+      exact: false,
+    })
 
-    expect(mostPopularSectionResults[4]).toHaveTextContent(dappsList[4].name)
-    expect(mostPopularSectionResults[4]).toHaveTextContent(dappsList[4].description)
+    expect(mostPopularSectionResults[4]).toHaveTextContent(dappsList[4].name, { exact: false })
+    expect(mostPopularSectionResults[4]).toHaveTextContent(dappsList[4].description, {
+      exact: false,
+    })
 
     expect(queryByTestId('DiscoverDappsCard/FavoritesSection/Title')).toBeFalsy()
   })
@@ -159,23 +169,29 @@ describe('TabDiscover', () => {
     )
 
     expect(mostPopularSectionResults.length).toBe(3)
-    expect(mostPopularSectionResults[0]).toHaveTextContent(dappsList[1].name)
-    expect(mostPopularSectionResults[0]).toHaveTextContent(dappsList[1].description)
+    expect(mostPopularSectionResults[0]).toHaveTextContent(dappsList[1].name, { exact: false })
+    expect(mostPopularSectionResults[0]).toHaveTextContent(dappsList[1].description, {
+      exact: false,
+    })
 
-    expect(mostPopularSectionResults[1]).toHaveTextContent(dappsList[3].name)
-    expect(mostPopularSectionResults[1]).toHaveTextContent(dappsList[3].description)
+    expect(mostPopularSectionResults[1]).toHaveTextContent(dappsList[3].name, { exact: false })
+    expect(mostPopularSectionResults[1]).toHaveTextContent(dappsList[3].description, {
+      exact: false,
+    })
 
-    expect(mostPopularSectionResults[2]).toHaveTextContent(dappsList[4].name)
-    expect(mostPopularSectionResults[2]).toHaveTextContent(dappsList[4].description)
+    expect(mostPopularSectionResults[2]).toHaveTextContent(dappsList[4].name, { exact: false })
+    expect(mostPopularSectionResults[2]).toHaveTextContent(dappsList[4].description, {
+      exact: false,
+    })
 
     const favoritesSectionResults = getAllByTestId('DiscoverDappsCard/FavoritesSection/DappCard')
 
     expect(favoritesSectionResults.length).toBe(2)
-    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name)
-    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].description)
+    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name, { exact: false })
+    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].description, { exact: false })
 
-    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[2].name)
-    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[2].description)
+    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[2].name, { exact: false })
+    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[2].description, { exact: false })
   })
 
   it('renders correctly when there are >2 favorite dapps', () => {
@@ -200,14 +216,14 @@ describe('TabDiscover', () => {
     const favoritesSectionResults = getAllByTestId('DiscoverDappsCard/FavoritesSection/DappCard')
 
     expect(favoritesSectionResults.length).toBe(3)
-    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name)
-    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].description)
+    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name, { exact: false })
+    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].description, { exact: false })
 
-    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[2].name)
-    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[2].description)
+    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[2].name, { exact: false })
+    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[2].description, { exact: false })
 
-    expect(favoritesSectionResults[2]).toHaveTextContent(dappsList[3].name)
-    expect(favoritesSectionResults[2]).toHaveTextContent(dappsList[3].description)
+    expect(favoritesSectionResults[2]).toHaveTextContent(dappsList[3].name, { exact: false })
+    expect(favoritesSectionResults[2]).toHaveTextContent(dappsList[3].description, { exact: false })
   })
 
   it('renders correctly when there are >5 favorite dapps', () => {
@@ -232,20 +248,20 @@ describe('TabDiscover', () => {
     const favoritesSectionResults = getAllByTestId('DiscoverDappsCard/FavoritesSection/DappCard')
 
     expect(favoritesSectionResults.length).toBe(5)
-    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name)
-    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].description)
+    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name, { exact: false })
+    expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].description, { exact: false })
 
-    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[1].name)
-    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[1].description)
+    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[1].name, { exact: false })
+    expect(favoritesSectionResults[1]).toHaveTextContent(dappsList[1].description, { exact: false })
 
-    expect(favoritesSectionResults[2]).toHaveTextContent(dappsList[2].name)
-    expect(favoritesSectionResults[2]).toHaveTextContent(dappsList[2].description)
+    expect(favoritesSectionResults[2]).toHaveTextContent(dappsList[2].name, { exact: false })
+    expect(favoritesSectionResults[2]).toHaveTextContent(dappsList[2].description, { exact: false })
 
-    expect(favoritesSectionResults[3]).toHaveTextContent(dappsList[3].name)
-    expect(favoritesSectionResults[3]).toHaveTextContent(dappsList[3].description)
+    expect(favoritesSectionResults[3]).toHaveTextContent(dappsList[3].name, { exact: false })
+    expect(favoritesSectionResults[3]).toHaveTextContent(dappsList[3].description, { exact: false })
 
-    expect(favoritesSectionResults[4]).toHaveTextContent(dappsList[4].name)
-    expect(favoritesSectionResults[4]).toHaveTextContent(dappsList[4].description)
+    expect(favoritesSectionResults[4]).toHaveTextContent(dappsList[4].name, { exact: false })
+    expect(favoritesSectionResults[4]).toHaveTextContent(dappsList[4].description, { exact: false })
   })
 
   it('fires event on favorite dapp press', () => {

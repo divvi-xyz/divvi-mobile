@@ -34,7 +34,7 @@ interface Props<T> {
   onSelectChip(chip: FilterChip<T>): void
   style?: StyleProp<ViewStyle>
   contentContainerStyle?: StyleProp<ViewStyle>
-  forwardedRef?: React.RefObject<ScrollView>
+  forwardedRef?: React.RefObject<ScrollView | null>
   scrollEnabled?: boolean
 }
 

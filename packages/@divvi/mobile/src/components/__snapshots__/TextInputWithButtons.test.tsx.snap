@@ -59,6 +59,7 @@ exports[`TextInputWithButtons renders correctly 1`] = `
     onResponderTerminate={[Function]}
     onResponderTerminationRequest={[Function]}
     onStartShouldSetResponder={[Function]}
+    ref={null}
     style={
       [
         undefined,

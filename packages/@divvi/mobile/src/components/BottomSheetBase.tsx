@@ -6,7 +6,7 @@ import { useReducedMotion } from 'react-native-reanimated'
 import styles from 'src/styles/styles'
 
 interface BottomSheetBaseProps {
-  forwardedRef: React.RefObject<BottomSheetModal>
+  forwardedRef: React.RefObject<BottomSheetModal | null>
   children?: React.ReactNode | React.ReactNode[]
   onClose?: () => void
   onOpen?: () => void

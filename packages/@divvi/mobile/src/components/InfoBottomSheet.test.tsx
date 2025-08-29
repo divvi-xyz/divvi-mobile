@@ -19,12 +19,16 @@ describe('InfoBottomSheet', () => {
       </Provider>
     )
 
-    expect(getByTestId('TestInfoBottomSheet')).toHaveTextContent('Info Bottom Sheet Title')
+    expect(getByTestId('TestInfoBottomSheet')).toHaveTextContent('Info Bottom Sheet Title', {
+      exact: false,
+    })
     expect(getByTestId('TestInfoBottomSheet/Content')).toHaveTextContent(
-      'Info Bottom Sheet Content'
+      'Info Bottom Sheet Content',
+      { exact: false }
     )
     expect(getByTestId('TestInfoBottomSheet/DismissButton')).toHaveTextContent(
-      'bottomSheetDismissButton'
+      'bottomSheetDismissButton',
+      { exact: false }
     )
   })
 

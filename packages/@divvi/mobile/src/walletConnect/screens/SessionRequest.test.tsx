@@ -1,5 +1,5 @@
 import { WalletKitTypes } from '@reown/walletkit'
-import { fireEvent, render } from '@testing-library/react-native'
+import { fireEvent, render, within } from '@testing-library/react-native'
 import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
 import * as React from 'react'
 import 'react-native'
@@ -88,8 +88,8 @@ describe(SessionRequest, () => {
       expect(getByText('walletConnectRequest.connectWalletAction')).toBeTruthy()
       expect(queryByText('dismiss')).toBeFalsy()
       const networkChips = queryByTestId('SessionRequest/NetworkChips')
-      expect(networkChips?.children[0]).toHaveTextContent('Celo Alfajores')
-      expect(networkChips?.children[1]).toHaveTextContent('Ethereum Sepolia')
+      expect(within(networkChips!).getByText('Celo Alfajores')).toBeTruthy()
+      expect(within(networkChips!).getByText('Ethereum Sepolia')).toBeTruthy()
       expect(getByText(mockAccount.toLowerCase())).toBeTruthy()
     })
 

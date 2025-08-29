@@ -267,7 +267,7 @@ function FormField({
 }) {
   const { t } = useTranslation()
   const [showError, setShowError] = useState(false)
-  const typingTimer = useRef<ReturnType<typeof setTimeout>>()
+  const typingTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
   const [infoVisibile, setInfoVisible] = useState(false)
 
   // Clear timeout on unmount to prevent memory leak warning

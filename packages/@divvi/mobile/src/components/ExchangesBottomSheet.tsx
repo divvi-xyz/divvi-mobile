@@ -9,7 +9,7 @@ import { Screens } from 'src/navigator/Screens'
 import colors from 'src/styles/colors'
 
 interface Props {
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   onClose: () => void
   onExchangeSelected: (exchange: ExternalExchangeProvider) => void
   exchanges: ExternalExchangeProvider[]

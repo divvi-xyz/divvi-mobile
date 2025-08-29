@@ -91,27 +91,32 @@ describe('FeeInfoBottomSheet', () => {
 
     expect(getByText('estimatedNetworkFee')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"0.01","localAmount":"0.013","tokenSymbol":"cUSD","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"0.01","localAmount":"0.013","tokenSymbol":"cUSD","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     expect(getByText('maxNetworkFee')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"0.02","localAmount":"0.027","tokenSymbol":"cUSD","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"0.02","localAmount":"0.027","tokenSymbol":"cUSD","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     expect(getByText('appFee, {"appName":"Test App"}')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/AppFee')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"0.07","localAmount":"0.047","tokenSymbol":"CELO","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"0.07","localAmount":"0.047","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     expect(getByText('estimatedCrossChainFee')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/EstimatedCrossChainFee')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"tokenAmount":"1.30","localAmount":"0.86","tokenSymbol":"CELO","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"tokenAmount":"1.30","localAmount":"0.86","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
 
     expect(getByText('maxCrossChainFee')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/MaxCrossChainFee')).toHaveTextContent(
-      'tokenAndLocalAmount, {"tokenAmount":"1.70","localAmount":"1.13","tokenSymbol":"CELO","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"tokenAmount":"1.70","localAmount":"1.13","tokenSymbol":"CELO","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
   })
 
@@ -145,10 +150,12 @@ describe('FeeInfoBottomSheet', () => {
     )
 
     expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee')).toHaveTextContent(
-      'tokenAndLocalAmountApprox, {"context":"noFiatPrice","tokenAmount":"0.01","localAmount":"","tokenSymbol":"cUSD","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmountApprox, {"context":"noFiatPrice","tokenAmount":"0.01","localAmount":"","tokenSymbol":"cUSD","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
     expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee')).toHaveTextContent(
-      'tokenAndLocalAmount, {"context":"noFiatPrice","tokenAmount":"0.02","localAmount":"","tokenSymbol":"cUSD","localCurrencySymbol":"₱"}'
+      'tokenAndLocalAmount, {"context":"noFiatPrice","tokenAmount":"0.02","localAmount":"","tokenSymbol":"cUSD","localCurrencySymbol":"₱"}',
+      { exact: false }
     )
   })
 
@@ -175,7 +182,7 @@ describe('FeeInfoBottomSheet', () => {
       </Provider>
     )
     expect(getByText('appFee, {"appName":"Test App"}')).toBeTruthy()
-    expect(getByTestId('FeeInfoBottomSheet/AppFee')).toHaveTextContent('free')
+    expect(getByTestId('FeeInfoBottomSheet/AppFee')).toHaveTextContent('free', { exact: false })
   })
 
   it('should display unknown values if the token info is missing', () => {
@@ -198,8 +205,12 @@ describe('FeeInfoBottomSheet', () => {
       </Provider>
     )
 
-    expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee')).toHaveTextContent('unknown')
-    expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee')).toHaveTextContent('unknown')
+    expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee')).toHaveTextContent('unknown', {
+      exact: false,
+    })
+    expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee')).toHaveTextContent('unknown', {
+      exact: false,
+    })
   })
 
   it.each([
@@ -256,7 +267,8 @@ describe('FeeInfoBottomSheet', () => {
 
     expect(getByText(item.title)).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
-      item.footerDisclaimer
+      item.footerDisclaimer,
+      { exact: false }
     )
     expect(getByTestId('FeeInfoBottomSheet/EstimatedNetworkFee')).toBeTruthy()
     expect(getByTestId('FeeInfoBottomSheet/MaxNetworkFee')).toBeTruthy()
@@ -301,7 +313,8 @@ describe('FeeInfoBottomSheet', () => {
     )
 
     expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
-      'Custom Footer Disclaimer'
+      'Custom Footer Disclaimer',
+      { exact: false }
     )
   })
 })

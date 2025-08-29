@@ -60,7 +60,9 @@ describe('Invite', () => {
 
     expect(getByTestId('InviteModalShareButton')).toBeDisabled()
     expect(getByText('inviteWithUrl.title')).toBeTruthy()
-    expect(getByTestId('InviteModalStyledDescription')).toHaveTextContent('inviteWithUrl.body')
+    expect(getByTestId('InviteModalStyledDescription')).toHaveTextContent('inviteWithUrl.body', {
+      exact: false,
+    })
   })
 
   it('should enable button when share URL is loaded', async () => {

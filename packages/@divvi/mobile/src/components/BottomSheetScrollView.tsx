@@ -8,7 +8,7 @@ import { Spacing } from 'src/styles/styles'
 interface Props {
   containerStyle?: StyleProp<ViewStyle>
   testId?: string
-  forwardedRef?: React.RefObject<ScrollView>
+  forwardedRef?: React.RefObject<ScrollView | null>
   children: React.ReactNode
 }
 

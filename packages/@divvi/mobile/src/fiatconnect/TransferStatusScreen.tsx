@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, type JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import AppAnalytics from 'src/analytics/AppAnalytics'

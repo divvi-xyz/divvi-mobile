@@ -1,7 +1,7 @@
 // HOC to add a paste button to a text input
 
 import * as React from 'react'
-import { StyleSheet, TextInputProps, View, ViewStyle } from 'react-native'
+import { StyleSheet, TextInputProps, View, ViewProps, ViewStyle } from 'react-native'
 import TouchableDefault from 'src/components/Touchable'
 import { PasteAwareWrappedElementProps, withPasteAware } from 'src/components/WithPasteAware'
 import Paste from 'src/icons/Paste'
@@ -12,12 +12,12 @@ export default function withTextInputPasteAware<P extends TextInputProps>(
   WrappedTextInput: React.ComponentType<P>,
   pasteIconContainerStyle?: ViewStyle
 ) {
-  class Wrapper extends React.Component<P & PasteAwareWrappedElementProps> {
+  class Wrapper extends React.Component<ViewProps & PasteAwareWrappedElementProps & P> {
     render() {
-      const { isPasteIconVisible, onPressPaste } = this.props
+      const { isPasteIconVisible, onPressPaste, ...otherProps } = this.props
       return (
         <View style={styles.container}>
-          <WrappedTextInput {...this.props} showClearButton={!isPasteIconVisible} />
+          <WrappedTextInput {...(otherProps as P)} showClearButton={!isPasteIconVisible} />
           {isPasteIconVisible && (
             <TouchableDefault
               style={[styles.pasteIconContainer, pasteIconContainerStyle]}
