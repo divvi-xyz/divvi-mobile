@@ -3,7 +3,7 @@ const Sentry = {
   setTagsContext: jest.fn(),
   captureException: jest.fn(),
   captureMessage: jest.fn(),
-  ReactNavigationInstrumentation: jest.fn().mockImplementation(() => ({})),
+  reactNavigationIntegration: jest.fn().mockImplementation(() => ({})),
   Severity: {
     Error: 'error',
   },
