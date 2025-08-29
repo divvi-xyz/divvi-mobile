@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { StatusBar } from 'expo-status-bar'
 import 'intl-pluralrules'
 import * as React from 'react'
-import { LogBox, Platform } from 'react-native'
+import { LogBox } from 'react-native'
 import { Auth0Provider } from 'react-native-auth0'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { getNumberFormatSettings } from 'react-native-localize'
@@ -80,7 +80,6 @@ export class App extends React.Component<Props> {
   isConsumingInitialLink = false
   // TODO: add support for changing themes dynamically, here we are getting only the default theme colors.
   isDarkTheme = getAppConfig().themes?.default?.isDark
-  isAndroid = Platform.OS == 'android'
 
   async componentDidMount() {
     if (isE2EEnv) {
