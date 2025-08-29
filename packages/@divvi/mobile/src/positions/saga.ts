@@ -34,8 +34,8 @@ import {
   triggerShortcutSuccess,
 } from 'src/positions/slice'
 import { Position, Shortcut } from 'src/positions/types'
-import { SentryTransactionHub } from 'src/sentry/SentryTransactionHub'
-import { SentryTransaction } from 'src/sentry/SentryTransactions'
+import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
+import { SentrySpan } from 'src/sentry/SentrySpans'
 import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
 import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
@@ -180,7 +180,7 @@ export function* fetchPositionsSaga() {
     }
 
     yield* put(fetchPositionsStart())
-    SentryTransactionHub.startTransaction(SentryTransaction.fetch_positions)
+    SentrySpanHub.startSpan(SentrySpan.fetch_positions)
     const hooksApiUrl = yield* select(hooksApiUrlSelector)
     const language = (yield* select(currentLanguageSelector)) || 'en'
     const shortLanguage = language.split('-')[0]
@@ -189,7 +189,7 @@ export function* fetchPositionsSaga() {
       walletAddress: address,
       language: shortLanguage,
     })
-    SentryTransactionHub.finishTransaction(SentryTransaction.fetch_positions)
+    SentrySpanHub.finishSpan(SentrySpan.fetch_positions)
     yield* put(fetchPositionsSuccess({ positions, earnPositionIds, fetchedAt: Date.now() }))
   } catch (err) {
     const error = ensureError(err)

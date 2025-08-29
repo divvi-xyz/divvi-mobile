@@ -1,9 +1,9 @@
-interface SentryTransactionInfo {
+interface SentrySpanInfo {
   name: string
   op: string
 }
 
-export enum SentryTransaction {
+export enum SentrySpan {
   fetch_balances = 'FetchBalances',
   fetch_positions = 'FetchPositions',
   import_contacts = 'ImportContacts',
@@ -15,9 +15,9 @@ export enum SentryTransaction {
   app_init_saga = 'AppInitSaga',
 }
 
-type values = (typeof SentryTransaction)[keyof typeof SentryTransaction]
+type values = (typeof SentrySpan)[keyof typeof SentrySpan]
 
-export const SentryTransactions: Record<values, SentryTransactionInfo> = {
+export const SentrySpans: Record<values, SentrySpanInfo> = {
   FetchBalances: {
     name: 'Fetch Balances',
     op: 'fetch_balances',

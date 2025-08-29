@@ -7,7 +7,7 @@ const Sentry = {
   Severity: {
     Error: 'error',
   },
-  startTransaction: jest.fn(),
+  startSpanManual: jest.fn(),
   nativeCrash: jest.fn(),
   wrap: jest.fn().mockImplementation((x) => x),
 }
