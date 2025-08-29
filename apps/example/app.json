@@ -47,6 +47,9 @@
       [
         "expo-build-properties",
         {
+          "android": {
+            "targetSdkVersion": 35
+          },
           "ios": {
             // Minimum iOS version we support
             "deploymentTarget": "15.1",
