@@ -3,11 +3,13 @@ import { useAsync } from 'react-async-hook'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { showError } from 'src/alert/actions'
-import { KeylessBackupEvents } from 'src/analytics/Events'
 import AppAnalytics from 'src/analytics/AppAnalytics'
+import { KeylessBackupEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { appKeyshareIssued } from 'src/keylessBackup/slice'
 import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
+import { RecaptchaActionType } from 'src/recaptcha/RecaptchaService'
+import { useRecaptcha } from 'src/recaptcha/useRecaptcha'
 import { useDispatch } from 'src/redux/hooks'
 import Logger from 'src/utils/Logger'
 import { PhoneNumberVerificationStatus } from 'src/verify/hooks'
@@ -23,6 +25,7 @@ export function useVerifyPhoneNumber(
   const verificationCodeRequested = useRef(false)
 
   const dispatch = useDispatch()
+  const { getToken: getRecaptchaToken, isEnabled: isRecaptchaEnabled } = useRecaptcha()
 
   const [verificationStatus, setVerificationStatus] = useState(PhoneNumberVerificationStatus.NONE)
   const [issueCodeCompleted, setIssueCodeCompleted] = useState(false)
@@ -47,16 +50,36 @@ export function useVerifyPhoneNumber(
       })
       Logger.debug(`${TAG}/issueSmsCode`, 'Initiating request')
 
+      let recaptchaToken: string | undefined
+      if (isRecaptchaEnabled) {
+        try {
+          recaptchaToken = await getRecaptchaToken(RecaptchaActionType.KEYLESS_BACKUP)
+          Logger.debug(`${TAG}/issueSmsCode`, 'reCAPTCHA token obtained')
+        } catch (error) {
+          Logger.warn(
+            `${TAG}/issueSmsCode`,
+            'Failed to get reCAPTCHA token, proceeding without it',
+            error
+          )
+        }
+      }
+
+      const requestBody: any = {
+        phoneNumber,
+        clientPlatform: Platform.OS,
+        clientBundleId: DeviceInfo.getBundleId(),
+      }
+
+      if (recaptchaToken) {
+        requestBody.recaptchaToken = recaptchaToken
+      }
+
       const response = await fetch(networkConfig.cabIssueSmsCodeUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          phoneNumber,
-          clientPlatform: Platform.OS,
-          clientBundleId: DeviceInfo.getBundleId(),
-        }),
+        body: JSON.stringify(requestBody),
       })
       if (response.ok) {
         return response
@@ -64,7 +87,7 @@ export function useVerifyPhoneNumber(
         throw new Error(await response.text())
       }
     },
-    [phoneNumber],
+    [phoneNumber, isRecaptchaEnabled],
     {
       onError: (error: Error) => {
         AppAnalytics.track(KeylessBackupEvents.cab_issue_sms_code_error, {
