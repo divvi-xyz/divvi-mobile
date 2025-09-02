@@ -209,8 +209,13 @@ export default function AssetList({
   }
 
   const NftGroup = ({ item }: { item: NftWithNetworkId[] }) => {
+    const isSingleItem = item.length === 1
+
     return (
-      <View testID="NftGroup" style={styles.nftsPairingContainer}>
+      <View testID="NftGroup" style={[
+        styles.nftsPairingContainer,
+        isSingleItem && styles.nftSingleItem
+        ]}>
         {item.map((nft, index) => (
           <NftItem key={index} item={nft} />
         ))}
@@ -220,7 +225,6 @@ export default function AssetList({
 
   const renderAssetItem = ({
     item,
-    index,
   }: {
     item: TokenBalance | Position | NftWithNetworkId[]
     index: number
@@ -338,12 +342,17 @@ const styles = StyleSheet.create({
   positionSectionHeaderText: {
     ...typeScale.labelXXSmall,
   },
+  nftSingleItem: {
+    justifyContent: 'flex-start', 
+    marginLeft: Spacing.Thick24 
+  },
   nftsPairingContainer: {
     flexDirection: 'row',
     gap: Spacing.Regular16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   nftsContentContainer: {
-    alignItems: 'flex-start',
     paddingHorizontal: Spacing.Thick24,
   },
   nftsErrorView: {
