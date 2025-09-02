@@ -212,10 +212,10 @@ export default function AssetList({
     const isSingleItem = item.length === 1
 
     return (
-      <View testID="NftGroup" style={[
-        styles.nftsPairingContainer,
-        isSingleItem && styles.nftSingleItem
-        ]}>
+      <View
+        testID="NftGroup"
+        style={[styles.nftsPairingContainer, isSingleItem && styles.nftSingleItem]}
+      >
         {item.map((nft, index) => (
           <NftItem key={index} item={nft} />
         ))}
@@ -343,8 +343,8 @@ const styles = StyleSheet.create({
     ...typeScale.labelXXSmall,
   },
   nftSingleItem: {
-    justifyContent: 'flex-start', 
-    marginLeft: Spacing.Thick24 
+    justifyContent: 'flex-start',
+    marginLeft: Spacing.Thick24,
   },
   nftsPairingContainer: {
     flexDirection: 'row',
