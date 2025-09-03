@@ -111,17 +111,6 @@ class RecaptchaService {
       throw error
     }
   }
-
-  isEnabled(): boolean {
-    const appConfig: PublicAppConfig = getAppConfig()
-    return !!(
-      appConfig.experimental?.recaptcha?.enabled && appConfig.experimental?.recaptcha?.siteKey
-    )
-  }
-
-  getClient(): RecaptchaClient | null {
-    return this.client
-  }
 }
 
 export const recaptchaService = new RecaptchaService()
