@@ -3,6 +3,7 @@ import {
   RecaptchaAction,
   type RecaptchaClient,
 } from '@google-cloud/recaptcha-enterprise-react-native'
+import { Platform } from 'react-native'
 import { getAppConfig } from 'src/appConfig'
 import { type PublicAppConfig } from 'src/public'
 import Logger from 'src/utils/Logger'
@@ -32,13 +33,41 @@ class RecaptchaService {
       const appConfig: PublicAppConfig = getAppConfig()
       const recaptchaConfig = appConfig.experimental?.recaptcha
 
-      if (!recaptchaConfig?.enabled || !recaptchaConfig.siteKey) {
-        Logger.info(TAG, 'reCAPTCHA not enabled or site key not configured')
+      if (!recaptchaConfig?.enabled) {
+        Logger.info(TAG, 'reCAPTCHA not enabled')
         return
       }
 
-      Logger.info(TAG, 'Initializing reCAPTCHA client')
-      this.client = await Recaptcha.fetchClient(recaptchaConfig.siteKey)
+      // Get the appropriate site key for the current platform
+      let siteKey: string | undefined
+      const platform = Platform.OS
+
+      if (platform === 'ios') {
+        siteKey = recaptchaConfig.iOSSiteKey
+        if (siteKey) {
+          Logger.debug(TAG, 'Using iOS site key for reCAPTCHA')
+        } else {
+          Logger.warn(TAG, 'iOS site key not configured for reCAPTCHA')
+        }
+      } else if (platform === 'android') {
+        siteKey = recaptchaConfig.androidSiteKey
+        if (siteKey) {
+          Logger.debug(TAG, 'Using Android site key for reCAPTCHA')
+        } else {
+          Logger.warn(TAG, 'Android site key not configured for reCAPTCHA')
+        }
+      } else {
+        Logger.warn(TAG, `Unsupported platform for reCAPTCHA: ${platform}`)
+        return
+      }
+
+      if (!siteKey) {
+        Logger.warn(TAG, `No reCAPTCHA site key configured for platform: ${platform}`)
+        return
+      }
+
+      Logger.info(TAG, `Initializing reCAPTCHA client for platform: ${platform}`)
+      this.client = await Recaptcha.fetchClient(siteKey)
       Logger.info(TAG, 'reCAPTCHA client initialized successfully')
     } catch (error) {
       Logger.error(TAG, 'Failed to initialize reCAPTCHA client', error)
