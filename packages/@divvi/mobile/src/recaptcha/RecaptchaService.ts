@@ -4,6 +4,7 @@ import {
   type RecaptchaClient,
 } from '@google-cloud/recaptcha-enterprise-react-native'
 import { getAppConfig } from 'src/appConfig'
+import { type PublicAppConfig } from 'src/public'
 import Logger from 'src/utils/Logger'
 
 const TAG = 'recaptcha/RecaptchaService'
@@ -28,8 +29,8 @@ class RecaptchaService {
 
   private async performInitialization(): Promise<void> {
     try {
-      const appConfig = getAppConfig()
-      const recaptchaConfig = (appConfig.experimental as any)?.recaptcha
+      const appConfig: PublicAppConfig = getAppConfig()
+      const recaptchaConfig = appConfig.experimental?.recaptcha
 
       if (!recaptchaConfig?.enabled || !recaptchaConfig.siteKey) {
         Logger.info(TAG, 'reCAPTCHA not enabled or site key not configured')
@@ -83,10 +84,10 @@ class RecaptchaService {
   }
 
   isEnabled(): boolean {
-    const appConfig = getAppConfig()
+    const appConfig: PublicAppConfig = getAppConfig()
     return !!(
-      (appConfig.experimental as any)?.recaptcha?.enabled &&
-      (appConfig.experimental as any)?.recaptcha?.siteKey
+      appConfig.experimental?.recaptcha?.enabled &&
+      appConfig.experimental?.recaptcha?.siteKey
     )
   }
 
