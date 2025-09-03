@@ -86,8 +86,7 @@ class RecaptchaService {
   isEnabled(): boolean {
     const appConfig: PublicAppConfig = getAppConfig()
     return !!(
-      appConfig.experimental?.recaptcha?.enabled &&
-      appConfig.experimental?.recaptcha?.siteKey
+      appConfig.experimental?.recaptcha?.enabled && appConfig.experimental?.recaptcha?.siteKey
     )
   }
 
