@@ -1855,6 +1855,11 @@
     "@shikijs/types" "^1.27.2"
     "@shikijs/vscode-textmate" "^10.0.1"
 
+"@google-cloud/recaptcha-enterprise-react-native@^18.7.1":
+  version "18.7.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/recaptcha-enterprise-react-native/-/recaptcha-enterprise-react-native-18.7.1.tgz#2c7e4e94af0e2db32ed6de20533e385ee85786d9"
+  integrity sha512-RnJIFpiA+tviZqbZWMFDC6nBT3Z3Z8ZoxgeYWY6h7g4V4e5aDI0stox7irpndJis9uOYodE3rVZvOo44qI+Ugg==
+
 "@gorhom/bottom-sheet@^5.1.1":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@gorhom/bottom-sheet/-/bottom-sheet-5.1.1.tgz#43ecb9e7b4d4ca4b4cefdf3b6b497f7715f350bc"
@@ -13584,9 +13589,9 @@ react-native-safe-modules@^1.0.3:
     dedent "^0.6.0"
 
 react-native-screens@^4.3.0, react-native-screens@~4.11.1:
-  version "4.15.3"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-4.15.3.tgz#3efb9c47459b7940446955c2219e85a2e0aea187"
-  integrity sha512-xVQu76cddcIncR2UIX+A7FmWsxmNwGYr5gG8T6B1kMvxqNlXm0zS9U6juBRC9jyVexMvHZ2+cOLjGjkTE2VAjg==
+  version "4.15.4"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-4.15.4.tgz#834541023fd26589d2c81fcbe35576553caee840"
+  integrity sha512-aKHPDScUbpQiZEG9eZssHdG5jEQs4yiJ8eMx6g81Ex/xU7DZkv3911enzdCb+v4eJE79X8waizY0ZhauZJQmrw==
   dependencies:
     react-freeze "^1.0.0"
     react-native-is-edge-to-edge "^1.2.1"
