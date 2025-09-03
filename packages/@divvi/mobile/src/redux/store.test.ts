@@ -143,7 +143,7 @@ describe('store state', () => {
       {
         "_persist": {
           "rehydrated": true,
-          "version": 250,
+          "version": 251,
         },
         "account": {
           "acceptedTerms": false,
@@ -218,7 +218,6 @@ describe('store state', () => {
           "cachedQuoteParams": {},
           "cachedTransfers": {},
           "kycTryAgainLoading": false,
-          "personaInProgress": false,
           "providers": null,
           "quotes": [],
           "quotesError": null,

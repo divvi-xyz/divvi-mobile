@@ -3663,7 +3663,7 @@
                 "KeylessBackupProgress",
                 "KycDenied",
                 "KycExpired",
-                "KycLanding",
+                "KycInactive",
                 "KycPending",
                 "Language",
                 "LanguageModal",
@@ -5153,9 +5153,6 @@
                 "kycTryAgainLoading": {
                     "type": "boolean"
                 },
-                "personaInProgress": {
-                    "type": "boolean"
-                },
                 "providers": {
                     "anyOf": [
                         {
@@ -5263,7 +5260,6 @@
                 "cachedQuoteParams",
                 "cachedTransfers",
                 "kycTryAgainLoading",
-                "personaInProgress",
                 "providers",
                 "quotes",
                 "quotesError",
@@ -5891,7 +5887,7 @@
                         "KeylessBackupProgress",
                         "KycDenied",
                         "KycExpired",
-                        "KycLanding",
+                        "KycInactive",
                         "KycPending",
                         "Language",
                         "LanguageModal",

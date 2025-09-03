@@ -14,7 +14,6 @@ import { expectSaga } from 'redux-saga-test-plan'
 import * as matches from 'redux-saga-test-plan/matchers'
 import { dynamic, throwError } from 'redux-saga-test-plan/providers'
 import { call, select } from 'redux-saga/effects'
-import { KycStatus as PersonaKycStatus } from 'src/account/reducer'
 import { showError, showMessage } from 'src/alert/actions'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { FiatExchangeEvents } from 'src/analytics/Events'
@@ -68,7 +67,6 @@ import {
   fiatAccountUsed,
   kycTryAgain,
   kycTryAgainCompleted,
-  personaFinished,
   postKyc as postKycAction,
   refetchQuote,
   refetchQuoteCompleted,
@@ -317,7 +315,6 @@ describe('Fiatconnect saga', () => {
             matches.call.fn(getKycStatus),
             {
               providerId: normalizedQuoteKyc.quote.provider.id,
-              persona: PersonaKycStatus.Approved,
               kycStatus: {
                 [KycSchema.PersonalDataAndDocuments]: FiatConnectKycStatus.KycApproved,
               },
@@ -380,7 +377,6 @@ describe('Fiatconnect saga', () => {
             matches.call.fn(getKycStatus),
             {
               providerId: normalizedQuoteKyc.quote.provider.id,
-              persona: PersonaKycStatus.Approved,
               kycStatus: {
                 [KycSchema.PersonalDataAndDocuments]: FiatConnectKycStatus.KycDenied,
               },
@@ -441,7 +437,6 @@ describe('Fiatconnect saga', () => {
             matches.call.fn(getKycStatus),
             {
               providerId: normalizedQuoteKyc.quote.provider.id,
-              persona: PersonaKycStatus.Approved,
               kycStatus: {
                 [KycSchema.PersonalDataAndDocuments]: FiatConnectKycStatus.KycExpired,
               },
@@ -501,7 +496,6 @@ describe('Fiatconnect saga', () => {
             matches.call.fn(getKycStatus),
             {
               providerId: normalizedQuoteKyc.quote.provider.id,
-              persona: PersonaKycStatus.Approved,
               kycStatus: {
                 [KycSchema.PersonalDataAndDocuments]: FiatConnectKycStatus.KycPending,
               },
@@ -612,7 +606,6 @@ describe('Fiatconnect saga', () => {
             matches.call.fn(getKycStatus),
             {
               providerId: normalizedQuoteKyc.quote.provider.id,
-              persona: PersonaKycStatus.Approved,
               kycStatus: {
                 [KycSchema.PersonalDataAndDocuments]: 'bad-status!',
               },
@@ -794,7 +787,7 @@ describe('Fiatconnect saga', () => {
 
   describe('handleSelectFiatConnectQuote', () => {
     it.each([FiatConnectKycStatus.KycApproved, FiatConnectKycStatus.KycPending])(
-      'invokes _checkFiatAccountAndNavigate if KYC is required and KYC status is %s',
+      'navigates to KycInactive if KYC is required and KYC status is %s',
       async (fcKycStatus) => {
         await expectSaga(
           handleSelectFiatConnectQuote,
@@ -805,22 +798,20 @@ describe('Fiatconnect saga', () => {
               matches.call.fn(getKycStatus),
               {
                 providerId: normalizedQuoteKyc.quote.provider.id,
-                persona: PersonaKycStatus.Approved,
                 kycStatus: {
                   [KycSchema.PersonalDataAndDocuments]: fcKycStatus,
                 },
               },
             ],
-            [matches.call.fn(_checkFiatAccountAndNavigate), undefined],
             { call: provideDelay },
           ])
-          .call(_checkFiatAccountAndNavigate, {
-            quote: normalizedQuoteKyc,
-            isKycRequired: true,
-            isKycApproved: fcKycStatus === FiatConnectKycStatus.KycApproved,
-          })
           .put(selectFiatConnectQuoteCompleted())
           .run()
+
+        expect(navigate).toHaveBeenCalledWith(Screens.KycInactive, {
+          flow: normalizedQuoteKyc.flow,
+          quote: normalizedQuoteKyc,
+        })
       }
     )
     it('navigates to KycExpired screen early if KYC is required and is expired', async () => {
@@ -833,7 +824,6 @@ describe('Fiatconnect saga', () => {
             matches.call.fn(getKycStatus),
             {
               providerId: normalizedQuoteKyc.quote.provider.id,
-              persona: PersonaKycStatus.Approved,
               kycStatus: {
                 [KycSchema.PersonalDataAndDocuments]: FiatConnectKycStatus.KycExpired,
               },
@@ -858,7 +848,6 @@ describe('Fiatconnect saga', () => {
             matches.call.fn(getKycStatus),
             {
               providerId: normalizedQuoteKyc.quote.provider.id,
-              persona: PersonaKycStatus.Approved,
               kycStatus: {
                 [KycSchema.PersonalDataAndDocuments]: FiatConnectKycStatus.KycDenied,
               },
@@ -874,7 +863,7 @@ describe('Fiatconnect saga', () => {
         retryable: true,
       })
     })
-    it('navigates to KYC landing screen early if KYC is required and does not exist in Persona', async () => {
+    it('navigates to KYC inactive screen early if KYC is required', async () => {
       await expectSaga(
         handleSelectFiatConnectQuote,
         selectFiatConnectQuote({ quote: normalizedQuoteKyc })
@@ -884,7 +873,6 @@ describe('Fiatconnect saga', () => {
             matches.call.fn(getKycStatus),
             {
               providerId: normalizedQuoteKyc.quote.provider.id,
-              persona: PersonaKycStatus.NotCreated,
               kycStatus: {
                 [KycSchema.PersonalDataAndDocuments]: FiatConnectKycStatus.KycNotCreated,
               },
@@ -894,45 +882,12 @@ describe('Fiatconnect saga', () => {
         ])
         .put(selectFiatConnectQuoteCompleted())
         .run()
-      expect(navigate).toHaveBeenCalledWith(Screens.KycLanding, {
-        personaKycStatus: PersonaKycStatus.NotCreated,
+      expect(navigate).toHaveBeenCalledWith(Screens.KycInactive, {
         flow: normalizedQuoteKyc.flow,
         quote: normalizedQuoteKyc,
-        step: 'one',
       })
     })
-    it.each([PersonaKycStatus.Approved, PersonaKycStatus.Completed])(
-      'posts KYC to provider and invokes _checkFiatAccountAndNavigate if KYC required and exists in Persona',
-      async (personaKycStatus) => {
-        await expectSaga(
-          handleSelectFiatConnectQuote,
-          selectFiatConnectQuote({ quote: normalizedQuoteKyc })
-        )
-          .provide([
-            [
-              matches.call.fn(getKycStatus),
-              {
-                providerId: normalizedQuoteKyc.quote.provider.id,
-                persona: personaKycStatus,
-                kycStatus: {
-                  [KycSchema.PersonalDataAndDocuments]: FiatConnectKycStatus.KycNotCreated,
-                },
-              },
-            ],
-            [matches.call.fn(postKyc), undefined],
-            [matches.call.fn(_checkFiatAccountAndNavigate), undefined],
-            { call: provideDelay },
-          ])
-          .put(cacheQuoteParams(expectedCacheQuoteParams))
-          .call(_checkFiatAccountAndNavigate, {
-            quote: normalizedQuoteKyc,
-            isKycRequired: true,
-            isKycApproved: false,
-          })
-          .put(selectFiatConnectQuoteCompleted())
-          .run()
-      }
-    )
+
     it('goes back to SelectProvider if FC KYC status is not recognized', async () => {
       await expectSaga(
         handleSelectFiatConnectQuote,
@@ -943,7 +898,6 @@ describe('Fiatconnect saga', () => {
             matches.call.fn(getKycStatus),
             {
               providerId: normalizedQuoteKyc.quote.provider.id,
-              persona: PersonaKycStatus.Approved,
               kycStatus: {
                 [KycSchema.PersonalDataAndDocuments]: 'badKyc',
               },
@@ -1022,7 +976,6 @@ describe('Fiatconnect saga', () => {
           isKycApproved: false,
         })
         .put(cacheQuoteParams(expectedCacheQuoteParams))
-        .put(personaFinished())
         .run()
     })
     it('navigates to SelectProvider if post kyc fails', async () => {
@@ -1035,7 +988,6 @@ describe('Fiatconnect saga', () => {
           providerInfo: normalizedQuoteKyc.getProviderInfo(),
           kycSchema: normalizedQuoteKyc.getKycSchema(),
         })
-        .put(personaFinished())
         .put(showError(ErrorMessages.PROVIDER_FETCH_FAILED))
         .run()
       expect(navigate).toHaveBeenCalledWith(Screens.SelectProvider, {
@@ -1064,7 +1016,6 @@ describe('Fiatconnect saga', () => {
           isKycApproved: false,
         })
         .put(cacheQuoteParams(expectedCacheQuoteParams))
-        .put(personaFinished())
         .put(showError(ErrorMessages.PROVIDER_FETCH_FAILED))
         .run()
       expect(navigate).toHaveBeenCalledWith(Screens.SelectProvider, {
@@ -1111,10 +1062,9 @@ describe('Fiatconnect saga', () => {
         .provide([[matches.call.fn(_getFiatAccount), null]])
         .call(_getFiatAccount, expectedGetFiatAccountArgs(normalizedQuoteKyc))
         .run()
-      expect(navigate).toHaveBeenCalledWith(Screens.KycLanding, {
+      expect(navigate).toHaveBeenCalledWith(Screens.KycInactive, {
         flow: normalizedQuoteKyc.flow,
         quote: normalizedQuoteKyc,
-        step: 'two',
       })
     })
     it('navigates to link account if kyc is not required and fiat account is not found', async () => {
@@ -2598,7 +2548,10 @@ describe('Fiatconnect saga', () => {
         kycSchema: quote.getKycSchema(),
       })
       expect(navigate).toHaveBeenCalledTimes(1)
-      expect(navigate).toHaveBeenCalledWith(Screens.KycLanding, { quote, flow, step: 'one' })
+      expect(navigate).toHaveBeenCalledWith(Screens.KycInactive, {
+        flow,
+        quote,
+      })
     })
 
     it('shows error message on delete kyc failure', async () => {

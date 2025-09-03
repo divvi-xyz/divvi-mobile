@@ -51,10 +51,6 @@
             // Minimum iOS version we support
             "deploymentTarget": "15.1",
             "useFrameworks": "static"
-          },
-          "android": {
-            // For Persona SDK
-            "extraMavenRepos": ["https://sdk.withpersona.com/android/releases"]
           }
         }
       ],

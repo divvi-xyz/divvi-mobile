@@ -148,8 +148,6 @@ export const SPEND_MERCHANT_LINKS: SpendMerchant[] = [
   },
 ]
 
-export const DEFAULT_PERSONA_TEMPLATE_ID = 'itmpl_5FYHGGFhdAYvfd7FvSpNADcC'
-
 export const CELO_LOGO_URL =
   'https://firebasestorage.googleapis.com/v0/b/celo-mobile-mainnet.appspot.com/o/images%2Fcelo.jpeg?alt=media'
 export const SUPERCHARGE_LOGO_URL =

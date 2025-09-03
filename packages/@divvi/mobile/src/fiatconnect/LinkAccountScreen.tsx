@@ -56,7 +56,7 @@ export default function FiatConnectLinkAccountScreen({ route }: Props) {
   return <LinkAccountSection quote={quote} flow={flow} />
 }
 
-export function LinkAccountSection(props: {
+function LinkAccountSection(props: {
   quote: FiatConnectQuote
   flow: CICOFlow
   disabled?: boolean

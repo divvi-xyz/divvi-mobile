@@ -1,5 +1,5 @@
-import { KycSchema, KycStatus as FiatConnectKycStatus } from '@fiatconnect/fiatconnect-types'
-import { KycStatus as PersonaKycStatus } from 'src/account/reducer'
+import { KycStatus as FiatConnectKycStatus, KycSchema } from '@fiatconnect/fiatconnect-types'
+
 import { FiatConnectProviderInfo } from 'src/fiatconnect'
 import { getFiatConnectClient } from 'src/fiatconnect/clients'
 import { getClient } from 'src/in-house-liquidity/client'
@@ -8,7 +8,6 @@ import networkConfig from 'src/web3/networkConfig'
 export interface GetKycStatusResponse {
   providerId: string
   kycStatus: Record<KycSchema, FiatConnectKycStatus>
-  persona: PersonaKycStatus
 }
 
 export const AUTH_COOKIE = 'FIATCONNECT-PROVIDER-COOKIE'
@@ -99,8 +98,8 @@ export async function getAuthHeaders({
 /**
  * Calls GET /fiatconnect/kyc/:providerId on in-house-liquidity.
  *
- * Returns the user's status for any number of KYC schema requests for a single FiatConnect provider,
- * as well as the user's Persona KYC status. If response is non-OK, throws.
+ * Returns the user's status for any number of KYC schema requests for a single FiatConnect provider.
+ * If response is non-OK, throws.
  *
  * @param {FiatConnectProviderInfo} params.providerInfo - Information about the FiatConnect provider to get KYC statuses for.
  * @param {KycSchema[]} params.kycSchemas - A list of `KycSchema`s to get statuses for.
@@ -133,8 +132,7 @@ export async function getKycStatus({
 /**
  * Calls POST /fiatconnect/kyc/:providerId/:kycSchema on in-house-liquidity.
  *
- * Once a user has submitted KYC information to Persona, calling this method will prompt
- * in-house-liquidity to submit the selected KYC schema to the selected provider using that information.
+ * Calling this method will prompt in-house-liquidity to submit the selected KYC schema to the selected provider.
  *
  * Silently returns on success. If response is non-OK, throws.
  *
@@ -185,36 +183,5 @@ export async function deleteKyc({
   if (!response.ok && response.status !== 404) {
     // 404 means the resource is already deleted or the providerId is invalid
     throw new Error(`Got non-ok/404 response from IHL while deleting KYC: ${response.status}`)
-  }
-}
-
-/**
- * Calls POST /persona/account/create on in-house-liquidity.
- *
- * Creates a Persona account for the given wallet address.
- *
- * Silently returns on success, or if a Persona account already exists for the given address.
- * Otherwise, throws.
- *
- * @param {params.walletAddress} string - The wallet address to create a Persona account for.
- * @returns {Promise<void>}
- */
-export async function createPersonaAccount({
-  walletAddress,
-}: {
-  walletAddress: string
-}): Promise<void> {
-  const response = await exports.makeRequest({
-    path: `/persona/account/create`,
-    options: {
-      method: 'POST',
-      body: JSON.stringify({ accountAddress: walletAddress }),
-    },
-  })
-
-  if (!response.ok && response.status !== 409) {
-    throw new Error(
-      `Got non-ok/409 response from IHL while creating Persona account: ${response.status}`
-    )
   }
 }

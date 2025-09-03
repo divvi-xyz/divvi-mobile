@@ -44,7 +44,7 @@ export enum Screens {
   KeylessBackupPhoneCodeInput = 'KeylessBackupPhoneCodeInput',
   KeylessBackupProgress = 'KeylessBackupProgress',
   KeylessBackupIntro = 'KeylessBackupIntro',
-  KycLanding = 'KycLanding',
+  KycInactive = 'KycInactive',
   KycDenied = 'KycDenied',
   KycPending = 'KycPending',
   KycExpired = 'KycExpired',

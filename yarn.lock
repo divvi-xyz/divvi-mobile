@@ -14214,11 +14214,6 @@ react-native-permissions@^4.1.5:
   resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-4.1.5.tgz#db4d1ddbf076570043f4fd4168f54bb6020aec92"
   integrity sha512-r6VMRacASmtRHS+GZ+5HQCp9p9kiE+UU9magHOZCXZLTJitdTuVHWZRrb4v4oqZGU+zAp3mZhTQftuMMv+WLUg==
 
-react-native-persona@^2.2.23:
-  version "2.9.4"
-  resolved "https://registry.yarnpkg.com/react-native-persona/-/react-native-persona-2.9.4.tgz#e742114684a0bad73434a8fce9464b5885584f48"
-  integrity sha512-34d7eJDkhpw0Uq3BqejoFJYKYQL5d9f4ufqYVo5k1J6A6iMGkjCTjR5JPnXVjYem7beRn1Dq3jEyX31tUUC+DA==
-
 react-native-picker-select@^9.3.1:
   version "9.3.1"
   resolved "https://registry.yarnpkg.com/react-native-picker-select/-/react-native-picker-select-9.3.1.tgz#8a2ad51c286fcd54ef60fb883842ec1895c15003"

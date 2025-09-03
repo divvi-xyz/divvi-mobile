@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Environment as PersonaEnvironment } from 'react-native-persona'
+
 import { APP_REGISTRY_NAME, DEFAULT_FORNO_URL, DEFAULT_TESTNET } from 'src/config'
 import { Network, NetworkId } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
@@ -34,7 +34,6 @@ export interface NetworkConfig {
   simplexApiUrl: string
   fetchUserLocationDataUrl: string
   walletConnectEndpoint: string
-  personaEnvironment: PersonaEnvironment
   inHouseLiquidityURL: string
   setRegistrationPropertiesUrl: string
   setRegistrationPropertiesAuth: TypedDataDefinition
@@ -314,7 +313,6 @@ const networkConfigs: { [testnet: string]: NetworkConfig } = {
     simplexApiUrl: SIMPLEX_API_URL_STAGING,
     fetchUserLocationDataUrl: FETCH_USER_LOCATION_DATA_STAGING,
     walletConnectEndpoint: 'wss://relay.walletconnect.org',
-    personaEnvironment: PersonaEnvironment.SANDBOX,
     inHouseLiquidityURL: 'https://liquidity-dot-celo-mobile-alfajores.appspot.com',
     setRegistrationPropertiesUrl: SET_REGISTRATION_PROPERTIES_ALFAJORES,
     setRegistrationPropertiesAuth: SET_REGISTRATION_PROPERTIES_AUTH_ALFAJORES,
@@ -401,7 +399,6 @@ const networkConfigs: { [testnet: string]: NetworkConfig } = {
     simplexApiUrl: SIMPLEX_API_URL_PROD,
     fetchUserLocationDataUrl: FETCH_USER_LOCATION_DATA_PROD,
     walletConnectEndpoint: 'wss://relay.walletconnect.org',
-    personaEnvironment: PersonaEnvironment.PRODUCTION,
     inHouseLiquidityURL: 'https://liquidity-dot-celo-mobile-mainnet.appspot.com',
     setRegistrationPropertiesUrl: SET_REGISTRATION_PROPERTIES_MAINNET,
     setRegistrationPropertiesAuth: SET_REGISTRATION_PROPERTIES_AUTH_MAINNET,

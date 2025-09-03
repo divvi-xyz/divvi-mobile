@@ -17,7 +17,7 @@ import {
   pushNotificationRequestedUnixTimeSelector,
   pushNotificationsEnabledSelector,
 } from 'src/app/selectors'
-import { DEFAULT_PERSONA_TEMPLATE_ID, FETCH_TIMEOUT_DURATION, FIREBASE_ENABLED } from 'src/config'
+import { FETCH_TIMEOUT_DURATION, FIREBASE_ENABLED } from 'src/config'
 import { Actions } from 'src/firebase/actions'
 import { handleNotification } from 'src/firebase/notifications'
 import { Actions as HomeActions } from 'src/home/actions'
@@ -312,12 +312,4 @@ export async function readOnceFromFirebase(path: string) {
     .once('value')
     .then((snapshot) => snapshot.val())
   return Promise.race([timeout, fetchFromFirebase])
-}
-
-export async function getPersonaTemplateId() {
-  if (!FIREBASE_ENABLED) {
-    return DEFAULT_PERSONA_TEMPLATE_ID
-  }
-
-  return readOnceFromFirebase('persona/templateId')
 }

@@ -65,7 +65,6 @@ const config: KnipConfig = {
       ignore: [
         'src/redux/reducersForSchemaGeneration.ts', // used for root state schema generation
         'src/analytics/docs.ts', // documents analytics events, no references
-        'src/account/__mocks__/Persona.tsx', // unit test mocks
       ],
     },
   },

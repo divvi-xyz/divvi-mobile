@@ -1615,7 +1615,13 @@
       "tryAgain": "Verify again",
       "switch": "Switch withdraw method"
     },
-    "tryAgainFailed": "There was an error clearing KYC information. Please try again"
+    "tryAgainFailed": "There was an error clearing KYC information. Please try again",
+    "inactive": {
+      "title": "ID verification is not available",
+      "description": "This payment method requires identity verification to comply with regulations.",
+      "provider": "Provider: {{provider}}",
+      "goBack": "Switch withdraw method"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "Transaction Details",
