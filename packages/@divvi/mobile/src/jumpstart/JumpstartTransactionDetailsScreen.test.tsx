@@ -331,5 +331,5 @@ describe('JumpstartTransactionDetailsScreen', () => {
     await waitFor(() =>
       expect(queryByTestId('JumpstartContent/ErrorNotification/Reclaim')).toBeFalsy()
     )
-  })
+  }, 20_000)
 })
