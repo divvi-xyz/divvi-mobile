@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
 import { useDispatch, useSelector } from 'src/redux/hooks'
-import { SentryTransactionHub } from 'src/sentry/SentryTransactionHub'
-import { SentryTransaction } from 'src/sentry/SentryTransactions'
+import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
+import { SentrySpan } from 'src/sentry/SentrySpans'
 import { NETWORK_NAMES } from 'src/shared/conts'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
@@ -99,7 +99,7 @@ function SessionRequest({
       type="confirm"
       buttonText={t('walletConnectRequest.connectWalletAction')}
       onAccept={() => {
-        SentryTransactionHub.startTransaction(SentryTransaction.wallet_connect_connection)
+        SentrySpanHub.startSpan(SentrySpan.wallet_connect_connection)
         dispatch(acceptSession(pendingSession, namespacesToApprove))
       }}
       onDeny={() => {

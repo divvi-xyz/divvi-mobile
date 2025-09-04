@@ -11,8 +11,8 @@ import {
   sendPaymentFailure,
   sendPaymentSuccess,
 } from 'src/send/actions'
-import { SentryTransactionHub } from 'src/sentry/SentryTransactionHub'
-import { SentryTransaction } from 'src/sentry/SentryTransactions'
+import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
+import { SentrySpan } from 'src/sentry/SentrySpans'
 import { getTokenInfo } from 'src/tokens/saga'
 import { BaseStandbyTransaction } from 'src/transactions/slice'
 import { TokenTransactionTypeV2, newTransactionContext } from 'src/transactions/types'
@@ -48,7 +48,7 @@ export function* sendPaymentSaga({
   preparedTransaction: serializablePreparedTransaction,
 }: SendPaymentAction) {
   try {
-    SentryTransactionHub.startTransaction(SentryTransaction.send_payment)
+    SentrySpanHub.startSpan(SentrySpan.send_payment)
     const context = newTransactionContext(TAG, 'Send payment')
     const recipientAddress = recipient.address
     if (!recipientAddress) {
@@ -130,7 +130,7 @@ export function* sendPaymentSaga({
     }
 
     yield* put(sendPaymentSuccess({ amount, tokenId }))
-    SentryTransactionHub.finishTransaction(SentryTransaction.send_payment)
+    SentrySpanHub.finishSpan(SentrySpan.send_payment)
   } catch (err) {
     // for pin cancelled, this will show the pin input canceled message, for any
     // other error, will fallback to payment failed
@@ -144,7 +144,7 @@ export function* sendPaymentSaga({
     Logger.error(`${TAG}/sendPaymentSaga`, 'Send payment failed', error)
     AppAnalytics.track(SendEvents.send_tx_error, { error: error.message })
   } finally {
-    SentryTransactionHub.finishTransaction(SentryTransaction.send_payment)
+    SentrySpanHub.finishSpan(SentrySpan.send_payment)
   }
 }
 

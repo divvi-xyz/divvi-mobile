@@ -11,7 +11,7 @@ const TAG = 'sentry/Sentry'
 
 // Set this to true, if you want to test Sentry on dev builds
 // Set tracesSampleRate: 1 to capture all events for testing performance metrics in Sentry
-export const sentryRoutingInstrumentation = new Sentry.ReactNavigationInstrumentation()
+export const sentryRoutingInstrumentation = Sentry.reactNavigationIntegration()
 
 export function initializeSentry() {
   if (!SENTRY_ENABLED) {
@@ -34,11 +34,11 @@ export function initializeSentry() {
     return
   }
 
-  // tracingOrigins is an array of regexes to match domain names against:
-  //   https://docs.sentry.io/platforms/javascript/performance/instrumentation/automatic-instrumentation/#tracingorigins
+  // tracePropagationTargets is an array of strings or RegExes to match domain names against:
+  //   https://docs.sentry.io/platforms/javascript/performance/instrumentation/automatic-instrumentation/#tracepropagationtargets
   // If you want to match against a specific domain (which we do) make sure to
   // use the domain name (not the URL).
-  const tracingOrigins = networkConfig.sentryTracingUrls.map((url) => {
+  const tracePropagationTargets = networkConfig.sentryTracingUrls.map((url) => {
     // hostname does not include the port (while host does include the port).
     // Use hostname because it will match agaist a request to the host on any
     // port.
@@ -49,13 +49,9 @@ export function initializeSentry() {
     dsn: sentryClientUrl,
     environment: DeviceInfo.getBundleId(),
     enableAutoSessionTracking: true,
-    integrations: [
-      new Sentry.ReactNativeTracing({
-        routingInstrumentation: sentryRoutingInstrumentation,
-        tracingOrigins,
-      }),
-    ],
+    integrations: [sentryRoutingInstrumentation],
     tracesSampleRate: DEFAULT_SENTRY_TRACES_SAMPLE_RATE,
+    tracePropagationTargets,
   })
 
   Logger.info(TAG, 'installSentry', 'Sentry installation complete')

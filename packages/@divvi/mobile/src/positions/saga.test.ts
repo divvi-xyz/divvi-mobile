@@ -48,7 +48,7 @@ import networkConfig from 'src/web3/networkConfig'
 import { walletAddressSelector } from 'src/web3/selectors'
 import { mockAccount, mockPositions, mockShortcuts } from 'test/values'
 
-jest.mock('src/sentry/SentryTransactionHub')
+jest.mock('src/sentry/SentrySpanHub')
 jest.mock('src/statsig')
 jest.mock('src/utils/Logger')
 

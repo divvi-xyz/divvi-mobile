@@ -36,8 +36,8 @@ import { ImportContactsStatus } from 'src/identity/types'
 import { retrieveSignedMessage } from 'src/pincode/authentication'
 import { NumberToRecipient, contactsToRecipients } from 'src/recipients/recipient'
 import { phoneRecipientCacheSelector, setPhoneRecipientCache } from 'src/recipients/reducer'
-import { SentryTransactionHub } from 'src/sentry/SentryTransactionHub'
-import { SentryTransaction } from 'src/sentry/SentryTransactions'
+import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
+import { SentrySpan } from 'src/sentry/SentrySpans'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import Logger from 'src/utils/Logger'
@@ -94,7 +94,7 @@ function* doImportContacts() {
 
   AppAnalytics.track(IdentityEvents.contacts_import_start)
 
-  SentryTransactionHub.startTransaction(SentryTransaction.import_contacts)
+  SentrySpanHub.startSpan(SentrySpan.import_contacts)
   yield* put(updateImportContactsProgress(ImportContactsStatus.Importing))
 
   const contacts = yield* call(getAllContacts)
@@ -120,7 +120,7 @@ function* doImportContacts() {
   yield* put(setPhoneRecipientCache(e164NumberToRecipients))
 
   AppAnalytics.track(IdentityEvents.contacts_processing_complete)
-  SentryTransactionHub.finishTransaction(SentryTransaction.import_contacts)
+  SentrySpanHub.finishSpan(SentrySpan.import_contacts)
 
   yield* spawn(saveContacts)
 

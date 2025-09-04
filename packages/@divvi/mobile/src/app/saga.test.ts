@@ -57,7 +57,7 @@ import { mockAccount, mockTokenBalances } from 'test/values'
 
 jest.mock('src/analytics/AppAnalytics')
 jest.mock('src/sentry/Sentry')
-jest.mock('src/sentry/SentryTransactionHub')
+jest.mock('src/sentry/SentrySpanHub')
 jest.mock('src/statsig')
 jest.mock('src/jumpstart/jumpstartLinkHandler')
 jest.mock('src/positions/saga')
