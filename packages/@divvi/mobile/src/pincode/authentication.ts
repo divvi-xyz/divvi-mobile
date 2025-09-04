@@ -135,7 +135,10 @@ function storePinWithBiometry(pin: string) {
     value: pin,
     options: {
       // Avoids serving the option to use Face ID on Android
-      accessControl: Platform.OS === 'ios' ? Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET : Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
+      accessControl:
+        Platform.OS === 'ios'
+          ? Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET
+          : Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
       accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
       securityLevel: Keychain.SECURITY_LEVEL.SECURE_SOFTWARE,
     },
