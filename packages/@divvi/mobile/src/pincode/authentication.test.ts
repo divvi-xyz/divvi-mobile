@@ -179,7 +179,6 @@ describe(getPincode, () => {
       authenticationPrompt: {
         title: 'unlockWithBiometryPrompt',
       },
-      rules: 'none',
       service: 'PIN',
     })
   })
@@ -198,7 +197,6 @@ describe(getPincode, () => {
       authenticationPrompt: {
         title: 'unlockWithBiometryPrompt',
       },
-      rules: 'none',
       service: 'PIN',
     })
     expect(loggerErrorSpy).toHaveBeenCalledWith(
@@ -225,7 +223,6 @@ describe(getPincode, () => {
       authenticationPrompt: {
         title: 'unlockWithBiometryPrompt',
       },
-      rules: 'none',
       service: 'PIN',
     })
     expect(loggerErrorSpy).not.toHaveBeenCalled()
