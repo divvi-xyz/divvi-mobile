@@ -134,7 +134,8 @@ function storePinWithBiometry(pin: string) {
     key: STORAGE_KEYS.PIN,
     value: pin,
     options: {
-      // Avoids serving the option to use Face ID on Android
+      // BIOMETRY_CURRENT_SET not working as intended on Android
+      // https://github.com/oblador/react-native-keychain/issues/725
       accessControl:
         Platform.OS === 'ios'
           ? Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET
