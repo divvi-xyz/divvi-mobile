@@ -1613,7 +1613,13 @@
       "tryAgain": "Riprova",
       "switch": "Cambia metodo di prelievo"
     },
-    "tryAgainFailed": "Si è verificato un errore durante la cancellazione delle informazioni KYC. Riprova."
+    "tryAgainFailed": "Si è verificato un errore durante la cancellazione delle informazioni KYC. Riprova.",
+    "inactive": {
+      "title": "La verifica dell'identità non è disponibile",
+      "description": "Questo metodo di pagamento richiede la verifica dell'identità per rispettare la normativa.",
+      "provider": "Fornitore: {{provider}}",
+      "goBack": "Cambia metodo di prelievo"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "Dettagli della transazione",
