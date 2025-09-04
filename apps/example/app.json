@@ -20,7 +20,8 @@
       "infoPlist": {
         // TODO: add all reasons for all permissions
         "NSCameraUsageDescription": "[REASON]",
-        "NSUserTrackingUsageDescription": "[REASON]"
+        "NSUserTrackingUsageDescription": "[REASON]",
+        "NSFaceIDUsageDescription": "[REASON]"
       }
     },
     "android": {
