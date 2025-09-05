@@ -27,8 +27,8 @@ export default class KeyboardAwareScrollView extends React.Component<Props> {
       // Wait for next frame so that the layout is updated first if there's a KeyboardSpacer
       // in the hierarchy, otherwise the scroll into view has no effect
       requestAnimationFrame(() => {
-        const currentlyFocusedField = TextInput.State.currentlyFocusedInput()
-        this.scrollInputIntoView(currentlyFocusedField as any, this.scrollViewRef.current)
+        const currentlyFocusedField: ComponentOrHandle = TextInput.State.currentlyFocusedInput()
+        this.scrollInputIntoView(currentlyFocusedField, this.scrollViewRef.current)
       })
     })
   }
