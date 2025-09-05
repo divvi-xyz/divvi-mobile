@@ -215,6 +215,10 @@ describe('TransactionFeedV2', () => {
 
     await waitFor(() => expect(mockFetch).toBeCalledTimes(1))
     expect(tree.queryByText('transactionFeed.allTransactionsShown')).toBeFalsy()
+    await waitFor(() => {
+      const sectionList = tree.getByTestId('TransactionList')
+      expect(sectionList.props.data.length).toBeGreaterThan(0)
+    })
     expect(getNumTransactionItems(tree.getByTestId('TransactionList'))).toBe(1)
 
     fireEvent(tree.getByTestId('TransactionList'), 'onEndReached')
@@ -223,7 +227,9 @@ describe('TransactionFeedV2', () => {
     await waitFor(() => expect(tree.queryByTestId('TransactionList/loading')).toBeFalsy())
 
     expect(mockFetch).toHaveBeenCalledTimes(2)
-    expect(getNumTransactionItems(tree.getByTestId('TransactionList'))).toBe(2)
+    await waitFor(() => {
+      expect(getNumTransactionItems(tree.getByTestId('TransactionList'))).toBe(2)
+    })
     expect(tree.getByText('transactionFeed.allTransactionsShown')).toBeTruthy()
   })
 
