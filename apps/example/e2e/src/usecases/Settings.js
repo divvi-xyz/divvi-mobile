@@ -19,7 +19,7 @@ export default Settings = () => {
     await element(by.id('ProfileEditName')).clearText()
     await element(by.id('ProfileEditName')).replaceText(`${randomName}`)
     // Hide keyboard on Android
-    if(device.getPlatform() === 'android') {
+    if (device.getPlatform() === 'android') {
       await device.pressBack()
     }
     await scrollIntoView('SaveButton', 'ProfileScrollView')
