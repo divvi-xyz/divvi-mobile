@@ -102,7 +102,6 @@ type Props = NativeStackScreenProps<StackParamList, Screens.SignInWithEmail>
 function SignInWithEmail({ route, navigation }: Props) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  // @ts-expect-error - clearCredentials is not typed in the auth0 library
   const { authorize, getCredentials, clearCredentials } = useAuth0()
   const { keylessBackupFlow, origin } = route.params
   const [loading, setLoading] = useState<null | OAuthProvider>(null)

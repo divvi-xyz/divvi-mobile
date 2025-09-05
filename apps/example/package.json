@@ -62,7 +62,7 @@
     "react-native": "0.79.5",
     "react-native-adjust": "^4.38.1",
     "react-native-app-control": "^1.0.2",
-    "react-native-auth0": "5.0.0-beta.4",
+    "react-native-auth0": "5.0.0-beta.5",
     "react-native-config": "^1.5.5",
     "react-native-contacts": "https://github.com/valora-inc/react-native-contacts#9940121",
     "react-native-device-info": "^13.2.0",
