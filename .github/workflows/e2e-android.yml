@@ -71,7 +71,11 @@ jobs:
           # Fails fast if the file doesn't exist so we know to fix it
           # NOTE: The most correct but slow method would be:
           # cd apps/example/android && ./gradlew properties -q | grep '^compileSdkVersion:' | cut -d' ' -f2
-          COMPILE_SDK=$(grep '^compileSdk = ' node_modules/react-native/gradle/libs.versions.toml | grep -o '[0-9]*')
+          COMPILE_SDK=$(grep '^compileSdk = ' node_modules/react-native/gradle/libs.versions.toml | cut -d'"' -f2)
+          if [[ -z "$COMPILE_SDK" ]]; then
+            echo "ERROR: Could not extract compileSdk version"
+            exit 1
+          fi
           echo "ANDROID_COMPILE_SDK_VERSION=$COMPILE_SDK" >> $GITHUB_ENV
       - name: Setup runner
         run: |
