@@ -139,7 +139,7 @@ function storePinWithBiometry(pin: string) {
       accessControl:
         Platform.OS === 'ios'
           ? Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET
-          : Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
+          : Keychain.ACCESS_CONTROL.BIOMETRY_ANY,
       accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
       securityLevel: Keychain.SECURITY_LEVEL.SECURE_SOFTWARE,
     },
