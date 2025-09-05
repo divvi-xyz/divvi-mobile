@@ -12,7 +12,7 @@ type Props = {
   title: string
   subtitle: string
   onPress: () => void
-  icon: ReactElement
+  icon: ReactElement<any>
   gradientBackground?: boolean
   testID: string
   showCheckmark?: boolean

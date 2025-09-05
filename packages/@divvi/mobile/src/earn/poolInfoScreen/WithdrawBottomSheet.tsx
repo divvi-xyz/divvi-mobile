@@ -20,7 +20,7 @@ function PartialWithdrawAction({
   pool,
   hasRewards,
 }: {
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   pool: EarnPosition
   hasRewards: boolean
 }) {
@@ -59,7 +59,7 @@ function ClaimAction({
   forwardedRef,
   pool,
 }: {
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   pool: EarnPosition
 }) {
   const { t } = useTranslation()
@@ -96,7 +96,7 @@ function ExitAction({
   pool,
   hasRewards,
 }: {
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   pool: EarnPosition
   hasRewards: boolean
 }) {
@@ -134,7 +134,7 @@ export default function WithdrawBottomSheet({
   pool,
   canClaim,
 }: {
-  forwardedRef: RefObject<BottomSheetModalRefType>
+  forwardedRef: RefObject<BottomSheetModalRefType | null>
   pool: EarnPosition
   canClaim: boolean
 }) {

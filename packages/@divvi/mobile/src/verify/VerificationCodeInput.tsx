@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, type JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import CodeInput, { CodeInputStatus } from 'src/components/CodeInput'

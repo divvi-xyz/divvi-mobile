@@ -44,7 +44,7 @@ function SignInWithEmailBottomSheet({
 }: {
   keylessBackupFlow: KeylessBackupFlow
   origin: KeylessBackupOrigin
-  bottomSheetRef: React.RefObject<BottomSheetModalRefType>
+  bottomSheetRef: React.RefObject<BottomSheetModalRefType | null>
 }) {
   const { t } = useTranslation()
   const onboardingProps = useSelector(onboardingPropsSelector)

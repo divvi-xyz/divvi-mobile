@@ -93,7 +93,7 @@ function ScannerScene({ route }: ScannerSceneProps) {
 type Props = NativeStackScreenProps<StackParamList, Screens.QRNavigator>
 
 export default function QRNavigator({ route }: Props) {
-  const qrSvgRef = useRef<SVG>()
+  const qrSvgRef = useRef<SVG>(undefined)
   const { t } = useTranslation()
 
   const tabBar = (props: MaterialTopTabBarProps) => (

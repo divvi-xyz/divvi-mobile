@@ -51,8 +51,8 @@ function KeylessBackupProgress({
   // Disable back button on Android
   useEffect(() => {
     const backPressListener = () => true
-    BackHandler.addEventListener('hardwareBackPress', backPressListener)
-    return () => BackHandler.removeEventListener('hardwareBackPress', backPressListener)
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backPressListener)
+    return () => backHandler.remove()
   }, [])
 
   if (keylessBackupFlow === KeylessBackupFlow.Restore) {

@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import { ColorValue } from 'src/styles/colors'
 
 export enum TokenActionName {

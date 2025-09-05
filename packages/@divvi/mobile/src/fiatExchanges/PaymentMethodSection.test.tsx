@@ -205,7 +205,7 @@ describe('PaymentMethodSection', () => {
     expect(infoElement).toHaveTextContent(
       'selectProviderScreen.xToYHours, {"lowerBound":1,"upperBound":2}'
     )
-    expect(infoElement).not.toHaveTextContent('selectProviderScreen.idRequired')
+    expect(infoElement).not.toHaveTextContent('selectProviderScreen.idRequired', { exact: false })
   })
 
   it.each([
@@ -252,7 +252,8 @@ describe('PaymentMethodSection', () => {
     )
     expect(getByText(`selectProviderScreen.${title}`)).toBeTruthy()
     expect(getByTestId(`${paymentMethod}/provider-0/info`)).toHaveTextContent(
-      `selectProviderScreen.${info}`
+      `selectProviderScreen.${info}`,
+      { exact: false }
     )
   })
 })

@@ -143,7 +143,7 @@ describe('DappsScreen', () => {
     expect(getByText('dappsScreen.errorMessage')).toBeTruthy()
     // asserts whether categories.length (0) isn't rendered, which causes a
     // crash in the app
-    expect(getByTestId('DappsScreen')).not.toHaveTextContent('0')
+    expect(getByTestId('DappsScreen')).not.toHaveTextContent('0', { exact: false })
   })
 
   describe('favorite dapps', () => {
@@ -183,8 +183,10 @@ describe('DappsScreen', () => {
 
       const favoritesSectionResults = getAllByTestId('DappsScreen/FavoritesSection/DappCard')
       expect(favoritesSectionResults.length).toBe(1)
-      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[1].name)
-      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[1].description)
+      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[1].name, { exact: false })
+      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[1].description, {
+        exact: false,
+      })
       expect(queryByText('dappsScreen.favoritedDappToast.message')).toBeFalsy()
     })
 
@@ -301,12 +303,12 @@ describe('DappsScreen', () => {
       // Should display the correct sections
       const favoritesSectionResults = getAllByTestId('DappsScreen/FavoritesSection/DappCard')
       expect(favoritesSectionResults.length).toBe(1)
-      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[1].name)
+      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[1].name, { exact: false })
 
       const allSectionResults = getAllByTestId('DappsScreen/AllSection/DappCard')
       expect(allSectionResults.length).toBe(2)
-      expect(allSectionResults[0]).toHaveTextContent(dappsList[0].name)
-      expect(allSectionResults[1]).toHaveTextContent(dappsList[2].name)
+      expect(allSectionResults[0]).toHaveTextContent(dappsList[0].name, { exact: false })
+      expect(allSectionResults[1]).toHaveTextContent(dappsList[2].name, { exact: false })
 
       // No results sections should not be displayed
       expect(queryByTestId('DappsScreen/FavoritesSection/NoResults')).toBeNull()
@@ -338,12 +340,12 @@ describe('DappsScreen', () => {
       // Dapps displayed in the correct sections
       const favoritesSectionResults = getAllByTestId('DappsScreen/FavoritesSection/DappCard')
       expect(favoritesSectionResults.length).toBe(1)
-      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[1].name)
+      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[1].name, { exact: false })
 
       const allSectionResults = getAllByTestId('DappsScreen/AllSection/DappCard')
       expect(allSectionResults.length).toBe(2)
-      expect(allSectionResults[0]).toHaveTextContent(dappsList[0].name)
-      expect(allSectionResults[1]).toHaveTextContent(dappsList[2].name)
+      expect(allSectionResults[0]).toHaveTextContent(dappsList[0].name, { exact: false })
+      expect(allSectionResults[1]).toHaveTextContent(dappsList[2].name, { exact: false })
     })
   })
 
@@ -370,12 +372,12 @@ describe('DappsScreen', () => {
 
       const favoritesSectionResults = getAllByTestId('DappsScreen/FavoritesSection/DappCard')
       expect(favoritesSectionResults.length).toBe(1)
-      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name)
+      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name, { exact: false })
 
       const allSectionResults = getAllByTestId('DappsScreen/AllSection/DappCard')
       expect(allSectionResults.length).toBe(2)
-      expect(allSectionResults[0]).toHaveTextContent(dappsList[1].name)
-      expect(allSectionResults[1]).toHaveTextContent(dappsList[2].name)
+      expect(allSectionResults[0]).toHaveTextContent(dappsList[1].name, { exact: false })
+      expect(allSectionResults[1]).toHaveTextContent(dappsList[2].name, { exact: false })
     })
 
     it('renders correctly when there are filters applied', () => {
@@ -408,7 +410,7 @@ describe('DappsScreen', () => {
 
       const allSectionResults = getAllByTestId('DappsScreen/AllSection/DappCard')
       expect(allSectionResults.length).toBe(1)
-      expect(allSectionResults[0]).toHaveTextContent(dappsList[1].name)
+      expect(allSectionResults[0]).toHaveTextContent(dappsList[1].name, { exact: false })
     })
 
     it('triggers event when filtering', () => {
@@ -561,12 +563,12 @@ describe('DappsScreen', () => {
       // Favorites section displays correctly
       const favoritesSectionResults = getAllByTestId('DappsScreen/FavoritesSection/DappCard')
       expect(favoritesSectionResults.length).toBe(1)
-      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name)
+      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name, { exact: false })
 
       // All section displays correctly
       const allSectionResults = getAllByTestId('DappsScreen/AllSection/DappCard')
       expect(allSectionResults.length).toBe(1)
-      expect(allSectionResults[0]).toHaveTextContent(dappsList[1].name)
+      expect(allSectionResults[0]).toHaveTextContent(dappsList[1].name, { exact: false })
     })
 
     it('renders correctly when there are results in favorites and no results in all', () => {
@@ -592,7 +594,7 @@ describe('DappsScreen', () => {
       // Favorite Section should show only 'dapp 1'
       const favoritesSectionResults = getAllByTestId('DappsScreen/FavoritesSection/DappCard')
       expect(favoritesSectionResults.length).toBe(1)
-      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name)
+      expect(favoritesSectionResults[0]).toHaveTextContent(dappsList[0].name, { exact: false })
 
       // All Section should show no results
       expect(queryByTestId('DappsScreen/AllSection/DappCard')).toBeFalsy()

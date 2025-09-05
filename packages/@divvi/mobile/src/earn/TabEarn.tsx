@@ -266,7 +266,7 @@ function TabHome({ navigation, route }: Props) {
 function LearnMoreBottomSheet({
   learnMoreBottomSheetRef,
 }: {
-  learnMoreBottomSheetRef: React.RefObject<BottomSheetModalRefType>
+  learnMoreBottomSheetRef: React.RefObject<BottomSheetModalRefType | null>
 }) {
   const { t } = useTranslation()
 

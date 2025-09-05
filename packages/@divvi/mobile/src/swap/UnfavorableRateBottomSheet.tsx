@@ -30,7 +30,7 @@ export default function UnfavorableRateBottomSheet({
   fromTokenInfo,
   toTokenInfo,
 }: {
-  forwardedRef: RefObject<BottomSheetModalRefType>
+  forwardedRef: RefObject<BottomSheetModalRefType | null>
   onConfirm: () => void
   onCancel: () => void
   fromTokenAmount: BigNumber | null

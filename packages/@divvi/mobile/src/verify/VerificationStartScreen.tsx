@@ -135,8 +135,8 @@ function VerificationStartScreen({
   useEffect(() => {
     if (!route.params?.hasOnboarded) {
       const backPressListener = () => true
-      BackHandler.addEventListener('hardwareBackPress', backPressListener)
-      return () => BackHandler.removeEventListener('hardwareBackPress', backPressListener)
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', backPressListener)
+      return () => backHandler.remove()
     }
   }, [])
 

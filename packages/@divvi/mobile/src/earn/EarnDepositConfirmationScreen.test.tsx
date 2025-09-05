@@ -234,7 +234,8 @@ describe('EarnDepositConfirmationScreen', () => {
         // screen header
         expect(getByTestId('BackChevron')).toBeTruthy()
         expect(getByTestId('CustomHeaderTitle')).toHaveTextContent(
-          'earnFlow.depositConfirmation.title'
+          'earnFlow.depositConfirmation.title',
+          { exact: false }
         )
 
         // summary item for depositing
@@ -242,13 +243,16 @@ describe('EarnDepositConfirmationScreen', () => {
           within(getByTestId('EarnDepositConfirmationToken')).getByTestId('TokenIcon')
         ).toBeTruthy()
         expect(getByTestId('EarnDepositConfirmationToken/Label')).toHaveTextContent(
-          'earnFlow.depositConfirmation.depositing'
+          'earnFlow.depositConfirmation.depositing',
+          { exact: false }
         )
         expect(getByTestId('EarnDepositConfirmationToken/PrimaryValue')).toHaveTextContent(
-          'tokenAmount, {"tokenAmount":"100.00","tokenSymbol":"USDC"}'
+          'tokenAmount, {"tokenAmount":"100.00","tokenSymbol":"USDC"}',
+          { exact: false }
         )
         expect(getByTestId('EarnDepositConfirmationToken/SecondaryValue')).toHaveTextContent(
-          'localAmount, {"localAmount":"133.00","localCurrencySymbol":"₱"}'
+          'localAmount, {"localAmount":"133.00","localCurrencySymbol":"₱"}',
+          { exact: false }
         )
 
         // summary item for pool
@@ -256,13 +260,16 @@ describe('EarnDepositConfirmationScreen', () => {
           within(getByTestId('EarnDepositConfirmationPool')).getByTestId('TokenIcon')
         ).toBeTruthy()
         expect(getByTestId('EarnDepositConfirmationPool/Label')).toHaveTextContent(
-          'earnFlow.depositConfirmation.into'
+          'earnFlow.depositConfirmation.into',
+          { exact: false }
         )
         expect(getByTestId('EarnDepositConfirmationPool/PrimaryValue')).toHaveTextContent(
-          'earnFlow.depositConfirmation.pool, {"providerName":"Aave"}'
+          'earnFlow.depositConfirmation.pool, {"providerName":"Aave"}',
+          { exact: false }
         )
         expect(getByTestId('EarnDepositConfirmationPool/SecondaryValue')).toHaveTextContent(
-          'earnFlow.depositConfirmation.yieldRate, {"apy":"1.92"}'
+          'earnFlow.depositConfirmation.yieldRate, {"apy":"1.92"}',
+          { exact: false }
         )
 
         // summary item for swap and deposit
@@ -271,74 +278,107 @@ describe('EarnDepositConfirmationScreen', () => {
           expect('SwapAndDeposit/Icon').toBeTruthy()
           expect(getByTestId('SwapAndDeposit/InfoIcon')).toBeTruthy()
           expect(getByTestId('SwapAndDeposit/PrimaryValue')).toHaveTextContent(
-            'earnFlow.depositConfirmation.swapAndDeposit'
+            'earnFlow.depositConfirmation.swapAndDeposit',
+            { exact: false }
           )
           expect(getByTestId('SwapAndDeposit/SecondaryValue')).toHaveTextContent(
-            'tokenIntoTokenAmount'
+            'tokenIntoTokenAmount',
+            { exact: false }
           )
           expect(getByTestId('SwapAndDepositInfoSheet')).toHaveTextContent(
-            'earnFlow.swapAndDepositInfoSheet.title'
+            'earnFlow.swapAndDepositInfoSheet.title',
+            { exact: false }
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapFrom/Label')).toHaveTextContent(
-            'earnFlow.swapAndDepositInfoSheet.swapFrom'
+            'earnFlow.swapAndDepositInfoSheet.swapFrom',
+            { exact: false }
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapFrom/Value')).toHaveTextContent(
-            'tokenAndLocalAmount'
+            'tokenAndLocalAmount',
+            { exact: false }
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapTo/Label')).toHaveTextContent(
-            'earnFlow.swapAndDepositInfoSheet.swapTo'
+            'earnFlow.swapAndDepositInfoSheet.swapTo',
+            { exact: false }
           )
           expect(getByTestId('SwapAndDepositInfoSheet/SwapTo/Value')).toHaveTextContent(
-            'tokenAndLocalAmount'
+            'tokenAndLocalAmount',
+            { exact: false }
           )
           expect(getByTestId('SwapAndDepositInfoSheet/Disclaimer')).toHaveTextContent(
-            'earnFlow.swapAndDepositInfoSheet.whySwap'
+            'earnFlow.swapAndDepositInfoSheet.whySwap',
+            { exact: false }
           )
           expect(getByTestId('SwapAndDepositInfoSheet/Disclaimer')).toHaveTextContent(
-            'earnFlow.swapAndDepositInfoSheet.swapDescription'
+            'earnFlow.swapAndDepositInfoSheet.swapDescription',
+            { exact: false }
           )
         }
 
         // details items
         expect(getByTestId('EarnDepositConfirmationNetwork/Label')).toHaveTextContent(
-          'transactionDetails.network'
+          'transactionDetails.network',
+          { exact: false }
         )
         expect(getByTestId('EarnDepositConfirmationNetwork/Value')).toHaveTextContent(
-          NETWORK_NAMES[props.inputTokenInfo.networkId]
+          NETWORK_NAMES[props.inputTokenInfo.networkId],
+          { exact: false }
         )
-        expect(getByTestId('EarnDepositConfirmationFee/Label')).toHaveTextContent(feesLabel)
-        expect(getByTestId('EarnDepositConfirmationFee/Value')).toHaveTextContent(feesValue)
+        expect(getByTestId('EarnDepositConfirmationFee/Label')).toHaveTextContent(feesLabel, {
+          exact: false,
+        })
+        expect(getByTestId('EarnDepositConfirmationFee/Value')).toHaveTextContent(feesValue, {
+          exact: false,
+        })
         expect(getByTestId('EarnDepositConfirmationTotal/Label')).toHaveTextContent(
-          'reviewTransaction.totalPlusFees'
+          'reviewTransaction.totalPlusFees',
+          { exact: false }
         )
-        expect(getByTestId('EarnDepositConfirmationTotal/Value')).toHaveTextContent(totalFeesValue)
+        expect(getByTestId('EarnDepositConfirmationTotal/Value')).toHaveTextContent(
+          totalFeesValue,
+          { exact: false }
+        )
 
         // fees info bottom sheet
         expect(getByTestId('FeeInfoBottomSheet')).toBeTruthy()
         expect(getByTestId('FeeInfoBottomSheet/FooterDisclaimer')).toHaveTextContent(
-          feesBottomSheetDisclaimerText
+          feesBottomSheetDisclaimerText,
+          { exact: false }
         )
 
         // total plus fees info bottom sheet
         expect(getByTestId('TotalInfoBottomSheet/Depositing/Label')).toHaveTextContent(
-          'earnFlow.depositConfirmation.depositing'
+          'earnFlow.depositConfirmation.depositing',
+          { exact: false }
         )
         expect(getByTestId('TotalInfoBottomSheet/Depositing/Value')).toHaveTextContent(
-          'tokenAndLocalAmount, {"tokenAmount":"100.00","localAmount":"133.00","tokenSymbol":"USDC","localCurrencySymbol":"₱"}'
+          'tokenAndLocalAmount, {"tokenAmount":"100.00","localAmount":"133.00","tokenSymbol":"USDC","localCurrencySymbol":"₱"}',
+          { exact: false }
         )
-        expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees')
-        expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(feesValue)
+        expect(getByTestId('TotalInfoBottomSheet/Fees/Label')).toHaveTextContent('fees', {
+          exact: false,
+        })
+        expect(getByTestId('TotalInfoBottomSheet/Fees/Value')).toHaveTextContent(feesValue, {
+          exact: false,
+        })
         expect(getByTestId('TotalInfoBottomSheet/Total/Label')).toHaveTextContent(
-          'reviewTransaction.totalPlusFees'
+          'reviewTransaction.totalPlusFees',
+          { exact: false }
         )
-        expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(totalFeesValue)
+        expect(getByTestId('TotalInfoBottomSheet/Total/Value')).toHaveTextContent(totalFeesValue, {
+          exact: false,
+        })
 
         // footer with disclaimer and confirm button
         expect(
-          getByText('earnFlow.depositConfirmation.disclaimer, {"providerName":"Aave"}')
+          getByText('earnFlow.depositConfirmation.disclaimer, {"providerName":"Aave"}', {
+            exact: false,
+          })
         ).toBeTruthy()
         expect(getByTestId('EarnDepositConfirmation/TermsAndConditions')).toBeTruthy()
-        expect(getByTestId('EarnDepositConfirmation/ConfirmButton')).toHaveTextContent('deposit')
+        expect(getByTestId('EarnDepositConfirmation/ConfirmButton')).toHaveTextContent('deposit', {
+          exact: false,
+        })
       })
 
       it('renders the expected disclaimer when there is no terms url', () => {
@@ -358,7 +398,8 @@ describe('EarnDepositConfirmationScreen', () => {
 
         expect(
           getByText(
-            'earnFlow.depositConfirmation.noTermsUrlDisclaimer, {"appName":"Test App","providerName":"Aave"}'
+            'earnFlow.depositConfirmation.noTermsUrlDisclaimer, {"appName":"Test App","providerName":"Aave"}',
+            { exact: false }
           )
         ).toBeTruthy()
         expect(getByTestId('EarnDepositConfirmation/ProviderDocuments')).toBeTruthy()
@@ -428,8 +469,14 @@ describe('EarnDepositConfirmationScreen', () => {
             />
           </Provider>
         )
-        expect(getByTestId('EarnDepositConfirmationFee/Caption')).toHaveTextContent('gasSubsidized')
-        expect(getByTestId('TotalInfoBottomSheet/Fees/Caption')).toHaveTextContent('gasSubsidized')
+        expect(getByTestId('EarnDepositConfirmationFee/Caption')).toHaveTextContent(
+          'gasSubsidized',
+          { exact: false }
+        )
+        expect(getByTestId('TotalInfoBottomSheet/Fees/Caption')).toHaveTextContent(
+          'gasSubsidized',
+          { exact: false }
+        )
         expect(earnUtils.isGasSubsidizedForNetwork).toHaveBeenCalledWith(fromNetworkId)
       })
 

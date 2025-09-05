@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react-native'
+import { fireEvent, render, within } from '@testing-library/react-native'
 import React from 'react'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { AssetsEvents } from 'src/analytics/Events'
@@ -23,12 +23,18 @@ describe('AssetTabBar', () => {
 
     const tabItems = getAllByTestId('Assets/TabBarItem')
     expect(tabItems).toHaveLength(3)
-    expect(tabItems[0]).toHaveTextContent('tokens')
-    expect(tabItems[0].children[0]).toHaveStyle({ color: Colors.contentPrimary })
-    expect(tabItems[1]).toHaveTextContent('collectibles')
-    expect(tabItems[1].children[0]).toHaveStyle({ color: Colors.contentSecondary })
-    expect(tabItems[2]).toHaveTextContent('dappPositions')
-    expect(tabItems[2].children[0]).toHaveStyle({ color: Colors.contentSecondary })
+    expect(tabItems[0]).toHaveTextContent('assets.tabBar.tokens', { exact: false })
+    expect(within(tabItems[0]).getByText('assets.tabBar.tokens')).toHaveStyle({
+      color: Colors.contentPrimary,
+    })
+    expect(tabItems[1]).toHaveTextContent('assets.tabBar.collectibles', { exact: false })
+    expect(within(tabItems[1]).getByText('assets.tabBar.collectibles')).toHaveStyle({
+      color: Colors.contentSecondary,
+    })
+    expect(tabItems[2]).toHaveTextContent('assets.tabBar.dappPositions', { exact: false })
+    expect(within(tabItems[2]).getByText('assets.tabBar.dappPositions')).toHaveStyle({
+      color: Colors.contentSecondary,
+    })
   })
 
   it('does not render positions if disabled', () => {
@@ -42,10 +48,14 @@ describe('AssetTabBar', () => {
 
     const tabItems = getAllByTestId('Assets/TabBarItem')
     expect(tabItems).toHaveLength(2)
-    expect(tabItems[0]).toHaveTextContent('tokens')
-    expect(tabItems[0].children[0]).toHaveStyle({ color: Colors.contentSecondary })
-    expect(tabItems[1]).toHaveTextContent('collectibles')
-    expect(tabItems[1].children[0]).toHaveStyle({ color: Colors.contentPrimary })
+    expect(tabItems[0]).toHaveTextContent('assets.tabBar.tokens', { exact: false })
+    expect(within(tabItems[0]).getByText('assets.tabBar.tokens')).toHaveStyle({
+      color: Colors.contentSecondary,
+    })
+    expect(tabItems[1]).toHaveTextContent('assets.tabBar.collectibles', { exact: false })
+    expect(within(tabItems[1]).getByText('assets.tabBar.collectibles')).toHaveStyle({
+      color: Colors.contentPrimary,
+    })
   })
 
   it('does not render collections if disableNfts is set', () => {
@@ -58,10 +68,14 @@ describe('AssetTabBar', () => {
 
     const tabItems = getAllByTestId('Assets/TabBarItem')
     expect(tabItems).toHaveLength(2)
-    expect(tabItems[0]).toHaveTextContent('tokens')
-    expect(tabItems[0].children[0]).toHaveStyle({ color: Colors.contentSecondary })
-    expect(tabItems[1]).toHaveTextContent('dappPositions')
-    expect(tabItems[1].children[0]).toHaveStyle({ color: Colors.contentPrimary })
+    expect(tabItems[0]).toHaveTextContent('assets.tabBar.tokens', { exact: false })
+    expect(within(tabItems[0]).getByText('assets.tabBar.tokens')).toHaveStyle({
+      color: Colors.contentSecondary,
+    })
+    expect(tabItems[1]).toHaveTextContent('assets.tabBar.dappPositions', { exact: false })
+    expect(within(tabItems[1]).getByText('assets.tabBar.dappPositions')).toHaveStyle({
+      color: Colors.contentPrimary,
+    })
   })
 
   it('returns null if collects and positions are disabled', () => {

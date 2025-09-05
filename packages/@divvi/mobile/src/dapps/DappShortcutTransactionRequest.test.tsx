@@ -153,7 +153,8 @@ describe('DappShortcutTransactionRequest', () => {
       }))
     )
     expect(getByTestId('DappShortcutTransactionRequest/RewardTransactionData')).toHaveTextContent(
-      JSON.stringify(expectedPreparedTransactions)
+      JSON.stringify(expectedPreparedTransactions),
+      { exact: false }
     )
 
     fireEvent.press(getByText('allow'))

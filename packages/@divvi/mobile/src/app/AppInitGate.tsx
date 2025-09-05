@@ -1,5 +1,5 @@
 import locales from 'locales'
-import React, { useEffect } from 'react'
+import React, { useEffect, type JSX } from 'react'
 import { useAsync } from 'react-async-hook'
 import { Dimensions } from 'react-native'
 import { findBestLanguageTag } from 'react-native-localize'

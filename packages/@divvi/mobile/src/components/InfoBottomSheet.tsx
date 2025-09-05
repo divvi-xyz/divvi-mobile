@@ -8,7 +8,7 @@ import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 
 export default function InfoBottomSheet(props: {
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   title: string
   description?: string
   children?: React.ReactNode

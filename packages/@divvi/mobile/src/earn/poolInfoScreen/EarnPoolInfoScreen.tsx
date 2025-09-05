@@ -448,7 +448,7 @@ function InfoBottomSheet({
   linkUrl,
   linkKey,
 }: {
-  infoBottomSheetRef: React.RefObject<BottomSheetModalRefType>
+  infoBottomSheetRef: React.RefObject<BottomSheetModalRefType | null>
   titleKey: string
   descriptionKey: string
   descriptionUrl?: string

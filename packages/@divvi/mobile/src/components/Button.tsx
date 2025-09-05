@@ -37,7 +37,7 @@ export interface ButtonProps {
   showLoading?: boolean // shows activity indicator on the button, but doesn't disable it. disabled must explicitly be set to disable the button
   accessibilityLabel?: string
   type?: BtnTypes
-  icon?: ReactElement
+  icon?: ReactElement<any>
   iconPositionLeft?: boolean
   disabled?: boolean
   size?: BtnSizes
@@ -102,7 +102,7 @@ export default React.memo(function Button(props: ButtonProps) {
               {!!icon &&
                 React.cloneElement(icon, {
                   color: contentColor,
-                })}
+                } as any)}
               <Text
                 maxFontSizeMultiplier={1}
                 accessibilityLabel={accessibilityLabel}

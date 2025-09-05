@@ -1,4 +1,4 @@
-import { reloadReactNative } from './utils/retries'
+import { launchApp } from './utils/retries'
 import { quickOnboarding, waitForElementById } from './utils/utils'
 
 const verifyCamera = async () => {
@@ -11,7 +11,7 @@ const verifyCamera = async () => {
 describe('Given QR Scanner', () => {
   beforeAll(async () => {
     await quickOnboarding()
-    await reloadReactNative()
+    await launchApp({ newInstance: false })
   })
 
   describe('When opening QR scanner', () => {
@@ -38,7 +38,7 @@ describe('Given QR Scanner', () => {
 
   describe("When 'scanning' QR", () => {
     beforeEach(async () => {
-      await reloadReactNative()
+      await launchApp({ newInstance: false })
       await waitForElementById('HomeAction-Receive', { tap: true })
       await waitForElementById('Scan', { tap: true })
       await verifyCamera()

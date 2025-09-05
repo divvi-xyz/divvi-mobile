@@ -54,12 +54,18 @@ describe('SwapFeedItem', () => {
       </Provider>
     )
 
-    expect(getByTestId('SwapFeedItem/title')).toHaveTextContent('swapScreen.title')
+    expect(getByTestId('SwapFeedItem/title')).toHaveTextContent('swapScreen.title', {
+      exact: false,
+    })
     expect(getByTestId('SwapFeedItem/subtitle')).toHaveTextContent(
       'feedItemSwapPath, {"token1":"cUSD","token2":"cEUR"}'
     )
-    expect(getByTestId('SwapFeedItem/incomingAmount')).toHaveTextContent('+2.93 cEUR')
-    expect(getByTestId('SwapFeedItem/outgoingAmount')).toHaveTextContent('-2.87 cUSD')
+    expect(getByTestId('SwapFeedItem/incomingAmount')).toHaveTextContent('+2.93 cEUR', {
+      exact: false,
+    })
+    expect(getByTestId('SwapFeedItem/outgoingAmount')).toHaveTextContent('-2.87 cUSD', {
+      exact: false,
+    })
 
     fireEvent.press(getByTestId('SwapFeedItem'))
     expect(navigate).toHaveBeenCalledTimes(1)
@@ -81,12 +87,18 @@ describe('SwapFeedItem', () => {
       </Provider>
     )
 
-    expect(getByTestId('SwapFeedItem/title')).toHaveTextContent('swapScreen.title')
+    expect(getByTestId('SwapFeedItem/title')).toHaveTextContent('swapScreen.title', {
+      exact: false,
+    })
     expect(getByTestId('SwapFeedItem/subtitle')).toHaveTextContent(
       'transactionFeed.crossChainSwapTransactionLabel'
     )
-    expect(getByTestId('SwapFeedItem/incomingAmount')).toHaveTextContent('+0.000002 ETH')
-    expect(getByTestId('SwapFeedItem/outgoingAmount')).toHaveTextContent('-2.87 cUSD')
+    expect(getByTestId('SwapFeedItem/incomingAmount')).toHaveTextContent('+0.000002 ETH', {
+      exact: false,
+    })
+    expect(getByTestId('SwapFeedItem/outgoingAmount')).toHaveTextContent('-2.87 cUSD', {
+      exact: false,
+    })
 
     fireEvent.press(getByTestId('SwapFeedItem'))
     expect(navigate).toHaveBeenCalledTimes(1)
@@ -111,11 +123,15 @@ describe('SwapFeedItem', () => {
       </Provider>
     )
 
-    expect(getByTestId('SwapFeedItem/title')).toHaveTextContent('swapScreen.title')
+    expect(getByTestId('SwapFeedItem/title')).toHaveTextContent('swapScreen.title', {
+      exact: false,
+    })
     expect(getByTestId('SwapFeedItem/subtitle')).toHaveTextContent(
       'transactionFeed.crossChainSwapTransactionLabel'
     )
     expect(queryByTestId('SwapFeedItem/incomingAmount')).toBeFalsy()
-    expect(getByTestId('SwapFeedItem/outgoingAmount')).toHaveTextContent('-2.87 cUSD')
+    expect(getByTestId('SwapFeedItem/outgoingAmount')).toHaveTextContent('-2.87 cUSD', {
+      exact: false,
+    })
   })
 })

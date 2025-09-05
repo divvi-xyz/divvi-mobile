@@ -31,7 +31,7 @@ function AddAction({
   analyticsProps,
 }: {
   token: TokenBalance
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   analyticsProps: EarnCommonProperties & TokenProperties
 }) {
   const { t } = useTranslation()
@@ -67,7 +67,7 @@ function AddMoreAction({
   analyticsProps,
 }: {
   token: TokenBalance
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   analyticsProps: EarnCommonProperties & TokenProperties
 }) {
   const { t } = useTranslation()
@@ -105,7 +105,7 @@ function TransferAction({
 }: {
   token: TokenBalance
   exchanges: ExternalExchangeProvider[]
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   analyticsProps: EarnCommonProperties & TokenProperties
 }) {
   const { t } = useTranslation()
@@ -137,7 +137,7 @@ function CrossChainSwapAction({
   analyticsProps,
 }: {
   token: TokenBalance
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   analyticsProps: EarnCommonProperties & TokenProperties
 }) {
   const { t } = useTranslation()
@@ -168,7 +168,7 @@ function SwapAction({
   analyticsProps,
 }: {
   token: TokenBalance
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   analyticsProps: EarnCommonProperties & TokenProperties
 }) {
   const { t } = useTranslation()
@@ -203,7 +203,7 @@ function SwapAndDepositAction({
 }: {
   token: TokenBalance
   pool: EarnPosition
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   analyticsProps: EarnCommonProperties & TokenProperties
   allowCrossChainSwapAndDeposit: boolean
 }) {
@@ -239,7 +239,7 @@ function DepositAction({
 }: {
   token: TokenBalance
   pool: EarnPosition
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
   analyticsProps: EarnCommonProperties & TokenProperties
 }) {
   const { t } = useTranslation()
@@ -275,7 +275,7 @@ export default function BeforeDepositBottomSheet({
   canAdd,
   exchanges,
 }: {
-  forwardedRef: RefObject<BottomSheetModalRefType>
+  forwardedRef: RefObject<BottomSheetModalRefType | null>
   token: TokenBalance
   pool: EarnPosition
   hasDepositToken: boolean

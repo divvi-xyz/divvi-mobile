@@ -115,8 +115,8 @@ describe('JumpstartEnterAmount', () => {
 
     const tokens = getAllByTestId('TokenBalanceItem')
     expect(tokens).toHaveLength(2)
-    expect(tokens[0]).toHaveTextContent('cEUR')
-    expect(tokens[1]).toHaveTextContent('cUSD')
+    expect(tokens[0]).toHaveTextContent('cEUR', { exact: false })
+    expect(tokens[1]).toHaveTextContent('cUSD', { exact: false })
   })
 
   it('should prepare transactions with the expected inputs', async () => {

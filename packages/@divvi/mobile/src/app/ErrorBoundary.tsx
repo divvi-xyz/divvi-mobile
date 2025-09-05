@@ -12,7 +12,7 @@ interface State {
 }
 
 interface OwnProps {
-  children: React.ReactChild
+  children: React.ReactElement<any> | number | string
 }
 
 type Props = OwnProps & WithTranslation

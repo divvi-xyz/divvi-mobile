@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import { EarnPosition, Token } from 'src/positions/types'
 import { ColorValue } from 'src/styles/colors'
 import { NetworkId } from 'src/transactions/types'
