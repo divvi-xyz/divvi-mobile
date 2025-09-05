@@ -1110,11 +1110,6 @@
     base-64 "^0.1.0"
     utf8 "^3.0.0"
 
-"@divvi/react-native-keychain@^9.2.2":
-  version "9.2.2"
-  resolved "https://registry.yarnpkg.com/@divvi/react-native-keychain/-/react-native-keychain-9.2.2.tgz#9379a89f4199e70b39eafdc60a2fd81037a65e25"
-  integrity sha512-akPEW3R1e9eSyo0O2aoPf+vEpVx3KJ/s6GTQO/4tCTYEQZsaBZiCSc7FnS+HEO7xAWX6Zq66pnqYdywT0nBT3w==
-
 "@divvi/referral-sdk@^2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@divvi/referral-sdk/-/referral-sdk-2.2.0.tgz#e624ad17e8e0355db6053300569b937f7f9b6ff3"
@@ -13590,6 +13585,11 @@ react-native-is-edge-to-edge@^1.1.6, react-native-is-edge-to-edge@^1.1.7:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz#64e10851abd9d176cbf2b40562f751622bde3358"
   integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
+
+react-native-keychain@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-keychain/-/react-native-keychain-10.0.0.tgz#1de6f54d27b2376deaac4d51883c066f53b7be7b"
+  integrity sha512-YzPKSAnSzGEJ12IK6CctNLU79T1W15WDrElRQ+1/FsOazGX9ucFPTQwgYe8Dy8jiSEDJKM4wkVa3g4lD2Z+Pnw==
 
 react-native-kill-packager@^1.0.0:
   version "1.0.0"

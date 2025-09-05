@@ -20,7 +20,8 @@
       "infoPlist": {
         // TODO: add all reasons for all permissions
         "NSCameraUsageDescription": "[REASON]",
-        "NSUserTrackingUsageDescription": "[REASON]"
+        "NSUserTrackingUsageDescription": "[REASON]",
+        "NSFaceIDUsageDescription": "[REASON]"
       }
     },
     "android": {
@@ -31,7 +32,9 @@
       "package": "xyz.divvi.example",
       "permissions": [
         // TODO: add all reasons for all permissions
-        "android.permission.CAMERA"
+        "android.permission.CAMERA",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT" // for SDK < 28
       ]
     },
     "plugins": [
