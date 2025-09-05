@@ -12,6 +12,7 @@ const keychainMock = {
   },
   ACCESS_CONTROL: {
     BIOMETRY_CURRENT_SET: 'BiometryCurrentSet',
+    BIOMETRY_ANY: 'BiometryAny',
   },
   AUTHENTICATION_TYPE: {
     BIOMETRICS: 'AuthenticationWithBiometrics',
