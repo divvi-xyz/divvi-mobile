@@ -1613,7 +1613,13 @@
       "tryAgain": "Reintentar",
       "switch": "Cambiar método de retiro"
     },
-    "tryAgainFailed": "Hubo un error al borrar la información de KYC. Vuelve a intentarlo."
+    "tryAgainFailed": "Hubo un error al borrar la información de KYC. Vuelve a intentarlo.",
+    "inactive": {
+      "title": "La verificación de identidad no está disponible",
+      "description": "Este método de pago requiere la verificación de la identidad para cumplir la normativa.",
+      "provider": "Proveedor: {{provider}}",
+      "goBack": "Cambiar el método para retirar"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "Detalles de transacción",

@@ -1613,7 +1613,13 @@
       "tryAgain": "Erneut versuchen",
       "switch": "Auszahlungsmethode wechseln"
     },
-    "tryAgainFailed": "Beim Löschen der KYC-Informationen ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut"
+    "tryAgainFailed": "Beim Löschen der KYC-Informationen ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut",
+    "inactive": {
+      "title": "ID-Überprüfung ist nicht verfügbar",
+      "description": "Diese Zahlungsmethode erfordert eine Identitätsprüfung, um den Vorschriften zu entsprechen.",
+      "provider": "Anbieter: {{provider}}",
+      "goBack": "Auszahlungsmethode wechseln"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "Transaktiondetails",

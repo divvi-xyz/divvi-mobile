@@ -1613,7 +1613,13 @@
       "tryAgain": "Tentar novamente",
       "switch": "Trocar método de saque"
     },
-    "tryAgainFailed": "Ocorreu um erro ao limpar as informações de Conheça o Seu Cliente (KYC). Tente novamente"
+    "tryAgainFailed": "Ocorreu um erro ao limpar as informações de Conheça o Seu Cliente (KYC). Tente novamente",
+    "inactive": {
+      "title": "A verificação de identidade não está disponível",
+      "description": "Esse método de pagamento requer verificação de identidade para cumprir os regulamentos.",
+      "provider": "Provedor: {{provider}}",
+      "goBack": "Trocar método de saque"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "Detalhes de transação",

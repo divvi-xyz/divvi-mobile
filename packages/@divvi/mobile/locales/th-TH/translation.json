@@ -1611,7 +1611,13 @@
       "tryAgain": "ยืนยันอีกครั้ง",
       "switch": "เปลี่ยนวิธีการถอนเงิน"
     },
-    "tryAgainFailed": "มีข้อผิดพลาดในการล้างข้อมูลการยืนยันตัวตน โปรดลองอีกครั้ง"
+    "tryAgainFailed": "มีข้อผิดพลาดในการล้างข้อมูลการยืนยันตัวตน โปรดลองอีกครั้ง",
+    "inactive": {
+      "title": "ID verification is not available",
+      "description": "This payment method requires identity verification to comply with regulations.",
+      "provider": "Provider: {{provider}}",
+      "goBack": "เปลี่ยนวิธีการถอนเงิน"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "รายละเอียดธุรกรรม",
