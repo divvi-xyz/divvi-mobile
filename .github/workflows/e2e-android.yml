@@ -65,7 +65,14 @@ jobs:
         run: yarn run e2e:prebuild
         working-directory: apps/example
       - name: Store compileSdkVersion in env
-        run: echo "ANDROID_COMPILE_SDK_VERSION=$(cd apps/example/android && ./gradlew properties -q | grep '^compileSdkVersion:' | cut -d' ' -f2)" >> $GITHUB_ENV
+        run: |
+          # Read compile SDK version directly from React Native's version catalog
+          # This is the actual source of truth and is instantaneous (~0.01 seconds)
+          # Fails fast if the file doesn't exist so we know to fix it
+          # NOTE: The most correct but slow method would be:
+          # cd apps/example/android && ./gradlew properties -q | grep '^compileSdkVersion:' | cut -d' ' -f2
+          COMPILE_SDK=$(grep '^compileSdk = ' node_modules/react-native/gradle/libs.versions.toml | grep -o '[0-9]*')
+          echo "ANDROID_COMPILE_SDK_VERSION=$COMPILE_SDK" >> $GITHUB_ENV
       - name: Setup runner
         run: |
           set -x
