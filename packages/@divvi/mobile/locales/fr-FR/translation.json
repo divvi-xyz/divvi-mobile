@@ -1613,7 +1613,13 @@
       "tryAgain": "Réessayer",
       "switch": "Changer de mode de retrait"
     },
-    "tryAgainFailed": "Une erreur s'est produite lors de la suppression des informations KYC, veuillez réessayer."
+    "tryAgainFailed": "Une erreur s'est produite lors de la suppression des informations KYC, veuillez réessayer.",
+    "inactive": {
+      "title": "La vérification de l'identité n'est pas disponible",
+      "description": "Ce mode de paiement nécessite une vérification d'identité pour se conformer à la réglementation.",
+      "provider": "Prestataire : {{provider}}",
+      "goBack": "Changer de mode de retrait"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "Détails de transaction",
