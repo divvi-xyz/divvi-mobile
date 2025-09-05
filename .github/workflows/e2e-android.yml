@@ -65,7 +65,7 @@ jobs:
         run: yarn run e2e:prebuild
         working-directory: apps/example
       - name: Store compileSdkVersion in env
-        run: echo "ANDROID_COMPILE_SDK_VERSION=$(grep 'compileSdkVersion' apps/example/android/build.gradle | grep -o '[0-9]\+')" >> $GITHUB_ENV
+        run: echo "ANDROID_COMPILE_SDK_VERSION=$(cd apps/example/android && ./gradlew properties -q | grep '^compileSdkVersion:' | cut -d' ' -f2)" >> $GITHUB_ENV
       - name: Setup runner
         run: |
           set -x
