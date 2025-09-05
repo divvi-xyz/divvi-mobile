@@ -21,6 +21,6 @@ describe('RecoveryPhraseInput', () => {
       autoCapitalize: 'none',
       keyboardType: 'visible-password',
     }
-    expect(TextInput).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {})
+    expect(TextInput).toHaveBeenCalledWith(expect.objectContaining(expectedProps), undefined)
   })
 })

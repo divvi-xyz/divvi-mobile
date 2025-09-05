@@ -8,7 +8,7 @@ import { networksIconSelector } from 'src/tokens/selectors'
 import { NetworkId } from 'src/transactions/types'
 
 interface Props {
-  forwardedRef: React.RefObject<BottomSheetModal>
+  forwardedRef: React.RefObject<BottomSheetModal | null>
   onSelect?: (networks: NetworkId[]) => void
   onOpen?: () => void
   allNetworkIds: NetworkId[]

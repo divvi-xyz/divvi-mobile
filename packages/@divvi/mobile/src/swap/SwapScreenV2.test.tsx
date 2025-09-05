@@ -542,19 +542,21 @@ describe('SwapScreen', () => {
     })
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 cUSD ≈ 1.23456 CELO'
+      '1 cUSD ≈ 1.23456 CELO',
+      { exact: false }
     )
     expect(
       within(swapFromContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
     ).toBe('1.234')
     expect(
       within(swapFromContainer).getByTestId('SwapAmountInput/ExchangeAmount')
-    ).toHaveTextContent(`${APPROX_SYMBOL} ₱1.64`)
+    ).toHaveTextContent(`${APPROX_SYMBOL} ₱1.64`, { exact: false })
     expect(
       within(swapToContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
     ).toBe('1.5234566652')
     expect(within(swapToContainer).getByTestId('SwapAmountInput/ExchangeAmount')).toHaveTextContent(
-      `${APPROX_SYMBOL} ₱1.64`
+      `${APPROX_SYMBOL} ₱1.64`,
+      { exact: false }
     )
     expect(getByText('swapScreen.confirmSwap')).not.toBeDisabled()
   })
@@ -587,7 +589,8 @@ describe('SwapScreen', () => {
     )
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 0.81000 cUSD'
+      '1 CELO ≈ 0.81000 cUSD',
+      { exact: false }
     )
     expect(
       within(swapFromContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
@@ -765,7 +768,8 @@ describe('SwapScreen', () => {
     })
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 12.44445 cUSD'
+      '1 CELO ≈ 12.44445 cUSD',
+      { exact: false }
     )
     expect(getByText('swapScreen.priceImpactWarning.title')).toBeTruthy()
     expect(AppAnalytics.track).toHaveBeenCalledWith(
@@ -796,7 +800,8 @@ describe('SwapScreen', () => {
     })
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 13.12345 cUSD'
+      '1 CELO ≈ 13.12345 cUSD',
+      { exact: false }
     )
     expect(queryByText('swapScreen.priceImpactWarning.title')).toBeFalsy()
   })
@@ -841,7 +846,8 @@ describe('SwapScreen', () => {
     })
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 12.44445 cUSD'
+      '1 CELO ≈ 12.44445 cUSD',
+      { exact: false }
     )
     expect(getByText('swapScreen.missingSwapImpactWarning.title')).toBeTruthy()
     expect(AppAnalytics.track).toHaveBeenCalledWith(
@@ -872,7 +878,8 @@ describe('SwapScreen', () => {
     })
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 13.12345 cUSD'
+      '1 CELO ≈ 13.12345 cUSD',
+      { exact: false }
     )
     expect(queryByText('swapScreen.missingSwapImpactWarning.title')).toBeFalsy()
   })
@@ -902,7 +909,8 @@ describe('SwapScreen', () => {
     })
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 1.23456 POOF'
+      '1 CELO ≈ 1.23456 POOF',
+      { exact: false }
     )
 
     expect(getByText('swapScreen.noUsdPriceWarning.title, {"localCurrency":"PHP"}')).toBeTruthy()
@@ -945,21 +953,25 @@ describe('SwapScreen', () => {
     )
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 0,81000 cUSD'
+      '1 CELO ≈ 0,81000 cUSD',
+      { exact: false }
     )
     expect(
       within(swapFromContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
     ).toBe('1,234')
     expect(
       within(swapFromContainer).getByTestId('SwapAmountInput/ExchangeAmount')
-    ).toHaveTextContent(`${APPROX_SYMBOL} ₱1,33`)
+    ).toHaveTextContent(`${APPROX_SYMBOL} ₱1,33`, { exact: false })
     expect(
       within(swapToContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
     ).toBe('0,99954')
     expect(within(swapToContainer).getByTestId('SwapAmountInput/ExchangeAmount')).toHaveTextContent(
-      `${APPROX_SYMBOL} ₱1,33`
+      `${APPROX_SYMBOL} ₱1,33`,
+      { exact: false }
     )
-    expect(getByTestId('SwapTransactionDetails/Slippage')).toHaveTextContent('0,3%')
+    expect(getByTestId('SwapTransactionDetails/Slippage')).toHaveTextContent('0,3%', {
+      exact: false,
+    })
     expect(getByText('swapScreen.confirmSwap')).not.toBeDisabled()
   })
 
@@ -1007,7 +1019,8 @@ describe('SwapScreen', () => {
 
       await waitFor(() =>
         expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-          '1 CELO ≈ 1.23456 cUSD'
+          '1 CELO ≈ 1.23456 cUSD',
+          { exact: false }
         )
       )
       expect(
@@ -1096,7 +1109,8 @@ describe('SwapScreen', () => {
     })
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 1.23456 cUSD'
+      '1 CELO ≈ 1.23456 cUSD',
+      { exact: false }
     )
     expect(
       within(swapFromContainer).getByTestId('SwapAmountInput/TokenAmountInput').props.value
@@ -1576,11 +1590,20 @@ describe('SwapScreen', () => {
     })
 
     const transactionDetails = getByTestId('SwapTransactionDetails')
-    expect(transactionDetails).toHaveTextContent('swapScreen.transactionDetails.fee')
+    expect(transactionDetails).toHaveTextContent('swapScreen.transactionDetails.fee', {
+      exact: false,
+    })
     // matches mocked value (0.015 CELO) provided to estimateFeesPerGas, estimateGas, and gas in defaultQuoteResponse
-    expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent('≈ ₱0.016')
-    expect(transactionDetails).toHaveTextContent('swapScreen.transactionDetails.slippagePercentage')
-    expect(getByTestId('SwapTransactionDetails/Slippage')).toHaveTextContent('0.3%')
+    expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent('≈ ₱0.016', {
+      exact: false,
+    })
+    expect(transactionDetails).toHaveTextContent(
+      'swapScreen.transactionDetails.slippagePercentage',
+      { exact: false }
+    )
+    expect(getByTestId('SwapTransactionDetails/Slippage')).toHaveTextContent('0.3%', {
+      exact: false,
+    })
   })
 
   it('should disable the confirm button after a swap has been submitted', async () => {
@@ -1708,7 +1731,8 @@ describe('SwapScreen', () => {
     })
 
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 CELO ≈ 1.23456 cUSD'
+      '1 CELO ≈ 1.23456 cUSD',
+      { exact: false }
     )
     expect(queryByTestId('SwitchedToNetworkWarning')).toBeFalsy()
     expect(getByTestId('MaxSwapAmountWarning')).toBeTruthy()

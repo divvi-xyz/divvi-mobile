@@ -1611,7 +1611,13 @@
       "tryAgain": "再次验证",
       "switch": "切换提取方式"
     },
-    "tryAgainFailed": "清除“了解您的客户” (KYC) 信息时出错。请再试一次"
+    "tryAgainFailed": "清除“了解您的客户” (KYC) 信息时出错。请再试一次",
+    "inactive": {
+      "title": "无法进行身份验证",
+      "description": "这种付款方式需要进行身份验证，以符合相关规定。",
+      "provider": "提供者 {{provider}}",
+      "goBack": "切换提取方式"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "交易详情",

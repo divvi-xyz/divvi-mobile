@@ -1,9 +1,10 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import * as Sentry from '@sentry/react-native'
 import BigNumber from 'bignumber.js'
+import { StatusBar } from 'expo-status-bar'
 import 'intl-pluralrules'
 import * as React from 'react'
-import { LogBox, StatusBar } from 'react-native'
+import { LogBox } from 'react-native'
 import { Auth0Provider } from 'react-native-auth0'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { getNumberFormatSettings } from 'react-native-localize'
@@ -14,7 +15,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import AppInitGate from 'src/app/AppInitGate'
 import ErrorBoundary from 'src/app/ErrorBoundary'
 import { getAppConfig } from 'src/appConfig'
-import { AUTH0_CLIENT_ID, AUTH0_DOMAIN, SENTRY_ENABLED, isE2EEnv } from 'src/config'
+import { AUTH0_CLIENT_ID, AUTH0_DOMAIN, isE2EEnv, SENTRY_ENABLED } from 'src/config'
 import i18n from 'src/i18n'
 import NavigatorWrapper from 'src/navigator/NavigatorWrapper'
 import { persistor, store } from 'src/redux/store'
@@ -96,11 +97,7 @@ export class App extends React.Component<Props> {
                 appStartedMillis={this.props.appStartedMillis}
                 reactLoadTime={this.reactLoadTime}
               >
-                <StatusBar
-                  backgroundColor="transparent"
-                  barStyle={this.isDarkTheme ? 'light-content' : 'dark-content'}
-                  translucent
-                />
+                <StatusBar style={this.isDarkTheme ? 'light' : 'dark'} />
                 <ErrorBoundary>
                   <GestureHandlerRootView style={{ flex: 1 }}>
                     <BottomSheetModalProvider>

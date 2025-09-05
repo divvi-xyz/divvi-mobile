@@ -222,10 +222,10 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     }
     wallet?: {
       showActionsCarousel?: boolean
-      emptyState?: React.ReactElement
+      emptyState?: React.ReactElement<any>
     }
     transactions?: {
-      emptyState?: React.ReactElement
+      emptyState?: React.ReactElement<any>
     }
     bidali?: {
       url: string

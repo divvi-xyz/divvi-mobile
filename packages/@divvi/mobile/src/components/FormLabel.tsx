@@ -1,14 +1,15 @@
 import React from 'react'
-import { StyleProp, StyleSheet, Text, ViewStyle } from 'react-native'
+import { StyleProp, StyleSheet, Text, type ViewStyle } from 'react-native'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 
-interface Props {
+export default function FormLabel({
+  style,
+  children,
+}: {
   style?: StyleProp<ViewStyle>
   children?: React.ReactNode
-}
-
-export default function FormLabel({ style, children }: Props) {
+}) {
   return <Text style={[styles.container, style]}>{children}</Text>
 }
 

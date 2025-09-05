@@ -48,8 +48,8 @@ describe('AlertBanner', () => {
       )
       const banner = getByTestId('infoBanner')
 
-      expect(banner).toHaveTextContent('Declaration')
-      expect(banner).toHaveTextContent('This is your shadow speaking')
+      expect(banner).toHaveTextContent('Declaration', { exact: false })
+      expect(banner).toHaveTextContent('This is your shadow speaking', { exact: false })
     })
   })
 

@@ -226,7 +226,10 @@ describe('SendSelectRecipient', () => {
     })
 
     expect(getByTestId('SendOrInviteButton')).toBeTruthy()
-    expect(getByTestId('SendOrInviteButton')).toHaveTextContent('sendSelectRecipient.buttons.send')
+    expect(getByTestId('SendOrInviteButton')).toHaveTextContent(
+      'sendSelectRecipient.buttons.send',
+      { exact: false }
+    )
 
     await act(() => {
       fireEvent.press(getByTestId('SendOrInviteButton'))
@@ -261,7 +264,10 @@ describe('SendSelectRecipient', () => {
     })
 
     expect(getByTestId('SendOrInviteButton')).toBeTruthy()
-    expect(getByTestId('SendOrInviteButton')).toHaveTextContent('sendSelectRecipient.buttons.send')
+    expect(getByTestId('SendOrInviteButton')).toHaveTextContent(
+      'sendSelectRecipient.buttons.send',
+      { exact: false }
+    )
 
     await act(() => {
       fireEvent.press(getByTestId('SendOrInviteButton'))
@@ -305,7 +311,8 @@ describe('SendSelectRecipient', () => {
 
     expect(getByTestId('SendOrInviteButton')).toBeTruthy()
     expect(getByTestId('SendOrInviteButton')).toHaveTextContent(
-      'sendSelectRecipient.buttons.invite'
+      'sendSelectRecipient.buttons.invite',
+      { exact: false }
     )
 
     await act(() => {
@@ -336,7 +343,8 @@ describe('SendSelectRecipient', () => {
     })
 
     expect(getByTestId('RecipientItem')).toHaveTextContent(
-      'feedItemAddress, {"address":"0x1ff4...bc42"}'
+      'feedItemAddress, {"address":"0x1ff4...bc42"}',
+      { exact: false }
     )
 
     await act(() => {
@@ -367,7 +375,9 @@ describe('SendSelectRecipient', () => {
     await act(() => {
       fireEvent.changeText(searchInput, mockE164Number2Invite)
     })
-    expect(getByTestId('RecipientItem')).toHaveTextContent(mockDisplayNumber2Invite)
+    expect(getByTestId('RecipientItem')).toHaveTextContent(mockDisplayNumber2Invite, {
+      exact: false,
+    })
     await act(() => {
       fireEvent.press(getByTestId('RecipientItem'))
     })
@@ -400,7 +410,8 @@ describe('SendSelectRecipient', () => {
 
     // ensure its an address recipient (not an address that's tied to a contact)
     expect(getByTestId('RecipientItem')).toHaveTextContent(
-      'feedItemAddress, {"address":"0x1ff4...bc42"}'
+      'feedItemAddress, {"address":"0x1ff4...bc42"}',
+      { exact: false }
     )
 
     await act(() => {
@@ -430,7 +441,8 @@ describe('SendSelectRecipient', () => {
 
     // ensure its an address recipient (not an address that's tied to a contact)
     expect(getByTestId('RecipientItem')).toHaveTextContent(
-      'feedItemAddress, {"address":"0x1ff4...bc42"}'
+      'feedItemAddress, {"address":"0x1ff4...bc42"}',
+      { exact: false }
     )
 
     await act(() => {
@@ -462,8 +474,10 @@ describe('SendSelectRecipient', () => {
       fireEvent.changeText(searchInput, mockAccount)
     })
 
-    expect(getByTestId('RecipientItem')).toHaveTextContent(mockRecipient.name)
-    expect(getByTestId('RecipientItem')).toHaveTextContent(mockRecipient.displayNumber)
+    expect(getByTestId('RecipientItem')).toHaveTextContent(mockRecipient.name, { exact: false })
+    expect(getByTestId('RecipientItem')).toHaveTextContent(mockRecipient.displayNumber, {
+      exact: false,
+    })
 
     await act(() => {
       fireEvent.press(getByTestId('RecipientItem'))
@@ -472,7 +486,7 @@ describe('SendSelectRecipient', () => {
     expect(store.getActions()).toEqual([fetchAddressVerification(mockAccount)])
     expect(getByTestId('UnknownAddressInfo')).toBeTruthy()
     expect(getByTestId('SendOrInviteButton')).toBeTruthy()
-    expect(getByTestId('SendOrInviteButton')).toHaveTextContent('send')
+    expect(getByTestId('SendOrInviteButton')).toHaveTextContent('send', { exact: false })
   })
   it('shows paste button if clipboard has address content', async () => {
     const store = createMockStore(defaultStore)
@@ -515,8 +529,8 @@ describe('SendSelectRecipient', () => {
       )
 
       const inviteRewardsCard = await findByTestId('InviteRewardsCard')
-      expect(inviteRewardsCard).toHaveTextContent('inviteRewardsBannerCUSD.title')
-      expect(inviteRewardsCard).toHaveTextContent('inviteRewardsBannerCUSD.body')
+      expect(inviteRewardsCard).toHaveTextContent('inviteRewardsBannerCUSD.title', { exact: false })
+      expect(inviteRewardsCard).toHaveTextContent('inviteRewardsBannerCUSD.body', { exact: false })
     })
 
     it('does not show invite rewards card when invite rewards are not active', async () => {

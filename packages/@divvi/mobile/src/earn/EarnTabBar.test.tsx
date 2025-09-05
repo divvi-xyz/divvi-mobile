@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react-native'
+import { fireEvent, render, within } from '@testing-library/react-native'
 import React from 'react'
 import EarnTabBar from 'src/earn/EarnTabBar'
 import { EarnTabType } from 'src/earn/types'
@@ -18,10 +18,14 @@ describe('EarnTabBar', () => {
 
     const tabItems = getAllByTestId('Earn/TabBarItem')
     expect(tabItems).toHaveLength(2)
-    expect(tabItems[0]).toHaveTextContent('earnFlow.poolFilters.allPools')
-    expect(tabItems[0].children[0]).toHaveStyle({ color: Colors.contentPrimary })
-    expect(tabItems[1]).toHaveTextContent('earnFlow.poolFilters.myPools')
-    expect(tabItems[1].children[0]).toHaveStyle({ color: Colors.contentSecondary })
+    expect(tabItems[0]).toHaveTextContent('earnFlow.poolFilters.allPools', { exact: false })
+    expect(within(tabItems[0]).getByText('earnFlow.poolFilters.allPools')).toHaveStyle({
+      color: Colors.contentPrimary,
+    })
+    expect(tabItems[1]).toHaveTextContent('earnFlow.poolFilters.myPools', { exact: false })
+    expect(within(tabItems[1]).getByText('earnFlow.poolFilters.myPools')).toHaveStyle({
+      color: Colors.contentSecondary,
+    })
   })
 
   it.each([{ tab: EarnTabType.AllPools }, { tab: EarnTabType.MyPools }])(

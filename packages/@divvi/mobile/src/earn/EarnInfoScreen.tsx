@@ -33,7 +33,7 @@ function DetailsItem({
   subtitle,
   footnote,
 }: {
-  icon: ReactElement
+  icon: ReactElement<any>
   title: string
   subtitle: string
   footnote?: string

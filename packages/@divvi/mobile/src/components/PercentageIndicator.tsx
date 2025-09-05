@@ -38,7 +38,7 @@ function PercentageIndicator({
   const comparison = percentage.comparedTo(0)
   const percentageString = `${percentage.abs().toFixed(2)}%`
 
-  let indicator: React.ReactElement | undefined
+  let indicator: React.ReactElement<any> | undefined
   let color: ColorValue
   if (comparison > 0) {
     color = Colors.accent

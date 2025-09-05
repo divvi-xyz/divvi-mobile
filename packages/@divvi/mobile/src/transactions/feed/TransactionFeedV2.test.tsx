@@ -167,6 +167,8 @@ describe('TransactionFeedV2', () => {
     expect(tree.queryByTestId('TransactionList/loading')).toBeNull()
     expect(tree.queryByTestId('transactionFeed.error.fetchError')).toBeNull()
 
+    await waitFor(() => expect(tree.getAllByTestId('TransferFeedItem').length).toBe(2))
+
     const subtitles = tree.getAllByTestId('TransferFeedItem/subtitle')
 
     const pendingSubtitles = subtitles.filter((node) =>
@@ -213,6 +215,10 @@ describe('TransactionFeedV2', () => {
 
     await waitFor(() => expect(mockFetch).toBeCalledTimes(1))
     expect(tree.queryByText('transactionFeed.allTransactionsShown')).toBeFalsy()
+    await waitFor(() => {
+      const sectionList = tree.getByTestId('TransactionList')
+      expect(sectionList.props.data.length).toBeGreaterThan(0)
+    })
     expect(getNumTransactionItems(tree.getByTestId('TransactionList'))).toBe(1)
 
     fireEvent(tree.getByTestId('TransactionList'), 'onEndReached')
@@ -221,7 +227,9 @@ describe('TransactionFeedV2', () => {
     await waitFor(() => expect(tree.queryByTestId('TransactionList/loading')).toBeFalsy())
 
     expect(mockFetch).toHaveBeenCalledTimes(2)
-    expect(getNumTransactionItems(tree.getByTestId('TransactionList'))).toBe(2)
+    await waitFor(() => {
+      expect(getNumTransactionItems(tree.getByTestId('TransactionList'))).toBe(2)
+    })
     expect(tree.getByText('transactionFeed.allTransactionsShown')).toBeTruthy()
   })
 
@@ -554,6 +562,11 @@ describe('TransactionFeedV2', () => {
     })
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1))
+
+    await waitFor(() => {
+      expect(tree.getByTestId('TransactionList').props.data[0]).toBeDefined()
+      expect(tree.getByTestId('TransactionList').props.data[0].data).toBeDefined()
+    })
 
     const hashes = tree
       .getByTestId('TransactionList')

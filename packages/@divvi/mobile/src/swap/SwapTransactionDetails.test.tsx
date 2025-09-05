@@ -39,7 +39,8 @@ describe('SwapTransactionDetails', () => {
 
     expect(getByText('swapScreen.transactionDetails.exchangeRate')).toBeTruthy()
     expect(getByTestId('SwapTransactionDetails/ExchangeRate')).toHaveTextContent(
-      '1 cUSD ≈ 0.58370 CELO'
+      '1 cUSD ≈ 0.58370 CELO',
+      { exact: false }
     )
     expect(getByTestId('SwapTransactionDetails/ExchangeRate/MoreInfo/Icon')).toBeTruthy()
     expect(getByTestId('SwapTransactionDetails/ExchangeRate/MoreInfo')).not.toBeDisabled()
@@ -54,7 +55,9 @@ describe('SwapTransactionDetails', () => {
 
     expect(getByText('swapScreen.transactionDetails.estimatedTransactionTime')).toBeTruthy()
     expect(
-      getByText('swapScreen.transactionDetails.estimatedTransactionTimeInMinutes, {"minutes":14}')
+      getByText('swapScreen.transactionDetails.estimatedTransactionTimeInMinutes, {"minutes":14}', {
+        exact: false,
+      })
     ).toBeTruthy()
   })
 
@@ -104,7 +107,8 @@ describe('SwapTransactionDetails', () => {
         )
 
         expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent(
-          'swapScreen.transactionDetails.feesCalculationError'
+          'swapScreen.transactionDetails.feesCalculationError',
+          { exact: false }
         )
       }
     )
@@ -121,7 +125,9 @@ describe('SwapTransactionDetails', () => {
         </Provider>
       )
 
-      expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent('≈ ₱0.92')
+      expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent('≈ ₱0.92', {
+        exact: false,
+      })
     })
 
     it('should render the total fees with fiat and token values when priceUsd is missing', () => {
@@ -141,7 +147,9 @@ describe('SwapTransactionDetails', () => {
         </Provider>
       )
 
-      expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent('≈ ₱0.013 + 0.07 CELO')
+      expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent('≈ ₱0.013 + 0.07 CELO', {
+        exact: false,
+      })
     })
 
     it('should render the total fees in only token values when all priceUsd is missing', () => {
@@ -175,7 +183,8 @@ describe('SwapTransactionDetails', () => {
       )
 
       expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent(
-        '≈ 1.37 CELO + 0.01 cUSD'
+        '≈ 1.37 CELO + 0.01 cUSD',
+        { exact: false }
       )
     })
 
@@ -199,7 +208,9 @@ describe('SwapTransactionDetails', () => {
           </Provider>
         )
 
-        expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent(expectedTotalFee)
+        expect(getByTestId('SwapTransactionDetails/Fees')).toHaveTextContent(expectedTotalFee, {
+          exact: false,
+        })
       }
     )
   })

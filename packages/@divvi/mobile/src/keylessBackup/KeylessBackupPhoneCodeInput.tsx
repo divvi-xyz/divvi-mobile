@@ -29,7 +29,7 @@ function HelpInfoBottomSheet({
   keylessBackupFlow,
   origin,
 }: {
-  bottomSheetRef: React.RefObject<BottomSheetModalRefType>
+  bottomSheetRef: React.RefObject<BottomSheetModalRefType | null>
   keylessBackupFlow: KeylessBackupFlow
   origin: KeylessBackupOrigin
 }) {

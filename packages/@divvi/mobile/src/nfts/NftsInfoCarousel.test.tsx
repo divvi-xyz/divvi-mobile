@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react-native'
-import * as React from 'react'
+import React from 'react'
+import { Video } from 'react-native-video'
 import { Provider } from 'react-redux'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
@@ -17,7 +18,7 @@ describe('NftsInfoCarousel', () => {
   })
 
   it('renders correctly with one Nft', () => {
-    const { queryByTestId, getByTestId, getByText } = render(
+    const { queryByTestId, getByText, UNSAFE_getByType } = render(
       <Provider store={createMockStore()}>
         <NftsInfoCarousel
           {...getMockStackScreenProps(Screens.NftsInfoCarousel, {
@@ -28,17 +29,14 @@ describe('NftsInfoCarousel', () => {
       </Provider>
     )
 
-    // Correct image source should be rendered
-    expect(getByTestId('NftsInfoCarousel/MainVideo').children[0]).toHaveProp(
-      'source',
-      expect.objectContaining({
-        uri: mockNftAllFields.media[1].gateway,
-        headers: {
-          origin: networkConfig.nftsAppUrl,
-        },
-      })
-    )
+    // Correct Nft Video source and name should be rendered
     expect(getByText(mockNftAllFields.metadata!.name)).toBeTruthy()
+    expect(UNSAFE_getByType(Video).props.source).toEqual({
+      uri: mockNftAllFields.media[1].gateway,
+      headers: {
+        origin: networkConfig.nftsAppUrl,
+      },
+    })
 
     // The image carousel should not render if there is only one Nft
     expect(queryByTestId('NftsInfoCarousel/NftImageCarousel')).toBeNull()
@@ -47,7 +45,7 @@ describe('NftsInfoCarousel', () => {
   it('renders correctly with two valid Nfts', () => {
     const nft1Thumbnail = `NftsInfoCarousel/NftThumbnail/${mockNftAllFields.contractAddress}-${mockNftAllFields.tokenId}`
     const nft2Thumbnail = `NftsInfoCarousel/NftThumbnail/${mockNftMinimumFields.contractAddress}-${mockNftMinimumFields.tokenId}`
-    const { getByTestId, getByText } = render(
+    const { getByTestId, getByText, UNSAFE_getByType } = render(
       <Provider store={createMockStore()}>
         <NftsInfoCarousel
           {...getMockStackScreenProps(Screens.NftsInfoCarousel, {
@@ -61,20 +59,19 @@ describe('NftsInfoCarousel', () => {
     // Carousel should be rendered
     expect(getByTestId('NftsInfoCarousel/NftImageCarousel')).toBeTruthy()
 
-    // Correct Nft Video and name should be rendered
-    expect(getByTestId('NftsInfoCarousel/MainVideo').children[0]).toHaveProp(
-      'source',
-      expect.objectContaining({
-        uri: mockNftAllFields.media[1].gateway,
-        headers: {
-          origin: networkConfig.nftsAppUrl,
-        },
-      })
-    )
+    // Correct Nft Video source and name should be rendered
     expect(getByText(mockNftAllFields.metadata!.name)).toBeTruthy()
+    expect(UNSAFE_getByType(Video).props.source).toEqual({
+      uri: mockNftAllFields.media[1].gateway,
+      headers: {
+        origin: networkConfig.nftsAppUrl,
+      },
+    })
 
     // Toggle to Second Nft
     fireEvent.press(getByTestId(nft2Thumbnail))
+
+    // Correct NFT image source and name should be rendered
     expect(getByText(mockNftMinimumFields.metadata!.name)).toBeTruthy()
     expect(getByTestId('NftsInfoCarousel/MainImage')).toHaveProp(
       'source',
@@ -88,16 +85,15 @@ describe('NftsInfoCarousel', () => {
 
     // Return to first Nft
     fireEvent.press(getByTestId(nft1Thumbnail))
+
+    // Correct Nft Video source and name should be rendered
     expect(getByText(mockNftAllFields.metadata!.name)).toBeTruthy()
-    expect(getByTestId('NftsInfoCarousel/MainVideo').children[0]).toHaveProp(
-      'source',
-      expect.objectContaining({
-        uri: mockNftAllFields.media[1].gateway,
-        headers: {
-          origin: networkConfig.nftsAppUrl,
-        },
-      })
-    )
+    expect(UNSAFE_getByType(Video).props.source).toEqual({
+      uri: mockNftAllFields.media[1].gateway,
+      headers: {
+        origin: networkConfig.nftsAppUrl,
+      },
+    })
   })
 
   it('renders full screen error when no Nft(s)', () => {

@@ -18,7 +18,7 @@ import Logger from 'src/utils/Logger'
 import { useRevokeCurrentPhoneNumber } from 'src/verify/hooks'
 
 interface Props {
-  forwardedRef: React.RefObject<BottomSheetModalRefType>
+  forwardedRef: React.RefObject<BottomSheetModalRefType | null>
 }
 
 const TOAST_DISMISS_TIMEOUT_MS = 5_000

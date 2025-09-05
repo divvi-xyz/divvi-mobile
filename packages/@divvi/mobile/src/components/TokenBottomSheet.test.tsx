@@ -2,8 +2,8 @@ import { fireEvent, render } from '@testing-library/react-native'
 import BigNumber from 'bignumber.js'
 import * as React from 'react'
 import { Provider } from 'react-redux'
-import { TokenBottomSheetEvents } from 'src/analytics/Events'
 import AppAnalytics from 'src/analytics/AppAnalytics'
+import { TokenBottomSheetEvents } from 'src/analytics/Events'
 import TokenBottomSheet, {
   DEBOUNCE_WAIT_TIME,
   TokenBottomSheetProps,
@@ -141,11 +141,11 @@ describe.each([
     const { getAllByTestId } = renderBottomSheet()
 
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(3)
-    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('10.00 cUSD')
-    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('₱13.30')
-    expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('20.00 cEUR')
-    expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('₱31.92') // 20 * 1.2 (cEUR price) * 1.33 (PHP price)
-    expect(getAllByTestId('TokenBalanceItem')[2]).toHaveTextContent('10.00 TT')
+    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('10.00 cUSD', { exact: false })
+    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('₱13.30', { exact: false })
+    expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('20.00 cEUR', { exact: false })
+    expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('₱31.92', { exact: false }) // 20 * 1.2 (cEUR price) * 1.33 (PHP price)
+    expect(getAllByTestId('TokenBalanceItem')[2]).toHaveTextContent('10.00 TT', { exact: false })
   })
 
   it('handles the choosing of a token correctly', () => {
@@ -267,7 +267,7 @@ describe.each([
     fireEvent.press(getByText('cusd filter'))
 
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(1)
-    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Celo Dollar')
+    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Celo Dollar', { exact: false })
   })
 
   it('renders and applies a default filter', () => {
@@ -284,7 +284,7 @@ describe.each([
 
     // filter already applied
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(1)
-    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Celo Dollar')
+    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Celo Dollar', { exact: false })
 
     fireEvent.press(getByText('cusd filter'))
 
@@ -308,8 +308,8 @@ describe.each([
 
     // filter already applied
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(2)
-    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Celo Dollar')
-    expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('Test Token')
+    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Celo Dollar', { exact: false })
+    expect(getAllByTestId('TokenBalanceItem')[1]).toHaveTextContent('Test Token', { exact: false })
 
     fireEvent.changeText(getByPlaceholderText('tokenBottomSheet.searchAssets'), 'Celo')
 
@@ -317,7 +317,7 @@ describe.each([
     jest.advanceTimersByTime(DEBOUNCE_WAIT_TIME)
 
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(1)
-    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Celo Dollar')
+    expect(getAllByTestId('TokenBalanceItem')[0]).toHaveTextContent('Celo Dollar', { exact: false })
 
     fireEvent.press(getAllByTestId('TokenBalanceItem')[0])
     expect(AppAnalytics.track).toHaveBeenLastCalledWith(TokenBottomSheetEvents.token_selected, {

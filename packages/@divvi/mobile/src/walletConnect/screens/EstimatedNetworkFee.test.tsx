@@ -37,8 +37,12 @@ describe('EstimatedNetworkFee', () => {
       getByText('walletConnectRequest.estimatedNetworkFee, {"networkName":"Celo Alfajores"}')
     ).toBeTruthy()
 
-    expect(getByTestId('EstimatedNetworkFee/Amount')).toHaveTextContent('0.0001 CELO') // gas * _baseFeePerGas
-    expect(getByTestId('EstimatedNetworkFee/AmountLocal')).toHaveTextContent('₱0.00067')
+    expect(getByTestId('EstimatedNetworkFee/Amount')).toHaveTextContent('0.0001 CELO', {
+      exact: false,
+    }) // gas * _baseFeePerGas
+    expect(getByTestId('EstimatedNetworkFee/AmountLocal')).toHaveTextContent('₱0.00067', {
+      exact: false,
+    })
 
     expect(queryByTestId('EstimatedNetworkFee/Loading')).toBeFalsy()
   })

@@ -24,7 +24,7 @@ describe('CryptoAmount', () => {
         tokenId: mockCusdTokenId,
         showLocalAmount: false,
       },
-      {}
+      undefined
     )
   })
 })
@@ -42,7 +42,7 @@ describe('FiatAmount', () => {
         },
         testID: 'fiatAmt',
       }),
-      {}
+      undefined
     )
   })
 })

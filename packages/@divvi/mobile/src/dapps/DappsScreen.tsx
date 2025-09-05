@@ -45,7 +45,7 @@ import { Spacing } from 'src/styles/styles'
 
 const AnimatedSectionList =
   Animated.createAnimatedComponent<SectionListProps<Dapp, SectionData>>(SectionList)
-interface SectionData {
+export interface SectionData {
   data: DappWithCategoryNames[]
   sectionName: string
   dappSection: DappSection
@@ -59,7 +59,7 @@ function DappsScreen({ navigation }: Props) {
 
   const insets = useSafeAreaInsets()
 
-  const sectionListRef = useRef<SectionList>(null)
+  const sectionListRef = useRef<SectionList<Dapp, SectionData> | null>(null)
   const horizontalScrollView = useRef<ScrollView>(null)
 
   const dispatch = useDispatch()
@@ -86,7 +86,9 @@ function DappsScreen({ navigation }: Props) {
   const [searchTerm, setSearchTerm] = useState('')
 
   const { onSelectDapp } = useOpenDapp()
-  const { onFavoriteDapp, DappFavoritedToast } = useDappFavoritedToast(sectionListRef)
+  const { onFavoriteDapp, DappFavoritedToast } = useDappFavoritedToast(
+    sectionListRef as React.RefObject<SectionList<Dapp, SectionData>>
+  )
 
   const showUKCompliantVariant = getFeatureGate(StatsigFeatureGates.SHOW_UK_COMPLIANT_VARIANT)
 
@@ -215,8 +217,6 @@ function DappsScreen({ navigation }: Props) {
                 onRefresh={() => dispatch(fetchDappsList())}
               />
             }
-            // TODO: resolve type error
-            // @ts-expect-error
             ref={sectionListRef}
             ListFooterComponent={
               <Text style={[styles.disclaimer, { textAlign: 'center' }]}>

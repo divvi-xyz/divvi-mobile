@@ -17,7 +17,7 @@ export default function TokenDetailsMoreActions({
   actions,
   token,
 }: {
-  forwardedRef: RefObject<BottomSheetModalRefType>
+  forwardedRef: RefObject<BottomSheetModalRefType | null>
   actions: TokenAction[]
   token: TokenBalance
 }) {

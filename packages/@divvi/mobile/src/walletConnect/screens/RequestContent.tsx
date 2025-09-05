@@ -12,7 +12,7 @@ import Logos from 'src/walletConnect/screens/Logos'
 
 export interface RequestDetail {
   label: string
-  value: ReactElement | string | null
+  value: ReactElement<any> | string | null
 }
 
 interface BaseProps {

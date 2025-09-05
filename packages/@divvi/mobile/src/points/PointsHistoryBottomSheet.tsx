@@ -27,7 +27,7 @@ import { Spacing } from 'src/styles/styles'
 import { groupFeedItemsInSections } from 'src/transactions/utils'
 
 interface Props {
-  forwardedRef: React.RefObject<BottomSheetModal>
+  forwardedRef: React.RefObject<BottomSheetModal | null>
 }
 
 function PointsHistoryCard({

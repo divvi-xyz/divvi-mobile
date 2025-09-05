@@ -112,7 +112,7 @@ export function getDisplayLocalAmount(
  */
 export function useEnterAmount(props: {
   token: TokenBalance | undefined
-  inputRef: React.RefObject<RNTextInput>
+  inputRef: React.RefObject<RNTextInput | null>
   onHandleAmountInputChange?(amount: string): void
 }) {
   /**

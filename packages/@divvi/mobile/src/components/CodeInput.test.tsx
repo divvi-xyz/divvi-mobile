@@ -21,6 +21,6 @@ describe('CodeInput', () => {
       autoCapitalize: 'none',
       keyboardType: 'number-pad',
     }
-    expect(TextInput).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {})
+    expect(TextInput).toHaveBeenCalledWith(expect.objectContaining(expectedProps), undefined)
   })
 })

@@ -45,6 +45,7 @@ exports[`AccountNumber renders correctly when touch enabled 1`] = `
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  ref={null}
   style={
     [
       undefined,

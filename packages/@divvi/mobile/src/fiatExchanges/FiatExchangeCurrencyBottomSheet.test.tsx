@@ -81,7 +81,7 @@ describe(FiatExchangeCurrencyBottomSheet, () => {
     )
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(6)
     ;['ETH', 'CELO', 'cUSD', 'cEUR', 'cREAL', 'USDC'].forEach((token, index) => {
-      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token)
+      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token, { exact: false })
     })
   })
   it('shows the correct tokens for cash out', () => {
@@ -95,7 +95,7 @@ describe(FiatExchangeCurrencyBottomSheet, () => {
     )
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(2)
     ;['CELO', 'cUSD'].forEach((token, index) => {
-      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token)
+      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token, { exact: false })
     })
   })
   it('shows the correct tokens for cash spend', () => {
@@ -109,7 +109,7 @@ describe(FiatExchangeCurrencyBottomSheet, () => {
     )
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(2)
     ;['cUSD', 'cEUR'].forEach((token, index) => {
-      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token)
+      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token, { exact: false })
     })
   })
   it('shows the correct order when cicoOrder missing/same value', () => {
@@ -136,7 +136,7 @@ describe(FiatExchangeCurrencyBottomSheet, () => {
     )
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(6)
     ;['cUSD', 'cREAL', 'cEUR', 'CELO', 'ETH', 'USDC'].forEach((token, index) => {
-      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token)
+      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token, { exact: false })
     })
   })
 
@@ -216,7 +216,7 @@ describe(FiatExchangeCurrencyBottomSheet, () => {
     fireEvent.press(getByText('tokenBottomSheet.filters.popular'))
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(2)
     ;['ETH', 'CELO'].forEach((token, index) => {
-      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token)
+      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token, { exact: false })
     })
   })
 
@@ -234,7 +234,7 @@ describe(FiatExchangeCurrencyBottomSheet, () => {
     fireEvent.press(getByText('tokenBottomSheet.filters.stablecoins'))
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(4)
     ;['cUSD', 'cEUR', 'cREAL', 'USDC'].forEach((token, index) => {
-      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token)
+      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token, { exact: false })
     })
   })
 
@@ -252,7 +252,7 @@ describe(FiatExchangeCurrencyBottomSheet, () => {
     fireEvent.press(getByText('tokenBottomSheet.filters.gasTokens'))
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(5)
     ;['ETH', 'CELO', 'cUSD', 'cEUR', 'cREAL'].forEach((token, index) => {
-      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token)
+      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token, { exact: false })
     })
   })
 
@@ -275,14 +275,14 @@ describe(FiatExchangeCurrencyBottomSheet, () => {
     fireEvent.press(within(networkMultiSelect).getByTestId('Celo Alfajores-icon'))
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(4)
     ;['CELO', 'cUSD', 'cEUR', 'cREAL'].forEach((token, index) => {
-      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token)
+      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token, { exact: false })
     })
 
     // select eth filter
     fireEvent.press(within(networkMultiSelect).getByTestId('Ethereum Sepolia-icon'))
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(2)
     ;['ETH', 'USDC'].forEach((token, index) => {
-      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token)
+      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token, { exact: false })
     })
   })
 
@@ -298,7 +298,7 @@ describe(FiatExchangeCurrencyBottomSheet, () => {
 
     expect(getAllByTestId('TokenBalanceItem')).toHaveLength(4)
     ;['CELO', 'cUSD', 'cEUR', 'cREAL'].forEach((token, index) => {
-      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token)
+      expect(getAllByTestId('TokenBalanceItem')[index]).toHaveTextContent(token, { exact: false })
     })
 
     // unselect filter, to prove that the pre-selection yielded different results

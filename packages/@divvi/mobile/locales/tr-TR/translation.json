@@ -1613,7 +1613,13 @@
       "tryAgain": "Tekrar doğrulayın",
       "switch": "Para çekme yöntemini değiştir"
     },
-    "tryAgainFailed": "KYC bilgileri silinirken bir hata oluştu. Lütfen tekrar deneyin"
+    "tryAgainFailed": "KYC bilgileri silinirken bir hata oluştu. Lütfen tekrar deneyin",
+    "inactive": {
+      "title": "Kimlik doğrulaması mevcut değil",
+      "description": "Bu ödeme yöntemi, düzenlemelere uymak için kimlik doğrulaması gerektirir.",
+      "provider": "Sağlayıcı: {{provider}}",
+      "goBack": "Para çekme yöntemini değiştir"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "İşlem detayları",
