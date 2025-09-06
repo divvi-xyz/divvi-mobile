@@ -90,8 +90,12 @@ export async function quickOnboarding({
   cloudBackupEnabled = false,
 } = {}) {
   try {
+    console.log('Started quickOnboarding')
+    const tempElement = await element(by.id('RestoreAccountButton'))
+    console.log('Temp Element', tempElement)
     // Tap Restore Account
     await waitForElementById('RestoreAccountButton', { tap: true })
+    console.log('Tapped Restore Account')
 
     // Accept Terms - if present
     try {
