@@ -51,11 +51,11 @@ jobs:
           echo "$ANDROID_HOME/emulator" >> $GITHUB_PATH
           echo "ANDROID_SDK_ROOT=" >> $GITHUB_ENV
       # See https://namespace.so/docs/actions/nscloud-cache-action
-      # - name: Cache
-      #   uses: namespacelabs/nscloud-cache-action@v1
-      #   with:
-      #     cache: gradle
-      #     path: ${{ env.ANDROID_HOME}}
+      - name: Cache
+        uses: namespacelabs/nscloud-cache-action@v1
+        with:
+          cache: gradle
+          path: ${{ env.ANDROID_HOME}}
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
