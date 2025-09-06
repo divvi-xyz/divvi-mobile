@@ -91,7 +91,7 @@ export async function quickOnboarding({
 } = {}) {
   try {
     // Tap Restore Account
-    await waitForElementById('RestoreAccountButton', { tap: true })
+    await element(by.id('RestoreAccountButton')).tap()
 
     // Accept Terms - if present
     try {
