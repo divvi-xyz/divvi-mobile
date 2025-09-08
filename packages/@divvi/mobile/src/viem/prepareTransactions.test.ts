@@ -22,7 +22,7 @@ import {
   tryEstimateTransaction,
   tryEstimateTransactions,
 } from 'src/viem/prepareTransactions'
-import { mockCeloTokenBalance, mockEthTokenBalance } from 'test/values'
+import { mockAppConfig, mockCeloTokenBalance, mockEthTokenBalance } from 'test/values'
 import {
   Address,
   BaseError,
@@ -158,10 +158,8 @@ describe('prepareTransactions module', () => {
     ])(
       'attaches divvi data to all transactions $description',
       async ({ inputData, expectedData }) => {
-        jest.mocked(getAppConfig).mockReturnValue({
-          registryName: 'test',
-          displayName: 'test',
-          deepLinkUrlScheme: 'test',
+        jest.mocked(getAppConfig).mockReturnValueOnce({
+          ...mockAppConfig,
           divviProtocol: {
             divviId: '0xdivviId',
           },
