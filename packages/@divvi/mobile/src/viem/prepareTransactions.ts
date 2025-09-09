@@ -324,7 +324,7 @@ export async function prepareTransactions({
       })
     if (referralTag) {
       baseTransactions.forEach((tx) => {
-        tx.data = ((tx.data ?? '0x') + referralTag) as Hex
+        tx.data = tx.data && ((tx.data + referralTag) as Hex)
       })
     }
   }

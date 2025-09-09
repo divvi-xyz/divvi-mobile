@@ -146,67 +146,64 @@ describe('prepareTransactions module', () => {
   describe('prepareTransactions function', () => {
     it.each([
       {
-        description: 'when data is provided',
+        description: 'is attached when data is provided',
         inputData: '0xdata' as Hex,
         expectedData: '0xdatadivviData',
       },
       {
-        description: 'when data is undefined',
+        description: 'is not attached when data is undefined',
         inputData: undefined,
-        expectedData: '0xdivviData',
+        expectedData: undefined,
       },
-    ])(
-      'attaches divvi data to all transactions $description',
-      async ({ inputData, expectedData }) => {
-        jest.mocked(getAppConfig).mockReturnValueOnce({
-          ...mockAppConfig,
-          divviProtocol: {
-            divviId: '0xdivviId',
+    ])('divvi data $description', async ({ inputData, expectedData }) => {
+      jest.mocked(getAppConfig).mockReturnValueOnce({
+        ...mockAppConfig,
+        divviProtocol: {
+          divviId: '0xdivviId',
+        },
+      })
+      jest.mocked(getReferralTag).mockReturnValue('divviData')
+      mocked(estimateFeesPerGas).mockResolvedValue({
+        maxFeePerGas: BigInt(100),
+        maxPriorityFeePerGas: BigInt(2),
+        baseFeePerGas: BigInt(50),
+      })
+      mocked(estimateGas).mockResolvedValue(BigInt(1_000))
+
+      // max gas fee is 100 * 1k = 100k units, too high for either fee currency
+
+      const result = await prepareTransactions({
+        feeCurrencies: mockFeeCurrencies,
+        spendToken: mockSpendToken,
+        spendTokenAmount: new BigNumber(45_000),
+        decreasedAmountGasFeeMultiplier: 1,
+        baseTransactions: [
+          {
+            from: '0xfrom' as Address,
+            to: '0xto' as Address,
+            data: inputData,
           },
-        })
-        jest.mocked(getReferralTag).mockReturnValue('divviData')
-        mocked(estimateFeesPerGas).mockResolvedValue({
-          maxFeePerGas: BigInt(100),
-          maxPriorityFeePerGas: BigInt(2),
-          baseFeePerGas: BigInt(50),
-        })
-        mocked(estimateGas).mockResolvedValue(BigInt(1_000))
+        ],
+        isGasSubsidized: true,
+        origin: 'send',
+      })
+      expect(result).toStrictEqual({
+        type: 'possible',
+        feeCurrency: mockFeeCurrencies[0],
+        transactions: [
+          {
+            from: '0xfrom',
+            to: '0xto',
+            data: expectedData,
 
-        // max gas fee is 100 * 1k = 100k units, too high for either fee currency
-
-        const result = await prepareTransactions({
-          feeCurrencies: mockFeeCurrencies,
-          spendToken: mockSpendToken,
-          spendTokenAmount: new BigNumber(45_000),
-          decreasedAmountGasFeeMultiplier: 1,
-          baseTransactions: [
-            {
-              from: '0xfrom' as Address,
-              to: '0xto' as Address,
-              data: inputData,
-            },
-          ],
-          isGasSubsidized: true,
-          origin: 'send',
-        })
-        expect(result).toStrictEqual({
-          type: 'possible',
-          feeCurrency: mockFeeCurrencies[0],
-          transactions: [
-            {
-              from: '0xfrom',
-              to: '0xto',
-              data: expectedData,
-
-              gas: BigInt(1000),
-              maxFeePerGas: BigInt(100),
-              maxPriorityFeePerGas: BigInt(2),
-              _baseFeePerGas: BigInt(50),
-            },
-          ],
-        })
-      }
-    )
+            gas: BigInt(1000),
+            maxFeePerGas: BigInt(100),
+            maxPriorityFeePerGas: BigInt(2),
+            _baseFeePerGas: BigInt(50),
+          },
+        ],
+      })
+    })
 
     it('throws if trying to sendAmount > sendToken balance', async () => {
       await expect(() =>
