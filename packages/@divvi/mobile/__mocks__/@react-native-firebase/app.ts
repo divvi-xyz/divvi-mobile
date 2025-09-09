@@ -32,10 +32,8 @@ const mockFirebaseApp = {
   })),
 }
 
-// Mock the default export
 const firebase = jest.fn(() => mockFirebaseApp)
 
-// Add static properties
 firebase.messaging = {
   AuthorizationStatus: {
     AUTHORIZED: 1,
@@ -46,7 +44,6 @@ firebase.messaging = {
 
 export default firebase
 
-// Mock the named export
 export const ReactNativeFirebase = {
   Module: mockFirebaseApp,
   FirebaseApp: mockFirebaseApp,
