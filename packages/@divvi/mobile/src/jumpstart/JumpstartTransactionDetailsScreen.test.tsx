@@ -171,11 +171,7 @@ describe('JumpstartTransactionDetailsScreen', () => {
   })
 
   it(`shows the disabled reclaim button and an error toast in case of any error`, async () => {
-    jest.mock('@react-native-firebase/auth', () => {
-      return () => ({
-        signInAnonymously: jest.fn().mockRejectedValue(new Error('Test error')),
-      })
-    })
+    jest.mocked(fetchClaimStatus).mockRejectedValue(new Error('Test error'))
 
     const { getByTestId } = renderScreen({
       transaction: tokenTransfer({
