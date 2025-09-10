@@ -309,7 +309,7 @@ describe(setPincodeWithBiometry, () => {
       mockPin,
       expect.objectContaining({
         service: 'PIN',
-        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY,
+        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
       })
     )
   })
@@ -334,7 +334,7 @@ describe(setPincodeWithBiometry, () => {
       mockPin,
       expect.objectContaining({
         service: 'PIN',
-        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY,
+        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
       })
     )
   })
@@ -450,7 +450,7 @@ describe(updatePin, () => {
       mockPin,
       expect.objectContaining({
         service: 'PIN',
-        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY,
+        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
       })
     )
   })
