@@ -99,8 +99,10 @@ export class App extends React.Component<Props> {
                 reactLoadTime={this.reactLoadTime}
               >
                 <StatusBar
+                  // On Android a gray gradient is present when set to transparent
                   backgroundColor={this.isAndroid ? this.backgroundColor : 'transparent'}
                   barStyle={this.isDarkTheme ? 'light-content' : 'dark-content'}
+                  // On Android this causes content be shifted outside of the safe area
                   translucent={!this.isAndroid}
                 />
                 <ErrorBoundary>
