@@ -101,7 +101,7 @@ export class App extends React.Component<Props> {
                 <StatusBar
                   backgroundColor={this.isAndroid ? this.backgroundColor : 'transparent'}
                   barStyle={this.isDarkTheme ? 'light-content' : 'dark-content'}
-                  translucent={this.isAndroid ? false : true}
+                  translucent={!this.isAndroid}
                 />
                 <ErrorBoundary>
                   <GestureHandlerRootView style={{ flex: 1 }}>
