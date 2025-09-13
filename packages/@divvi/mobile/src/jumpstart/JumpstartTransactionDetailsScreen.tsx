@@ -197,10 +197,7 @@ function JumpstartTransactionDetailsScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.safeAreaContainer} edges={['top']}>
       <CustomHeader style={{ paddingHorizontal: variables.contentPadding }} left={<BackButton />} />
-      <TransactionDetails
-        title={title}
-        transaction={transaction}
-      >
+      <TransactionDetails title={title} transaction={transaction}>
         <View style={styles.amountContainer}>
           <View style={styles.amountTextContainer}>
             <View style={styles.amountRow}>

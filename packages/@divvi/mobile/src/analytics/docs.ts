@@ -32,7 +32,7 @@ import {
   TransactionDetailsEvents,
   TransactionEvents,
   WalletConnectEvents,
-  WebViewEvents
+  WebViewEvents,
 } from 'src/analytics/Events'
 
 /**
@@ -292,15 +292,22 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   [SendEvents.send_select_recipient_send_press]: `When the send button is pressed after selecting a recipient`,
   [SendEvents.send_select_recipient_invite_press]: `When the invite button is pressed after selecting a recipient`,
   [SendEvents.send_select_recipient_recent_press]: `When a recent recipient is pressed`,
-  [JumpstartEvents.jumpstart_reclaim_press]: 'When user taps on "Reclaim" button on the Jumpstart screen',
-  [JumpstartEvents.jumpstart_reclaim_start]: 'When user taps on "Confirm" button on the transaction confirmation bottom sheet to start sending the reclaim transaction to the network',
-  [JumpstartEvents.jumpstart_reclaim_failed]: 'When the reclaim transaction fails to send, or is reverted by the network',
-  [JumpstartEvents.jumpstart_reclaim_dismiss_error]: 'When user dismisses the error toast for when the reclaim transaction failed',
-  [JumpstartEvents.jumpstart_reclaim_succeeded]: 'When the reclaim transaction was successful on the network',
-  [JumpstartEvents.jumpstart_reclaim_contact_support]: 'When the user taps "contact support" from any of the error toasts',
-  [JumpstartEvents.jumpstart_claim_status_fetch_success]: 'When fetching whether a jumpstart link has been claimed is successful',
-  [JumpstartEvents.jumpstart_claim_status_fetch_error]: 'When fetching whether a jumpstart link has been claimed fails',
-
+  [JumpstartEvents.jumpstart_reclaim_press]:
+    'When user taps on "Reclaim" button on the Jumpstart screen',
+  [JumpstartEvents.jumpstart_reclaim_start]:
+    'When user taps on "Confirm" button on the transaction confirmation bottom sheet to start sending the reclaim transaction to the network',
+  [JumpstartEvents.jumpstart_reclaim_failed]:
+    'When the reclaim transaction fails to send, or is reverted by the network',
+  [JumpstartEvents.jumpstart_reclaim_dismiss_error]:
+    'When user dismisses the error toast for when the reclaim transaction failed',
+  [JumpstartEvents.jumpstart_reclaim_succeeded]:
+    'When the reclaim transaction was successful on the network',
+  [JumpstartEvents.jumpstart_reclaim_contact_support]:
+    'When the user taps "contact support" from any of the error toasts',
+  [JumpstartEvents.jumpstart_claim_status_fetch_success]:
+    'When fetching whether a jumpstart link has been claimed is successful',
+  [JumpstartEvents.jumpstart_claim_status_fetch_error]:
+    'When fetching whether a jumpstart link has been claimed fails',
 
   // Events for the QR screen redesign
   [QrScreenEvents.qr_screen_copy_address]: ``,

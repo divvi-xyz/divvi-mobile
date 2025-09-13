@@ -6,7 +6,7 @@ import {
   JumpstarReclaimAction,
   jumpstartReclaimFailed,
   jumpstartReclaimStarted,
-  jumpstartReclaimSucceeded
+  jumpstartReclaimSucceeded,
 } from 'src/jumpstart/slice'
 import { BaseStandbyTransaction } from 'src/transactions/slice'
 import { TokenTransactionTypeV2, newTransactionContext } from 'src/transactions/types'

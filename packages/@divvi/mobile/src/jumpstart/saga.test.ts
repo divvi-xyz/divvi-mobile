@@ -2,19 +2,15 @@ import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { JumpstartEvents } from 'src/analytics/Events'
-import {
-  jumpstartReclaim
-} from 'src/jumpstart/saga'
+import { jumpstartReclaim } from 'src/jumpstart/saga'
 import {
   jumpstartReclaimFailed,
   jumpstartReclaimStarted,
-  jumpstartReclaimSucceeded
+  jumpstartReclaimSucceeded,
 } from 'src/jumpstart/slice'
 import { Network, NetworkId } from 'src/transactions/types'
 import { publicClient } from 'src/viem'
-import {
-  getSerializablePreparedTransaction
-} from 'src/viem/preparedTransactionSerialization'
+import { getSerializablePreparedTransaction } from 'src/viem/preparedTransactionSerialization'
 import { sendPreparedTransactions } from 'src/viem/saga'
 import { createMockStore } from 'test/utils'
 import { TransactionReceipt } from 'viem'
