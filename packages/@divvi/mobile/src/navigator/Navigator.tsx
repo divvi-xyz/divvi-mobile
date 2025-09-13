@@ -61,7 +61,6 @@ import KycPending from 'src/fiatconnect/kyc/KycPending'
 import NotificationCenter from 'src/home/NotificationCenter'
 import { currentLanguageSelector } from 'src/i18n/selectors'
 import ImportWallet from 'src/import/ImportWallet'
-import Invite from 'src/invite/Invite'
 import JumpstartTransactionDetailsScreen from 'src/jumpstart/JumpstartTransactionDetailsScreen'
 import KeylessBackupIntro from 'src/keylessBackup/KeylessBackupIntro'
 import KeylessBackupPhoneCodeInput from 'src/keylessBackup/KeylessBackupPhoneCodeInput'
@@ -509,7 +508,6 @@ const generalScreens = (Navigator: typeof Stack) => (
       component={SettingsMenu}
       options={SettingsMenu.navigationOptions as NativeStackNavigationOptions}
     />
-    <Navigator.Screen name={Screens.Invite} component={Invite} options={noHeader} />
     <Navigator.Screen name={Screens.Support} component={Support} options={noHeader} />
   </>
 )

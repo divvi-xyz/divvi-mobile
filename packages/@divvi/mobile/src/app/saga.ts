@@ -6,14 +6,13 @@ import * as Keychain from 'react-native-keychain'
 import { findBestLanguageTag } from 'react-native-localize'
 import { eventChannel } from 'redux-saga'
 import AppAnalytics from 'src/analytics/AppAnalytics'
-import { AppEvents, InviteEvents } from 'src/analytics/Events'
+import { AppEvents } from 'src/analytics/Events'
 import { HooksEnablePreviewOrigin } from 'src/analytics/types'
 import {
   Actions,
   androidMobileServicesAvailabilityChecked,
   appLock,
   inAppReviewRequested,
-  inviteLinkConsumed,
   OpenDeepLink,
   openDeepLink,
   OpenUrlAction,
@@ -242,12 +241,6 @@ export function* handleDeepLink(action: OpenDeepLink) {
       // of our own notifications for security reasons.
       const params = convertQueryToScreenParams(rawParams.query)
       navigate(params.screen as keyof StackParamList, params)
-    } else if (pathParts.length === 3 && pathParts[1] === 'share') {
-      const inviterAddress = pathParts[2]
-      yield* put(inviteLinkConsumed(inviterAddress))
-      AppAnalytics.track(InviteEvents.opened_via_invite_url, {
-        inviterAddress,
-      })
     } else if (
       (yield* select(allowHooksPreviewSelector)) &&
       rawParams.pathname === '/hooks/enablePreview'

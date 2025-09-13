@@ -36,7 +36,6 @@ export enum Screens {
   GoldEducation = 'GoldEducation',
   ImportSelect = 'ImportSelect',
   ImportWallet = 'ImportWallet',
-  Invite = 'Invite',
   KeylessBackupPhoneInput = 'KeylessBackupPhoneInput',
   KeylessBackupPhoneCodeInput = 'KeylessBackupPhoneCodeInput',
   KeylessBackupProgress = 'KeylessBackupProgress',

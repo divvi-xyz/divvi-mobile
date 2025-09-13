@@ -194,7 +194,6 @@ export type StackParamList = {
         showZeroBalanceModal?: boolean
       }
     | undefined
-  [Screens.Invite]: undefined
   [Screens.EnableBiometry]: undefined
   [Screens.Language]:
     | {
