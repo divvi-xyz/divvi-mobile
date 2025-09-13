@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 import Celebration from 'src/icons/Celebration'
 import EarnCoins from 'src/icons/EarnCoins'
-import MagicWand from 'src/icons/MagicWand'
 import SwapArrows from 'src/icons/SwapArrows'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
@@ -46,26 +45,6 @@ export default function ActivityCardSection({ pointsActivities, onCardPress }: P
                 text: t('points.activityCards.swap.bottomSheet.cta'),
                 onPress: () => {
                   navigate(Screens.SwapScreenWithBack)
-                },
-              },
-            }),
-        }
-      case 'create-live-link':
-        return {
-          ...activity,
-          title: t('points.activityCards.createLiveLink.title'),
-          icon: <MagicWand color={Colors.contentPrimary} />,
-          onPress: () =>
-            onCardPress({
-              ...activity,
-              title: t('points.activityCards.createLiveLink.bottomSheet.title'),
-              body: t('points.activityCards.createLiveLink.bottomSheet.body', {
-                pointsValue: activity.pointsAmount,
-              }),
-              cta: {
-                text: t('points.activityCards.createLiveLink.bottomSheet.cta'),
-                onPress: () => {
-                  navigate(Screens.JumpstartEnterAmount)
                 },
               },
             }),

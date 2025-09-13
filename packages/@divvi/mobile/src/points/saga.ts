@@ -2,7 +2,6 @@ import { differenceInDays } from 'date-fns'
 import { isEqual } from 'lodash'
 import { depositSuccess } from 'src/earn/slice'
 import { Actions as HomeActions } from 'src/home/actions'
-import { depositTransactionSucceeded } from 'src/jumpstart/slice'
 import { retrieveSignedMessage } from 'src/pincode/authentication'
 import {
   nextPageUrlSelector,
@@ -318,21 +317,6 @@ export function* watchSwapSuccess() {
   yield* takeLeading(swapSuccess.type, safely(watchSwapSuccessTransformPayload))
 }
 
-export function* watchLiveLinkCreatedTransformPayload({
-  payload: params,
-}: ReturnType<typeof depositTransactionSucceeded>) {
-  yield* call(
-    sendPointsEvent,
-    trackPointsEvent({
-      ...params,
-      activityId: 'create-live-link',
-    })
-  )
-}
-export function* watchLiveLinkCreated() {
-  yield* takeLeading(depositTransactionSucceeded.type, safely(watchLiveLinkCreatedTransformPayload))
-}
-
 export function* watchDepositSuccessTransformPayload({
   payload: params,
 }: ReturnType<typeof depositSuccess>) {
@@ -389,7 +373,6 @@ export function* pointsSaga() {
   yield* spawn(watchGetConfig)
   yield* spawn(watchTrackPointsEvent)
   yield* spawn(watchHomeScreenVisit)
-  yield* spawn(watchLiveLinkCreated)
   yield* spawn(watchSwapSuccess)
   yield* spawn(watchDepositSuccess)
   yield* spawn(watchPointsDataRefreshStarted)

@@ -200,7 +200,6 @@ describe('SettingsMenu', () => {
       screen: Screens.QRCode,
       params: { showSecureSendStyling: true },
     })
-    expect(navigate).toHaveBeenNthCalledWith(3, Screens.Invite)
     expect(navigate).toHaveBeenNthCalledWith(4, Screens.Support)
     expect(navigate).toHaveBeenNthCalledWith(5, Screens.LegalSubmenu)
     expect(navigate).toHaveBeenNthCalledWith(6, Screens.WalletConnectSessions)

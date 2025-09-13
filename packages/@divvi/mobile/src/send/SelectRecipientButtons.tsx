@@ -9,20 +9,16 @@ import {
   request as requestPermission,
 } from 'react-native-permissions'
 import AppAnalytics from 'src/analytics/AppAnalytics'
-import { JumpstartEvents, SendEvents } from 'src/analytics/Events'
+import { SendEvents } from 'src/analytics/Events'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
 import { getAppConfig } from 'src/appConfig'
 import Dialog from 'src/components/Dialog'
 import SelectRecipientButton from 'src/components/SelectRecipientButton'
-import MagicWand from 'src/icons/MagicWand'
 import QRCode from 'src/icons/QRCode'
 import Social from 'src/icons/Social'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { useSelector } from 'src/redux/hooks'
-import { getFeatureGate } from 'src/statsig'
-import { StatsigFeatureGates } from 'src/statsig/types'
-import Colors from 'src/styles/colors'
 import Logger from 'src/utils/Logger'
 import { CONTACTS_PERMISSION } from 'src/utils/contacts'
 import { navigateToPhoneSettings } from 'src/utils/linking'
@@ -41,7 +37,6 @@ export default function SelectRecipientButtons({
   const phoneNumberVerificationEnabled = getAppConfig().experimental?.phoneNumberVerification
 
   const phoneNumberVerified = useSelector(phoneNumberVerifiedSelector)
-  const jumpstartSendEnabled = getFeatureGate(StatsigFeatureGates.SHOW_JUMPSTART_SEND)
 
   const [contactsPermissionStatus, setContactsPermissionStatus] = useState<
     PermissionStatus | undefined
@@ -156,23 +151,8 @@ export default function SelectRecipientButtons({
     setShowEnableContactsModal(false)
   }
 
-  const onPressJumpstart = () => {
-    AppAnalytics.track(JumpstartEvents.send_select_recipient_jumpstart)
-    navigate(Screens.JumpstartEnterAmount)
-  }
-
   return (
     <>
-      {jumpstartSendEnabled && (
-        <SelectRecipientButton
-          testID={'SelectRecipient/Jumpstart'}
-          title={t('sendSelectRecipient.jumpstart.title')}
-          subtitle={t('sendSelectRecipient.jumpstart.subtitle')}
-          onPress={onPressJumpstart}
-          icon={<MagicWand color={Colors.contentPrimary} />}
-          gradientBackground
-        />
-      )}
       <SelectRecipientButton
         testID={'SelectRecipient/QR'}
         title={t('sendSelectRecipient.qr.title')}
