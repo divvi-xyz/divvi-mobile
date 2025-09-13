@@ -34,7 +34,6 @@ import { activeDappSelector } from 'src/dapps/selectors'
 import { FiatExchangeFlow } from 'src/fiatExchanges/types'
 import { initI18n } from 'src/i18n'
 import { currentLanguageSelector, otaTranslationsAppVersionSelector } from 'src/i18n/selectors'
-import { jumpstartLinkHandler } from 'src/jumpstart/jumpstartLinkHandler'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { handleEnableHooksPreviewDeepLink } from 'src/positions/saga'
@@ -59,7 +58,6 @@ jest.mock('src/analytics/AppAnalytics')
 jest.mock('src/sentry/Sentry')
 jest.mock('src/sentry/SentryTransactionHub')
 jest.mock('src/statsig')
-jest.mock('src/jumpstart/jumpstartLinkHandler')
 jest.mock('src/positions/saga')
 jest.mock('react-native-in-app-review', () => ({
   RequestInAppReview: () => mockRequestInAppReview(),

@@ -200,7 +200,6 @@ function JumpstartTransactionDetailsScreen({ route }: Props) {
       <TransactionDetails
         title={title}
         transaction={transaction}
-        retryHandler={() => navigate(Screens.JumpstartEnterAmount)}
       >
         <View style={styles.amountContainer}>
           <View style={styles.amountTextContainer}>

@@ -4,7 +4,6 @@ import { createFiatConnectTransferCompleted } from 'src/fiatconnect/slice'
 import { notificationsChannel } from 'src/firebase/firebase'
 import { Actions, setLoading, updateNotifications } from 'src/home/actions'
 import { IdToNotification } from 'src/home/reducers'
-import { depositTransactionSucceeded } from 'src/jumpstart/slice'
 import { fetchLocalCurrencyRateSaga } from 'src/localCurrency/saga'
 import { fetchPositionsSaga, fetchShortcutsSaga } from 'src/positions/saga'
 import { executeShortcutSuccess } from 'src/positions/slice'
@@ -56,7 +55,6 @@ export function* watchRefreshBalances() {
       withdrawSuccess.type,
       SendActions.SEND_PAYMENT_SUCCESS,
       createFiatConnectTransferCompleted.type,
-      depositTransactionSucceeded.type,
       swapSuccess.type,
       Web3Actions.DEMO_MODE_TOGGLED,
     ],

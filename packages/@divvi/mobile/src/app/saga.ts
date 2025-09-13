@@ -33,7 +33,6 @@ import { DEFAULT_APP_LANGUAGE, DEFAULT_SENTRY_NETWORK_ERRORS, isE2EEnv } from 's
 import { FiatExchangeFlow } from 'src/fiatExchanges/types'
 import { initI18n } from 'src/i18n'
 import { currentLanguageSelector, otaTranslationsAppVersionSelector } from 'src/i18n/selectors'
-import { jumpstartClaim } from 'src/jumpstart/saga'
 import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
@@ -47,7 +46,6 @@ import { SentryTransaction } from 'src/sentry/SentryTransactions'
 import { getFeatureGate, patchUpdateStatsigUser, setupOverridesFromLaunchArgs } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import { swapSuccess } from 'src/swap/slice'
-import { NetworkId } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
 import { ensureError } from 'src/utils/ensureError'
 import { isDeepLink, navigateToURI } from 'src/utils/linking'
@@ -71,7 +69,6 @@ import {
   takeLatest,
 } from 'typed-redux-saga'
 import { parse } from 'url'
-import { Address, Hex } from 'viem'
 
 const TAG = 'app/saga'
 
@@ -206,7 +203,7 @@ export function* handleDeepLink(action: OpenDeepLink) {
     const pathParts = rawParams.path.split('/')
     const pathStartsWith = pathParts[1].split('?')[0]
     // Only log detailed paramters (fullPath and query) for allowed paths. This is a security precaution so we
-    // don't accidentally log sensitive information on new deeplinks. 'jumpstart' is specifically excluded
+    // don't accidentally log sensitive information on new deeplinks.
     const pathStartsWithAllowList = [
       'pay',
       'cashIn',
@@ -251,10 +248,6 @@ export function* handleDeepLink(action: OpenDeepLink) {
       AppAnalytics.track(InviteEvents.opened_via_invite_url, {
         inviterAddress,
       })
-    } else if (pathParts.length === 4 && pathParts[1] === 'jumpstart') {
-      const privateKey = pathParts[2] as Hex
-      const networkId = pathParts[3] as NetworkId
-      yield* call(jumpstartClaim, privateKey, networkId, walletAddress as Address)
     } else if (
       (yield* select(allowHooksPreviewSelector)) &&
       rawParams.pathname === '/hooks/enablePreview'
