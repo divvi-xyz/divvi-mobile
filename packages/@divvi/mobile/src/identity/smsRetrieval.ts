@@ -44,7 +44,7 @@ export function addSmsListener(onSmsRetrieved: (message: SmsEvent) => void) {
       const event: SmsEvent = { message }
       onSmsRetrieved(event)
     })
-    
+
     // Store subscription for cleanup if needed
     return subscription
   } catch (error) {
