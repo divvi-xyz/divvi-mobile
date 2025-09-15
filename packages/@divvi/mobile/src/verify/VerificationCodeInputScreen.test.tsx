@@ -3,10 +3,10 @@ import { FetchMock } from 'jest-fetch-mock/types'
 import MockDate from 'mockdate'
 import React from 'react'
 import * as Keychain from 'react-native-keychain'
-import SmsRetriever from 'react-native-sms-retriever'
 import { Provider } from 'react-redux'
 import { showError } from 'src/alert/actions'
 import { ErrorMessages } from 'src/app/ErrorMessages'
+import { addSmsListener, startSmsRetriever } from 'src/identity/smsRetrieval'
 import { navigate, navigateInitialTab, popToScreen } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { goToNextOnboardingScreen } from 'src/onboarding/steps'
@@ -33,7 +33,8 @@ mockedKeychain.getGenericPassword.mockResolvedValue({
   storage: Keychain.STORAGE_TYPE.RSA,
 })
 
-const mockedSmsRetriever = jest.mocked(SmsRetriever)
+const mockedStartSmsRetriever = jest.mocked(startSmsRetriever)
+const mockedAddSmsListener = jest.mocked(addSmsListener)
 
 const e164Number = '+31619123456'
 const store = createMockStore({
@@ -274,10 +275,10 @@ describe('VerificationCodeInputScreen', () => {
     const { getByTestId, getByText } = renderComponent()
 
     // Check that the SmsRetriever is started
-    await waitFor(() => expect(mockedSmsRetriever.startSmsRetriever).toHaveBeenCalledTimes(1))
-    expect(mockedSmsRetriever.addSmsListener).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(mockedStartSmsRetriever).toHaveBeenCalledTimes(1))
+    expect(mockedAddSmsListener).toHaveBeenCalledTimes(1)
 
-    const smsListener = mockedSmsRetriever.addSmsListener.mock.calls[0][0]
+    const smsListener = mockedAddSmsListener.mock.calls[0][0]
 
     await act(() => {
       // Simulate the SMS code being received

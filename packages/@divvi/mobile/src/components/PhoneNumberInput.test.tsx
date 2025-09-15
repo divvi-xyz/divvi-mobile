@@ -1,17 +1,17 @@
 import { act, fireEvent, render } from '@testing-library/react-native'
 import * as React from 'react'
 import { Platform } from 'react-native'
-import SmsRetriever from 'react-native-sms-retriever'
+import { requestHint } from 'react-native-otp-verify'
 import PhoneNumberInput from 'src/components/PhoneNumberInput'
 import { Countries } from 'src/utils/Countries'
 
-jest.mock('react-native-sms-retriever', () => {
+jest.mock('react-native-otp-verify', () => {
   return {
-    requestPhoneNumber: jest.fn(() => '+49030111111'),
+    requestHint: jest.fn(() => '+49030111111'),
   }
 })
 
-const requestPhoneNumber = jest.mocked(SmsRetriever.requestPhoneNumber)
+const mockRequestHint = jest.mocked(requestHint)
 
 const countries = new Countries('en-us')
 
@@ -119,7 +119,7 @@ describe('PhoneNumberInput', () => {
       />
     )
 
-    requestPhoneNumber.mockResolvedValue('+1 416-868-0000')
+    mockRequestHint.mockResolvedValue('+1 416-868-0000')
 
     await act(() => {
       fireEvent(getByTestId('PhoneNumberField'), 'focus')
@@ -139,7 +139,7 @@ describe('PhoneNumberInput', () => {
       />
     )
 
-    requestPhoneNumber.mockResolvedValue('+1 415-426-5200')
+    mockRequestHint.mockResolvedValue('+1 415-426-5200')
 
     await act(() => {
       fireEvent(getByTestId('PhoneNumberField'), 'focus')

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { Platform, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
-import SmsRetriever from 'react-native-sms-retriever'
+import { requestHint } from 'react-native-otp-verify'
 import Expandable from 'src/components/Expandable'
 import FormField from 'src/components/FormField'
 import FormTextInput from 'src/components/FormTextInput'
@@ -18,7 +18,7 @@ async function requestPhoneNumber() {
   let phoneNumber
   try {
     if (Platform.OS === 'android') {
-      phoneNumber = await SmsRetriever.requestPhoneNumber()
+      phoneNumber = await requestHint()
     } else {
       // eslint-disable-next-line no-console
       console.info(`${TAG}/requestPhoneNumber`, 'Not implemented in this platform')

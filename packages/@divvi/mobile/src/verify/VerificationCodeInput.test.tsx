@@ -1,14 +1,15 @@
 import Clipboard from '@react-native-clipboard/clipboard'
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native'
 import React from 'react'
-import SmsRetriever from 'react-native-sms-retriever'
+import { addSmsListener, startSmsRetriever } from 'src/identity/smsRetrieval'
 import { PhoneNumberVerificationStatus } from 'src/verify/hooks'
 import VerificationCodeInputWrapper from 'src/verify/VerificationCodeInput'
 
-const mockedSmsRetriever = jest.mocked(SmsRetriever)
-
 jest.mock('@react-native-clipboard/clipboard')
 jest.mock('src/utils/IosVersionUtils')
+
+const mockStartSmsRetriever = jest.mocked(startSmsRetriever)
+const mockAddSmsListener = jest.mocked(addSmsListener)
 
 describe('VerificationCodeInputWrapper', () => {
   const mockOnSuccess = jest.fn()
@@ -93,10 +94,10 @@ describe('VerificationCodeInputWrapper', () => {
       getByText(`phoneVerificationInput.description, {"phoneNumber":"${mockPhoneNumber}"}`)
     ).toBeTruthy()
 
-    await waitFor(() => expect(mockedSmsRetriever.startSmsRetriever).toHaveBeenCalledTimes(1))
-    expect(mockedSmsRetriever.addSmsListener).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(mockStartSmsRetriever).toHaveBeenCalledTimes(1))
+    expect(mockAddSmsListener).toHaveBeenCalledTimes(1)
 
-    const smsListener = mockedSmsRetriever.addSmsListener.mock.calls[0][0]
+    const smsListener = mockAddSmsListener.mock.calls[0][0]
 
     await act(() => {
       // Simulate the SMS code being received
