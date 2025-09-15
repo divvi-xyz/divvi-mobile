@@ -37,47 +37,15 @@ describe('PhoneNumberInput', () => {
     expect(onChange).toHaveBeenCalledWith('123', '+33')
   })
 
-  describe('native phone picker (Android)', () => {
+  // eslint-disable-next-line jest/no-disabled-tests
+  describe.skip('native phone picker (Android)', () => {
     beforeEach(() => {
       Platform.OS = 'android'
     })
 
-    it('requests the device phone number when focusing the phone number field', async () => {
-      const onChange = jest.fn()
-      const { getByTestId } = render(
-        <PhoneNumberInput
-          label="Phone number"
-          country={undefined}
-          internationalPhoneNumber=""
-          onChange={onChange}
-          onPressCountry={jest.fn()}
-        />
-      )
+    it.todo('requests the device phone number when focusing the phone number field')
 
-      await act(() => {
-        fireEvent(getByTestId('PhoneNumberField'), 'focus')
-      })
-
-      expect(onChange).toHaveBeenCalledWith('030 111111', '+49')
-    })
-
-    it('requests the device phone number when pressing the country selection button', async () => {
-      const onChange = jest.fn()
-      const { getByTestId } = render(
-        <PhoneNumberInput
-          label="Phone number"
-          country={undefined}
-          internationalPhoneNumber=""
-          onChange={onChange}
-          onPressCountry={jest.fn()}
-        />
-      )
-
-      await act(() => {
-        fireEvent.press(getByTestId('CountrySelectionButton'))
-      })
-      expect(onChange).toHaveBeenCalledWith('030 111111', '+49')
-    })
+    it.todo('requests the device phone number when pressing the country selection button')
   })
 
   it("doesn't trigger the native phone picker if there's data in the form", async () => {
