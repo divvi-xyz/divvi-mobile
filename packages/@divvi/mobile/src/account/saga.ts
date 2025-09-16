@@ -14,7 +14,6 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { OnboardingEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { phoneNumberVerificationCompleted } from 'src/app/actions'
-import { inviterAddressSelector } from 'src/app/selectors'
 import { clearStoredMnemonic } from 'src/backup/utils'
 import { FIREBASE_ENABLED } from 'src/config'
 import { firebaseSignOut } from 'src/firebase/firebase'
@@ -87,10 +86,7 @@ export function* initializeAccountSaga() {
 
     Logger.debug(TAG + '@initializeAccountSaga', 'Account creation success')
     yield* put(initializeAccountSuccess())
-    const inviterAddress = yield* select(inviterAddressSelector)
-    AppAnalytics.track(OnboardingEvents.initialize_account_complete, {
-      inviterAddress,
-    })
+    AppAnalytics.track(OnboardingEvents.initialize_account_complete)
   } catch (err) {
     const error = ensureError(err)
     Logger.error(TAG, 'Failed to initialize account', error)

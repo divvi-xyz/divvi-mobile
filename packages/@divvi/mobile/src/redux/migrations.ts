@@ -2060,5 +2060,6 @@ export const migrations = {
   252: (state: any) => ({
     ...state,
     jumpstart: _.pick(state.jumpstart, 'reclaimStatus'),
+    app: _.omit(state.app, 'inviterAddress'),
   }),
 }

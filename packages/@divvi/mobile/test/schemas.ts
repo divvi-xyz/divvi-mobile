@@ -3741,6 +3741,7 @@ export const v252Schema = {
     version: 252,
   },
   jumpstart: _.pick(v251Schema.jumpstart, 'reclaimStatus'),
+  app: _.omit(v251Schema.app, 'inviterAddress'),
 }
 
 export function getLatestSchema(): Partial<RootState> {

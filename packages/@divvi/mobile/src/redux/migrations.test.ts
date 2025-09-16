@@ -1919,6 +1919,7 @@ describe('Redux persist migrations', () => {
     const migratedSchema = migrations[252](oldSchema)
     const expectedSchema: any = _.cloneDeep(oldSchema)
     expectedSchema.jumpstart = _.pick(oldSchema.jumpstart, 'reclaimStatus')
+    expectedSchema.app = _.omit(oldSchema.app, 'inviterAddress')
     expect(migratedSchema).toStrictEqual(expectedSchema)
   })
 })

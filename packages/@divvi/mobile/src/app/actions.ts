@@ -115,11 +115,6 @@ export interface PhoneNumberRevoked {
   e164PhoneNumber: string
 }
 
-interface InviteLinkConsumed {
-  type: Actions.INVITE_LINK_CONSUMED
-  inviterAddress: string
-}
-
 interface HapticFeedbackSet {
   type: Actions.HAPTIC_FEEDBACK_SET
   hapticFeedbackEnabled: boolean
@@ -160,7 +155,6 @@ export type ActionTypes =
   | AndroidMobileServicesAvailabilityChecked
   | PhoneNumberVerificationCompleted
   | PhoneNumberRevoked
-  | InviteLinkConsumed
   | HapticFeedbackSet
   | PushNotificationsPermissionChanged
   | inAppReviewRequested
@@ -265,13 +259,6 @@ export const phoneNumberRevoked = (e164PhoneNumber: string): PhoneNumberRevoked 
   return {
     type: Actions.PHONE_NUMBER_REVOKED,
     e164PhoneNumber,
-  }
-}
-
-export const inviteLinkConsumed = (inviterAddress: string): InviteLinkConsumed => {
-  return {
-    type: Actions.INVITE_LINK_CONSUMED,
-    inviterAddress,
   }
 }
 

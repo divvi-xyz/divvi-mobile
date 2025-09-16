@@ -37,9 +37,6 @@ const store = createMockStore({
   web3: {
     account: '0xabc',
   },
-  app: {
-    inviterAddress: '0xabc',
-  },
 })
 
 const renderComponent = ({
@@ -89,7 +86,7 @@ describe('VerificationCodeInputScreen', () => {
         'Content-Type': 'application/json',
         authorization: `${networkConfig.authHeaderIssuer} 0xabc:someSignedMessage`,
       },
-      body: '{"phoneNumber":"+31619123456","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug","inviterAddress":"0xabc"}',
+      body: '{"phoneNumber":"+31619123456","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug"}',
     })
   })
 
@@ -276,7 +273,7 @@ describe('VerificationCodeInputScreen', () => {
         'Content-Type': 'application/json',
         authorization: `${networkConfig.authHeaderIssuer} 0xabc:someSignedMessage`,
       },
-      body: '{"phoneNumber":"+31619123456","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug","inviterAddress":"0xabc"}',
+      body: '{"phoneNumber":"+31619123456","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug"}',
     })
 
     await act(() => {
@@ -345,7 +342,7 @@ describe('VerificationCodeInputScreen', () => {
         'Content-Type': 'application/json',
         authorization: `${networkConfig.authHeaderIssuer} 0xabc:someSignedMessage`,
       },
-      body: `{"phoneNumber":"${e164Number}","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug","inviterAddress":"0xabc"}`,
+      body: `{"phoneNumber":"${e164Number}","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug"}`,
     })
     expect(getByTestId('PhoneVerificationResendSmsBtn')).toBeDisabled()
   })

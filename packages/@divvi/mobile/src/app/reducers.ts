@@ -24,7 +24,6 @@ interface State {
   googleMobileServicesAvailable?: boolean
   huaweiMobileServicesAvailable?: boolean
   supportedBiometryType: BIOMETRY_TYPE | null
-  inviterAddress: string | null
   hapticFeedbackEnabled: boolean
   pushNotificationRequestedUnixTime: number | null
   pushNotificationsEnabled: boolean
@@ -51,7 +50,6 @@ const initialState = {
   googleMobileServicesAvailable: undefined,
   huaweiMobileServicesAvailable: undefined,
   supportedBiometryType: null,
-  inviterAddress: null,
   hapticFeedbackEnabled: true,
   pushNotificationRequestedUnixTime: null,
   pushNotificationsEnabled: false,
@@ -156,11 +154,6 @@ export const appReducer = (
       return {
         ...state,
         phoneNumberVerified: false,
-      }
-    case Actions.INVITE_LINK_CONSUMED:
-      return {
-        ...state,
-        inviterAddress: action.inviterAddress,
       }
     case Actions.HAPTIC_FEEDBACK_SET:
       return {

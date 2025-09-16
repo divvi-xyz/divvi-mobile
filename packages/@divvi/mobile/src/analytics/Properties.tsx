@@ -391,9 +391,7 @@ interface OnboardingEventsProperties {
   [OnboardingEvents.wallet_import_success]: undefined
 
   [OnboardingEvents.initialize_account_start]: undefined
-  [OnboardingEvents.initialize_account_complete]: {
-    inviterAddress: string | null
-  }
+  [OnboardingEvents.initialize_account_complete]: undefined
   [OnboardingEvents.initialize_account_error]: {
     error: string
   }
@@ -425,7 +423,6 @@ interface PhoneVerificationEventsProperties {
   [PhoneVerificationEvents.phone_verification_code_verify_start]: undefined
   [PhoneVerificationEvents.phone_verification_code_verify_success]: {
     phoneNumberHash: string
-    inviterAddress: string | null
   }
   [PhoneVerificationEvents.phone_verification_restore_success]: undefined
   [PhoneVerificationEvents.phone_verification_code_verify_error]: undefined

@@ -184,7 +184,6 @@ describe('store state', () => {
           "hideBalances": false,
           "huaweiMobileServicesAvailable": undefined,
           "inAppReviewLastInteractionTimestamp": null,
-          "inviterAddress": null,
           "lastTimeBackgrounded": 0,
           "locked": false,
           "pendingDeepLinks": [],
