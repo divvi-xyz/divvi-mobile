@@ -776,7 +776,6 @@
         },
         "ClaimActivityId": {
             "enum": [
-                "create-live-link",
                 "create-wallet",
                 "deposit-earn",
                 "swap"
@@ -790,12 +789,6 @@
                 },
                 {
                     "$ref": "#/definitions/SwapClaimHistory"
-                },
-                {
-                    "$ref": "#/definitions/Erc20CreateLiveLinkClaimHistory"
-                },
-                {
-                    "$ref": "#/definitions/Erc721CreateLiveLinkClaimHistory"
                 },
                 {
                     "$ref": "#/definitions/DepositEarnClaimHistory"
@@ -1567,80 +1560,6 @@
             ],
             "type": "object"
         },
-        "Erc20CreateLiveLinkClaimHistory": {
-            "additionalProperties": false,
-            "properties": {
-                "activityId": {
-                    "const": "create-live-link",
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "metadata": {
-                    "additionalProperties": false,
-                    "properties": {
-                        "liveLinkType": {
-                            "const": "erc20",
-                            "type": "string"
-                        },
-                        "tokenId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "liveLinkType",
-                        "tokenId"
-                    ],
-                    "type": "object"
-                },
-                "pointsAmount": {
-                    "type": "number"
-                }
-            },
-            "required": [
-                "activityId",
-                "createdAt",
-                "metadata",
-                "pointsAmount"
-            ],
-            "type": "object"
-        },
-        "Erc721CreateLiveLinkClaimHistory": {
-            "additionalProperties": false,
-            "properties": {
-                "activityId": {
-                    "const": "create-live-link",
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "metadata": {
-                    "additionalProperties": false,
-                    "properties": {
-                        "liveLinkType": {
-                            "const": "erc721",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "liveLinkType"
-                    ],
-                    "type": "object"
-                },
-                "pointsAmount": {
-                    "type": "number"
-                }
-            },
-            "required": [
-                "activityId",
-                "createdAt",
-                "metadata",
-                "pointsAmount"
-            ],
-            "type": "object"
-        },
         "ErrorDisplayType": {
             "enum": [
                 0,
@@ -2025,13 +1944,6 @@
             "enum": [
                 "PersonalDataAndDocuments",
                 "PersonalDataAndDocumentsDetailed"
-            ],
-            "type": "string"
-        },
-        "LiveLinkType": {
-            "enum": [
-                "erc20",
-                "erc721"
             ],
             "type": "string"
         },
@@ -3127,12 +3039,6 @@
                     "$ref": "#/definitions/PointsEventSwap"
                 },
                 {
-                    "$ref": "#/definitions/PointsEventErc20CreateLiveLink"
-                },
-                {
-                    "$ref": "#/definitions/PointsEventErc721CreateLiveLink"
-                },
-                {
                     "$ref": "#/definitions/PointsEventDepositEarn"
                 }
             ]
@@ -3174,97 +3080,6 @@
                 "activityId",
                 "networkId",
                 "tokenId",
-                "transactionHash"
-            ],
-            "type": "object"
-        },
-        "PointsEventErc20CreateLiveLink": {
-            "additionalProperties": false,
-            "properties": {
-                "activityId": {
-                    "const": "create-live-link",
-                    "type": "string"
-                },
-                "amount": {
-                    "type": "string"
-                },
-                "beneficiaryAddress": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "liveLinkType": {
-                    "const": "erc20",
-                    "type": "string"
-                },
-                "networkId": {
-                    "$ref": "#/definitions/NetworkId"
-                },
-                "tokenId": {
-                    "type": "string"
-                },
-                "transactionHash": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                }
-            },
-            "required": [
-                "activityId",
-                "amount",
-                "beneficiaryAddress",
-                "liveLinkType",
-                "networkId",
-                "tokenId",
-                "transactionHash"
-            ],
-            "type": "object"
-        },
-        "PointsEventErc721CreateLiveLink": {
-            "additionalProperties": false,
-            "properties": {
-                "activityId": {
-                    "const": "create-live-link",
-                    "type": "string"
-                },
-                "beneficiaryAddress": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "erc721TokenId": {
-                    "type": "string"
-                },
-                "liveLinkType": {
-                    "const": "erc721",
-                    "type": "string"
-                },
-                "networkId": {
-                    "$ref": "#/definitions/NetworkId"
-                },
-                "tokenAddress": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "transactionHash": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                }
-            },
-            "required": [
-                "activityId",
-                "beneficiaryAddress",
-                "erc721TokenId",
-                "liveLinkType",
-                "networkId",
-                "tokenAddress",
                 "transactionHash"
             ],
             "type": "object"
@@ -3652,10 +3467,6 @@
                 "GoldEducation",
                 "ImportSelect",
                 "ImportWallet",
-                "Invite",
-                "JumpstartEnterAmount",
-                "JumpstartSendConfirmation",
-                "JumpstartShareLink",
                 "JumpstartTransactionDetailsScreen",
                 "KeylessBackupIntro",
                 "KeylessBackupPhoneCodeInput",
@@ -5433,27 +5244,6 @@
         "State_23": {
             "additionalProperties": false,
             "properties": {
-                "claimStatus": {
-                    "enum": [
-                        "error",
-                        "errorAlreadyClaimed",
-                        "idle",
-                        "loading"
-                    ],
-                    "type": "string"
-                },
-                "depositStatus": {
-                    "enum": [
-                        "error",
-                        "idle",
-                        "loading",
-                        "success"
-                    ],
-                    "type": "string"
-                },
-                "introHasBeenSeen": {
-                    "type": "boolean"
-                },
                 "reclaimStatus": {
                     "enum": [
                         "error",
@@ -5465,9 +5255,6 @@
                 }
             },
             "required": [
-                "claimStatus",
-                "depositStatus",
-                "introHasBeenSeen",
                 "reclaimStatus"
             ],
             "type": "object"
@@ -5515,7 +5302,7 @@
                     "additionalProperties": false,
                     "properties": {
                         "activitiesById": {
-                            "$ref": "#/definitions/{swap?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;\"create-wallet\"?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;\"create-live-link\"?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;\"deposit-earn\"?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;}"
+                            "$ref": "#/definitions/{swap?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;\"create-wallet\"?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;\"deposit-earn\"?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;}"
                         }
                     },
                     "required": [
@@ -5539,7 +5326,7 @@
                     "type": "array"
                 },
                 "trackOnceActivities": {
-                    "$ref": "#/definitions/{swap?:boolean|undefined;\"create-wallet\"?:boolean|undefined;\"create-live-link\"?:boolean|undefined;\"deposit-earn\"?:boolean|undefined;}"
+                    "$ref": "#/definitions/{swap?:boolean|undefined;\"create-wallet\"?:boolean|undefined;\"deposit-earn\"?:boolean|undefined;}"
                 }
             },
             "required": [
@@ -5876,10 +5663,6 @@
                         "GoldEducation",
                         "ImportSelect",
                         "ImportWallet",
-                        "Invite",
-                        "JumpstartEnterAmount",
-                        "JumpstartSendConfirmation",
-                        "JumpstartShareLink",
                         "JumpstartTransactionDetailsScreen",
                         "KeylessBackupIntro",
                         "KeylessBackupPhoneCodeInput",
@@ -6682,12 +6465,9 @@
             ],
             "type": "object"
         },
-        "{swap?:boolean|undefined;\"create-wallet\"?:boolean|undefined;\"create-live-link\"?:boolean|undefined;\"deposit-earn\"?:boolean|undefined;}": {
+        "{swap?:boolean|undefined;\"create-wallet\"?:boolean|undefined;\"deposit-earn\"?:boolean|undefined;}": {
             "additionalProperties": false,
             "properties": {
-                "create-live-link": {
-                    "type": "boolean"
-                },
                 "create-wallet": {
                     "type": "boolean"
                 },
@@ -6700,24 +6480,9 @@
             },
             "type": "object"
         },
-        "{swap?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;\"create-wallet\"?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;\"create-live-link\"?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;\"deposit-earn\"?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;}": {
+        "{swap?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;\"create-wallet\"?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;\"deposit-earn\"?:{pointsAmount:number;previousPointsAmount?:number|undefined;}|undefined;}": {
             "additionalProperties": false,
             "properties": {
-                "create-live-link": {
-                    "additionalProperties": false,
-                    "properties": {
-                        "pointsAmount": {
-                            "type": "number"
-                        },
-                        "previousPointsAmount": {
-                            "type": "number"
-                        }
-                    },
-                    "required": [
-                        "pointsAmount"
-                    ],
-                    "type": "object"
-                },
                 "create-wallet": {
                     "additionalProperties": false,
                     "properties": {

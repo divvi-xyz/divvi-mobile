@@ -143,7 +143,7 @@ describe('store state', () => {
       {
         "_persist": {
           "rehydrated": true,
-          "version": 251,
+          "version": 252,
         },
         "account": {
           "acceptedTerms": false,
@@ -262,9 +262,6 @@ describe('store state', () => {
           "isImportingWallet": false,
         },
         "jumpstart": {
-          "claimStatus": "idle",
-          "depositStatus": "idle",
-          "introHasBeenSeen": false,
           "reclaimStatus": "idle",
         },
         "keylessBackup": {

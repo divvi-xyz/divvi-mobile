@@ -11,7 +11,6 @@ import { AddressValidationType } from 'src/identity/reducer'
 import { RecipientVerificationStatus } from 'src/identity/types'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
-import { PublicAppConfig } from 'src/public'
 import { RecipientType, getRecipientVerificationStatus } from 'src/recipients/recipient'
 import SendSelectRecipient from 'src/send/SendSelectRecipient'
 import { getDynamicConfigParams } from 'src/statsig'
@@ -283,44 +282,7 @@ describe('SendSelectRecipient', () => {
       origin: SendOrigin.AppSendFlow,
     })
   })
-  it('navigates to invite modal when search result next button is pressed and the feature is enabled', async () => {
-    jest.mocked(getAppConfig).mockReturnValue({
-      experimental: {
-        inviteFriends: true,
-      },
-    } as PublicAppConfig)
-    jest
-      .mocked(getRecipientVerificationStatus)
-      .mockReturnValue(RecipientVerificationStatus.UNVERIFIED)
 
-    const store = createMockStore(storeWithPhoneVerified)
-
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <SendSelectRecipient {...mockScreenProps({})} />
-      </Provider>
-    )
-    const searchInput = getByTestId('SendSelectRecipientSearchInput')
-
-    await act(() => {
-      fireEvent.changeText(searchInput, 'George Bogart')
-    })
-    await act(() => {
-      fireEvent.press(getByTestId('RecipientItem'))
-    })
-
-    expect(getByTestId('SendOrInviteButton')).toBeTruthy()
-    expect(getByTestId('SendOrInviteButton')).toHaveTextContent(
-      'sendSelectRecipient.buttons.invite',
-      { exact: false }
-    )
-
-    await act(() => {
-      fireEvent.press(getByTestId('SendOrInviteButton'))
-    })
-
-    expect(getByTestId('InviteModalContainer')).toBeTruthy()
-  })
   it('does not show unknown address info text when searching for known app address', async () => {
     jest
       .mocked(getRecipientVerificationStatus)
@@ -512,63 +474,6 @@ describe('SendSelectRecipient', () => {
     await expect(pasteButtonAfterPress).rejects.toThrow()
   })
 
-  describe('Invite Rewards', () => {
-    it('shows invite rewards card when invite rewards are active and number is verified', async () => {
-      jest.mocked(getDynamicConfigParams).mockImplementation(({ configName }) => {
-        if (configName === StatsigDynamicConfigs.INVITE_REWARDS_CONFIG) {
-          return { inviteRewardsVersion: 'v5' }
-        }
-        return {} as any
-      })
-      const store = createMockStore(storeWithPhoneVerified)
-
-      const { findByTestId } = render(
-        <Provider store={store}>
-          <SendSelectRecipient {...mockScreenProps({})} />
-        </Provider>
-      )
-
-      const inviteRewardsCard = await findByTestId('InviteRewardsCard')
-      expect(inviteRewardsCard).toHaveTextContent('inviteRewardsBannerCUSD.title', { exact: false })
-      expect(inviteRewardsCard).toHaveTextContent('inviteRewardsBannerCUSD.body', { exact: false })
-    })
-
-    it('does not show invite rewards card when invite rewards are not active', async () => {
-      jest.mocked(getDynamicConfigParams).mockImplementation(({ configName }) => {
-        if (configName === StatsigDynamicConfigs.INVITE_REWARDS_CONFIG) {
-          return { inviteRewardsVersion: 'none' }
-        }
-        return {} as any
-      })
-      const store = createMockStore(storeWithPhoneVerified)
-
-      const { queryByTestId } = render(
-        <Provider store={store}>
-          <SendSelectRecipient {...mockScreenProps({})} />
-        </Provider>
-      )
-
-      expect(queryByTestId('InviteRewardsCard')).toBeFalsy()
-    })
-
-    it('does not show invite rewards card when invite rewards are active and number is not verified', async () => {
-      jest.mocked(getDynamicConfigParams).mockImplementation(({ configName }) => {
-        if (configName === StatsigDynamicConfigs.INVITE_REWARDS_CONFIG) {
-          return { inviteRewardsVersion: 'v5' }
-        }
-        return {} as any
-      })
-      const store = createMockStore(defaultStore)
-
-      const { queryByTestId } = render(
-        <Provider store={store}>
-          <SendSelectRecipient {...mockScreenProps({})} />
-        </Provider>
-      )
-
-      expect(queryByTestId('InviteRewardsCard')).toBeFalsy()
-    })
-  })
   it('navigates to send amount when phone number recipient with single address', async () => {
     jest
       .mocked(getRecipientVerificationStatus)

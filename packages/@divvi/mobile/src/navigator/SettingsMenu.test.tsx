@@ -75,7 +75,6 @@ describe('SettingsMenu', () => {
     )
     expect(getByTestId('SettingsMenu/Profile/Username')).toBeTruthy()
     expect(getByTestId('SettingsMenu/Address')).toBeTruthy()
-    expect(getByTestId('SettingsMenu/Invite')).toBeTruthy()
     expect(getByTestId('SettingsMenu/Preferences')).toBeTruthy()
     expect(getByTestId('SettingsMenu/Security')).toBeTruthy()
     expect(getByTestId('SettingsMenu/ConnectedDapps')).toBeTruthy()
@@ -186,25 +185,24 @@ describe('SettingsMenu', () => {
 
     fireEvent.press(getByTestId('SettingsMenu/Profile'))
     fireEvent.press(getByTestId('SettingsMenu/Address'))
-    fireEvent.press(getByTestId('SettingsMenu/Invite'))
     fireEvent.press(getByTestId('SettingsMenu/Help'))
     fireEvent.press(getByTestId('SettingsMenu/Legal'))
     fireEvent.press(getByTestId('SettingsMenu/ConnectedDapps'))
     fireEvent.press(getByTestId('SettingsMenu/Preferences'))
     fireEvent.press(getByTestId('SettingsMenu/Security'))
 
-    expect(navigate).toHaveBeenCalledTimes(8)
+    expect(navigate).toHaveBeenCalledTimes(7)
 
     expect(navigate).toHaveBeenNthCalledWith(1, Screens.Profile)
     expect(navigate).toHaveBeenNthCalledWith(2, Screens.QRNavigator, {
       screen: Screens.QRCode,
       params: { showSecureSendStyling: true },
     })
-    expect(navigate).toHaveBeenNthCalledWith(4, Screens.Support)
-    expect(navigate).toHaveBeenNthCalledWith(5, Screens.LegalSubmenu)
-    expect(navigate).toHaveBeenNthCalledWith(6, Screens.WalletConnectSessions)
-    expect(navigate).toHaveBeenNthCalledWith(7, Screens.PreferencesSubmenu)
-    expect(navigate).toHaveBeenNthCalledWith(8, Screens.SecuritySubmenu)
+    expect(navigate).toHaveBeenNthCalledWith(3, Screens.Support)
+    expect(navigate).toHaveBeenNthCalledWith(4, Screens.LegalSubmenu)
+    expect(navigate).toHaveBeenNthCalledWith(5, Screens.WalletConnectSessions)
+    expect(navigate).toHaveBeenNthCalledWith(6, Screens.PreferencesSubmenu)
+    expect(navigate).toHaveBeenNthCalledWith(7, Screens.SecuritySubmenu)
   })
 
   it('navigates to the profile submenu if phone number verification is enabled', () => {

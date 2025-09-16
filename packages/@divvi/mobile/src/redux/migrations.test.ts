@@ -65,6 +65,7 @@ import {
   v230Schema,
   v233Schema,
   v235Schema,
+  v251Schema,
   v28Schema,
   v2Schema,
   v35Schema,
@@ -1908,6 +1909,16 @@ describe('Redux persist migrations', () => {
     expectedSchema.account.onboardingCompleted = true
     expectedSchema.account.lastOnboardingStepScreen = Screens.TabNavigator
     expectedSchema.identity = _.omit(oldSchema.identity, 'hasSeenVerificationNux')
+    expect(migratedSchema).toStrictEqual(expectedSchema)
+  })
+
+  it('works from 251 to 252', () => {
+    const oldSchema = {
+      ...v251Schema,
+    }
+    const migratedSchema = migrations[252](oldSchema)
+    const expectedSchema: any = _.cloneDeep(oldSchema)
+    expectedSchema.jumpstart = _.pick(oldSchema.jumpstart, 'reclaimStatus')
     expect(migratedSchema).toStrictEqual(expectedSchema)
   })
 })

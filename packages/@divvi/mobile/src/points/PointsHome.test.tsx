@@ -151,7 +151,6 @@ describe(PointsHome, () => {
 
     expect(getByText('points.activityCards.createWallet.title')).toBeTruthy()
     expect(getByText('points.activityCards.swap.title')).toBeTruthy()
-    expect(getByText('points.activityCards.createLiveLink.title')).toBeTruthy()
     expect(getByText('points.activityCards.depositEarn.title')).toBeTruthy()
 
     expect(getByText('points.activityCards.moreComing.title')).toBeTruthy()
