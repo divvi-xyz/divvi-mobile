@@ -1,6 +1,9 @@
 import type { JSX } from 'react'
 import { ColorValue } from 'src/styles/colors'
 
+/**
+ * @public some unused enum values are re-exported as AddAssetsActionType
+ */
 export enum TokenActionName {
   Send = 'Send',
   Swap = 'Swap',
