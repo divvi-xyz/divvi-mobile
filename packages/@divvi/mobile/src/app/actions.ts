@@ -115,7 +115,7 @@ export interface PhoneNumberRevoked {
   e164PhoneNumber: string
 }
 
-export interface InviteLinkConsumed {
+interface InviteLinkConsumed {
   type: Actions.INVITE_LINK_CONSUMED
   inviterAddress: string
 }
