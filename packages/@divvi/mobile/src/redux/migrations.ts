@@ -2057,4 +2057,8 @@ export const migrations = {
     ...state,
     fiatConnect: _.omit(state.fiatConnect, 'personaInProgress'),
   }),
+  252: (state: any) => ({
+    ...state,
+    jumpstart: _.pick(state.jumpstart, 'reclaimStatus'),
+  }),
 }
