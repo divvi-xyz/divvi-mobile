@@ -255,7 +255,6 @@
                                 "incorrectPin",
                                 "invalidBackupPhrase",
                                 "invalidWordsInBackupPhrase",
-                                "inviteWithUrl.error",
                                 "keychainAccountAlreadyExists",
                                 "keychainFetchAccounts",
                                 "missingFullName",
