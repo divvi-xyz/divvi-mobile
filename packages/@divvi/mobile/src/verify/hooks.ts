@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useAsync, useAsyncCallback } from 'react-async-hook'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
@@ -9,13 +9,6 @@ import { PhoneVerificationEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { phoneNumberRevoked, phoneNumberVerificationCompleted } from 'src/app/actions'
 import { inviterAddressSelector } from 'src/app/selectors'
-import { PHONE_NUMBER_VERIFICATION_CODE_LENGTH } from 'src/config'
-import {
-  SmsEvent,
-  addSmsListener,
-  removeSmsListener,
-  startSmsRetriever,
-} from 'src/identity/smsRetrieval'
 import { retrieveSignedMessage } from 'src/pincode/authentication'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import Logger from 'src/utils/Logger'
@@ -206,27 +199,6 @@ export function useVerifyPhoneNumber(phoneNumber: string, countryCallingCode: st
     setSmsCode,
     verificationStatus,
   }
-}
-
-export function useAndroidSmsCodeRetriever(onSmsCodeRetrieved: (code: string) => void) {
-  const callbackRef = useRef(onSmsCodeRetrieved)
-  callbackRef.current = onSmsCodeRetrieved
-
-  useEffect(() => {
-    if (Platform.OS !== 'android') {
-      return
-    }
-    addSmsListener((event: SmsEvent) => {
-      const code = event.message?.match(`\\d{${PHONE_NUMBER_VERIFICATION_CODE_LENGTH}}`)?.[0]
-      if (code) {
-        callbackRef.current(code)
-      }
-    })
-    // We don't need to wait for this promise to finish, hence the void
-    void startSmsRetriever()
-
-    return removeSmsListener
-  }, [])
 }
 
 // This is only used from the dev menu for now

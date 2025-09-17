@@ -8,7 +8,7 @@ import { PHONE_NUMBER_VERIFICATION_CODE_LENGTH } from 'src/config'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import ResendButtonWithDelay from 'src/verify/ResendButtonWithDelay'
-import { PhoneNumberVerificationStatus, useAndroidSmsCodeRetriever } from 'src/verify/hooks'
+import { PhoneNumberVerificationStatus } from 'src/verify/hooks'
 
 interface Props {
   phoneNumber: string
@@ -33,8 +33,6 @@ function VerificationCodeInput({
   const [codeInputStatus, setCodeInputStatus] = useState(CodeInputStatus.Inputting)
 
   const { t } = useTranslation()
-  // Android uses the SMS Retriever API to automatically fill in the verification code
-  useAndroidSmsCodeRetriever(setCode)
 
   useEffect(() => {
     if (code.length === PHONE_NUMBER_VERIFICATION_CODE_LENGTH) {

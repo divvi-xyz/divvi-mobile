@@ -3,7 +3,6 @@ import { FetchMock } from 'jest-fetch-mock/types'
 import MockDate from 'mockdate'
 import React from 'react'
 import * as Keychain from 'react-native-keychain'
-import SmsRetriever from 'react-native-sms-retriever'
 import { Provider } from 'react-redux'
 import { showError } from 'src/alert/actions'
 import { ErrorMessages } from 'src/app/ErrorMessages'
@@ -32,8 +31,6 @@ mockedKeychain.getGenericPassword.mockResolvedValue({
   service: 'some service',
   storage: Keychain.STORAGE_TYPE.RSA,
 })
-
-const mockedSmsRetriever = jest.mocked(SmsRetriever)
 
 const e164Number = '+31619123456'
 const store = createMockStore({
@@ -263,47 +260,7 @@ describe('VerificationCodeInputScreen', () => {
     expect(getByTestId('PhoneVerificationCode/CheckIcon')).toBeTruthy()
   })
 
-  it('reads the SMS code on Android automatically', async () => {
-    mockFetch.mockResponseOnce(JSON.stringify({ data: { verificationId: 'someId' } }), {
-      status: 200,
-    })
-    mockFetch.mockResponseOnce(JSON.stringify({ message: 'OK' }), {
-      status: 200,
-    })
-
-    const { getByTestId, getByText } = renderComponent()
-
-    // Check that the SmsRetriever is started
-    await waitFor(() => expect(mockedSmsRetriever.startSmsRetriever).toHaveBeenCalledTimes(1))
-    expect(mockedSmsRetriever.addSmsListener).toHaveBeenCalledTimes(1)
-
-    const smsListener = mockedSmsRetriever.addSmsListener.mock.calls[0][0]
-
-    await act(() => {
-      // Simulate the SMS code being received
-      smsListener({ message: 'Your verification code for App is: 123456 5yaJvJcZt2P' })
-    })
-
-    await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(2))
-    expect(mockFetch).toHaveBeenNthCalledWith(2, `${networkConfig.verifySmsCodeUrl}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: `${networkConfig.authHeaderIssuer} 0xabc:someSignedMessage`,
-      },
-      body: '{"phoneNumber":"+31619123456","verificationId":"someId","smsCode":"123456","clientPlatform":"android","clientVersion":"0.0.1"}',
-    })
-    expect(getByText('123456')).toBeTruthy()
-    expect(getByTestId('PhoneVerificationCode/CheckIcon')).toBeTruthy()
-
-    await act(() => {
-      jest.runOnlyPendingTimers()
-    })
-    expect(goToNextOnboardingScreen).toHaveBeenCalledWith({
-      firstScreenInCurrentStep: Screens.VerificationStartScreen,
-      onboardingProps: mockOnboardingProps,
-    })
-  })
+  it.todo('reads the SMS code on Android automatically')
 
   it('handles when phone number already verified', async () => {
     mockFetch.mockResponse(JSON.stringify({ message: 'Phone number already verified' }), {

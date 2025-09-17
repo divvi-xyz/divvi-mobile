@@ -7,7 +7,7 @@ import { LogBox, Platform, StatusBar } from 'react-native'
 import { Auth0Provider } from 'react-native-auth0'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { getNumberFormatSettings } from 'react-native-localize'
-import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { enableFreeze, enableScreens } from 'react-native-screens'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -79,6 +79,7 @@ export class App extends React.Component<Props> {
   isConsumingInitialLink = false
   // TODO: add support for changing themes dynamically, here we are getting only the default theme colors.
   isDarkTheme = getAppConfig().themes?.default?.isDark
+  backgroundColor = getAppConfig().themes?.default?.colors?.backgroundPrimary
   isAndroid = Platform.OS === 'android'
 
   async componentDidMount() {
@@ -89,9 +90,7 @@ export class App extends React.Component<Props> {
 
   render() {
     return (
-      <SafeAreaProvider
-        style={Platform.OS === 'android' ? { marginTop: initialWindowMetrics?.insets.top } : {}}
-      >
+      <SafeAreaProvider>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
             <Auth0Provider domain={AUTH0_DOMAIN} clientId={AUTH0_CLIENT_ID}>
@@ -100,9 +99,11 @@ export class App extends React.Component<Props> {
                 reactLoadTime={this.reactLoadTime}
               >
                 <StatusBar
-                  backgroundColor="transparent"
+                  // On Android a gray gradient is present when set to transparent
+                  backgroundColor={this.isAndroid ? this.backgroundColor : 'transparent'}
                   barStyle={this.isDarkTheme ? 'light-content' : 'dark-content'}
-                  translucent
+                  // On Android this causes content be shifted outside of the safe area
+                  translucent={!this.isAndroid}
                 />
                 <ErrorBoundary>
                   <GestureHandlerRootView style={{ flex: 1 }}>

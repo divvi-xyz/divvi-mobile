@@ -2,6 +2,7 @@ import { getReferralTag } from '@divvi/referral-sdk'
 import BigNumber from 'bignumber.js'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { TransactionEvents } from 'src/analytics/Events'
+import { getAppConfig } from 'src/appConfig'
 import { TokenBalanceWithAddress } from 'src/tokens/slice'
 import { Network, NetworkId } from 'src/transactions/types'
 import { estimateFeesPerGas } from 'src/viem/estimateFeesPerGas'
@@ -21,12 +22,13 @@ import {
   tryEstimateTransaction,
   tryEstimateTransactions,
 } from 'src/viem/prepareTransactions'
-import { mockCeloTokenBalance, mockEthTokenBalance } from 'test/values'
+import { mockAppConfig, mockCeloTokenBalance, mockEthTokenBalance } from 'test/values'
 import {
   Address,
   BaseError,
   EstimateGasExecutionError,
   ExecutionRevertedError,
+  Hex,
   InsufficientFundsError,
   InvalidInputRpcError,
   encodeFunctionData,
@@ -142,7 +144,24 @@ describe('prepareTransactions module', () => {
   }
   const mockPublicClient = {} as unknown as jest.Mocked<(typeof publicClient)[Network.Celo]>
   describe('prepareTransactions function', () => {
-    it('attaches divvi data to all transactions', async () => {
+    it.each([
+      {
+        description: 'is attached when data is provided',
+        inputData: '0xdata' as Hex,
+        expectedData: '0xdatadivviData',
+      },
+      {
+        description: 'is not attached when data is undefined',
+        inputData: undefined,
+        expectedData: undefined,
+      },
+    ])('divvi data $description', async ({ inputData, expectedData }) => {
+      jest.mocked(getAppConfig).mockReturnValueOnce({
+        ...mockAppConfig,
+        divviProtocol: {
+          divviId: '0xdivviId',
+        },
+      })
       jest.mocked(getReferralTag).mockReturnValue('divviData')
       mocked(estimateFeesPerGas).mockResolvedValue({
         maxFeePerGas: BigInt(100),
@@ -162,7 +181,7 @@ describe('prepareTransactions module', () => {
           {
             from: '0xfrom' as Address,
             to: '0xto' as Address,
-            data: '0xdatadivviData',
+            data: inputData,
           },
         ],
         isGasSubsidized: true,
@@ -175,7 +194,7 @@ describe('prepareTransactions module', () => {
           {
             from: '0xfrom',
             to: '0xto',
-            data: '0xdatadivviData',
+            data: expectedData,
 
             gas: BigInt(1000),
             maxFeePerGas: BigInt(100),

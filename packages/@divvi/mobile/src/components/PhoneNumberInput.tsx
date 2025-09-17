@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Platform, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
-import SmsRetriever from 'react-native-sms-retriever'
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import Expandable from 'src/components/Expandable'
 import FormField from 'src/components/FormField'
 import FormTextInput from 'src/components/FormTextInput'
@@ -10,25 +9,6 @@ import colors from 'src/styles/colors'
 import { Spacing } from 'src/styles/styles'
 import { type LocalizedCountry } from 'src/utils/Countries'
 import { ValidatorKind } from 'src/utils/inputValidation'
-import { parsePhoneNumber } from 'src/utils/phoneNumbers'
-
-const TAG = 'PhoneNumberInput'
-
-async function requestPhoneNumber() {
-  let phoneNumber
-  try {
-    if (Platform.OS === 'android') {
-      phoneNumber = await SmsRetriever.requestPhoneNumber()
-    } else {
-      // eslint-disable-next-line no-console
-      console.info(`${TAG}/requestPhoneNumber`, 'Not implemented in this platform')
-    }
-    return parsePhoneNumber(phoneNumber || '', '')
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.info(`${TAG}/requestPhoneNumber`, 'Could not request phone', error)
-  }
-}
 
 interface Props {
   label?: string
@@ -51,35 +31,17 @@ export default function PhoneNumberInput({
   onChange,
   editable = true,
 }: Props) {
-  const shouldRequestPhoneNumberRef = useRef(internationalPhoneNumber.length === 0)
   const phoneInputRef = useRef<any>(undefined)
   const flagEmoji = country?.emoji
   const countryCallingCode = country?.countryCallingCode ?? ''
   const numberPlaceholder = country?.countryPhonePlaceholder.national ?? ''
 
   async function onPressCountryInternal() {
-    const handled = await requestPhoneNumberIfNecessary()
-    if (handled || !onPressCountry) {
+    if (!onPressCountry) {
       return
     }
 
     onPressCountry()
-  }
-
-  // Returns true if handled
-  async function requestPhoneNumberIfNecessary() {
-    if (!shouldRequestPhoneNumberRef.current) {
-      return false
-    }
-    shouldRequestPhoneNumberRef.current = false
-
-    const parsedPhoneNumber = await requestPhoneNumber()
-    if (!parsedPhoneNumber || !onChange) {
-      return false
-    }
-
-    onChange(parsedPhoneNumber.displayNumber, `+${parsedPhoneNumber.countryCode}`)
-    return true
   }
 
   function onChangePhoneNumber(newInternationalPhoneNumber: string) {
@@ -127,7 +89,6 @@ export default function PhoneNumberInput({
           testID="PhoneNumberField"
           validator={ValidatorKind.Phone}
           countryCallingCode={countryCallingCode}
-          onFocus={requestPhoneNumberIfNecessary}
           onChangeText={onChangePhoneNumber}
           editable={editable}
           showClearButton={false}
