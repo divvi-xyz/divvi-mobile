@@ -281,6 +281,7 @@ function* showSessionRequest(session: WalletKitTypes.EventArguments['session_pro
   // See SessionRequest and ActionRequest for more details.
   const requiredEip155Chains = requiredNamespaces.eip155?.chains ?? []
   const supportedEip155Chains = yield* call(getSupportedChains)
+  Logger.info(TAG + '@showSessionRequest', 'supportedEip155Chains', supportedEip155Chains)
   const approvedEip155Chains = [
     ...supportedEip155Chains,
     ...requiredEip155Chains.filter((chainId) => !supportedEip155Chains.includes(chainId)),
@@ -668,6 +669,7 @@ function* handleAcceptRequest({ request, preparedTransaction }: AcceptRequest) {
     }
 
     const { topic, id, params } = request
+    console.log(TAG + '@acceptRequest', 'params', params)
     const activeSessions = yield* call([client, 'getActiveSessions'])
     const activeSession = activeSessions[topic]
 

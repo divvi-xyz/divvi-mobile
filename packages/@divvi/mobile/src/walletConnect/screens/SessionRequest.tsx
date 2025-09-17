@@ -12,6 +12,7 @@ import { NETWORK_NAMES } from 'src/shared/conts'
 import Colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
+import Logger from 'src/utils/Logger'
 import { acceptSession, denySession } from 'src/walletConnect/actions'
 import { isSupportedAction, isSupportedEvent } from 'src/walletConnect/constants'
 import RequestContent, {
@@ -27,6 +28,8 @@ export type SessionRequestProps = {
   namespacesToApprove: SessionTypes.Namespaces | null
   supportedChains: string[]
 }
+
+const TAG = 'WalletConnect/screens/SessionRequest'
 
 // do not destructure props or else the type inference is lost
 function SessionRequest({
@@ -48,7 +51,7 @@ function SessionRequest({
       value: address,
     },
   ]
-
+  Logger.info(TAG, 'namespacesToApprove', namespacesToApprove)
   const matchedSupportedChains = (namespacesToApprove?.['eip155']?.chains ?? []).filter((chainId) =>
     supportedChains.includes(chainId)
   )
@@ -65,6 +68,8 @@ function SessionRequest({
   const supportedNetworkNames = supportedChains
     .map((chain) => NETWORK_NAMES[walletConnectChainIdToNetworkId[chain]])
     .join(', ')
+  Logger.info(TAG, 'supportedChains', supportedChains)
+  Logger.info(TAG, 'supportedNetworkNames', supportedNetworkNames)
   if (!namespacesToApprove) {
     // We couldn't build an namespace to approve, so we reject the session, showing the reason
     // Note: for now it can only be because it's not an EVM chain

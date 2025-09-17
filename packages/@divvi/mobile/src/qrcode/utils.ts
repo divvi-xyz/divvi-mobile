@@ -153,7 +153,7 @@ export function* handleQRCodeDefault({
   AppAnalytics.track(QrScreenEvents.qr_scanned, qrCode)
 
   const walletConnectEnabled: boolean = yield* call(isWalletConnectEnabled, qrCode.data)
-
+  Logger.info(TAG, 'walletConnectEnabled', walletConnectEnabled)
   // TODO there's some duplication with deep links handing
   // would be nice to refactor this
   if (qrCode.data.startsWith('wc:') && walletConnectEnabled) {

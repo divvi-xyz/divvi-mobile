@@ -7,6 +7,10 @@ export enum SupportedActions {
   eth_signTypedData_v4 = 'eth_signTypedData_v4',
   eth_sign = 'eth_sign',
   personal_sign = 'personal_sign',
+  wallet_sendCalls = 'wallet_sendCalls',
+  wallet_getCallsStatus = 'wallet_getCallsStatus',
+  wallet_showCallsStatus = 'wallet_showCallsStatus',
+  wallet_getCapabilities = 'wallet_getCapabilities',
 }
 
 export enum SupportedEvents {
@@ -65,6 +69,29 @@ export function getDisplayTextFromAction(
       title: t('walletConnectRequest.signPayloadTitle'),
       action: t('allow'),
     },
+    // EIP-5792 additions (stubbed UI text using existing strings)
+    [SupportedActions.wallet_sendCalls]: {
+      description: networkName
+        ? t('walletConnectRequest.sendDappTransaction', { dappName, networkName })
+        : t('walletConnectRequest.sendDappTransactionUnknownNetwork', { dappName }),
+      title: t('walletConnectRequest.sendTransactionTitle'),
+      action: t('walletConnectRequest.sendTransactionAction'),
+    },
+    [SupportedActions.wallet_getCallsStatus]: {
+      description: t('walletConnectRequest.signPayload', { dappName }),
+      title: t('walletConnectRequest.signPayloadTitle'),
+      action: t('allow'),
+    },
+    [SupportedActions.wallet_showCallsStatus]: {
+      description: t('walletConnectRequest.signPayload', { dappName }),
+      title: t('walletConnectRequest.signPayloadTitle'),
+      action: t('allow'),
+    },
+    [SupportedActions.wallet_getCapabilities]: {
+      description: t('walletConnectRequest.signPayload', { dappName }),
+      title: t('walletConnectRequest.signPayloadTitle'),
+      action: t('allow'),
+    },
   }
 
   const translations = actionTranslations[action]
@@ -75,4 +102,10 @@ export function getDisplayTextFromAction(
   return translations
 }
 
-export const chainAgnosticActions: string[] = [SupportedActions.personal_sign]
+export const chainAgnosticActions: string[] = [
+  SupportedActions.personal_sign,
+  // EIP-5792: these do not require a specific network to be supported to proceed
+  SupportedActions.wallet_getCapabilities,
+  SupportedActions.wallet_getCallsStatus,
+  SupportedActions.wallet_showCallsStatus,
+]

@@ -111,6 +111,7 @@ export function* appInit() {
   Logger.setNetworkErrors(DEFAULT_SENTRY_NETWORK_ERRORS)
 
   const supportedBiometryType = yield* call(Keychain.getSupportedBiometryType)
+  Logger.info(TAG, 'Supported biometry typess', supportedBiometryType)
   yield* put(setSupportedBiometryType(supportedBiometryType))
 
   // setup statsig overrides for E2E tests

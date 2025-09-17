@@ -55,7 +55,7 @@ export function createApp<const tabScreenConfigs extends TabScreenConfig[]>(
   Config.ENABLED_NETWORK_IDS =
     config.networks?.enabledNetworkIds && config.networks.enabledNetworkIds.length > 0
       ? config.networks?.enabledNetworkIds.join(',')
-      : 'celo-mainnet,ethereum-mainnet,arbitrum-one,op-mainnet,base-mainnet'
+      : 'celo-mainnet,ethereum-mainnet,arbitrum-one,op-mainnet,base-mainnet,polygon-pos-mainnet'
 
   // TODO: map/handle the whole config
 
