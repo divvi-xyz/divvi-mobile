@@ -119,12 +119,13 @@ class RecaptchaService {
   isEnabled(): boolean {
     const appConfig: PublicAppConfig = getAppConfig()
     const recaptchaConfig = appConfig.experimental?.recaptcha
-    
+
     if (!recaptchaConfig?.enabled) {
       return false
     }
-    
-    const siteKey = Platform.OS === 'ios' ? recaptchaConfig.iOSSiteKey : recaptchaConfig.androidSiteKey
+
+    const siteKey =
+      Platform.OS === 'ios' ? recaptchaConfig.iOSSiteKey : recaptchaConfig.androidSiteKey
     return !!siteKey
   }
 }
