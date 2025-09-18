@@ -111,6 +111,22 @@ class RecaptchaService {
       throw error
     }
   }
+
+  /**
+   * Check if reCAPTCHA is enabled
+   * @returns boolean - True if reCAPTCHA is enabled, false otherwise
+   */
+  isEnabled(): boolean {
+    const appConfig: PublicAppConfig = getAppConfig()
+    const recaptchaConfig = appConfig.experimental?.recaptcha
+    
+    if (!recaptchaConfig?.enabled) {
+      return false
+    }
+    
+    const siteKey = Platform.OS === 'ios' ? recaptchaConfig.iOSSiteKey : recaptchaConfig.androidSiteKey
+    return !!siteKey
+  }
 }
 
 export const recaptchaService = new RecaptchaService()
