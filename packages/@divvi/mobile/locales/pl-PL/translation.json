@@ -1617,7 +1617,13 @@
       "tryAgain": "Spróbuj ponownie",
       "switch": "Zmień metodę wypłaty"
     },
-    "tryAgainFailed": "Wystąpił błąd podczas usuwania informacji KYC. Spróbuj ponownie"
+    "tryAgainFailed": "Wystąpił błąd podczas usuwania informacji KYC. Spróbuj ponownie",
+    "inactive": {
+      "title": "Weryfikacja tożsamości nie jest dostępna",
+      "description": "Ta metoda płatności wymaga weryfikacji tożsamości w celu zapewnienia zgodności z przepisami.",
+      "provider": "Dostawca: {{provider}}",
+      "goBack": "Zmień metodę wypłaty"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "Szczegóły transakcji",

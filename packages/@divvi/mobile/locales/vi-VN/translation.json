@@ -1611,7 +1611,13 @@
       "tryAgain": "Xác minh lại",
       "switch": "Đổi phương thức rút tiền"
     },
-    "tryAgainFailed": "Đã xảy ra lỗi khi xóa thông tin Xác minh khách hàng. Vui lòng thử lại"
+    "tryAgainFailed": "Đã xảy ra lỗi khi xóa thông tin Xác minh khách hàng. Vui lòng thử lại",
+    "inactive": {
+      "title": "ID verification is not available",
+      "description": "This payment method requires identity verification to comply with regulations.",
+      "provider": "Provider: {{provider}}",
+      "goBack": "Đổi phương thức rút tiền"
+    }
   },
   "fiatConnectReviewScreen": {
     "transactionDetails": "Thông tin giao dịch",

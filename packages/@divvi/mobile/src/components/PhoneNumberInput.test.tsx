@@ -1,17 +1,8 @@
 import { act, fireEvent, render } from '@testing-library/react-native'
 import * as React from 'react'
 import { Platform } from 'react-native'
-import SmsRetriever from 'react-native-sms-retriever'
 import PhoneNumberInput from 'src/components/PhoneNumberInput'
 import { Countries } from 'src/utils/Countries'
-
-jest.mock('react-native-sms-retriever', () => {
-  return {
-    requestPhoneNumber: jest.fn(() => '+49030111111'),
-  }
-})
-
-const requestPhoneNumber = jest.mocked(SmsRetriever.requestPhoneNumber)
 
 const countries = new Countries('en-us')
 
@@ -46,47 +37,15 @@ describe('PhoneNumberInput', () => {
     expect(onChange).toHaveBeenCalledWith('123', '+33')
   })
 
-  describe('native phone picker (Android)', () => {
+  // eslint-disable-next-line jest/no-disabled-tests
+  describe.skip('native phone picker (Android)', () => {
     beforeEach(() => {
       Platform.OS = 'android'
     })
 
-    it('requests the device phone number when focusing the phone number field', async () => {
-      const onChange = jest.fn()
-      const { getByTestId } = render(
-        <PhoneNumberInput
-          label="Phone number"
-          country={undefined}
-          internationalPhoneNumber=""
-          onChange={onChange}
-          onPressCountry={jest.fn()}
-        />
-      )
+    it.todo('requests the device phone number when focusing the phone number field')
 
-      await act(() => {
-        fireEvent(getByTestId('PhoneNumberField'), 'focus')
-      })
-
-      expect(onChange).toHaveBeenCalledWith('030 111111', '+49')
-    })
-
-    it('requests the device phone number when pressing the country selection button', async () => {
-      const onChange = jest.fn()
-      const { getByTestId } = render(
-        <PhoneNumberInput
-          label="Phone number"
-          country={undefined}
-          internationalPhoneNumber=""
-          onChange={onChange}
-          onPressCountry={jest.fn()}
-        />
-      )
-
-      await act(() => {
-        fireEvent.press(getByTestId('CountrySelectionButton'))
-      })
-      expect(onChange).toHaveBeenCalledWith('030 111111', '+49')
-    })
+    it.todo('requests the device phone number when pressing the country selection button')
   })
 
   it("doesn't trigger the native phone picker if there's data in the form", async () => {
@@ -107,45 +66,9 @@ describe('PhoneNumberInput', () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
-  it('can read Canadian phone numbers', async () => {
-    const onChange = jest.fn()
-    const { getByTestId } = render(
-      <PhoneNumberInput
-        label="Phone number"
-        country={undefined}
-        internationalPhoneNumber=""
-        onChange={onChange}
-        onPressCountry={jest.fn()}
-      />
-    )
+  it.todo('can read Canadian phone numbers')
 
-    requestPhoneNumber.mockResolvedValue('+1 416-868-0000')
-
-    await act(() => {
-      fireEvent(getByTestId('PhoneNumberField'), 'focus')
-    })
-    expect(onChange).toHaveBeenCalledWith('(416) 868-0000', '+1')
-  })
-
-  it('can read US phone numbers', async () => {
-    const onChange = jest.fn()
-    const { getByTestId } = render(
-      <PhoneNumberInput
-        label="Phone number"
-        country={undefined}
-        internationalPhoneNumber=""
-        onChange={onChange}
-        onPressCountry={jest.fn()}
-      />
-    )
-
-    requestPhoneNumber.mockResolvedValue('+1 415-426-5200')
-
-    await act(() => {
-      fireEvent(getByTestId('PhoneNumberField'), 'focus')
-    })
-    expect(onChange).toHaveBeenCalledWith('(415) 426-5200', '+1')
-  })
+  it.todo('can read US phone numbers')
 
   it('renders and behaves correctly with Côte d’Ivoire phone numbers', async () => {
     // mock

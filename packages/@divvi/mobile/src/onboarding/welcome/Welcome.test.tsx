@@ -183,6 +183,7 @@ describe('Welcome', () => {
       await waitFor(() => expect(navigateInitialTab).toHaveBeenCalled())
     })
 
+    // TODO: restore this
     // eslint-disable-next-line jest/no-disabled-tests -- fails in unit tests but works when manually testing
     it.skip('shows a custom logo when configured', () => {
       mockGetAppConfig.mockReturnValue({
