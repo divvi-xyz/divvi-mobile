@@ -72,6 +72,7 @@ export default function CodeInput({
             autoCapitalize="none"
             autoFocus={autoFocus}
             testID={testID}
+            autoComplete="sms-otp" // Android only sms otp autofill
           />
         ) : (
           <Text style={[styles.codeValue, { color: textColorForStatus[status] }]} numberOfLines={1}>

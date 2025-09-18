@@ -1,4 +1,4 @@
-import * as Keychain from '@divvi/react-native-keychain'
+import * as Keychain from 'react-native-keychain'
 import Logger from 'src/utils/Logger'
 import { ensureError } from 'src/utils/ensureError'
 
@@ -55,7 +55,6 @@ export async function retrieveStoredItem(key: string, options: Keychain.GetOptio
   try {
     const item = await Keychain.getGenericPassword({
       service: key,
-      rules: Keychain.SECURITY_RULES.NONE,
       ...options,
     })
     if (!item) {

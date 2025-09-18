@@ -1,4 +1,4 @@
-import { launchApp, reloadReactNative } from '../utils/retries'
+import { launchApp } from '../utils/retries'
 import { waitForElementById } from '../utils/utils'
 
 export default offRamps = () => {
@@ -6,7 +6,7 @@ export default offRamps = () => {
     await launchApp()
   })
   beforeEach(async () => {
-    await reloadReactNative()
+    await launchApp({ newInstance: false })
     await waitForElementById('HomeActionsCarousel')
     await element(by.id('HomeActionsCarousel')).scrollTo('right')
     await waitForElementById('HomeAction-Withdraw')

@@ -52,5 +52,10 @@ jest.mock('@react-native-clipboard/clipboard', () => ({
   hasString: jest.fn(),
 }))
 
+// Minimal mocks for @react-native-firebase/*
+jest.mock('@react-native-firebase/auth', () => jest.fn())
+jest.mock('@react-native-firebase/database', () => jest.fn())
+jest.mock('@react-native-firebase/messaging', () => jest.fn())
+
 // this mock defaults to granting all permissions
 jest.mock('react-native-permissions', () => require('react-native-permissions/mock'))

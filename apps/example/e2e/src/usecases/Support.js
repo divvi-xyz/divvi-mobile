@@ -1,9 +1,9 @@
-import { reloadReactNative } from '../utils/retries'
-import { waitForElementById } from '../utils/utils'
+import { launchApp } from '../utils/retries'
+import { waitForElementById, sleep } from '../utils/utils'
 
 export default Support = () => {
   beforeEach(async () => {
-    await reloadReactNative()
+    await launchApp({ newInstance: false })
   })
 
   if (device.getPlatform() === 'ios') {

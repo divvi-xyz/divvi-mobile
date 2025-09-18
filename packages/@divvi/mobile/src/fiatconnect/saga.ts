@@ -640,10 +640,6 @@ export function* handleSelectFiatConnectQuote({
       })
       const fiatConnectKycStatus = getKycStatusResponse.kycStatus[kycSchema]
       switch (fiatConnectKycStatus) {
-        // If approved or pending, continue as normal and handle account management
-        case FiatConnectKycStatus.KycApproved:
-        case FiatConnectKycStatus.KycPending:
-          break
         // If denied or expired, skip account management and
         // navigate to the KYC status screen
         case FiatConnectKycStatus.KycDenied:
@@ -661,7 +657,9 @@ export function* handleSelectFiatConnectQuote({
           })
           yield* put(selectFiatConnectQuoteCompleted())
           return
-        // If KYC is not created, show placeholder screen
+        // Show KYC inactive screen
+        case FiatConnectKycStatus.KycApproved:
+        case FiatConnectKycStatus.KycPending:
         case FiatConnectKycStatus.KycNotCreated:
           navigate(Screens.KycInactive, {
             flow: quote.flow,
