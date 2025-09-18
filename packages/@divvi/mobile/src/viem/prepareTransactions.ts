@@ -22,6 +22,7 @@ import {
   Client,
   EstimateGasExecutionError,
   ExecutionRevertedError,
+  Hex,
   InsufficientFundsError,
   InvalidInputRpcError,
   TransactionRequestEIP1559,
@@ -323,7 +324,7 @@ export async function prepareTransactions({
       })
     if (referralTag) {
       baseTransactions.forEach((tx) => {
-        tx.data += referralTag
+        tx.data = tx.data && ((tx.data + referralTag) as Hex)
       })
     }
   }

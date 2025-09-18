@@ -18,6 +18,10 @@ export default Settings = () => {
     await element(by.id('ProfileEditName')).tap()
     await element(by.id('ProfileEditName')).clearText()
     await element(by.id('ProfileEditName')).replaceText(`${randomName}`)
+    // Hide keyboard on Android
+    if (device.getPlatform() === 'android') {
+      await device.pressBack()
+    }
     await scrollIntoView('SaveButton', 'ProfileScrollView')
     await element(by.id('SaveButton')).tap()
     await waitFor(element(by.text('Your name was saved successfully.')))

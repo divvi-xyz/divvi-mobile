@@ -787,7 +787,7 @@ describe('Fiatconnect saga', () => {
 
   describe('handleSelectFiatConnectQuote', () => {
     it.each([FiatConnectKycStatus.KycApproved, FiatConnectKycStatus.KycPending])(
-      'invokes _checkFiatAccountAndNavigate if KYC is required and KYC status is %s',
+      'navigates to KycInactive if KYC is required and KYC status is %s',
       async (fcKycStatus) => {
         await expectSaga(
           handleSelectFiatConnectQuote,
@@ -803,16 +803,15 @@ describe('Fiatconnect saga', () => {
                 },
               },
             ],
-            [matches.call.fn(_checkFiatAccountAndNavigate), undefined],
             { call: provideDelay },
           ])
-          .call(_checkFiatAccountAndNavigate, {
-            quote: normalizedQuoteKyc,
-            isKycRequired: true,
-            isKycApproved: fcKycStatus === FiatConnectKycStatus.KycApproved,
-          })
           .put(selectFiatConnectQuoteCompleted())
           .run()
+
+        expect(navigate).toHaveBeenCalledWith(Screens.KycInactive, {
+          flow: normalizedQuoteKyc.flow,
+          quote: normalizedQuoteKyc,
+        })
       }
     )
     it('navigates to KycExpired screen early if KYC is required and is expired', async () => {
@@ -864,7 +863,7 @@ describe('Fiatconnect saga', () => {
         retryable: true,
       })
     })
-    it('navigates to KYC landing screen early if KYC is required', async () => {
+    it('navigates to KYC inactive screen early if KYC is required', async () => {
       await expectSaga(
         handleSelectFiatConnectQuote,
         selectFiatConnectQuote({ quote: normalizedQuoteKyc })
