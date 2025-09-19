@@ -6,7 +6,6 @@
  */
 
 import crypto from 'crypto'
-import { Platform } from 'react-native'
 import * as Keychain from 'react-native-keychain'
 import { PincodeType } from 'src/account/reducer'
 import { pincodeTypeSelector } from 'src/account/selectors'
@@ -134,12 +133,7 @@ function storePinWithBiometry(pin: string) {
     key: STORAGE_KEYS.PIN,
     value: pin,
     options: {
-      // BIOMETRY_CURRENT_SET not working as intended on Android
-      // https://github.com/oblador/react-native-keychain/issues/725
-      accessControl:
-        Platform.OS === 'ios'
-          ? Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET
-          : Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
+      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
       accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
       securityLevel: Keychain.SECURITY_LEVEL.SECURE_SOFTWARE,
     },
