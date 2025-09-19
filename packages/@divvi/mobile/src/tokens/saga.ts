@@ -4,8 +4,8 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { AppEvents } from 'src/analytics/Events'
 import { getAppConfig } from 'src/appConfig'
 import { DOLLAR_MIN_AMOUNT_ACCOUNT_FUNDED } from 'src/config'
-import { SentryTransactionHub } from 'src/sentry/SentryTransactionHub'
-import { SentryTransaction } from 'src/sentry/SentryTransactions'
+import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
+import { SentrySpan } from 'src/sentry/SentrySpans'
 import {
   importedTokensSelector,
   lastKnownTokenBalancesSelector,
@@ -97,7 +97,7 @@ export function* fetchTokenBalancesSaga() {
       Logger.debug(TAG, 'Skipping fetching tokens since no address was found')
       return
     }
-    SentryTransactionHub.startTransaction(SentryTransaction.fetch_balances)
+    SentrySpanHub.startSpan(SentrySpan.fetch_balances)
 
     const supportedNetworks = getSupportedNetworkIds()
     const importedTokens = yield* select(importedTokensSelector)
@@ -141,7 +141,7 @@ export function* fetchTokenBalancesSaga() {
         ...supportedTokens,
       })
     )
-    SentryTransactionHub.finishTransaction(SentryTransaction.fetch_balances)
+    SentrySpanHub.finishSpan(SentrySpan.fetch_balances)
     AppAnalytics.track(AppEvents.fetch_balance, {})
   } catch (err) {
     const error = ensureError(err)

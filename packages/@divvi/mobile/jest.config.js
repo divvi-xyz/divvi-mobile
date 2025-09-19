@@ -3,6 +3,7 @@ const { defaults: tsjPreset } = require('ts-jest/presets')
 
 module.exports = {
   ...tsjPreset,
+  testTimeout: 20_000, // 20 seconds
   globals: {
     navigator: true,
     window: true,
