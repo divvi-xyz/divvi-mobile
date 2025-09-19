@@ -1,4 +1,4 @@
-import { launchApp } from '../utils/retries'
+import { launchApp, reloadReactNative } from '../utils/retries'
 import { waitForElementById } from '../utils/utils'
 
 export default offRamps = () => {
@@ -6,7 +6,7 @@ export default offRamps = () => {
     await launchApp()
   })
   beforeEach(async () => {
-    await launchApp({ newInstance: false })
+    await reloadReactNative()
     await waitForElementById('HomeActionsCarousel')
     await element(by.id('HomeActionsCarousel')).scrollTo('right')
     await waitForElementById('HomeAction-Withdraw')
@@ -69,6 +69,10 @@ export default offRamps = () => {
 
         await waitForElementById('FiatExchangeInput')
         await element(by.id('FiatExchangeInput')).replaceText('2')
+        // Hide the keyboard on Android
+        if (device.getPlatform() === 'android') {
+          await element(by.id('FiatExchangeInput')).typeText('\n')
+        }
         await element(by.id('FiatExchangeNextButton')).tap()
         await expect(element(by.text('Select Withdraw Method'))).toBeVisible()
         await waitForElementById('Exchanges')
@@ -86,6 +90,10 @@ export default offRamps = () => {
 
       await waitForElementById('FiatExchangeInput')
       await element(by.id('FiatExchangeInput')).replaceText(`${randomAmount}`)
+      // Hide the keyboard on Android
+      if (device.getPlatform() === 'android') {
+        await element(by.id('FiatExchangeInput')).typeText('\n')
+      }
       await element(by.id('FiatExchangeNextButton')).tap()
       await waitForElementById('Exchanges')
       await element(by.id('Exchanges')).tap()

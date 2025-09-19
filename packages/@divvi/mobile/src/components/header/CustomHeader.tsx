@@ -28,7 +28,7 @@ function CustomHeader({ left, right, title, style }: Props) {
   )
 }
 
-export const CUSTOM_HEADER_HEIGHT = Platform.OS === 'ios' ? 44 : 56
+const CUSTOM_HEADER_HEIGHT = Platform.OS === 'ios' ? 44 : 56
 
 const styles = StyleSheet.create({
   container: {

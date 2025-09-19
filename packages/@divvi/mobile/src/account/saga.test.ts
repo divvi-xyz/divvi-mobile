@@ -15,7 +15,6 @@ import { updateAccountRegistration } from 'src/account/updateAccountRegistration
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { OnboardingEvents } from 'src/analytics/Events'
 import { Actions as AccountActions, phoneNumberVerificationCompleted } from 'src/app/actions'
-import { inviterAddressSelector } from 'src/app/selectors'
 import { currentLanguageSelector } from 'src/i18n/selectors'
 import { userLocationDataSelector } from 'src/networkInfo/selectors'
 import { retrieveSignedMessage, storeSignedMessage } from 'src/pincode/authentication'
@@ -147,7 +146,6 @@ describe('initializeAccount', () => {
     mockFetch.mockResponse(
       JSON.stringify({ data: { phoneNumbers: ['+1302123456', '+31619123456'] } })
     )
-    const inviterAddress = '0xINVITER'
 
     await expectSaga(initializeAccountSaga)
       .provide([
@@ -156,7 +154,6 @@ describe('initializeAccount', () => {
         [select(choseToRestoreAccountSelector), true],
         [call(retrieveSignedMessage), 'some signed message'],
         [select(walletAddressSelector), '0xabc'],
-        [select(inviterAddressSelector), inviterAddress],
       ])
       .put(initializeAccountSuccess())
       .put(phoneNumberVerificationCompleted('+31619123456', '+31'))
@@ -173,9 +170,7 @@ describe('initializeAccount', () => {
         },
       }
     )
-    expect(AppAnalytics.track).toHaveBeenCalledWith(OnboardingEvents.initialize_account_complete, {
-      inviterAddress,
-    })
+    expect(AppAnalytics.track).toHaveBeenCalledWith(OnboardingEvents.initialize_account_complete)
   })
 
   it('should handle if there is no previously verified phone number', async () => {
@@ -188,7 +183,6 @@ describe('initializeAccount', () => {
         [select(choseToRestoreAccountSelector), true],
         [call(retrieveSignedMessage), 'some signed message'],
         [select(walletAddressSelector), '0xabc'],
-        [select(inviterAddressSelector), null],
       ])
       .put(initializeAccountSuccess())
       .not.put.actionType(AccountActions.PHONE_NUMBER_VERIFICATION_COMPLETED)
@@ -207,7 +201,6 @@ describe('initializeAccount', () => {
         [select(choseToRestoreAccountSelector), true],
         [call(retrieveSignedMessage), 'some signed message'],
         [select(walletAddressSelector), '0xabc'],
-        [select(inviterAddressSelector), null],
       ])
       .put(initializeAccountSuccess())
       .not.put.actionType(AccountActions.PHONE_NUMBER_VERIFICATION_COMPLETED)

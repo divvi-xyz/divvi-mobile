@@ -1,10 +1,8 @@
-import dynamicLinks from '@react-native-firebase/dynamic-links'
 import { useEffect, useState } from 'react'
 import { useAsync } from 'react-async-hook'
 import { Linking } from 'react-native'
 import { deepLinkDeferred, openDeepLink } from 'src/app/actions'
 import { pendingDeepLinkSelector } from 'src/app/selectors'
-import { DYNAMIC_LINK_DOMAIN_URI_PREFIX, FIREBASE_ENABLED } from 'src/config'
 import { hasVisitedHomeSelector } from 'src/home/selectors'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import Logger from 'src/utils/Logger'
@@ -24,14 +22,6 @@ export const useDeepLinks = () => {
   const shouldConsumeDeepLinks = address && hasVisitedHome
 
   const handleOpenURL = (event: { url: string }) => {
-    if (event.url.startsWith(DYNAMIC_LINK_DOMAIN_URI_PREFIX)) {
-      // dynamic links come through both the `dynamicLinks` and `Linking` APIs.
-      // the dynamicLinks handlers will already resolve the link, only the
-      // Linking api will pass the raw dynamic link with the prefix through here
-      // so we can ignore it to avoid double handling the link.
-      Logger.info('useDeepLinks/handleOpenURL', 'Ignoring dynamic link', event.url)
-      return
-    }
     Logger.debug(
       'useDeepLinks/handleOpenURL',
       `Handling url: ${event.url}, shouldConsumeDeepLinks: ${shouldConsumeDeepLinks}`
@@ -52,8 +42,6 @@ export const useDeepLinks = () => {
   }, [pendingDeepLink, address, hasVisitedHome])
 
   const handleOpenInitialURL = (event: { url: string }) => {
-    // this function handles initial deep links, but not dynamic links (which
-    // are handled by firebase)
     if (!isConsumingInitialLink) {
       setIsConsumingInitialLink(true)
       handleOpenURL(event)
@@ -61,14 +49,6 @@ export const useDeepLinks = () => {
   }
 
   useAsync(async () => {
-    if (FIREBASE_ENABLED) {
-      const firebaseUrl = await dynamicLinks().getInitialLink()
-      if (firebaseUrl) {
-        Logger.debug('useDeepLinks/useAsync', 'Firebase InitialLink', firebaseUrl.url)
-        handleOpenURL({ url: firebaseUrl.url })
-      }
-    }
-
     const initialUrl = await Linking.getInitialURL()
     if (initialUrl) {
       Logger.debug('useDeepLinks/useAsync', 'Linking InitialUrl', initialUrl)
@@ -85,17 +65,8 @@ export const useDeepLinks = () => {
       handleOpenURL(event)
     })
 
-    let dynamicLinksUnsubsribe: () => void | undefined
-    if (FIREBASE_ENABLED) {
-      dynamicLinksUnsubsribe = dynamicLinks().onLink(({ url }) => {
-        Logger.debug('useDeepLinks/useEffect', 'Dynamic link event', url)
-        handleOpenURL({ url })
-      })
-    }
-
     return () => {
       linkingEventListener.remove()
-      dynamicLinksUnsubsribe?.()
     }
   }, [])
 }

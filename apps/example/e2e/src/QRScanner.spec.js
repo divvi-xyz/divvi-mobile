@@ -1,4 +1,4 @@
-import { launchApp } from './utils/retries'
+import { launchApp, reloadReactNative } from './utils/retries'
 import { quickOnboarding, waitForElementById } from './utils/utils'
 
 const verifyCamera = async () => {
@@ -38,7 +38,7 @@ describe('Given QR Scanner', () => {
 
   describe("When 'scanning' QR", () => {
     beforeEach(async () => {
-      await launchApp({ newInstance: false })
+      await reloadReactNative()
       await waitForElementById('HomeAction-Receive', { tap: true })
       await waitForElementById('Scan', { tap: true })
       await verifyCamera()
@@ -54,8 +54,7 @@ describe('Given QR Scanner', () => {
       await waitForElementById('ManualSubmit')
       await element(by.id('ManualSubmit')).tap()
 
-      await waitForElementById('SendEnterAmount/AmountOptions')
-      await element(by.text('Done')).tap() // dismiss the keyboard to reveal the proceed button
+      await element(by.text('Enter Amount')).tap() // dismiss the keyboard to reveal the proceed button
       await expect(element(by.id('SendEnterAmount/ReviewButton'))).toBeVisible()
     })
 
@@ -67,8 +66,7 @@ describe('Given QR Scanner', () => {
       await waitForElementById('ManualSubmit')
       await element(by.id('ManualSubmit')).tap()
 
-      await waitForElementById('SendEnterAmount/AmountOptions')
-      await element(by.text('Done')).tap() // dismiss the keyboard to reveal the proceed button
+      await element(by.text('Enter Amount')).tap() // dismiss the keyboard to reveal the proceed button
       await expect(element(by.id('SendEnterAmount/ReviewButton'))).toBeVisible()
     })
   })

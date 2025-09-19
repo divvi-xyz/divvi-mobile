@@ -3534,11 +3534,6 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-22.4.0.tgz#ce2e95eb72129ccc1b464053dae72777b45370bf"
   integrity sha512-iY+676RTwntRqq0CqcbGhidaegt/a6eKaoLTXeAxvtPYQaYXQL1fCDuZKfoy6uBfNsAGDxx2z4jYJuU+kOv4pA==
 
-"@react-native-firebase/dynamic-links@22.4.0":
-  version "22.4.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/dynamic-links/-/dynamic-links-22.4.0.tgz#6c05388e154d0c6206c1759d8b21d7dde3706b97"
-  integrity sha512-fln4lLvq6I2OBl1hquxVPYSfenwPMhqWRNfxG3O50fBYlhQ8V1k9dDmEH2uLzFW7nEKCka/AoRuAFk1WKS1PLw==
-
 "@react-native-firebase/messaging@22.4.0":
   version "22.4.0"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-22.4.0.tgz#91e88deb8cba799c06e847577c0c61fdcfe381cf"
@@ -7928,10 +7923,10 @@ detect-newline@^4.0.1:
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-4.0.1.tgz#fcefdb5713e1fb8cb2839b8b6ee22e6716ab8f23"
   integrity sha512-qE3Veg1YXzGHQhlA6jzebZN2qVf6NX+A7m7qlhCGG30dJixrAQhYOsJjsnBjJkCSmuOPpCk30145fr8FV0bzog==
 
-detox@^20.41.0:
-  version "20.41.1"
-  resolved "https://registry.yarnpkg.com/detox/-/detox-20.41.1.tgz#05c459e621359fa3bba812b31b5d90db7bdb277a"
-  integrity sha512-Hp0UyZF7M88LfzAibwxSw/sJaXlz7Smvp1c0CVhUHlT4fZG4Qdr2PulZT+MCVFu6U1Q9jhlRATbDLeNc5q28aQ==
+detox@^20.41.3:
+  version "20.41.3"
+  resolved "https://registry.yarnpkg.com/detox/-/detox-20.41.3.tgz#8f96a27c937d44c69a8f411fad26a33eef88a76f"
+  integrity sha512-U9b/ybzmrDh+PcAWSorj4O2QQTxpNfILSQmpLozw+eXHOXg+TMXlN917Nz3n4zfEAeLne7sAbkfEgpyic1txLw==
   dependencies:
     "@wix-pilot/core" "^3.4.1"
     "@wix-pilot/detox" "^1.0.13"
