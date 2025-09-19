@@ -148,6 +148,7 @@ function SignInWithEmail({ route, navigation }: Props) {
       provider,
     })
     try {
+      // Upgrade auth0 to 5.0.0-beta.4+ when https://github.com/auth0/react-native-auth0/pull/1256 is in a release
       // clear any existing saved credentials
       await clearCredentials()
 

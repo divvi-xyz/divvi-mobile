@@ -7,8 +7,8 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { AuthenticationEvents } from 'src/analytics/Events'
 import AppAnalytics from 'src/analytics/AppAnalytics'
+import { AuthenticationEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { headerWithBackButton } from 'src/navigator/Headers'
 import { Screens } from 'src/navigator/Screens'
@@ -16,8 +16,8 @@ import { StackParamList } from 'src/navigator/types'
 import { checkPin } from 'src/pincode/authentication'
 import Pincode from 'src/pincode/Pincode'
 import { useSelector } from 'src/redux/hooks'
-import { SentryTransactionHub } from 'src/sentry/SentryTransactionHub'
-import { SentryTransaction } from 'src/sentry/SentryTransactions'
+import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
+import { SentrySpan } from 'src/sentry/SentrySpans'
 import { currentAccountSelector } from 'src/web3/selectors'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.PincodeEnter>
@@ -31,7 +31,7 @@ export const PincodeEnter = ({ route }: Props) => {
 
   useEffect(() => {
     AppAnalytics.track(AuthenticationEvents.get_pincode_with_input_start)
-    SentryTransactionHub.startTransaction(SentryTransaction.pincode_enter)
+    SentrySpanHub.startSpan(SentrySpan.pincode_enter)
     return () => {
       const onCancel = route.params.onCancel
       if (onCancel && !pinIsCorrect) {
@@ -51,7 +51,7 @@ export const PincodeEnter = ({ route }: Props) => {
     if (onSuccess) {
       AppAnalytics.track(AuthenticationEvents.get_pincode_with_input_complete)
       onSuccess(pin)
-      SentryTransactionHub.finishTransaction(SentryTransaction.pincode_enter)
+      SentrySpanHub.finishSpan(SentrySpan.pincode_enter)
     }
   }
 

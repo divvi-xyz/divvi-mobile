@@ -42,8 +42,8 @@ import { allowHooksPreviewSelector } from 'src/positions/selectors'
 import { Actions as SendActions } from 'src/send/actions'
 import { handlePaymentDeeplink } from 'src/send/utils'
 import { initializeSentry } from 'src/sentry/Sentry'
-import { SentryTransactionHub } from 'src/sentry/SentryTransactionHub'
-import { SentryTransaction } from 'src/sentry/SentryTransactions'
+import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
+import { SentrySpan } from 'src/sentry/SentrySpans'
 import { getFeatureGate, patchUpdateStatsigUser, setupOverridesFromLaunchArgs } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import { swapSuccess } from 'src/swap/slice'
@@ -90,7 +90,7 @@ const REVIEW_INTERVAL = ONE_DAY_IN_MILLIS * 120 // 120 days
 export function* appInit() {
   yield* call(initializeSentry)
 
-  SentryTransactionHub.startTransaction(SentryTransaction.app_init_saga)
+  SentrySpanHub.startSpan(SentrySpan.app_init_saga)
 
   const otaTranslationsAppVersion = yield* select(otaTranslationsAppVersionSelector)
   const language = yield* select(currentLanguageSelector)
@@ -118,7 +118,7 @@ export function* appInit() {
     setupOverridesFromLaunchArgs()
   }
 
-  SentryTransactionHub.finishTransaction(SentryTransaction.app_init_saga)
+  SentrySpanHub.finishSpan(SentrySpan.app_init_saga)
 }
 
 // Check the availability of Google Mobile Services and Huawei Mobile Services, an alternative to
