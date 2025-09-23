@@ -7,7 +7,6 @@ import { throwError } from 'redux-saga-test-plan/providers'
 import { call, select, spawn } from 'redux-saga/effects'
 import { depositSuccess } from 'src/earn/slice'
 import { Actions as HomeActions } from 'src/home/actions'
-import { depositTransactionSucceeded } from 'src/jumpstart/slice'
 import { retrieveSignedMessage } from 'src/pincode/authentication'
 import * as pointsSaga from 'src/points/saga'
 import {
@@ -48,7 +47,7 @@ import { walletAddressSelector } from 'src/web3/selectors'
 import { createMockStore } from 'test/utils'
 import { mockAccount } from 'test/values'
 import { v4 as uuidv4 } from 'uuid'
-import { Address, Hash } from 'viem'
+import { Hash } from 'viem'
 
 jest.mock('src/statsig')
 jest.mocked(getFeatureGate).mockImplementation((featureGate) => {
@@ -675,37 +674,6 @@ describe('watchDepositSuccess', () => {
   })
 })
 
-describe('watchLiveLinkCreated', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-  it('should call sendPointsEvent with transformed payload', async () => {
-    const mockAction = depositTransactionSucceeded({
-      liveLinkType: 'erc20' as const,
-      beneficiaryAddress: mockAccount as Address,
-      transactionHash: '0x456' as Hash,
-      networkId: NetworkId['celo-alfajores'],
-      tokenId: 'some-token-id',
-      amount: '10',
-    })
-
-    await expectSaga(pointsSaga.watchLiveLinkCreatedTransformPayload, mockAction)
-      .provide([
-        [
-          matchers.call(
-            sendPointsEvent,
-            trackPointsEvent({
-              ...mockAction.payload,
-              activityId: 'create-live-link',
-            })
-          ),
-          null,
-        ],
-      ])
-      .run()
-  })
-})
-
 describe('watchHomeScreenVisit', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -782,7 +750,6 @@ describe('pointsSaga', () => {
         [spawn(pointsSaga.watchGetConfig), null],
         [spawn(pointsSaga.watchTrackPointsEvent), null],
         [spawn(pointsSaga.watchHomeScreenVisit), null],
-        [spawn(pointsSaga.watchLiveLinkCreated), null],
         [spawn(pointsSaga.watchSwapSuccess), null],
         [spawn(pointsSaga.watchDepositSuccess), null],
         [spawn(pointsSaga.watchPointsDataRefreshStarted), null],
@@ -794,7 +761,6 @@ describe('pointsSaga', () => {
       spawn(pointsSaga.watchGetConfig),
       spawn(pointsSaga.watchTrackPointsEvent),
       spawn(pointsSaga.watchHomeScreenVisit),
-      spawn(pointsSaga.watchLiveLinkCreated),
       spawn(pointsSaga.watchSwapSuccess),
       spawn(pointsSaga.watchDepositSuccess),
       spawn(pointsSaga.watchPointsDataRefreshStarted),

@@ -12,7 +12,6 @@ import { getAppConfig } from 'src/appConfig'
 import BackButton from 'src/components/BackButton'
 import Button, { BtnSizes } from 'src/components/Button'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
-import InviteOptionsModal from 'src/components/InviteOptionsModal'
 import KeyboardAwareScrollView from 'src/components/KeyboardAwareScrollView'
 import CustomHeader from 'src/components/header/CustomHeader'
 import CircledIcon from 'src/icons/CircledIcon'
@@ -25,7 +24,6 @@ import {
   secureSendPhoneNumberMappingSelector,
 } from 'src/identity/selectors'
 import { RecipientVerificationStatus } from 'src/identity/types'
-import { useInviteReward } from 'src/invite/hooks'
 import { noHeader } from 'src/navigator/Headers'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
@@ -33,7 +31,6 @@ import { StackParamList } from 'src/navigator/types'
 import RecipientPicker from 'src/recipients/RecipientPickerV2'
 import { Recipient, RecipientType, recipientHasNumber } from 'src/recipients/recipient'
 import { useDispatch, useSelector } from 'src/redux/hooks'
-import InviteRewardsCard from 'src/send/InviteRewardsCard'
 import PasteAddressButton from 'src/send/PasteAddressButton'
 import SelectRecipientButtons from 'src/send/SelectRecipientButtons'
 import { SendSelectRecipientSearchInput } from 'src/send/SendSelectRecipientSearchInput'
@@ -196,7 +193,6 @@ enum SelectRecipientView {
 function SendSelectRecipient({ route }: Props) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const inviteReward = useInviteReward()
   const secureSendPhoneNumberMapping = useSelector(secureSendPhoneNumberMappingSelector)
   const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
 
@@ -208,8 +204,6 @@ function SendSelectRecipient({ route }: Props) {
   const [showSearchResults, setShowSearchResults] = useState(false)
 
   const [activeView, setActiveView] = useState(SelectRecipientView.Recent)
-
-  const [showInviteModal, setShowInviteModal] = useState(false)
 
   const onSearch = (searchQuery: string) => {
     // Always unset the selected recipient and hide the send/invite button
@@ -302,26 +296,14 @@ function SendSelectRecipient({ route }: Props) {
     })
   }
 
-  const onPressSendOrInvite = (shouldInviteRecipient: boolean) => {
+  const onPressSend = () => {
     if (!recipient) {
       return
     }
-    if (shouldInviteRecipient) {
-      AppAnalytics.track(SendEvents.send_select_recipient_invite_press, {
-        recipientType: recipient.recipientType,
-      })
-      setShowSendOrInviteButton(false)
-      setShowInviteModal(true)
-    } else {
-      AppAnalytics.track(SendEvents.send_select_recipient_send_press, {
-        recipientType: recipient.recipientType,
-      })
-      nextScreen(recipient)
-    }
-  }
-
-  const onCloseInviteModal = () => {
-    setShowInviteModal(false)
+    AppAnalytics.track(SendEvents.send_select_recipient_send_press, {
+      recipientType: recipient.recipientType,
+    })
+    nextScreen(recipient)
   }
 
   const renderSearchResults = () => {
@@ -387,7 +369,6 @@ function SendSelectRecipient({ route }: Props) {
           />
         ) : (
           <>
-            {inviteReward.active && <InviteRewardsCard />}
             <SelectRecipientButtons
               defaultTokenIdOverride={defaultTokenIdOverride}
               onContactsPermissionGranted={onContactsPermissionGranted}
@@ -410,9 +391,6 @@ function SendSelectRecipient({ route }: Props) {
           </>
         )}
       </KeyboardAwareScrollView>
-      {showInviteModal && recipient && (
-        <InviteOptionsModal recipient={recipient} onClose={onCloseInviteModal} />
-      )}
       {showUnknownAddressInfo && (
         <InLineNotification
           variant={NotificationVariant.Info}
@@ -425,7 +403,7 @@ function SendSelectRecipient({ route }: Props) {
         <SendOrInviteButton
           recipient={recipient}
           recipientVerificationStatus={recipientVerificationStatus}
-          onPress={onPressSendOrInvite}
+          onPress={onPressSend}
         />
       )}
     </SafeAreaView>

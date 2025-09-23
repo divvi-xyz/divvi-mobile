@@ -10,7 +10,7 @@ interface NftMedia {
   gateway: string
 }
 
-export interface NftMetadata {
+interface NftMetadata {
   name: string
   description: string
   image: string

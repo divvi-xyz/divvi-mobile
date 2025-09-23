@@ -295,10 +295,7 @@ describe('JumpstartTransactionDetailsScreen', () => {
       transaction: mockTransaction,
       storeOverrides: {
         jumpstart: {
-          claimStatus: 'idle',
-          depositStatus: 'idle',
           reclaimStatus: 'error',
-          introHasBeenSeen: false,
         },
       },
     })
@@ -312,10 +309,7 @@ describe('JumpstartTransactionDetailsScreen', () => {
 
     const updatedStore = createMockStore({
       jumpstart: {
-        claimStatus: 'idle',
-        depositStatus: 'idle',
         reclaimStatus: 'loading',
-        introHasBeenSeen: false,
       },
     })
     rerender(

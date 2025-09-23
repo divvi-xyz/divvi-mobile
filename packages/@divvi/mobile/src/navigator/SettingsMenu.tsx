@@ -29,7 +29,6 @@ import GradientBlock from 'src/components/GradientBlock'
 import { SettingsItemTextValue } from 'src/components/SettingsItem'
 import Touchable from 'src/components/Touchable'
 import { STATSIG_ENABLED } from 'src/config'
-import Envelope from 'src/icons/Envelope'
 import ForwardChevron from 'src/icons/ForwardChevron'
 import Help from 'src/icons/Help'
 import Lock from 'src/icons/Lock'
@@ -146,7 +145,6 @@ export default function SettingsMenu({ route }: Props) {
 
   const { links } = getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.APP_CONFIG])
   const experimentalFeatures = getAppConfig().experimental
-  const inviteFriendsEnabled = experimentalFeatures?.inviteFriends
   const showHelp = !!experimentalFeatures?.zendeskConfig || !!links?.faq || !!links?.forum
 
   useEffect(() => {
@@ -222,16 +220,6 @@ export default function SettingsMenu({ route }: Props) {
           showChevron
           borderless
         />
-        {inviteFriendsEnabled && (
-          <SettingsItemTextValue
-            icon={<Envelope color={Colors.contentPrimary} />}
-            title={t('invite')}
-            onPress={() => navigate(Screens.Invite)}
-            testID="SettingsMenu/Invite"
-            showChevron
-            borderless
-          />
-        )}
 
         <GradientBlock style={styles.divider} />
 

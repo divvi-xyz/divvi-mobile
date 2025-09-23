@@ -259,15 +259,6 @@ export enum AuthenticationEvents {
   get_pincode_with_input_error = 'get_pincode_with_input_error',
 }
 
-export enum InviteEvents {
-  invite_banner_impression = 'invite_banner_impression',
-  invite_with_share = 'invite_with_share',
-  invite_with_share_dismiss = 'invite_with_share_dismiss',
-  invite_with_referral_url = 'invite_with_referral_url',
-  opened_via_invite_url = 'opened_via_invite_url',
-  invite_help_link = 'invite_help_link',
-}
-
 export enum SendEvents {
   send_scan = 'send_scan',
   send_select_recipient = 'send_select_recipient',
@@ -595,28 +586,6 @@ export enum TransactionDetailsEvents {
 }
 
 export enum JumpstartEvents {
-  send_select_recipient_jumpstart = 'send_select_recipient_jumpstart',
-  jumpstart_send_amount_exceeds_threshold = 'jumpstart_send_amount_exceeds_threshold',
-  jumpstart_send_amount_continue = 'jumpstart_send_amount_continue',
-  jumpstart_send_confirm = 'jumpstart_send_confirm',
-  jumpstart_send_start = 'jumpstart_send_start',
-  jumpstart_send_succeeded = 'jumpstart_send_succeeded',
-  jumpstart_send_failed = 'jumpstart_send_failed',
-  jumpstart_send_cancelled = 'jumpstart_send_cancelled',
-  jumpstart_share_link = 'jumpstart_share_link',
-  jumpstart_share_link_result = 'jumpstart_share_link_result',
-  jumpstart_show_QR = 'jumpstart_show_QR',
-  jumpstart_copy_link = 'jumpstart_copy_link',
-  jumpstart_share_close = 'jumpstart_share_close',
-  jumpstart_share_confirm_close = 'jumpstart_share_confirm_close',
-  jumpstart_share_dismiss_close = 'jumpstart_share_dismiss_close',
-  jumpstart_claim_succeeded = 'jumpstart_claim_succeeded',
-  jumpstart_claim_failed = 'jumpstart_claim_failed',
-  jumpstart_claimed_token = 'jumpstart_claimed_token',
-  jumpstart_claimed_nft = 'jumpstart_claimed_nft',
-  jumpstart_claim_loading_dismissed = 'jumpstart_claim_loading_dismissed',
-  jumpstart_claim_error_dismissed = 'jumpstart_claim_error_dismissed',
-  jumpstart_claim_error_contact_support = 'jumpstart_claim_error_contact_support',
   jumpstart_reclaim_press = 'jumpstart_reclaim_press',
   jumpstart_reclaim_start = 'jumpstart_reclaim_start',
   jumpstart_reclaim_failed = 'jumpstart_reclaim_failed',
@@ -625,9 +594,6 @@ export enum JumpstartEvents {
   jumpstart_reclaim_contact_support = 'jumpstart_reclaim_contact_support',
   jumpstart_claim_status_fetch_success = 'jumpstart_claim_status_fetch_success',
   jumpstart_claim_status_fetch_error = 'jumpstart_claim_status_fetch_error',
-  jumpstart_add_assets_show_actions = 'jumpstart_add_assets_show_actions',
-  jumpstart_add_assets_action_press = 'jumpstart_add_assets_action_press',
-  jumpstart_intro_seen = 'jumpstart_intro_seen',
 }
 
 export enum PointsEvents {
