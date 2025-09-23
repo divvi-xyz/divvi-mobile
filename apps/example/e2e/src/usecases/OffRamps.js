@@ -69,7 +69,6 @@ export default offRamps = () => {
 
         await waitForElementById('FiatExchangeInput')
         await element(by.id('FiatExchangeInput')).replaceText('2')
-        // Hide the keyboard on Android
         if (device.getPlatform() === 'android') {
           await element(by.id('FiatExchangeInput')).typeText('\n')
         }
@@ -90,7 +89,6 @@ export default offRamps = () => {
 
       await waitForElementById('FiatExchangeInput')
       await element(by.id('FiatExchangeInput')).replaceText(`${randomAmount}`)
-      // Hide the keyboard on Android
       if (device.getPlatform() === 'android') {
         await element(by.id('FiatExchangeInput')).typeText('\n')
       }
