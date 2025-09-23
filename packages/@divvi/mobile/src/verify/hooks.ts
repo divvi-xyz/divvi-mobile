@@ -10,6 +10,8 @@ import { ErrorMessages } from 'src/app/ErrorMessages'
 import { phoneNumberRevoked, phoneNumberVerificationCompleted } from 'src/app/actions'
 import { inviterAddressSelector } from 'src/app/selectors'
 import { retrieveSignedMessage } from 'src/pincode/authentication'
+import { RecaptchaActionType } from 'src/recaptcha/RecaptchaService'
+import { useRecaptcha } from 'src/recaptcha/useRecaptcha'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import Logger from 'src/utils/Logger'
 import getPhoneHash from 'src/utils/getPhoneHash'
@@ -30,6 +32,7 @@ export function useVerifyPhoneNumber(phoneNumber: string, countryCallingCode: st
   const dispatch = useDispatch()
   const address = useSelector(walletAddressSelector)
   const inviterAddress = useSelector(inviterAddressSelector)
+  const { getToken: getRecaptchaToken, isEnabled: isRecaptchaEnabled } = useRecaptcha()
 
   const [verificationStatus, setVerificationStatus] = useState(PhoneNumberVerificationStatus.NONE)
   const [verificationId, setVerificationId] = useState('')
@@ -88,19 +91,40 @@ export function useVerifyPhoneNumber(phoneNumber: string, countryCallingCode: st
       Logger.debug(`${TAG}/requestVerificationCode`, 'Initiating request to verifyPhoneNumber')
       const signedMessage = await retrieveSignedMessage()
 
+      let recaptchaToken: string | undefined
+      if (isRecaptchaEnabled) {
+        try {
+          recaptchaToken = await getRecaptchaToken(RecaptchaActionType.PHONE_VERIFICATION)
+          Logger.debug(`${TAG}/requestVerificationCode`, 'reCAPTCHA token obtained')
+        } catch (error) {
+          Logger.warn(
+            `${TAG}/requestVerificationCode`,
+            'Failed to get reCAPTCHA token, proceeding without it',
+            error
+          )
+        }
+      }
+
+      const requestBody: any = {
+        phoneNumber,
+        clientPlatform: Platform.OS,
+        clientVersion: DeviceInfo.getVersion(),
+        clientBundleId: DeviceInfo.getBundleId(),
+        inviterAddress: inviterAddress ?? undefined,
+      }
+
+      // Add reCAPTCHA token to request if available
+      if (recaptchaToken) {
+        requestBody.recaptchaToken = recaptchaToken
+      }
+
       const response = await fetch(networkConfig.verifyPhoneNumberUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           authorization: `${networkConfig.authHeaderIssuer} ${address}:${signedMessage}`,
         },
-        body: JSON.stringify({
-          phoneNumber,
-          clientPlatform: Platform.OS,
-          clientVersion: DeviceInfo.getVersion(),
-          clientBundleId: DeviceInfo.getBundleId(),
-          inviterAddress: inviterAddress ?? undefined,
-        }),
+        body: JSON.stringify(requestBody),
       })
       if (response.ok) {
         return response
@@ -109,7 +133,7 @@ export function useVerifyPhoneNumber(phoneNumber: string, countryCallingCode: st
       }
     },
 
-    [phoneNumber, shouldResendSms],
+    [phoneNumber, shouldResendSms, isRecaptchaEnabled],
     {
       onError: (error: Error) => {
         if (error?.message.includes('Phone number already verified')) {

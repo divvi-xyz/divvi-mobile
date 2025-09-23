@@ -2271,6 +2271,11 @@
     "@shikijs/types" "^1.27.2"
     "@shikijs/vscode-textmate" "^10.0.1"
 
+"@google-cloud/recaptcha-enterprise-react-native@^18.7.1":
+  version "18.7.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/recaptcha-enterprise-react-native/-/recaptcha-enterprise-react-native-18.7.1.tgz#2c7e4e94af0e2db32ed6de20533e385ee85786d9"
+  integrity sha512-RnJIFpiA+tviZqbZWMFDC6nBT3Z3Z8ZoxgeYWY6h7g4V4e5aDI0stox7irpndJis9uOYodE3rVZvOo44qI+Ugg==
+
 "@gorhom/bottom-sheet@^5.1.1":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@gorhom/bottom-sheet/-/bottom-sheet-5.1.1.tgz#43ecb9e7b4d4ca4b4cefdf3b6b497f7715f350bc"
@@ -13934,7 +13939,7 @@ react-native-fs@^2.14.1:
     base-64 "^0.1.0"
     utf8 "^3.0.0"
 
-react-native-gesture-handler@^2.23.1:
+react-native-gesture-handler@^2.23.1, react-native-gesture-handler@^2.24.0:
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.28.0.tgz#07fb4f5eae72f810aac3019b060d26c1835bfd0c"
   integrity sha512-0msfJ1vRxXKVgTgvL+1ZOoYw3/0z1R+Ked0+udoJhyplC2jbVKIJ8Z1bzWdpQRCV3QcQ87Op0zJVE5DhKK2A0A==
