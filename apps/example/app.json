@@ -25,6 +25,9 @@
       }
     },
     "android": {
+      // disabled to prevent user's app data to be automatically backed up to their Google Drive
+      // See: https://stackoverflow.com/questions/55665337
+      "allowBackup": false,
       "edgeToEdgeEnabled": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
