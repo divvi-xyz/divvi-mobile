@@ -1,4 +1,4 @@
-import { BIOMETRY_TYPE } from 'react-native-keychain'
+import { BIOMETRY_TYPE } from '@divvi/react-native-keychain'
 import { Screens } from 'src/navigator/Screens'
 
 // https://facebook.github.io/react-native/docs/appstate
