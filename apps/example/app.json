@@ -25,6 +25,8 @@
       }
     },
     "android": {
+      // IMPORTANT: to avoid react-native-keychain issues when reinstalling the app
+      "allowBackup": false,
       "edgeToEdgeEnabled": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
