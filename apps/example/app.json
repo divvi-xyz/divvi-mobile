@@ -25,8 +25,7 @@
       }
     },
     "android": {
-      // disabled to prevent user's app data to be automatically backed up to their Google Drive
-      // See: https://stackoverflow.com/questions/55665337
+      // IMPORTANT: to avoid react-native-keychain issues when reinstalling the app
       "allowBackup": false,
       "edgeToEdgeEnabled": false,
       "adaptiveIcon": {
