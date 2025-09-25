@@ -180,6 +180,7 @@ describe(getPincode, () => {
         title: 'unlockWithBiometryPrompt',
       },
       service: 'PIN',
+      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
     })
   })
   it('logs an error if biometry fails, and requests pincode input', async () => {
@@ -198,6 +199,7 @@ describe(getPincode, () => {
         title: 'unlockWithBiometryPrompt',
       },
       service: 'PIN',
+      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
     })
     expect(loggerErrorSpy).toHaveBeenCalledWith(
       'storage/keychain',
@@ -224,6 +226,7 @@ describe(getPincode, () => {
         title: 'unlockWithBiometryPrompt',
       },
       service: 'PIN',
+      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
     })
     expect(loggerErrorSpy).not.toHaveBeenCalled()
     expectPincodeEntered()

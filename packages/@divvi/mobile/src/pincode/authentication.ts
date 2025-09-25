@@ -273,6 +273,7 @@ export async function getPincodeWithBiometry() {
       authenticationPrompt: {
         title: i18n.t('unlockWithBiometryPrompt') ?? undefined,
       },
+      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
     })
     if (retrievedPin) {
       AppAnalytics.track(AuthenticationEvents.get_pincode_with_biometry_complete)
