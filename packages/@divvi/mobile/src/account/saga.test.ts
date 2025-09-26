@@ -5,7 +5,6 @@ import * as matchers from 'redux-saga-test-plan/matchers'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { call, select } from 'redux-saga/effects'
 import {
-  clearStoredItemsSaga,
   generateSignedMessage,
   handleUpdateAccountRegistration,
   initializeAccountSaga,
@@ -18,7 +17,6 @@ import { Actions as AccountActions, phoneNumberVerificationCompleted } from 'src
 import { currentLanguageSelector } from 'src/i18n/selectors'
 import { userLocationDataSelector } from 'src/networkInfo/selectors'
 import { retrieveSignedMessage, storeSignedMessage } from 'src/pincode/authentication'
-import { clearStoredItems } from 'src/storage/keychain'
 import Logger from 'src/utils/Logger'
 import { ViemKeychainAccount } from 'src/viem/keychainAccountToAccount'
 import { getKeychainAccounts } from 'src/web3/contracts'
@@ -207,33 +205,5 @@ describe('initializeAccount', () => {
       .run()
 
     expect(mockFetch).toHaveBeenCalledTimes(1)
-  })
-})
-
-describe('clearStoredItemsSaga', () => {
-  it('should call clearStoredItems and track analytics event', async () => {
-    const mockStaleItems = ['item1', 'item2']
-    await expectSaga(clearStoredItemsSaga)
-      .provide([[call(clearStoredItems), mockStaleItems]])
-      .call(clearStoredItems)
-      .call([AppAnalytics, 'track'], OnboardingEvents.stale_keychain_items_cleared, {
-        staleItems: mockStaleItems,
-        staleItemsCount: mockStaleItems.length,
-      })
-      .run()
-  })
-
-  it('should log error if clearStoredItems fails', async () => {
-    const error = new Error('Failed to clear items')
-    await expectSaga(clearStoredItemsSaga)
-      .provide([[call(clearStoredItems), throwError(error)]])
-      .call(clearStoredItems)
-      .run()
-
-    expect(loggerErrorSpy).toHaveBeenCalledWith(
-      'account/saga@clearKeychainItems',
-      'Failed to clear keychain items',
-      error
-    )
   })
 })
