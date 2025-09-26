@@ -68,7 +68,7 @@ class RecaptchaServiceImpl {
       await this.initializeIfNecessary()
       if (!this.client) {
         // This should never happen - if Recaptcha is enabled, the initialization will either set the client or throw an error.
-        throw new Error('reCAPTCHA client not available')
+        throw new Error('reCAPTCHA client key found but client is not available')
       }
 
       let action: RecaptchaAction
