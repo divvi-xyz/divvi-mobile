@@ -1110,10 +1110,10 @@
     base-64 "^0.1.0"
     utf8 "^3.0.0"
 
-"@divvi/react-native-keychain@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@divvi/react-native-keychain/-/react-native-keychain-10.0.0.tgz#607e6a6170b1a73740c18d8dc66b45293f28dcd0"
-  integrity sha512-S6+NgTO8d9P6jEPo2T2V9N1iX98XOBG9+gznOuexuvIcGZ4j1CsaM1s8Gede0CqTTHnBgkox12Z2d0/JCm7EoA==
+"@divvi/react-native-keychain@^10.0.0-divvi.1":
+  version "10.0.0-divvi.1"
+  resolved "https://registry.yarnpkg.com/@divvi/react-native-keychain/-/react-native-keychain-10.0.0-divvi.1.tgz#33c0464880d248af0bc69f44b0f2e6f95b032ff3"
+  integrity sha512-3UuNLwnsNuDUm5N5318a/B1MBpyCdoJl9ZR7ehqEQukGRMvGvd3jAjisWSF1H6pnc96ly5fC/H0Z7gbjIdudlg==
 
 "@divvi/referral-sdk@^2.2.0":
   version "2.2.0"
