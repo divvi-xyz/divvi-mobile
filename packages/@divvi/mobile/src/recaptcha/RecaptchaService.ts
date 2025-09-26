@@ -5,7 +5,6 @@ import {
 } from '@google-cloud/recaptcha-enterprise-react-native'
 import { Platform } from 'react-native'
 import { getAppConfig } from 'src/appConfig'
-import { type PublicAppConfig } from 'src/public'
 import Logger from 'src/utils/Logger'
 
 const TAG = 'recaptcha/RecaptchaService'
@@ -15,59 +14,39 @@ export enum RecaptchaActionType {
   KEYLESS_BACKUP = 'KEYLESS_BACKUP',
 }
 
-class RecaptchaService {
+class RecaptchaServiceImpl {
   private client: RecaptchaClient | null = null
   private initializationPromise: Promise<void> | null = null
 
-  async initialize(): Promise<void> {
-    if (this.initializationPromise) {
-      return this.initializationPromise
-    }
+  async initializeIfNecessary(): Promise<void> {
+    if (this.client) return
+    if (this.initializationPromise) return this.initializationPromise
 
-    this.initializationPromise = this.performInitialization()
-    return this.initializationPromise
+    this.initializationPromise = this.init()
+    try {
+      await this.initializationPromise
+    } catch (err) {
+      // If initialization fails, clear the promise so that we can try again later
+      this.initializationPromise = null
+      throw err
+    }
   }
 
-  private async performInitialization(): Promise<void> {
+  private async init(): Promise<void> {
+    // If client is already initialized, no need to initialize again
+    if (this.client) {
+      return
+    }
+
+    Logger.info(TAG, 'Initializing reCAPTCHA client')
+    const clientKey = this.getClientKey()
+    if (!clientKey) {
+      Logger.info(TAG, 'No client key found, reCAPTCHA not enabled')
+      return
+    }
+
     try {
-      const appConfig: PublicAppConfig = getAppConfig()
-      const recaptchaConfig = appConfig.experimental?.recaptcha
-
-      if (!recaptchaConfig?.enabled) {
-        Logger.info(TAG, 'reCAPTCHA not enabled')
-        return
-      }
-
-      // Get the appropriate site key for the current platform
-      let siteKey: string | undefined
-      const platform = Platform.OS
-
-      if (platform === 'ios') {
-        siteKey = recaptchaConfig.iOSSiteKey
-        if (siteKey) {
-          Logger.debug(TAG, 'Using iOS site key for reCAPTCHA')
-        } else {
-          Logger.warn(TAG, 'iOS site key not configured for reCAPTCHA')
-        }
-      } else if (platform === 'android') {
-        siteKey = recaptchaConfig.androidSiteKey
-        if (siteKey) {
-          Logger.debug(TAG, 'Using Android site key for reCAPTCHA')
-        } else {
-          Logger.warn(TAG, 'Android site key not configured for reCAPTCHA')
-        }
-      } else {
-        Logger.warn(TAG, `Unsupported platform for reCAPTCHA: ${platform}`)
-        return
-      }
-
-      if (!siteKey) {
-        Logger.warn(TAG, `No reCAPTCHA site key configured for platform: ${platform}`)
-        return
-      }
-
-      Logger.info(TAG, `Initializing reCAPTCHA client for platform: ${platform}`)
-      this.client = await Recaptcha.fetchClient(siteKey)
+      this.client = await Recaptcha.fetchClient(clientKey)
       Logger.info(TAG, 'reCAPTCHA client initialized successfully')
     } catch (error) {
       Logger.error(TAG, 'Failed to initialize reCAPTCHA client', error)
@@ -80,16 +59,19 @@ class RecaptchaService {
    * @param actionType - The type of action being performed
    * @returns Promise<string> - The reCAPTCHA token
    */
-  async getToken(actionType: RecaptchaActionType): Promise<string> {
-    await this.initialize()
-
-    if (!this.client) {
-      throw new Error('reCAPTCHA client not available')
+  async getToken(actionType: RecaptchaActionType): Promise<string | null> {
+    if (!this.isEnabled()) {
+      return null
     }
 
     try {
-      let action: RecaptchaAction
+      await this.initializeIfNecessary()
+      if (!this.client) {
+        // This should never happen - if Recaptcha is enabled, the initialization will either set the client or throw an error.
+        throw new Error('reCAPTCHA client not available')
+      }
 
+      let action: RecaptchaAction
       switch (actionType) {
         case RecaptchaActionType.PHONE_VERIFICATION:
           action = RecaptchaAction.custom('PHONE_VERIFICATION')
@@ -112,22 +94,17 @@ class RecaptchaService {
     }
   }
 
-  /**
-   * Check if reCAPTCHA is enabled
-   * @returns boolean - True if reCAPTCHA is enabled, false otherwise
-   */
+  private getClientKey(): string | undefined {
+    const platform = Platform.OS
+    const recaptchaConfig = getAppConfig().experimental?.recaptcha
+
+    return recaptchaConfig?.[platform === 'ios' ? 'iOSClientKey' : 'androidClientKey']
+  }
+
   isEnabled(): boolean {
-    const appConfig: PublicAppConfig = getAppConfig()
-    const recaptchaConfig = appConfig.experimental?.recaptcha
-
-    if (!recaptchaConfig?.enabled) {
-      return false
-    }
-
-    const siteKey =
-      Platform.OS === 'ios' ? recaptchaConfig.iOSSiteKey : recaptchaConfig.androidSiteKey
-    return !!siteKey
+    const clientKey = this.getClientKey()
+    return !!clientKey
   }
 }
 
-export const recaptchaService = new RecaptchaService()
+export const RecaptchaService = new RecaptchaServiceImpl()

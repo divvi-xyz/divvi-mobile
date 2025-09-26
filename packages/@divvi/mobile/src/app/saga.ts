@@ -39,7 +39,6 @@ import { Screens } from 'src/navigator/Screens'
 import { StackParamList } from 'src/navigator/types'
 import { handleEnableHooksPreviewDeepLink } from 'src/positions/saga'
 import { allowHooksPreviewSelector } from 'src/positions/selectors'
-import { initializeRecaptcha } from 'src/recaptcha/initializeRecaptcha'
 import { Actions as SendActions } from 'src/send/actions'
 import { handlePaymentDeeplink } from 'src/send/utils'
 import { initializeSentry } from 'src/sentry/Sentry'
@@ -107,7 +106,6 @@ export function* appInit() {
       allowOtaTranslations,
       otaTranslationsAppVersion
     ),
-    call(initializeRecaptcha),
   ])
 
   Logger.setNetworkErrors(DEFAULT_SENTRY_NETWORK_ERRORS)
