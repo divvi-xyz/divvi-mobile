@@ -7,6 +7,7 @@ export enum SupportedActions {
   eth_signTypedData_v4 = 'eth_signTypedData_v4',
   eth_sign = 'eth_sign',
   personal_sign = 'personal_sign',
+  wallet_getCapabilities = 'wallet_getCapabilities',
 }
 
 export enum SupportedEvents {
@@ -65,6 +66,11 @@ export function getDisplayTextFromAction(
       title: t('walletConnectRequest.signPayloadTitle'),
       action: t('allow'),
     },
+    [SupportedActions.wallet_getCapabilities]: {
+      description: t('walletConnectRequest.getCapabilities', { dappName }),
+      title: t('walletConnectRequest.getCapabilitiesTitle'),
+      action: t('allow'),
+    },
   }
 
   const translations = actionTranslations[action]
@@ -75,4 +81,7 @@ export function getDisplayTextFromAction(
   return translations
 }
 
-export const chainAgnosticActions: string[] = [SupportedActions.personal_sign]
+export const chainAgnosticActions: string[] = [
+  SupportedActions.personal_sign,
+  SupportedActions.wallet_getCapabilities,
+]

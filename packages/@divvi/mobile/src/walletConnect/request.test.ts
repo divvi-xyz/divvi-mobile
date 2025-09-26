@@ -11,6 +11,7 @@ import { getViemWallet } from 'src/web3/contracts'
 import { unlockAccount } from 'src/web3/saga'
 import { createMockStore } from 'test/utils'
 import {
+  mockAddress,
   mockCeloAddress,
   mockCeloTokenId,
   mockCeurAddress,
@@ -32,6 +33,11 @@ jest.mock('src/web3/networkConfig', () => {
     },
   }
 })
+
+jest.mock('src/web3/utils', () => ({
+  ...jest.requireActual('src/web3/utils'),
+  getSupportedNetworkIds: () => ['ethereum-sepolia', 'arbitrum-sepolia'],
+}))
 
 const signTransactionRequest = {
   request: {
@@ -207,5 +213,81 @@ describe(handleRequest, () => {
           .run()
     ).rejects.toThrow('unsupported network')
     expect(viemWallet.sendTransaction).not.toHaveBeenCalled()
+  })
+
+  describe('wallet_getCapabilities', () => {
+    it('returns all supported chains capabilities when client did not provide any hex chain ids', async () => {
+      const request = {
+        request: {
+          method: SupportedActions.wallet_getCapabilities,
+          params: [mockAddress],
+        },
+        chainId: 'eip155:11155111',
+      }
+      const expectedResult = {
+        '0xaa36a7': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+        '0x66eee': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+      }
+
+      await expectSaga(handleRequest, request).withState(state).returns(expectedResult).run()
+    })
+
+    it('handles hex chain ids in wallet_getCapabilities when client provided some hex chain ids', async () => {
+      const request = {
+        request: {
+          method: SupportedActions.wallet_getCapabilities,
+          params: [mockAddress, ['0xaa36a7', '0x66eee']], // ethereum-sepolia and arbitrum-sepolia
+        },
+        chainId: 'eip155:11155111',
+      }
+      const expectedResult = {
+        '0xaa36a7': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+        '0x66eee': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+      }
+
+      await expectSaga(handleRequest, request).withState(state).returns(expectedResult).run()
+    })
+
+    it('throws error when invalid chain id is provided', async () => {
+      const request = {
+        request: {
+          method: SupportedActions.wallet_getCapabilities,
+          params: [mockAddress, ['0xaa36a7', 'invalid_chain_id', '0x66eee']],
+        },
+        chainId: 'eip155:11155111',
+      }
+
+      await expect(
+        async () => await expectSaga(handleRequest, request).withState(state).run()
+      ).rejects.toThrow('requested chainIds must be expressed as hex numbers')
+    })
+
+    it('throws error when empty chain ids array is provided', async () => {
+      const request = {
+        request: {
+          method: SupportedActions.wallet_getCapabilities,
+          params: [mockAddress, []],
+        },
+        chainId: 'eip155:11155111',
+      }
+
+      await expect(
+        async () => await expectSaga(handleRequest, request).withState(state).run()
+      ).rejects.toThrow('requested chainIds array must not be empty')
+    })
+
+    it('throws error when non-array parameter is provided instead of chain ids array', async () => {
+      const request = {
+        request: {
+          method: SupportedActions.wallet_getCapabilities,
+          params: [mockAddress, 'not_an_array'],
+        },
+        chainId: 'eip155:11155111',
+      }
+
+      await expect(
+        async () => await expectSaga(handleRequest, request).withState(state).run()
+      ).rejects.toThrow('requested chainIds must be provided as an array')
+    })
   })
 })
