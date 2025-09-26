@@ -596,6 +596,21 @@ for (const [walletConnectChainId, networkId] of Object.entries(walletConnectChai
   walletConnectChainIdToNetwork[walletConnectChainId] = networkIdToNetwork[networkId]
 }
 
+export const viemChainIdToNetworkId: Record<number, NetworkId> = {
+  [celoAlfajores.id]: NetworkId['celo-alfajores'],
+  [celo.id]: NetworkId['celo-mainnet'],
+  [ethereum.id]: NetworkId['ethereum-mainnet'],
+  [ethereumSepolia.id]: NetworkId['ethereum-sepolia'],
+  [arbitrum.id]: NetworkId['arbitrum-one'],
+  [arbitrumSepolia.id]: NetworkId['arbitrum-sepolia'],
+  [optimism.id]: NetworkId['op-mainnet'],
+  [optimismSepolia.id]: NetworkId['op-sepolia'],
+  [polygon.id]: NetworkId['polygon-pos-mainnet'],
+  [polygonAmoy.id]: NetworkId['polygon-pos-amoy'],
+  [base.id]: NetworkId['base-mainnet'],
+  [baseSepolia.id]: NetworkId['base-sepolia'],
+}
+
 Logger.info('Connecting to testnet: ', DEFAULT_TESTNET)
 
 export default networkConfigs[DEFAULT_TESTNET]
