@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:267](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L267)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:266](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L266)
 
 #### divviId
 
@@ -193,12 +193,6 @@ optional recaptcha: object;
 
 ```ts
 optional androidSiteKey: string;
-```
-
-##### recaptcha.enabled
-
-```ts
-enabled: boolean
 ```
 
 ##### recaptcha.iOSSiteKey?
