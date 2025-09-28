@@ -52,7 +52,7 @@ export function useVerifyPhoneNumber(
       if (RecaptchaService.isEnabled()) {
         try {
           recaptchaToken = await RecaptchaService.getToken(RecaptchaActionType.KEYLESS_BACKUP)
-          Logger.debug(`${TAG}/issueSmsCode`, 'got reCAPTCHA token')
+          Logger.debug(`${TAG}/issueSmsCode`, 'Got reCAPTCHA token')
         } catch (error) {
           // Allow the flow to continue if there is an error since the CAB restore flow is critical
           Logger.error(
@@ -63,19 +63,17 @@ export function useVerifyPhoneNumber(
         }
       }
 
-      const requestBody: any = {
-        phoneNumber,
-        clientPlatform: Platform.OS,
-        clientBundleId: DeviceInfo.getBundleId(),
-        recaptchaToken: recaptchaToken ?? undefined,
-      }
-
       const response = await fetch(networkConfig.cabIssueSmsCodeUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({
+          phoneNumber,
+          clientPlatform: Platform.OS,
+          clientBundleId: DeviceInfo.getBundleId(),
+          recaptchaToken: recaptchaToken ?? undefined,
+        }),
       })
       if (response.ok) {
         return response
