@@ -93,21 +93,19 @@ export function useVerifyPhoneNumber(phoneNumber: string, countryCallingCode: st
         recaptchaToken = await RecaptchaService.getToken(RecaptchaActionType.PHONE_VERIFICATION)
       }
 
-      const requestBody = {
-        phoneNumber,
-        clientPlatform: Platform.OS,
-        clientVersion: DeviceInfo.getVersion(),
-        clientBundleId: DeviceInfo.getBundleId(),
-        recaptchaToken: recaptchaToken ?? undefined,
-      }
-
       const response = await fetch(networkConfig.verifyPhoneNumberUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           authorization: `${networkConfig.authHeaderIssuer} ${address}:${signedMessage}`,
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({
+          phoneNumber,
+          clientPlatform: Platform.OS,
+          clientVersion: DeviceInfo.getVersion(),
+          clientBundleId: DeviceInfo.getBundleId(),
+          recaptchaToken: recaptchaToken ?? undefined,
+        }),
       })
       if (response.ok) {
         return response
