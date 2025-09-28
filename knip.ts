@@ -45,6 +45,7 @@ const config: KnipConfig = {
         '@walletconnect/core', // used in e2e tests via @walletconnect/sign-client
         'tslib', // for some reason this is triggered after applying multiple tsconfigs to "extends" of apps/example/tsconfig.json
         '@tsconfig/node-lts', // used in e2e/tsconfig.json
+        '@google-cloud/recaptcha-enterprise-react-native', // can be used in example app for phone number verification and keyless backup
       ],
     },
     'packages/@divvi/mobile': {
