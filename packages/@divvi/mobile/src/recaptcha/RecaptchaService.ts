@@ -8,6 +8,7 @@ import { getAppConfig } from 'src/appConfig'
 import Logger from 'src/utils/Logger'
 
 const TAG = 'recaptcha/RecaptchaService'
+const RECAPTCHA_ACTION_TIMEOUT_MS = 10000 // 10 seconds
 
 export enum RecaptchaActionType {
   PHONE_VERIFICATION = 'PHONE_VERIFICATION',
@@ -39,7 +40,7 @@ class RecaptchaServiceImpl {
     }
 
     Logger.info(TAG, 'Initializing reCAPTCHA client')
-    const clientKey = this.getClientKey()
+    const clientKey = this.getSiteKey()
     if (!clientKey) {
       Logger.info(TAG, 'No client key found, reCAPTCHA not enabled')
       return
@@ -59,7 +60,7 @@ class RecaptchaServiceImpl {
    * @param actionType - The type of action being performed
    * @returns Promise<string> - The reCAPTCHA token
    */
-  async getToken(actionType: RecaptchaActionType): Promise<string | null> {
+  async getToken(action: RecaptchaActionType): Promise<string | null> {
     if (!this.isEnabled()) {
       return null
     }
@@ -71,39 +72,30 @@ class RecaptchaServiceImpl {
         throw new Error('reCAPTCHA client key found but client is not available')
       }
 
-      let action: RecaptchaAction
-      switch (actionType) {
-        case RecaptchaActionType.PHONE_VERIFICATION:
-          action = RecaptchaAction.custom('PHONE_VERIFICATION')
-          break
-        case RecaptchaActionType.KEYLESS_BACKUP:
-          action = RecaptchaAction.custom('KEYLESS_BACKUP')
-          break
-        default:
-          throw new Error(`Unknown action type: ${actionType}`)
-      }
-
-      Logger.debug(TAG, `Executing reCAPTCHA for action: ${actionType}`)
-      const token = await this.client.execute(action)
-      Logger.debug(TAG, `reCAPTCHA token generated for action: ${actionType}`)
+      Logger.debug(TAG, `Executing reCAPTCHA for action: ${action}`)
+      const token = await this.client.execute(
+        RecaptchaAction.custom(action),
+        RECAPTCHA_ACTION_TIMEOUT_MS
+      )
+      Logger.debug(TAG, `reCAPTCHA token generated for action: ${action}`)
 
       return token
     } catch (error) {
-      Logger.error(TAG, `Failed to get reCAPTCHA token for action: ${actionType}`, error)
+      Logger.error(TAG, `Failed to get reCAPTCHA token for action: ${action}`, error)
       throw error
     }
   }
 
-  private getClientKey(): string | undefined {
+  private getSiteKey(): string | undefined {
     const platform = Platform.OS
     const recaptchaConfig = getAppConfig().experimental?.recaptcha
 
-    return recaptchaConfig?.[platform === 'ios' ? 'iOSClientKey' : 'androidClientKey']
+    return recaptchaConfig?.[platform === 'ios' ? 'iOSSiteKey' : 'androidSiteKey']
   }
 
   isEnabled(): boolean {
-    const clientKey = this.getClientKey()
-    return !!clientKey
+    const siteKey = this.getSiteKey()
+    return !!siteKey
   }
 }
 
