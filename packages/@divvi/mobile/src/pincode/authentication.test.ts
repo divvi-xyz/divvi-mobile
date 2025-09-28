@@ -1,4 +1,4 @@
-import * as Keychain from 'react-native-keychain'
+import * as Keychain from '@divvi/react-native-keychain'
 import { expectSaga } from 'redux-saga-test-plan'
 import { select } from 'redux-saga/effects'
 import { PincodeType } from 'src/account/reducer'
@@ -180,6 +180,7 @@ describe(getPincode, () => {
         title: 'unlockWithBiometryPrompt',
       },
       service: 'PIN',
+      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
     })
   })
   it('logs an error if biometry fails, and requests pincode input', async () => {
@@ -198,6 +199,7 @@ describe(getPincode, () => {
         title: 'unlockWithBiometryPrompt',
       },
       service: 'PIN',
+      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
     })
     expect(loggerErrorSpy).toHaveBeenCalledWith(
       'storage/keychain',
@@ -224,6 +226,7 @@ describe(getPincode, () => {
         title: 'unlockWithBiometryPrompt',
       },
       service: 'PIN',
+      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
     })
     expect(loggerErrorSpy).not.toHaveBeenCalled()
     expectPincodeEntered()
@@ -309,7 +312,7 @@ describe(setPincodeWithBiometry, () => {
       mockPin,
       expect.objectContaining({
         service: 'PIN',
-        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
+        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
       })
     )
   })
@@ -334,7 +337,7 @@ describe(setPincodeWithBiometry, () => {
       mockPin,
       expect.objectContaining({
         service: 'PIN',
-        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
+        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
       })
     )
   })
@@ -450,7 +453,7 @@ describe(updatePin, () => {
       mockPin,
       expect.objectContaining({
         service: 'PIN',
-        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
+        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
       })
     )
   })

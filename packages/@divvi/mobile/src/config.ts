@@ -157,7 +157,6 @@ export const SIMPLEX_FEES_URL =
   'https://support.simplex.com/hc/en-gb/articles/360014078420-What-fees-am-I-paying-'
 
 export const APP_STORE_ID = Config.APP_STORE_ID
-export const DYNAMIC_LINK_DOMAIN_URI_PREFIX = 'https://vlra.app'
 export const OTA_TRANSLATIONS_FILEPATH = `file://${CachesDirectoryPath}/translations`
 
 export const FETCH_TIMEOUT_DURATION = 15000 // 15 seconds

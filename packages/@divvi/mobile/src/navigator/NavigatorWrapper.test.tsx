@@ -1,4 +1,3 @@
-import dynamicLinks from '@react-native-firebase/dynamic-links'
 import { render, waitFor } from '@testing-library/react-native'
 import * as React from 'react'
 import { Linking } from 'react-native'
@@ -17,13 +16,6 @@ jest.mock('src/navigator/NavigationService', () => ({
 jest.mock('src/sentry/Sentry', () => ({
   ...(jest.requireActual('src/sentry/Sentry') as any),
   sentryRoutingInstrumentation: { registerNavigationContainer: jest.fn() },
-}))
-
-const mockDynamicLinksOnLink = jest.fn().mockReturnValue(jest.fn())
-const mockDynamicLinksGetInitialLink = jest.fn()
-jest.mock('@react-native-firebase/dynamic-links', () => () => ({
-  onLink: mockDynamicLinksOnLink,
-  getInitialLink: mockDynamicLinksGetInitialLink,
 }))
 
 describe('NavigatorWrapper', () => {
@@ -48,9 +40,7 @@ describe('NavigatorWrapper', () => {
     )
 
     await waitFor(() => expect(Linking.addEventListener).toHaveBeenCalled())
-    expect(dynamicLinks().onLink).toHaveBeenCalled()
     expect(Linking.getInitialURL).toHaveBeenCalled()
-    expect(dynamicLinks().getInitialLink).toHaveBeenCalled()
     expect(queryByText('appUpdateAvailable')).toBeFalsy()
   })
 

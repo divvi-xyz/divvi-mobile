@@ -10,9 +10,8 @@ import {
 import { usdToLocalCurrencyRateSelector } from 'src/localCurrency/selectors'
 import { Token } from 'src/positions/types'
 import { RootState } from 'src/redux/reducers'
-import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
-import { DynamicConfigs } from 'src/statsig/constants'
-import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
+import { getFeatureGate } from 'src/statsig'
+import { StatsigFeatureGates } from 'src/statsig/types'
 import {
   TokenBalance,
   TokenBalanceWithAddress,
@@ -515,24 +514,3 @@ export const importedTokensSelector = createSelector(
     return tokenList.filter((token) => token?.isManuallyImported)
   }
 )
-
-const getJumpstartEnabledNetworkIds = () =>
-  Object.keys(
-    getDynamicConfigParams(DynamicConfigs[StatsigDynamicConfigs.WALLET_JUMPSTART_CONFIG])
-      .jumpstartContracts
-  ) as NetworkId[]
-
-// can't use a createSelector because we want to call
-// getJumpstartEnabledNetworkIds every time. If we use createSelector, result
-// will be memoized and will always return cached results, ignoring the changes
-// to getJumpstartEnabledNetworkIds.
-export const jumpstartSendTokensSelector = (state: RootState) => {
-  const tokensWithBalance = sortedTokensWithBalanceSelector(state)
-  const jumpstartEnabledNetworkIds = getJumpstartEnabledNetworkIds()
-
-  return tokensWithBalance.filter((token) => {
-    // the jumpstart contract currently requires a token address for the
-    // depositERC20 method
-    return jumpstartEnabledNetworkIds.includes(token.networkId) && !!token.address
-  })
-}

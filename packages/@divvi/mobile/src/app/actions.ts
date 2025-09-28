@@ -1,4 +1,4 @@
-import { BIOMETRY_TYPE } from 'react-native-keychain'
+import { BIOMETRY_TYPE } from '@divvi/react-native-keychain'
 import { Screens } from 'src/navigator/Screens'
 
 // https://facebook.github.io/react-native/docs/appstate
@@ -25,7 +25,6 @@ export enum Actions {
   ANDROID_MOBILE_SERVICES_AVAILABILITY_CHECKED = 'APP/ANDROID_MOBILE_SERVICES_AVAILABILITY_CHECKED',
   PHONE_NUMBER_VERIFICATION_COMPLETED = 'APP/PHONE_NUMBER_VERIFICATION_COMPLETED',
   PHONE_NUMBER_REVOKED = 'APP/PHONE_NUMBER_REVOKED',
-  INVITE_LINK_CONSUMED = 'APP/INVITE_LINK_CONSUMED',
   HAPTIC_FEEDBACK_SET = 'APP/HAPTIC_FEEDBACK_SET',
   PUSH_NOTIFICATIONS_PERMISSION_CHANGED = 'APP/PUSH_NOTIFICATIONS_PERMISSION_CHANGED',
   IN_APP_REVIEW_REQUESTED = 'APP/IN_APP_REVIEW_REQUESTED',
@@ -115,11 +114,6 @@ export interface PhoneNumberRevoked {
   e164PhoneNumber: string
 }
 
-export interface InviteLinkConsumed {
-  type: Actions.INVITE_LINK_CONSUMED
-  inviterAddress: string
-}
-
 interface HapticFeedbackSet {
   type: Actions.HAPTIC_FEEDBACK_SET
   hapticFeedbackEnabled: boolean
@@ -160,7 +154,6 @@ export type ActionTypes =
   | AndroidMobileServicesAvailabilityChecked
   | PhoneNumberVerificationCompleted
   | PhoneNumberRevoked
-  | InviteLinkConsumed
   | HapticFeedbackSet
   | PushNotificationsPermissionChanged
   | inAppReviewRequested
@@ -265,13 +258,6 @@ export const phoneNumberRevoked = (e164PhoneNumber: string): PhoneNumberRevoked 
   return {
     type: Actions.PHONE_NUMBER_REVOKED,
     e164PhoneNumber,
-  }
-}
-
-export const inviteLinkConsumed = (inviterAddress: string): InviteLinkConsumed => {
-  return {
-    type: Actions.INVITE_LINK_CONSUMED,
-    inviterAddress,
   }
 }
 

@@ -8,7 +8,6 @@ import AppAnalytics from 'src/analytics/AppAnalytics'
 import { PhoneVerificationEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { phoneNumberRevoked, phoneNumberVerificationCompleted } from 'src/app/actions'
-import { inviterAddressSelector } from 'src/app/selectors'
 import { retrieveSignedMessage } from 'src/pincode/authentication'
 import { RecaptchaActionType, RecaptchaService } from 'src/recaptcha/RecaptchaService'
 import { useDispatch, useSelector } from 'src/redux/hooks'
@@ -30,7 +29,6 @@ export function useVerifyPhoneNumber(phoneNumber: string, countryCallingCode: st
 
   const dispatch = useDispatch()
   const address = useSelector(walletAddressSelector)
-  const inviterAddress = useSelector(inviterAddressSelector)
 
   const [verificationStatus, setVerificationStatus] = useState(PhoneNumberVerificationStatus.NONE)
   const [verificationId, setVerificationId] = useState('')
@@ -100,7 +98,6 @@ export function useVerifyPhoneNumber(phoneNumber: string, countryCallingCode: st
         clientPlatform: Platform.OS,
         clientVersion: DeviceInfo.getVersion(),
         clientBundleId: DeviceInfo.getBundleId(),
-        inviterAddress: inviterAddress ?? undefined,
         recaptchaToken: recaptchaToken ?? undefined,
       }
 
@@ -194,7 +191,6 @@ export function useVerifyPhoneNumber(phoneNumber: string, countryCallingCode: st
 
         AppAnalytics.track(PhoneVerificationEvents.phone_verification_code_verify_success, {
           phoneNumberHash: getPhoneHash(phoneNumber),
-          inviterAddress,
         })
         Logger.debug(`${TAG}/validateVerificationCode`, 'Successfully verified phone number')
         setVerificationStatus(PhoneNumberVerificationStatus.SUCCESSFUL)

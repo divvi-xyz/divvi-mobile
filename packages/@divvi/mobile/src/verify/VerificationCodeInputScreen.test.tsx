@@ -1,8 +1,8 @@
+import * as Keychain from '@divvi/react-native-keychain'
 import { act, fireEvent, render, waitFor, within } from '@testing-library/react-native'
 import { FetchMock } from 'jest-fetch-mock/types'
 import MockDate from 'mockdate'
 import React from 'react'
-import * as Keychain from 'react-native-keychain'
 import { Provider } from 'react-redux'
 import { showError } from 'src/alert/actions'
 import { ErrorMessages } from 'src/app/ErrorMessages'
@@ -36,9 +36,6 @@ const e164Number = '+31619123456'
 const store = createMockStore({
   web3: {
     account: '0xabc',
-  },
-  app: {
-    inviterAddress: '0xabc',
   },
 })
 
@@ -89,7 +86,7 @@ describe('VerificationCodeInputScreen', () => {
         'Content-Type': 'application/json',
         authorization: `${networkConfig.authHeaderIssuer} 0xabc:someSignedMessage`,
       },
-      body: '{"phoneNumber":"+31619123456","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug","inviterAddress":"0xabc"}',
+      body: '{"phoneNumber":"+31619123456","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug"}',
     })
   })
 
@@ -276,7 +273,7 @@ describe('VerificationCodeInputScreen', () => {
         'Content-Type': 'application/json',
         authorization: `${networkConfig.authHeaderIssuer} 0xabc:someSignedMessage`,
       },
-      body: '{"phoneNumber":"+31619123456","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug","inviterAddress":"0xabc"}',
+      body: '{"phoneNumber":"+31619123456","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug"}',
     })
 
     await act(() => {
@@ -345,7 +342,7 @@ describe('VerificationCodeInputScreen', () => {
         'Content-Type': 'application/json',
         authorization: `${networkConfig.authHeaderIssuer} 0xabc:someSignedMessage`,
       },
-      body: `{"phoneNumber":"${e164Number}","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug","inviterAddress":"0xabc"}`,
+      body: `{"phoneNumber":"${e164Number}","clientPlatform":"android","clientVersion":"0.0.1","clientBundleId":"org.celo.mobile.debug"}`,
     })
     expect(getByTestId('PhoneVerificationResendSmsBtn')).toBeDisabled()
   })

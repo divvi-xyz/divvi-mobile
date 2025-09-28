@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { LocalCurrencyCode } from 'src/localCurrency/consts'
-import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
+import { getFeatureGate } from 'src/statsig'
 import {
   _feeCurrenciesByNetworkIdSelector,
   cashInTokensSelector,
@@ -8,7 +8,6 @@ import {
   feeCurrenciesSelector,
   feeCurrenciesWithPositiveBalancesSelector,
   importedTokensSelector,
-  jumpstartSendTokensSelector,
   lastKnownTokenBalancesSelector,
   sortedTokensWithBalanceOrShowZeroBalanceSelector,
   sortedTokensWithBalanceSelector,
@@ -885,38 +884,5 @@ describe('importedTokensSelector', () => {
         balance: new BigNumber(20),
       },
     ])
-  })
-})
-
-describe('jumpstartSendTokensSelector', () => {
-  beforeEach(() => {
-    jest.mocked(getDynamicConfigParams).mockReturnValue({
-      jumpstartContracts: { 'celo-alfajores': {} },
-    })
-  })
-
-  it('returns expected tokens', () => {
-    const tokens = jumpstartSendTokensSelector(state)
-    expect(tokens).toHaveLength(4)
-    expect(tokens.map((t) => t.tokenId)).toEqual(
-      expect.arrayContaining([
-        'celo-alfajores:0xeur',
-        'celo-alfajores:0x1',
-        'celo-alfajores:0x4',
-        'celo-alfajores:0x5',
-      ])
-    )
-  })
-
-  it('recomputes when the dynamic config changes', () => {
-    const tokens1 = jumpstartSendTokensSelector(state)
-    expect(tokens1).toHaveLength(4)
-
-    jest.mocked(getDynamicConfigParams).mockReturnValue({
-      jumpstartContracts: { 'celo-alfajores': {}, 'ethereum-sepolia': {} },
-    })
-
-    const tokens2 = jumpstartSendTokensSelector(state)
-    expect(tokens2).toHaveLength(5)
   })
 })

@@ -34,8 +34,6 @@ export const supportedBiometryTypeSelector = (state: RootState) => state.app.sup
 
 export const phoneNumberVerifiedSelector = (state: RootState) => state.app.phoneNumberVerified
 
-export const inviterAddressSelector = (state: RootState) => state.app.inviterAddress
-
 export const hapticFeedbackEnabledSelector = (state: RootState) => state.app.hapticFeedbackEnabled
 
 export const pushNotificationsEnabledSelector = (state: RootState) =>
