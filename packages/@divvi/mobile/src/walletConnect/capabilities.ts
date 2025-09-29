@@ -4,14 +4,12 @@ import { getSupportedNetworkIds } from 'src/web3/utils'
 import { hexToNumber, isHex, toHex } from 'viem'
 import { Capabilities } from './types'
 
-type CapabilitiesByNetworkId = Record<keyof typeof NetworkId, Capabilities>
-
 const defaultCapabilities: Capabilities = {
   atomic: { status: 'unsupported' },
   paymasterService: { supported: false },
 }
 
-const capabilitiesByNetworkId: CapabilitiesByNetworkId = {
+const capabilitiesByNetworkId: Record<keyof typeof NetworkId, Capabilities> = {
   [NetworkId['celo-alfajores']]: defaultCapabilities,
   [NetworkId['celo-mainnet']]: defaultCapabilities,
   [NetworkId['ethereum-mainnet']]: defaultCapabilities,
