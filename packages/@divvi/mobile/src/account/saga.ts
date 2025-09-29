@@ -32,7 +32,6 @@ import {
 } from 'src/pincode/authentication'
 import { persistor } from 'src/redux/store'
 import { patchUpdateStatsigUser } from 'src/statsig'
-import { clearStoredItems } from 'src/storage/keychain'
 import { restartApp } from 'src/utils/AppRestart'
 import Logger from 'src/utils/Logger'
 import { ensureError } from 'src/utils/ensureError'
@@ -92,20 +91,6 @@ export function* initializeAccountSaga() {
     Logger.error(TAG, 'Failed to initialize account', error)
     AppAnalytics.track(OnboardingEvents.initialize_account_error, { error: error.message })
     navigateClearingStack(Screens.AccounSetupFailureScreen)
-  }
-}
-
-export function* clearStoredItemsSaga() {
-  Logger.debug(TAG + '@clearKeychainItems', 'Clearing keychain items')
-  try {
-    const staleItems = yield* call(clearStoredItems)
-    yield* call([AppAnalytics, 'track'], OnboardingEvents.stale_keychain_items_cleared, {
-      staleItems,
-      staleItemsCount: staleItems.length,
-    })
-  } catch (err) {
-    const error = ensureError(err)
-    Logger.error(TAG + '@clearKeychainItems', 'Failed to clear keychain items', error)
   }
 }
 
@@ -256,17 +241,9 @@ export function* watchSignedMessage() {
   yield* call(handleUpdateAccountRegistration)
 }
 
-function* watchOnboardingStart() {
-  yield* takeLeading(
-    [Actions.CHOOSE_CREATE_ACCOUNT, Actions.CHOOSE_RESTORE_ACCOUNT],
-    safely(clearStoredItemsSaga)
-  )
-}
-
 export function* accountSaga() {
   yield* spawn(watchUpdateStatsigAndNavigate)
   yield* spawn(watchClearStoredAccount)
   yield* spawn(watchInitializeAccount)
   yield* spawn(watchSignedMessage)
-  yield* spawn(watchOnboardingStart)
 }
