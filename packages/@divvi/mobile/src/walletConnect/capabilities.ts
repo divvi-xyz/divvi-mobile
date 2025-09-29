@@ -38,7 +38,9 @@ export const capabilitiesByNetworkId: CapabilitiesByNetworkId = {
   [NetworkId['base-sepolia']]: defaultCapabilities,
 }
 
-export function getWalletCapabilities(requestedChainIds?: unknown): Record<string, Capabilities> {
+export function getWalletCapabilitiesByHexChainId(
+  requestedChainIds?: unknown
+): Record<string, Capabilities> {
   const supportedNetworkIds = getSupportedNetworkIds()
 
   let targetNetworkIds: NetworkId[] = []
