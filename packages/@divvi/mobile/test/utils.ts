@@ -76,7 +76,11 @@ function createSendMethod(): SendMethod {
 const mockStore = configureMockStore<RootState>()
 
 /* Create a mock store with some reasonable default values */
-export type RecursivePartial<T> = { [P in keyof T]?: RecursivePartial<T[P]> }
+export type RecursivePartial<T> = T extends (infer U)[]
+  ? RecursivePartial<U>[]
+  : T extends object
+    ? { [P in keyof T]?: RecursivePartial<T[P]> }
+    : T
 export function createMockStore(overrides: RecursivePartial<RootState> = {}) {
   return mockStore(getMockStoreData(overrides))
 }
