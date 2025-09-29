@@ -1,28 +1,9 @@
 import { NetworkId } from 'src/transactions/types'
+import { capabilitiesByNetworkId } from 'src/walletConnect/constants'
 import networkConfig, { networkIdToNetwork, viemChainIdToNetworkId } from 'src/web3/networkConfig'
 import { getSupportedNetworkIds } from 'src/web3/utils'
 import { hexToNumber, isHex, toHex } from 'viem'
 import { Capabilities } from './types'
-
-const defaultCapabilities: Capabilities = {
-  atomic: { status: 'unsupported' },
-  paymasterService: { supported: false },
-}
-
-const capabilitiesByNetworkId: Record<keyof typeof NetworkId, Capabilities> = {
-  [NetworkId['celo-alfajores']]: defaultCapabilities,
-  [NetworkId['celo-mainnet']]: defaultCapabilities,
-  [NetworkId['ethereum-mainnet']]: defaultCapabilities,
-  [NetworkId['ethereum-sepolia']]: defaultCapabilities,
-  [NetworkId['arbitrum-one']]: defaultCapabilities,
-  [NetworkId['arbitrum-sepolia']]: defaultCapabilities,
-  [NetworkId['op-mainnet']]: defaultCapabilities,
-  [NetworkId['op-sepolia']]: defaultCapabilities,
-  [NetworkId['polygon-pos-mainnet']]: defaultCapabilities,
-  [NetworkId['polygon-pos-amoy']]: defaultCapabilities,
-  [NetworkId['base-mainnet']]: defaultCapabilities,
-  [NetworkId['base-sepolia']]: defaultCapabilities,
-}
 
 export function getWalletCapabilitiesByHexChainId(
   requestedChainIds?: unknown
