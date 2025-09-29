@@ -2,19 +2,7 @@ import { NetworkId } from 'src/transactions/types'
 import networkConfig, { networkIdToNetwork, viemChainIdToNetworkId } from 'src/web3/networkConfig'
 import { getSupportedNetworkIds } from 'src/web3/utils'
 import { hexToNumber, isHex, toHex } from 'viem'
-
-type AtomicCapability = {
-  status: 'supported' | 'ready' | 'unsupported'
-}
-
-type PaymasterServiceCapability = {
-  supported: boolean
-}
-
-export type Capabilities = {
-  atomic: AtomicCapability
-  paymasterService: PaymasterServiceCapability
-}
+import { Capabilities } from './types'
 
 type CapabilitiesByNetworkId = Record<keyof typeof NetworkId, Capabilities>
 
