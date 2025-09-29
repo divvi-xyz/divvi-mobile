@@ -8,9 +8,9 @@ on:
         default: 'warning'
       tags:
         description: 'E2E Wallet Fund and Faucet Balance'
-  # Cron job to run faucet fund and balance every 8th hour
-  # schedule:
-  #   - cron: '0 */8 * * *'
+  # Cron job to run faucet fund and balance every day
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   balance-and-fund:
