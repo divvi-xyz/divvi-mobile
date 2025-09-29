@@ -1,5 +1,5 @@
 // Modified from https://github.com/mersiades/expo-router-branch-mre/blob/f56aae045e9a2f106bdd5f12176d6f98fda959a0/plugins/withCustomGradleProperties.js
-// Required for @google-cloud/recaptcha-enterprise-react-native - Android build fails with "Dependency requires core library desugaring to be enabled"
+// TODO: publish as an official expo config plugin
 const { withGradleProperties } = require('@expo/config-plugins')
 
 /**

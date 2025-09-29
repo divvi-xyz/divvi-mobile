@@ -1,4 +1,5 @@
 // https://github.com/expo/expo/discussions/31071#discussioncomment-11128404
+// Required for @google-cloud/recaptcha-enterprise-react-native - Android build fails with "Dependency requires core library desugaring to be enabled"
 const { withAppBuildGradle } = require('expo/config-plugins')
 
 module.exports = function withCustomAppBuildGradle(config) {
