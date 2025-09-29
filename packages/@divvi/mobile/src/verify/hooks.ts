@@ -9,6 +9,7 @@ import { PhoneVerificationEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { phoneNumberRevoked, phoneNumberVerificationCompleted } from 'src/app/actions'
 import { retrieveSignedMessage } from 'src/pincode/authentication'
+import { RecaptchaActionType, RecaptchaService } from 'src/recaptcha/RecaptchaService'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import Logger from 'src/utils/Logger'
 import getPhoneHash from 'src/utils/getPhoneHash'
@@ -86,6 +87,12 @@ export function useVerifyPhoneNumber(phoneNumber: string, countryCallingCode: st
       Logger.debug(`${TAG}/requestVerificationCode`, 'Initiating request to verifyPhoneNumber')
       const signedMessage = await retrieveSignedMessage()
 
+      let recaptchaToken: string | null = null
+      if (RecaptchaService.isEnabled()) {
+        // getToken can throw - if recaptcha is enabled, block the flow on any recaptcha errors
+        recaptchaToken = await RecaptchaService.getToken(RecaptchaActionType.PHONE_VERIFICATION)
+      }
+
       const response = await fetch(networkConfig.verifyPhoneNumberUrl, {
         method: 'POST',
         headers: {
@@ -97,6 +104,7 @@ export function useVerifyPhoneNumber(phoneNumber: string, countryCallingCode: st
           clientPlatform: Platform.OS,
           clientVersion: DeviceInfo.getVersion(),
           clientBundleId: DeviceInfo.getBundleId(),
+          recaptchaToken: recaptchaToken ?? undefined,
         }),
       })
       if (response.ok) {
