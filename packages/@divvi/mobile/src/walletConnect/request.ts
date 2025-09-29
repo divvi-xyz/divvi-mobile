@@ -8,7 +8,7 @@ import {
   SerializableTransactionRequest,
   getPreparedTransaction,
 } from 'src/viem/preparedTransactionSerialization'
-import { getWalletCapabilities } from 'src/walletConnect/capabilities'
+import { getWalletCapabilitiesByHexChainId } from 'src/walletConnect/capabilities'
 import { SupportedActions, chainAgnosticActions } from 'src/walletConnect/constants'
 import { getViemWallet } from 'src/web3/contracts'
 import networkConfig, {
@@ -89,7 +89,7 @@ export function* handleRequest(
     }
     case SupportedActions.wallet_getCapabilities: {
       const [, hexNetworkIds] = params
-      return yield* call(getWalletCapabilities, hexNetworkIds)
+      return yield* call(getWalletCapabilitiesByHexChainId, hexNetworkIds)
     }
     default:
       throw new Error('unsupported RPC method')

@@ -59,6 +59,10 @@ import {
   getDefaultRequestTrackedProperties,
   getDefaultSessionTrackedProperties as getDefaultSessionTrackedPropertiesAnalytics,
 } from 'src/walletConnect/analytics'
+import {
+  getWalletCapabilitiesByHexChainId,
+  getWalletCapabilitiesByWalletConnectChainId,
+} from 'src/walletConnect/capabilities'
 import { isSupportedAction, SupportedActions, SupportedEvents } from 'src/walletConnect/constants'
 import { handleRequest } from 'src/walletConnect/request'
 import {
@@ -86,7 +90,14 @@ import {
   takeEvery,
   takeLeading,
 } from 'typed-redux-saga'
-import { Address, BaseError, GetTransactionCountParameters, hexToBigInt, isHex } from 'viem'
+import {
+  Address,
+  BaseError,
+  getAddress,
+  GetTransactionCountParameters,
+  hexToBigInt,
+  isHex,
+} from 'viem'
 import { getTransactionCount } from 'viem/actions'
 
 let client: IWalletKit | null = null
@@ -324,11 +335,27 @@ function* showSessionRequest(session: WalletKitTypes.EventArguments['session_pro
     Logger.warn(TAG + '@showSessionRequest', 'Failed to build approved namespaces', e)
   }
 
+  // Supply capabilities within session approval to avoid an extra `wallet_getCapabilities` request
+
+  // Recommended method
+  // https://docs.walletconnect.network/wallet-sdk/react-native/eip5792#wallet-response
+  const scopedProperties = getWalletCapabilitiesByWalletConnectChainId()
+
+  // Legacy method for compatibility
+  // https://github.com/WalletConnect/walletconnect-monorepo/blob/1e6d7793d0a30d2bf684cd3811ba120b4cdc0498/providers/universal-provider/src/providers/eip155.ts#L219-L223
+  const sessionProperties = {
+    capabilities: {
+      [getAddress(address)]: getWalletCapabilitiesByHexChainId(),
+    },
+  } as any
+
   navigate(Screens.WalletConnectRequest, {
     type: WalletConnectRequestType.Session,
     pendingSession: session,
     namespacesToApprove,
     supportedChains: supportedEip155Chains,
+    sessionProperties,
+    scopedProperties,
     version: 2,
   })
 }
@@ -523,7 +550,12 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
 // Export for testing
 export const _showActionRequest = showActionRequest
 
-function* acceptSession({ session, approvedNamespaces }: AcceptSession) {
+function* acceptSession({
+  session,
+  approvedNamespaces,
+  sessionProperties,
+  scopedProperties,
+}: AcceptSession) {
   const defaultTrackedProperties: WalletConnect2Properties = yield* call(
     getDefaultSessionTrackedProperties,
     session
@@ -541,6 +573,8 @@ function* acceptSession({ session, approvedNamespaces }: AcceptSession) {
       id: session.id,
       relayProtocol: relays[0].protocol,
       namespaces: approvedNamespaces,
+      sessionProperties,
+      scopedProperties,
     })
 
     AppAnalytics.track(WalletConnectEvents.wc_session_approve_success, defaultTrackedProperties)

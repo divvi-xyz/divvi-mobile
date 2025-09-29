@@ -1,5 +1,9 @@
 import { NetworkId } from 'src/transactions/types'
-import networkConfig, { networkIdToNetwork, viemChainIdToNetworkId } from 'src/web3/networkConfig'
+import networkConfig, {
+  networkIdToNetwork,
+  networkIdToWalletConnectChainId,
+  viemChainIdToNetworkId,
+} from 'src/web3/networkConfig'
 import { getSupportedNetworkIds } from 'src/web3/utils'
 import { hexToNumber, isHex, toHex } from 'viem'
 
@@ -38,7 +42,20 @@ export const capabilitiesByNetworkId: CapabilitiesByNetworkId = {
   [NetworkId['base-sepolia']]: defaultCapabilities,
 }
 
-export function getWalletCapabilities(requestedChainIds?: unknown): Record<string, Capabilities> {
+export function getWalletCapabilitiesByWalletConnectChainId(): Record<string, Capabilities> {
+  const result: Record<string, Capabilities> = {}
+
+  for (const networkId of getSupportedNetworkIds()) {
+    const walletConnectChainId = networkIdToWalletConnectChainId[networkId]
+    result[walletConnectChainId] = capabilitiesByNetworkId[networkId]
+  }
+
+  return result
+}
+
+export function getWalletCapabilitiesByHexChainId(
+  requestedChainIds?: unknown
+): Record<string, Capabilities> {
   const supportedNetworkIds = getSupportedNetworkIds()
 
   let targetNetworkIds: NetworkId[] = []
