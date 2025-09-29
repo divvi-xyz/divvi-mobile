@@ -9,13 +9,4 @@ export enum WalletConnectRequestType {
 
 export type WalletConnectRequestResult = string | Record<string, Capabilities>
 
-type AtomicCapability = NonNullable<CapabilitiesSchema['getCapabilities']['ReturnType']['atomic']>
-
-type PaymasterServiceCapability = NonNullable<
-  CapabilitiesSchema['getCapabilities']['ReturnType']['paymasterService']
->
-
-export type Capabilities = {
-  atomic: AtomicCapability
-  paymasterService: PaymasterServiceCapability
-}
+export type Capabilities = CapabilitiesSchema['getCapabilities']['ReturnType']
