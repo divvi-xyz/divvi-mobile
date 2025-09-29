@@ -3189,6 +3189,10 @@
             "additionalProperties": false,
             "type": "object"
         },
+        "ProposalTypes.ScopedProperties": {
+            "additionalProperties": false,
+            "type": "object"
+        },
         "ProposalTypes.SessionProperties": {
             "additionalProperties": false,
             "type": "object"
@@ -3196,6 +3200,12 @@
         "ProposalTypes.Struct": {
             "additionalProperties": false,
             "properties": {
+                "attestation": {
+                    "type": "string"
+                },
+                "encryptedId": {
+                    "type": "string"
+                },
                 "expiry": {
                     "type": "number"
                 },
@@ -3235,6 +3245,9 @@
                 },
                 "requiredNamespaces": {
                     "$ref": "#/definitions/ProposalTypes.RequiredNamespaces"
+                },
+                "scopedProperties": {
+                    "$ref": "#/definitions/ProposalTypes.ScopedProperties"
                 },
                 "sessionProperties": {
                     "$ref": "#/definitions/ProposalTypes.SessionProperties"
@@ -3645,6 +3658,9 @@
                 },
                 "requiredNamespaces": {
                     "$ref": "#/definitions/ProposalTypes.RequiredNamespaces"
+                },
+                "scopedProperties": {
+                    "$ref": "#/definitions/ProposalTypes.ScopedProperties"
                 },
                 "self": {
                     "additionalProperties": false,
