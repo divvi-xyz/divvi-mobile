@@ -207,7 +207,7 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
   experimental?: {
     firebase?: boolean
     recaptcha?: {
-      iOSSiteKey?: string
+      iosSiteKey?: string
       androidSiteKey?: string
     }
     // can copy/paste old alchemy key/secret pairs here

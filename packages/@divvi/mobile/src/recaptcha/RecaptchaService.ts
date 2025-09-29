@@ -85,7 +85,7 @@ class RecaptchaServiceImpl {
     const platform = Platform.OS
     const recaptchaConfig = getAppConfig().experimental?.recaptcha
 
-    return recaptchaConfig?.[platform === 'ios' ? 'iOSSiteKey' : 'androidSiteKey']
+    return recaptchaConfig?.[platform === 'ios' ? 'iosSiteKey' : 'androidSiteKey']
   }
 
   isEnabled(): boolean {

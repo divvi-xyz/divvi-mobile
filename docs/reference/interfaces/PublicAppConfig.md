@@ -195,10 +195,10 @@ optional recaptcha: object;
 optional androidSiteKey: string;
 ```
 
-##### recaptcha.iOSSiteKey?
+##### recaptcha.iosSiteKey?
 
 ```ts
-optional iOSSiteKey: string;
+optional iosSiteKey: string;
 ```
 
 #### showImportTokensFlow?
