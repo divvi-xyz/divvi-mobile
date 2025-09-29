@@ -17,63 +17,58 @@ export enum RecaptchaActionType {
 
 class RecaptchaServiceImpl {
   private client: RecaptchaClient | null = null
-  private initializationPromise: Promise<void> | null = null
+  private initializationPromise: Promise<RecaptchaClient | null> | null = null
 
-  async initializeIfNecessary(): Promise<void> {
-    if (this.client) return
-    if (this.initializationPromise) return this.initializationPromise
-
-    this.initializationPromise = this.init()
-    try {
-      await this.initializationPromise
-    } catch (err) {
-      // If initialization fails, clear the promise so that we can try again later
-      this.initializationPromise = null
-      throw err
-    }
-  }
-
-  private async init(): Promise<void> {
-    // If client is already initialized, no need to initialize again
+  /**
+   * Get the reCAPTCHA client
+   * @returns Promise<RecaptchaClient | null> - The reCAPTCHA client or null if no client is found
+   */
+  async getClient(): Promise<RecaptchaClient | null> {
     if (this.client) {
-      return
+      return this.client
+    }
+    if (this.initializationPromise) {
+      return this.initializationPromise
     }
 
-    Logger.info(TAG, 'Initializing reCAPTCHA client')
-    const clientKey = this.getSiteKey()
-    if (!clientKey) {
-      Logger.info(TAG, 'No client key found, reCAPTCHA not enabled')
-      return
+    const siteKey = this.getSiteKey()
+    if (!siteKey) {
+      Logger.info(TAG, 'No reCAPTCHA site key found, not initializing reCAPTCHA client')
+      return null
     }
 
-    try {
-      this.client = await Recaptcha.fetchClient(clientKey)
-      Logger.info(TAG, 'reCAPTCHA client initialized successfully')
-    } catch (error) {
-      Logger.error(TAG, 'Failed to initialize reCAPTCHA client', error)
-      throw error
-    }
+    this.initializationPromise = (async () => {
+      try {
+        this.client = await Recaptcha.fetchClient(siteKey)
+        return this.client
+      } catch (e) {
+        this.initializationPromise = null // allow external retry
+        throw e
+      }
+    })()
+
+    return this.initializationPromise
   }
 
   /**
    * Get a reCAPTCHA token for a specific action
    * @param actionType - The type of action being performed
-   * @returns Promise<string> - The reCAPTCHA token
+   * @returns Promise<string> - The reCAPTCHA token or null if no client is found
    */
   async getToken(action: RecaptchaActionType): Promise<string | null> {
-    if (!this.isEnabled()) {
-      return null
-    }
-
     try {
-      await this.initializeIfNecessary()
-      if (!this.client) {
-        // This should never happen - if Recaptcha is enabled, the initialization will either set the client or throw an error.
-        throw new Error('reCAPTCHA client key found but client is not available')
+      const client = await this.getClient()
+      if (!client) {
+        // This should never happen if consumers check isEnabled() before calling getToken()
+        Logger.debug(
+          TAG,
+          `No reCAPTCHA client found, not executing reCAPTCHA for action: ${action}`
+        )
+        return null
       }
 
       Logger.debug(TAG, `Executing reCAPTCHA for action: ${action}`)
-      const token = await this.client.execute(
+      const token = await client.execute(
         RecaptchaAction.custom(action),
         RECAPTCHA_ACTION_TIMEOUT_MS
       )

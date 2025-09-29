@@ -5,10 +5,14 @@ import { RecaptchaService } from './RecaptchaService'
 const TAG = 'recaptcha/saga'
 
 export function* recaptchaSaga() {
-  Logger.info(TAG, 'Initializing reCAPTCHA on app start')
+  if (!RecaptchaService.isEnabled()) {
+    return
+  }
+
+  Logger.info(TAG, 'Initializing reCAPTCHA client on app start')
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      yield* call([RecaptchaService, 'initializeIfNecessary'])
+      yield* call([RecaptchaService, 'getClient'])
       return
     } catch (error) {
       Logger.error(TAG, `reCAPTCHA initialization attempt ${attempt} failed`, error)
