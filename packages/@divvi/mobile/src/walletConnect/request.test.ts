@@ -11,7 +11,6 @@ import { getViemWallet } from 'src/web3/contracts'
 import { unlockAccount } from 'src/web3/saga'
 import { createMockStore } from 'test/utils'
 import {
-  mockAddress,
   mockCeloAddress,
   mockCeloTokenId,
   mockCeurAddress,
@@ -220,7 +219,7 @@ describe(handleRequest, () => {
       const request = {
         request: {
           method: SupportedActions.wallet_getCapabilities,
-          params: [mockAddress],
+          params: [state.web3.account],
         },
         chainId: 'eip155:11155111',
       }
@@ -236,7 +235,7 @@ describe(handleRequest, () => {
       const request = {
         request: {
           method: SupportedActions.wallet_getCapabilities,
-          params: [mockAddress, ['0xaa36a7', '0x66eee']], // ethereum-sepolia and arbitrum-sepolia
+          params: [state.web3.account, ['0xaa36a7', '0x66eee']], // ethereum-sepolia and arbitrum-sepolia
         },
         chainId: 'eip155:11155111',
       }
@@ -248,11 +247,25 @@ describe(handleRequest, () => {
       await expectSaga(handleRequest, request).withState(state).returns(expectedResult).run()
     })
 
+    it('throws error when provided account address is not the same as the wallet address', async () => {
+      const request = {
+        request: {
+          method: SupportedActions.wallet_getCapabilities,
+          params: ['0xwrong_account', ['0xaa36a7', '0x66eee']],
+        },
+        chainId: 'eip155:11155111',
+      }
+
+      await expect(
+        async () => await expectSaga(handleRequest, request).withState(state).run()
+      ).rejects.toThrow('Unauthorized')
+    })
+
     it('throws error when invalid chain id is provided', async () => {
       const request = {
         request: {
           method: SupportedActions.wallet_getCapabilities,
-          params: [mockAddress, ['0xaa36a7', 'invalid_chain_id', '0x66eee']],
+          params: [state.web3.account, ['0xaa36a7', 'invalid_chain_id', '0x66eee']],
         },
         chainId: 'eip155:11155111',
       }
@@ -266,7 +279,7 @@ describe(handleRequest, () => {
       const request = {
         request: {
           method: SupportedActions.wallet_getCapabilities,
-          params: [mockAddress, []],
+          params: [state.web3.account, []],
         },
         chainId: 'eip155:11155111',
       }
@@ -280,7 +293,7 @@ describe(handleRequest, () => {
       const request = {
         request: {
           method: SupportedActions.wallet_getCapabilities,
-          params: [mockAddress, 'not_an_array'],
+          params: [state.web3.account, 'not_an_array'],
         },
         chainId: 'eip155:11155111',
       }
