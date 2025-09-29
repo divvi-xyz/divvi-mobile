@@ -23,7 +23,7 @@ const defaultCapabilities: Capabilities = {
   paymasterService: { supported: false },
 }
 
-export const capabilitiesByNetworkId: CapabilitiesByNetworkId = {
+const capabilitiesByNetworkId: CapabilitiesByNetworkId = {
   [NetworkId['celo-alfajores']]: defaultCapabilities,
   [NetworkId['celo-mainnet']]: defaultCapabilities,
   [NetworkId['ethereum-mainnet']]: defaultCapabilities,
