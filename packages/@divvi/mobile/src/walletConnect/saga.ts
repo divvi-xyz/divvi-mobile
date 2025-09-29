@@ -86,7 +86,14 @@ import {
   takeEvery,
   takeLeading,
 } from 'typed-redux-saga'
-import { Address, BaseError, GetTransactionCountParameters, hexToBigInt, isHex } from 'viem'
+import {
+  Address,
+  BaseError,
+  Capabilities,
+  GetTransactionCountParameters,
+  hexToBigInt,
+  isHex,
+} from 'viem'
 import { getTransactionCount } from 'viem/actions'
 
 let client: IWalletKit | null = null
@@ -676,7 +683,10 @@ function* handleAcceptRequest({ request, preparedTransaction }: AcceptRequest) {
     }
 
     const result = yield* call(handleRequest, params, preparedTransaction)
-    const response: JsonRpcResult<string> = formatJsonRpcResult(id, result)
+    const response: JsonRpcResult<string | Record<string, Capabilities>> = formatJsonRpcResult(
+      id,
+      result
+    )
     yield* call([client, 'respondSessionRequest'], { topic, response })
 
     AppAnalytics.track(WalletConnectEvents.wc_request_accept_success, defaultTrackedProperties)
