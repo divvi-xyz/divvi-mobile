@@ -11,7 +11,7 @@ type PaymasterServiceCapability = {
   supported: boolean
 }
 
-type Capabilities = {
+export type Capabilities = {
   atomic: AtomicCapability
   paymasterService: PaymasterServiceCapability
 }
