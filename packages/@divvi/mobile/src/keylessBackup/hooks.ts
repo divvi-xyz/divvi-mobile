@@ -3,11 +3,12 @@ import { useAsync } from 'react-async-hook'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { showError } from 'src/alert/actions'
-import { KeylessBackupEvents } from 'src/analytics/Events'
 import AppAnalytics from 'src/analytics/AppAnalytics'
+import { KeylessBackupEvents } from 'src/analytics/Events'
 import { ErrorMessages } from 'src/app/ErrorMessages'
 import { appKeyshareIssued } from 'src/keylessBackup/slice'
 import { KeylessBackupFlow, KeylessBackupOrigin } from 'src/keylessBackup/types'
+import { RecaptchaActionType, RecaptchaService } from 'src/recaptcha/RecaptchaService'
 import { useDispatch } from 'src/redux/hooks'
 import Logger from 'src/utils/Logger'
 import { PhoneNumberVerificationStatus } from 'src/verify/hooks'
@@ -47,6 +48,21 @@ export function useVerifyPhoneNumber(
       })
       Logger.debug(`${TAG}/issueSmsCode`, 'Initiating request')
 
+      let recaptchaToken: string | null = null
+      if (RecaptchaService.isEnabled()) {
+        try {
+          recaptchaToken = await RecaptchaService.getToken(RecaptchaActionType.KEYLESS_BACKUP)
+          Logger.debug(`${TAG}/issueSmsCode`, 'Got reCAPTCHA token')
+        } catch (error) {
+          // Allow the flow to continue if there is an error since the CAB restore flow is critical
+          Logger.error(
+            `${TAG}/issueSmsCode`,
+            'Failed to get reCAPTCHA token, proceeding without it',
+            error
+          )
+        }
+      }
+
       const response = await fetch(networkConfig.cabIssueSmsCodeUrl, {
         method: 'POST',
         headers: {
@@ -56,6 +72,7 @@ export function useVerifyPhoneNumber(
           phoneNumber,
           clientPlatform: Platform.OS,
           clientBundleId: DeviceInfo.getBundleId(),
+          recaptchaToken: recaptchaToken ?? undefined,
         }),
       })
       if (response.ok) {

@@ -89,7 +89,8 @@
         {
           "recordAudioAndroid": false
         }
-      ]
+      ],
+      "./plugins/withDesugaring"
     ]
   }
 }
