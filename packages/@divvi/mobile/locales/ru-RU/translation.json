@@ -1166,8 +1166,6 @@
     "decryptPayloadTitle": "Расшифровка с помощью кошелька",
     "decryptPayload": "{{dappName}} требуется расшифровать полезные данные.",
     "computeSharedSecret": "{{dappName}} требуется создать секреты.",
-    "getCapabilitiesTitle": "Возможности кошелька",
-    "getCapabilities": "{{dappName}} хотел бы ознакомиться с возможностями твоего кошелька.",
     "transactionDataCopied": "Данные транзакции скопированы",
     "estimatedNetworkFee": "Приблизительная комиссия сеть {{networkName}}",
     "networksList": "Сети",
