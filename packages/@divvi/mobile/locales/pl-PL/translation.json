@@ -1166,8 +1166,6 @@
     "decryptPayloadTitle": "Odszyfruj za pomocą portfela",
     "decryptPayload": "{{dappName}} chce odszyfrować ładunek danych.",
     "computeSharedSecret": "{{dappName}} chce wygenerować tajemnice.",
-    "getCapabilitiesTitle": "Możliwości portfela",
-    "getCapabilities": "{{dappName}} chciałbym zapoznać się z możliwościami Twojego portfela.",
     "transactionDataCopied": "Dane transakcji zostały skopiowane",
     "estimatedNetworkFee": "Szacowana opłata sieciowa {{networkName}}",
     "networksList": "Sieci",
