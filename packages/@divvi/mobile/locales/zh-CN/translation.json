@@ -1160,8 +1160,6 @@
     "decryptPayloadTitle": "用钱包解密",
     "decryptPayload": "{{dappName}} 想要解密数据有效负载。",
     "computeSharedSecret": "{{dappName}} 想要生成密钥。",
-    "getCapabilitiesTitle": "钱包功能",
-    "getCapabilities": "{{dappName}} 我想了解一下您钱包的功能。",
     "transactionDataCopied": "交易数据已复制",
     "estimatedNetworkFee": "估算的 {{networkName}} 网络费用",
     "networksList": "网络",
