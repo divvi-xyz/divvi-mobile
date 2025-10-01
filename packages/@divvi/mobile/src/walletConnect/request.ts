@@ -9,7 +9,11 @@ import {
   getPreparedTransaction,
 } from 'src/viem/preparedTransactionSerialization'
 import { getWalletCapabilitiesByHexChainId } from 'src/walletConnect/capabilities'
-import { SupportedActions, chainAgnosticActions } from 'src/walletConnect/constants'
+import {
+  SupportedActions,
+  chainAgnosticActions,
+  isInteractiveAction,
+} from 'src/walletConnect/constants'
 import { getViemWallet } from 'src/web3/contracts'
 import networkConfig, {
   networkIdToNetwork,
@@ -45,7 +49,12 @@ export function* handleRequest(
     networkConfig.viemChain[network ?? networkIdToNetwork[networkConfig.defaultNetworkId]]
   )
   const account = yield* call(getWalletAddress)
-  yield* call(unlockAccount, account)
+
+  // Unlock the account if the action requires user consent
+  if (isInteractiveAction(method)) {
+    yield* call(unlockAccount, account)
+  }
+
   // Call Sentry performance monitoring after entering pin if required
   SentrySpanHub.startSpan(SentrySpan.wallet_connect_transaction)
 
