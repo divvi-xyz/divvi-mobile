@@ -35,6 +35,7 @@ import {
   TransactionRequest,
 } from 'src/viem/prepareTransactions'
 import {
+  acceptRequest,
   AcceptRequest,
   AcceptSession,
   Actions,
@@ -63,7 +64,12 @@ import {
   getWalletCapabilitiesByHexChainId,
   getWalletCapabilitiesByWalletConnectChainId,
 } from 'src/walletConnect/capabilities'
-import { isSupportedAction, SupportedActions, SupportedEvents } from 'src/walletConnect/constants'
+import {
+  isInteractiveAction,
+  isSupportedAction,
+  SupportedActions,
+  SupportedEvents,
+} from 'src/walletConnect/constants'
 import { handleRequest } from 'src/walletConnect/request'
 import {
   selectHasPendingState,
@@ -494,6 +500,12 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     type: WalletConnectRequestType.Loading,
     origin: WalletConnectPairingOrigin.Deeplink,
   })
+
+  // If the action doesn't require user consent, accept it immediately
+  if (!isInteractiveAction(method)) {
+    yield* put(acceptRequest(request))
+    return
+  }
 
   const supportedChains = yield* call(getSupportedChains)
 

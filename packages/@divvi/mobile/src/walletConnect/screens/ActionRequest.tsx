@@ -11,7 +11,7 @@ import Logger from 'src/utils/Logger'
 import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
 import { acceptRequest, denyRequest } from 'src/walletConnect/actions'
 import {
-  SupportedActions,
+  InteractiveActions,
   chainAgnosticActions,
   getDisplayTextFromAction,
 } from 'src/walletConnect/constants'
@@ -67,7 +67,7 @@ function ActionRequest({
 
   const { description, title, action } = getDisplayTextFromAction(
     t,
-    method as SupportedActions,
+    method as InteractiveActions,
     dappName,
     networkName
   )
@@ -130,8 +130,8 @@ function ActionRequest({
 
   if (
     !preparedTransaction &&
-    (method === SupportedActions.eth_signTransaction ||
-      method === SupportedActions.eth_sendTransaction)
+    (method === InteractiveActions.eth_signTransaction ||
+      method === InteractiveActions.eth_sendTransaction)
   ) {
     return (
       <RequestContent

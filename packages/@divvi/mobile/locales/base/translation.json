@@ -1164,8 +1164,6 @@
     "decryptPayloadTitle": "Decrypt with wallet",
     "decryptPayload": "{{dappName}} would like to decrypt a data payload.",
     "computeSharedSecret": "{{dappName}} would like to generate secrets.",
-    "getCapabilitiesTitle": "Wallet capabilities",
-    "getCapabilities": "{{dappName}} would like to read the capabilities of your wallet.",
     "transactionDataCopied": "Transaction data copied",
     "estimatedNetworkFee": "Estimated {{networkName}} Network Fee",
     "networksList": "Networks",
