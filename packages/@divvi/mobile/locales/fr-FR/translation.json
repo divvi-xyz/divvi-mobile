@@ -1162,8 +1162,6 @@
     "decryptPayloadTitle": "Déchiffrer avec le portefeuille",
     "decryptPayload": "{{dappName}} demande à déchiffrer une charge utile de données.",
     "computeSharedSecret": "{{dappName}} demande à générer des secrets.",
-    "getCapabilitiesTitle": "Capacités des portefeuilles",
-    "getCapabilities": "{{dappName}} aimerais lire les capacités de ton portefeuille.",
     "transactionDataCopied": "Données de transaction copiées",
     "estimatedNetworkFee": "Estimation des frais de réseau de {{networkName}}",
     "networksList": "Réseaux",
