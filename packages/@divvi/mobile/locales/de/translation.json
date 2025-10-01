@@ -1162,6 +1162,8 @@
     "decryptPayloadTitle": "Mit Wallet entschlüsseln",
     "decryptPayload": "{{dappName}} möchte sich eine Daten-Nutzlast entschlüsseln.",
     "computeSharedSecret": "{{dappName}} möchte sich Geheimnisse erzeugen.",
+    "getCapabilitiesTitle": "Wallet-Fähigkeiten",
+    "getCapabilities": "{{dappName}} würde gerne die Fähigkeiten deines Geldbeutels lesen.",
     "transactionDataCopied": "Transaktionsdaten kopiert",
     "estimatedNetworkFee": "Geschätzte Netzwerkgebühr für {{networkName}}",
     "networksList": "Netzwerke",
