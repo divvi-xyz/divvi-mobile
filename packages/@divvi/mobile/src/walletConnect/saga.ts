@@ -573,8 +573,8 @@ function* acceptSession({
       id: session.id,
       relayProtocol: relays[0].protocol,
       namespaces: approvedNamespaces,
-      sessionProperties,
-      scopedProperties,
+      ...(sessionProperties && { sessionProperties }),
+      ...(scopedProperties && { scopedProperties }),
     })
 
     AppAnalytics.track(WalletConnectEvents.wc_session_approve_success, defaultTrackedProperties)
