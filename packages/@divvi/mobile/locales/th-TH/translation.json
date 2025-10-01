@@ -1160,6 +1160,8 @@
     "decryptPayloadTitle": "ถอดรหัสด้วยกระเป๋าเงิน",
     "decryptPayload": "{{dappName}} ต้องการถอดรหัสข้อมูลของข้อมูล",
     "computeSharedSecret": "{{dappName}} ต้องการสร้างความลับ",
+    "getCapabilitiesTitle": "Wallet capabilities",
+    "getCapabilities": "{{dappName}} would like to read the capabilities of your wallet.",
     "transactionDataCopied": "ข้อมูลการทำธุรกรรมคัดลอก",
     "estimatedNetworkFee": "ค่าธรรมเนียมเครือข่าย {{networkName}} โดยประมาณ",
     "networksList": "เครือข่าย",
