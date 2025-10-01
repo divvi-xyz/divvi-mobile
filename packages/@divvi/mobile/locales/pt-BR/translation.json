@@ -1162,6 +1162,8 @@
     "decryptPayloadTitle": "Descriptografar com a carteira",
     "decryptPayload": "{{dappName}} gostaria de decifrar uma carga útil de dados.",
     "computeSharedSecret": "{{dappName}} gostaria de gerar segredos.",
+    "getCapabilitiesTitle": "Recursos de carteira",
+    "getCapabilities": "{{dappName}} gostaria de ler os recursos de sua carteira.",
     "transactionDataCopied": "Dados de transação copiados",
     "estimatedNetworkFee": "Taxa da rede {{networkName}} estimada",
     "networksList": "Redes",
