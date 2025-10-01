@@ -66,7 +66,7 @@ import {
   selectPendingActions,
   selectSessions,
 } from 'src/walletConnect/selectors'
-import { WalletConnectRequestType } from 'src/walletConnect/types'
+import { WalletConnectRequestResult, WalletConnectRequestType } from 'src/walletConnect/types'
 import networkConfig, {
   networkIdToWalletConnectChainId,
   walletConnectChainIdToNetwork,
@@ -676,7 +676,7 @@ function* handleAcceptRequest({ request, preparedTransaction }: AcceptRequest) {
     }
 
     const result = yield* call(handleRequest, params, preparedTransaction)
-    const response: JsonRpcResult<string> = formatJsonRpcResult(id, result)
+    const response: JsonRpcResult<WalletConnectRequestResult> = formatJsonRpcResult(id, result)
     yield* call([client, 'respondSessionRequest'], { topic, response })
 
     AppAnalytics.track(WalletConnectEvents.wc_request_accept_success, defaultTrackedProperties)

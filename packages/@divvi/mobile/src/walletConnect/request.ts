@@ -8,6 +8,7 @@ import {
   SerializableTransactionRequest,
   getPreparedTransaction,
 } from 'src/viem/preparedTransactionSerialization'
+import { getWalletCapabilitiesByHexChainId } from 'src/walletConnect/capabilities'
 import { SupportedActions, chainAgnosticActions } from 'src/walletConnect/constants'
 import { getViemWallet } from 'src/web3/contracts'
 import networkConfig, {
@@ -85,6 +86,15 @@ export function* handleRequest(
     case SupportedActions.eth_sign: {
       const data = { message: { raw: params[1] } } as SignMessageParameters
       return (yield* call([wallet, 'signMessage'], data)) as string
+    }
+    case SupportedActions.wallet_getCapabilities: {
+      const [address, hexNetworkIds] = params
+
+      if (address.toLowerCase() !== account.toLowerCase()) {
+        throw new Error('Unauthorized')
+      }
+
+      return yield* call(getWalletCapabilitiesByHexChainId, hexNetworkIds)
     }
     default:
       throw new Error('unsupported RPC method')
