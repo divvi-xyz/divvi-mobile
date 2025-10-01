@@ -1162,8 +1162,6 @@
     "decryptPayloadTitle": "Descifrar con wallet",
     "decryptPayload": "{{dappName}} desea desencriptar una carga de datos.",
     "computeSharedSecret": "{{dappName}} desea generar secretos.",
-    "getCapabilitiesTitle": "Capacidades del monedero",
-    "getCapabilities": "{{dappName}} me gustaría leer las capacidades de tu cartera.",
     "transactionDataCopied": "Datos de transacción copiados",
     "estimatedNetworkFee": "Estimación de la tarifa de la red {{networkName}}",
     "networksList": "Redes",
