@@ -1,57 +1,9 @@
 import { NetworkId } from 'src/transactions/types'
-import networkConfig, {
-  networkIdToNetwork,
-  networkIdToWalletConnectChainId,
-  viemChainIdToNetworkId,
-} from 'src/web3/networkConfig'
+import { capabilitiesByNetworkId } from 'src/walletConnect/constants'
+import networkConfig, { networkIdToNetwork, viemChainIdToNetworkId } from 'src/web3/networkConfig'
 import { getSupportedNetworkIds } from 'src/web3/utils'
 import { hexToNumber, isHex, toHex } from 'viem'
-
-type AtomicCapability = {
-  status: 'supported' | 'ready' | 'unsupported'
-}
-
-type PaymasterServiceCapability = {
-  supported: boolean
-}
-
-type Capabilities = {
-  atomic: AtomicCapability
-  paymasterService: PaymasterServiceCapability
-}
-
-type CapabilitiesByNetworkId = Record<keyof typeof NetworkId, Capabilities>
-
-const defaultCapabilities: Capabilities = {
-  atomic: { status: 'unsupported' },
-  paymasterService: { supported: false },
-}
-
-export const capabilitiesByNetworkId: CapabilitiesByNetworkId = {
-  [NetworkId['celo-alfajores']]: defaultCapabilities,
-  [NetworkId['celo-mainnet']]: defaultCapabilities,
-  [NetworkId['ethereum-mainnet']]: defaultCapabilities,
-  [NetworkId['ethereum-sepolia']]: defaultCapabilities,
-  [NetworkId['arbitrum-one']]: defaultCapabilities,
-  [NetworkId['arbitrum-sepolia']]: defaultCapabilities,
-  [NetworkId['op-mainnet']]: defaultCapabilities,
-  [NetworkId['op-sepolia']]: defaultCapabilities,
-  [NetworkId['polygon-pos-mainnet']]: defaultCapabilities,
-  [NetworkId['polygon-pos-amoy']]: defaultCapabilities,
-  [NetworkId['base-mainnet']]: defaultCapabilities,
-  [NetworkId['base-sepolia']]: defaultCapabilities,
-}
-
-export function getWalletCapabilitiesByWalletConnectChainId(): Record<string, Capabilities> {
-  const result: Record<string, Capabilities> = {}
-
-  for (const networkId of getSupportedNetworkIds()) {
-    const walletConnectChainId = networkIdToWalletConnectChainId[networkId]
-    result[walletConnectChainId] = capabilitiesByNetworkId[networkId]
-  }
-
-  return result
-}
+import { Capabilities } from './types'
 
 export function getWalletCapabilitiesByHexChainId(
   requestedChainIds?: unknown

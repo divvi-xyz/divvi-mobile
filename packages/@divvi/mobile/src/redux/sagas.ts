@@ -30,6 +30,7 @@ import { positionsSaga } from 'src/positions/saga'
 import { fetchPositionsSuccess, fetchShortcutsSuccess } from 'src/positions/slice'
 import { priceHistorySaga } from 'src/priceHistory/saga'
 import { fetchPriceHistorySuccess } from 'src/priceHistory/slice'
+import { recaptchaSaga } from 'src/recaptcha/saga'
 import {
   rewardsSendersFetched,
   setPhoneRecipientCache,
@@ -114,6 +115,7 @@ export function* rootSaga() {
     yield* spawn(analyticsSaga)
     yield* spawn(loggerSaga)
     yield* spawn(appSaga)
+    yield* spawn(recaptchaSaga)
     yield* spawn(i18nSaga)
     yield* spawn(sentrySaga)
     yield* spawn(networkInfoSaga)

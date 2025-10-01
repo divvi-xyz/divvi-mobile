@@ -1,4 +1,6 @@
 import { TFunction } from 'i18next'
+import { NetworkId } from 'src/transactions/types'
+import { Capabilities } from 'src/walletConnect/types'
 
 export enum SupportedActions {
   eth_signTransaction = 'eth_signTransaction',
@@ -85,3 +87,23 @@ export const chainAgnosticActions: string[] = [
   SupportedActions.personal_sign,
   SupportedActions.wallet_getCapabilities,
 ]
+
+const defaultCapabilities: Capabilities = {
+  atomic: { status: 'unsupported' },
+  paymasterService: { supported: false },
+}
+
+export const capabilitiesByNetworkId: Record<keyof typeof NetworkId, Capabilities> = {
+  [NetworkId['celo-alfajores']]: defaultCapabilities,
+  [NetworkId['celo-mainnet']]: defaultCapabilities,
+  [NetworkId['ethereum-mainnet']]: defaultCapabilities,
+  [NetworkId['ethereum-sepolia']]: defaultCapabilities,
+  [NetworkId['arbitrum-one']]: defaultCapabilities,
+  [NetworkId['arbitrum-sepolia']]: defaultCapabilities,
+  [NetworkId['op-mainnet']]: defaultCapabilities,
+  [NetworkId['op-sepolia']]: defaultCapabilities,
+  [NetworkId['polygon-pos-mainnet']]: defaultCapabilities,
+  [NetworkId['polygon-pos-amoy']]: defaultCapabilities,
+  [NetworkId['base-mainnet']]: defaultCapabilities,
+  [NetworkId['base-sepolia']]: defaultCapabilities,
+}
