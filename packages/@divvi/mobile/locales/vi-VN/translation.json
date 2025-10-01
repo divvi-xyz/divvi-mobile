@@ -1160,6 +1160,8 @@
     "decryptPayloadTitle": "Giải mã bằng ví",
     "decryptPayload": "{{dappName}} muốn giải mã tải trọng dữ liệu.",
     "computeSharedSecret": "{{dappName}} muốn tạo bí mật.",
+    "getCapabilitiesTitle": "Wallet capabilities",
+    "getCapabilities": "{{dappName}} would like to read the capabilities of your wallet.",
     "transactionDataCopied": "Dữ liệu giao dịch được sao chép",
     "estimatedNetworkFee": "Phí mạng {{networkName}} ước tính",
     "networksList": "Mạng",
