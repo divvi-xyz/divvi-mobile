@@ -245,6 +245,8 @@ describe(walletConnectSaga, () => {
       namespacesToApprove: expect.anything(),
       supportedChains: ['eip155:44787'],
       version: 2,
+      sessionProperties: expect.anything(),
+      scopedProperties: expect.anything(),
     })
   })
 
@@ -293,6 +295,8 @@ describe('showSessionRequest', () => {
       namespacesToApprove: expect.anything(),
       supportedChains: ['eip155:44787'],
       version: 2,
+      sessionProperties: expect.anything(),
+      scopedProperties: expect.anything(),
     })
 
     // Check the namespaces to approve are correct
@@ -341,6 +345,49 @@ describe('showSessionRequest', () => {
       }),
       supportedChains: ['eip155:44787', 'eip155:11155111'], // matches the chains supported by the wallet
       version: 2,
+      sessionProperties: expect.anything(),
+      scopedProperties: expect.anything(),
+    })
+  })
+
+  it('includes the session properties and scoped properties', async () => {
+    const state = createMockStore({}).getState()
+    await expectSaga(_showSessionRequest, sessionProposal)
+      .withState(state)
+      .provide([[select(activeDappSelector), null]])
+      .run()
+
+    expect(navigate).toHaveBeenCalledTimes(1)
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Session,
+      pendingSession: sessionProposal,
+      namespacesToApprove: expect.anything(),
+      supportedChains: expect.anything(),
+      version: expect.anything(),
+      scopedProperties: {
+        'eip155:44787': {
+          atomic: {
+            status: 'unsupported',
+          },
+          paymasterService: {
+            supported: false,
+          },
+        },
+      },
+      sessionProperties: {
+        capabilities: {
+          '0x0000000000000000000000000000000000007e57': {
+            '0xaef3': {
+              atomic: {
+                status: 'unsupported',
+              },
+              paymasterService: {
+                supported: false,
+              },
+            },
+          },
+        },
+      },
     })
   })
 
@@ -380,6 +427,8 @@ describe('showSessionRequest', () => {
       namespacesToApprove: expect.anything(),
       supportedChains: ['eip155:44787'],
       version: 2,
+      sessionProperties: expect.anything(),
+      scopedProperties: expect.anything(),
     })
 
     // Check the namespaces to approve are correct
@@ -436,6 +485,8 @@ describe('showSessionRequest', () => {
       namespacesToApprove: null,
       supportedChains: ['eip155:44787'],
       version: 2,
+      sessionProperties: expect.anything(),
+      scopedProperties: expect.anything(),
     })
   })
 })
@@ -993,6 +1044,8 @@ describe('handlePendingState', () => {
       namespacesToApprove: expect.anything(),
       supportedChains: ['eip155:44787'],
       version: 2,
+      sessionProperties: expect.anything(),
+      scopedProperties: expect.anything(),
     })
   })
 
