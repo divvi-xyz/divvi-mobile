@@ -1162,6 +1162,8 @@
     "decryptPayloadTitle": "Cüzdan ile şifre çözme",
     "decryptPayload": "{{dappName}} bir veri yükünün şifresini çözmek istiyor.",
     "computeSharedSecret": "{{dappName}} gizli kelimeler oluşturmak istiyor.",
+    "getCapabilitiesTitle": "Cüzdan özellikleri",
+    "getCapabilities": "{{dappName}} cüzdanınızın yeteneklerini okumak istiyorum.",
     "transactionDataCopied": "İşlem verileri kopyalandı",
     "estimatedNetworkFee": "Tahmini {{networkName}} Ağ Ücreti",
     "networksList": "Ağlar",
