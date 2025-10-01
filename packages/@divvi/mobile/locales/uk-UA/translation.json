@@ -1166,8 +1166,6 @@
     "decryptPayloadTitle": "Розшифрувати, використовуючи гаманець",
     "decryptPayload": "{{dappName}} потрібно розшифрувати корисний вміст даних.",
     "computeSharedSecret": "{{dappName}} потрібно згенерувати секретні коди.",
-    "getCapabilitiesTitle": "Можливості гаманця",
-    "getCapabilities": "{{dappName}} хотіли б ознайомитися з можливостями вашого гаманця.",
     "transactionDataCopied": "Дані транзакції скопійовано",
     "estimatedNetworkFee": "Орієнтовна комісія за мережу {{networkName}}",
     "networksList": "Мережі",
