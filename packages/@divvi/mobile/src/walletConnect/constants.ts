@@ -35,7 +35,7 @@ export function isSupportedEvent(event: string) {
 }
 
 export function isInteractiveAction(action: string) {
-  return !Object.values(InteractiveActions).includes(action as InteractiveActions)
+  return Object.values(InteractiveActions).includes(action as InteractiveActions)
 }
 
 export function getDisplayTextFromAction(
