@@ -1,6 +1,10 @@
 import { NetworkId } from 'src/transactions/types'
 import { capabilitiesByNetworkId } from 'src/walletConnect/constants'
-import networkConfig, { networkIdToNetwork, viemChainIdToNetworkId } from 'src/web3/networkConfig'
+import networkConfig, {
+  networkIdToNetwork,
+  networkIdToWalletConnectChainId,
+  viemChainIdToNetworkId,
+} from 'src/web3/networkConfig'
 import { getSupportedNetworkIds } from 'src/web3/utils'
 import { hexToNumber, isHex, toHex } from 'viem'
 import { Capabilities } from './types'
@@ -39,6 +43,17 @@ export function getWalletCapabilitiesByHexChainId(
   for (const networkId of targetNetworkIds) {
     const chainId = networkConfig.viemChain[networkIdToNetwork[networkId]].id
     result[toHex(chainId)] = capabilitiesByNetworkId[networkId]
+  }
+
+  return result
+}
+
+export function getWalletCapabilitiesByWalletConnectChainId(): Record<string, Capabilities> {
+  const result: Record<string, Capabilities> = {}
+
+  for (const networkId of getSupportedNetworkIds()) {
+    const walletConnectChainId = networkIdToWalletConnectChainId[networkId]
+    result[walletConnectChainId] = capabilitiesByNetworkId[networkId]
   }
 
   return result
