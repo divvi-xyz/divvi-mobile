@@ -26,6 +26,8 @@ export type SessionRequestProps = {
   pendingSession: WalletKitTypes.EventArguments['session_proposal']
   namespacesToApprove: SessionTypes.Namespaces | null
   supportedChains: string[]
+  sessionProperties?: SessionTypes.SessionProperties
+  scopedProperties?: SessionTypes.ScopedProperties
 }
 
 // do not destructure props or else the type inference is lost
@@ -33,6 +35,8 @@ function SessionRequest({
   pendingSession,
   namespacesToApprove,
   supportedChains,
+  sessionProperties,
+  scopedProperties,
 }: SessionRequestProps) {
   const { metadata } = pendingSession.params.proposer
 
@@ -100,7 +104,9 @@ function SessionRequest({
       buttonText={t('walletConnectRequest.connectWalletAction')}
       onAccept={() => {
         SentrySpanHub.startSpan(SentrySpan.wallet_connect_connection)
-        dispatch(acceptSession(pendingSession, namespacesToApprove))
+        dispatch(
+          acceptSession(pendingSession, namespacesToApprove, sessionProperties, scopedProperties)
+        )
       }}
       onDeny={() => {
         dispatch(denySession(pendingSession, getSdkError('USER_REJECTED')))

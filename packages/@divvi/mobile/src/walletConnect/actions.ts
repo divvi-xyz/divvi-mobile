@@ -51,6 +51,8 @@ export interface AcceptSession {
   type: Actions.ACCEPT_SESSION
   session: WalletKitTypes.EventArguments['session_proposal']
   approvedNamespaces: SessionTypes.Namespaces
+  sessionProperties?: SessionTypes.SessionProperties
+  scopedProperties?: SessionTypes.ScopedProperties
 }
 
 export interface DenySession {
@@ -141,11 +143,15 @@ export const initialisePairing = (
 
 export const acceptSession = (
   session: WalletKitTypes.EventArguments['session_proposal'],
-  approvedNamespaces: SessionTypes.Namespaces
+  approvedNamespaces: SessionTypes.Namespaces,
+  sessionProperties?: SessionTypes.SessionProperties,
+  scopedProperties?: SessionTypes.ScopedProperties
 ): AcceptSession => ({
   type: Actions.ACCEPT_SESSION,
   session,
   approvedNamespaces,
+  sessionProperties,
+  scopedProperties,
 })
 
 export const denySession = (
