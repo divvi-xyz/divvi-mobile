@@ -5,6 +5,8 @@ import {
 } from '@google-cloud/recaptcha-enterprise-react-native'
 import { Platform } from 'react-native'
 import { getAppConfig } from 'src/appConfig'
+import { getFeatureGate } from 'src/statsig'
+import { StatsigFeatureGates } from 'src/statsig/types'
 import Logger from 'src/utils/Logger'
 
 const TAG = 'recaptcha/RecaptchaService'
@@ -31,8 +33,14 @@ class RecaptchaServiceImpl {
       return this.initializationPromise
     }
 
+    if (!this.isEnabled()) {
+      Logger.info(TAG, 'reCAPTCHA is disabled, not initializing reCAPTCHA client')
+      return null
+    }
+
     const siteKey = this.getSiteKey()
     if (!siteKey) {
+      // this should never happen if isEnabled() is true, since isEnabled() checks for site key
       Logger.info(TAG, 'No reCAPTCHA site key found, not initializing reCAPTCHA client')
       return null
     }
@@ -90,7 +98,7 @@ class RecaptchaServiceImpl {
 
   isEnabled(): boolean {
     const siteKey = this.getSiteKey()
-    return !!siteKey
+    return getFeatureGate(StatsigFeatureGates.RECAPTCHA_ENABLED) && !!siteKey
   }
 }
 
