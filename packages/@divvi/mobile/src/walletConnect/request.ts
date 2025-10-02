@@ -105,6 +105,10 @@ export function* handleRequest(
 
       return yield* call(getWalletCapabilitiesByHexChainId, hexNetworkIds)
     }
+    case SupportedActions.wallet_sendCalls: {
+      Logger.debug(TAG + '@handleRequest', 'wallet_sendCalls', { params })
+      return '0x'
+    }
     default:
       throw new Error('unsupported RPC method')
   }
