@@ -36,6 +36,7 @@ export enum StatsigFeatureGates {
   ALLOW_CROSS_CHAIN_SWAP_AND_DEPOSIT = 'allow_cross_chain_swap_and_deposit',
   DISABLE_WALLET_CONNECT_V2 = 'disable_wallet_connect_v2',
   SHOW_DIVVI_SLICES_BOTTOM_SHEET = 'show_divvi_slices_bottom_sheet',
+  RECAPTCHA_ENABLED = 'recaptcha_enabled',
 }
 
 export enum StatsigExperiments {
