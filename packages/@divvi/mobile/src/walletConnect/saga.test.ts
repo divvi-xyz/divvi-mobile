@@ -965,7 +965,7 @@ describe('normalizeTransactions', () => {
     })
   }
 
-  it('assigns consecutive nonces to transactions', async () => {
+  it('assigns consecutive nonces to transactions when nonce is not provided for the first transaction', async () => {
     await expectSaga(
       normalizeTransactions,
       [
@@ -985,6 +985,31 @@ describe('normalizeTransactions', () => {
           data: '0xABC',
           from: '0xTEST',
           nonce: 124,
+        },
+      ])
+      .run()
+  })
+
+  it('assigns consecutive nonces to transactions when nonce is provided for the first transaction', async () => {
+    await expectSaga(
+      normalizeTransactions,
+      [
+        { from: '0xTEST', data: '0xABC', nonce: '0x0' },
+        { from: '0xTEST', data: '0xABC', nonce: '0xF' },
+      ],
+      Network.Ethereum
+    )
+      .provide(createDefaultProviders(Network.Ethereum))
+      .returns([
+        {
+          data: '0xABC',
+          from: '0xTEST',
+          nonce: 0,
+        },
+        {
+          data: '0xABC',
+          from: '0xTEST',
+          nonce: 1,
         },
       ])
       .run()
