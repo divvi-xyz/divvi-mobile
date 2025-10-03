@@ -44,7 +44,8 @@ export function getDisplayTextFromAction(
   t: TFunction,
   action: InteractiveActions,
   dappName: string,
-  networkName: string
+  networkName: string,
+  transactionsCount: number
 ): { description: string; title: string; action: string } {
   const actionTranslations: {
     [x in InteractiveActions]: { description: string; title: string; action: string }
@@ -85,8 +86,8 @@ export function getDisplayTextFromAction(
     },
     [InteractiveActions.wallet_sendCalls]: {
       description: networkName
-        ? t('walletConnectRequest.sendCalls', { dappName, networkName })
-        : t('walletConnectRequest.sendCallsUnknownNetwork', { dappName }),
+        ? t('walletConnectRequest.sendCalls', { dappName, networkName, transactionsCount })
+        : t('walletConnectRequest.sendCallsUnknownNetwork', { dappName, transactionsCount }),
       title: t('walletConnectRequest.sendCallsTitle'),
       action: t('allow'),
     },

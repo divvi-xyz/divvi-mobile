@@ -1,4 +1,5 @@
 import { WalletKitTypes } from '@reown/walletkit'
+import crypto from 'crypto'
 import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
 import { SentrySpan } from 'src/sentry/SentrySpans'
 import { Network } from 'src/transactions/types'
@@ -8,7 +9,10 @@ import {
   SerializableTransactionRequest,
   getPreparedTransaction,
 } from 'src/viem/preparedTransactionSerialization'
-import { getWalletCapabilitiesByHexChainId } from 'src/walletConnect/capabilities'
+import {
+  getWalletCapabilitiesByHexChainId,
+  getWalletCapabilitiesByWalletConnectChainId,
+} from 'src/walletConnect/capabilities'
 import {
   SupportedActions,
   chainAgnosticActions,
@@ -21,7 +25,7 @@ import networkConfig, {
 } from 'src/web3/networkConfig'
 import { getWalletAddress, unlockAccount } from 'src/web3/saga'
 import { call } from 'typed-redux-saga'
-import { SignMessageParameters } from 'viem'
+import { SignMessageParameters, bytesToHex } from 'viem'
 
 const TAG = 'WalletConnect/request'
 
@@ -30,7 +34,7 @@ export function* handleRequest(
     request: { method, params },
     chainId,
   }: WalletKitTypes.EventArguments['session_request']['params'],
-  serializableTransactionRequest?: SerializableTransactionRequest
+  serializableTransactionRequests?: SerializableTransactionRequest[]
 ) {
   // since the chainId comes from the dapp, we cannot be sure that it is a
   // supported chain id. for transactions that are sent to the blockchain, it is
@@ -60,10 +64,10 @@ export function* handleRequest(
 
   switch (method) {
     case SupportedActions.eth_signTransaction: {
-      if (!serializableTransactionRequest) {
-        throw new Error('preparedTransaction is required when using viem')
+      if (!serializableTransactionRequests || serializableTransactionRequests.length === 0) {
+        throw new Error('preparedTransactions is required when using viem')
       }
-      const tx = getPreparedTransaction(serializableTransactionRequest)
+      const tx = getPreparedTransaction(serializableTransactionRequests[0])
       Logger.debug(TAG + '@handleRequest', 'Signing transaction', tx)
       return yield* call(
         [wallet, 'signTransaction'],
@@ -72,10 +76,10 @@ export function* handleRequest(
       )
     }
     case SupportedActions.eth_sendTransaction: {
-      if (!serializableTransactionRequest) {
+      if (!serializableTransactionRequests || serializableTransactionRequests.length === 0) {
         throw new Error('preparedTransaction is required when using viem')
       }
-      const tx = getPreparedTransaction(serializableTransactionRequest)
+      const tx = getPreparedTransaction(serializableTransactionRequests[0])
       Logger.debug(TAG + '@handleRequest', 'Sending transaction', tx)
       const hash = yield* call(
         [wallet, 'sendTransaction'],
@@ -106,8 +110,30 @@ export function* handleRequest(
       return yield* call(getWalletCapabilitiesByHexChainId, hexNetworkIds)
     }
     case SupportedActions.wallet_sendCalls: {
-      Logger.debug(TAG + '@handleRequest', 'wallet_sendCalls', { params })
-      return '0x'
+      if (!serializableTransactionRequests || serializableTransactionRequests.length === 0) {
+        throw new Error('preparedTransactions is required when using viem')
+      }
+
+      const id = params[0].id ?? bytesToHex(crypto.randomBytes(32))
+      const capabilities = yield* call(getWalletCapabilitiesByWalletConnectChainId, chainId)
+
+      // TODO: handle atomic execution
+
+      // Fallback to sending transactions sequentially without any atomicity/contiguity guarantees
+      for (const tx of serializableTransactionRequests) {
+        try {
+          yield* call(
+            [wallet, 'sendTransaction'],
+            // TODO: fix types
+            tx as any
+          )
+        } catch (e) {
+          Logger.error(TAG + '@handleRequest', 'Failed to send transaction, abotring batch', e)
+          throw e
+        }
+      }
+
+      return { id, capabilities }
     }
     default:
       throw new Error('unsupported RPC method')

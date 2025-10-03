@@ -61,10 +61,13 @@ import {
   getDefaultSessionTrackedProperties as getDefaultSessionTrackedPropertiesAnalytics,
 } from 'src/walletConnect/analytics'
 import {
+  getAtomicCapability,
   getWalletCapabilitiesByHexChainId,
   getWalletCapabilitiesByWalletConnectChainId,
+  validateRequestedCapabilities,
 } from 'src/walletConnect/capabilities'
 import {
+  capabilitiesByNetworkId,
   isInteractiveAction,
   isSupportedAction,
   SupportedActions,
@@ -394,68 +397,82 @@ function convertToNumber(value: any) {
 // Note: the raw request should be in RPC format (fields in hex string)
 // but sometimes we've seen fields with numbers instead of hex strings
 // i.e. don't trust the raw request to be in the correct format, since it comes from the dapp
-export function* normalizeTransaction(rawTx: any, network: Network) {
-  const tx: TransactionRequest = {
-    ...rawTx,
-    gas: convertToBigInt(rawTx.gas),
-    gasPrice: convertToBigInt(rawTx.gasPrice),
-    maxFeePerGas: convertToBigInt(rawTx.maxFeePerGas),
-    maxPriorityFeePerGas: convertToBigInt(rawTx.maxPriorityFeePerGas),
-    nonce: convertToNumber(rawTx.nonce),
-    value: convertToBigInt(rawTx.value),
+export function* normalizeTransactions(rawTxs: any[], network: Network) {
+  const normalizedTransactions: TransactionRequest[] = []
+
+  const walletAddress = yield* select(walletAddressSelector)
+  if (!walletAddress) {
+    // this should never happen
+    throw new Error('no wallet address found')
   }
 
-  // Handle `gasLimit` as a misnomer for `gas`, it usually comes through in hex format
-  if ('gasLimit' in tx && tx.gas === undefined) {
-    tx.gas = convertToBigInt(tx.gasLimit)
-    delete tx.gasLimit
+  const txCountParams: GetTransactionCountParameters = {
+    address: walletAddress as Address,
+    blockTag: 'pending',
   }
+  const nonce = yield* call(getTransactionCount, publicClient[network], txCountParams)
 
-  // On Celo, re-calculate the feeCurrency and gas since it is not possible to tell from
-  // the request payload if the feeCurrency is set to undefined (native
-  // currency) explicitly or due to lack of feeCurrency support
-  if (network === Network.Celo) {
-    delete tx.gas
-    if ('feeCurrency' in tx) {
-      delete tx.feeCurrency
-    }
-  }
+  for (let i = 0; i < rawTxs.length; i++) {
+    const rawTx = rawTxs[i]
 
-  // Force upgrade legacy tx to EIP-1559/CIP-42/CIP-64
-  if (tx.gasPrice !== undefined) {
-    delete tx.gasPrice
-  }
-
-  if (!tx.nonce) {
-    const walletAddress = yield* select(walletAddressSelector)
-    if (!walletAddress) {
-      // this should never happen
-      throw new Error('no wallet address found')
+    const tx: TransactionRequest = {
+      ...rawTx,
+      gas: convertToBigInt(rawTx.gas),
+      gasPrice: convertToBigInt(rawTx.gasPrice),
+      maxFeePerGas: convertToBigInt(rawTx.maxFeePerGas),
+      maxPriorityFeePerGas: convertToBigInt(rawTx.maxPriorityFeePerGas),
+      nonce: convertToNumber(rawTx.nonce),
+      value: convertToBigInt(rawTx.value),
     }
 
-    const txCountParams: GetTransactionCountParameters = {
-      address: walletAddress as Address,
-      blockTag: 'pending',
+    if (!tx.from) {
+      tx.from = walletAddress as Address
     }
-    tx.nonce = yield* call(getTransactionCount, publicClient[network], txCountParams)
-  }
 
-  if ('chainId' in tx) {
-    // Strip chainId as viem on Celo currently doesn't serialize it to a string
-    // and it causes the following RPC node error during gas estimation:
-    // `Gas estimation failed: Could not decode transaction failure reason or Error: invalid argument 0: json: cannot unmarshal non-string into Go struct field TransactionArgs.chainId of type *hexutil.Big`
-    // The right chainId will be set by the viem client anyway when signing the transaction
-    delete tx.chainId
-  }
-
-  // Strip undefined keys, just to avoid noise in the logs or tests
-  for (const key of Object.keys(tx) as Array<keyof TransactionRequest>) {
-    if (tx[key] === undefined) {
-      delete tx[key]
+    // Handle `gasLimit` as a misnomer for `gas`, it usually comes through in hex format
+    if ('gasLimit' in tx && tx.gas === undefined) {
+      tx.gas = convertToBigInt(tx.gasLimit)
+      delete tx.gasLimit
     }
+
+    // On Celo, re-calculate the feeCurrency and gas since it is not possible to tell from
+    // the request payload if the feeCurrency is set to undefined (native
+    // currency) explicitly or due to lack of feeCurrency support
+    if (network === Network.Celo) {
+      delete tx.gas
+      if ('feeCurrency' in tx) {
+        delete tx.feeCurrency
+      }
+    }
+
+    // Force upgrade legacy tx to EIP-1559/CIP-42/CIP-64
+    if (tx.gasPrice !== undefined) {
+      delete tx.gasPrice
+    }
+
+    if (!tx.nonce) {
+      tx.nonce = nonce + i
+    }
+
+    if ('chainId' in tx) {
+      // Strip chainId as viem on Celo currently doesn't serialize it to a string
+      // and it causes the following RPC node error during gas estimation:
+      // `Gas estimation failed: Could not decode transaction failure reason or Error: invalid argument 0: json: cannot unmarshal non-string into Go struct field TransactionArgs.chainId of type *hexutil.Big`
+      // The right chainId will be set by the viem client anyway when signing the transaction
+      delete tx.chainId
+    }
+
+    // Strip undefined keys, just to avoid noise in the logs or tests
+    for (const key of Object.keys(tx) as Array<keyof TransactionRequest>) {
+      if (tx[key] === undefined) {
+        delete tx[key]
+      }
+    }
+
+    normalizedTransactions.push(tx)
   }
 
-  return tx
+  return normalizedTransactions
 }
 
 function* showActionRequest(request: WalletKitTypes.EventArguments['session_request']) {
@@ -494,7 +511,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
-  // since there are some network requests needed to prepare the transaction,
+  // since there are some network requests needed to prepare the transactions,
   // add a loading state
   navigate(Screens.WalletConnectRequest, {
     type: WalletConnectRequestType.Loading,
@@ -507,44 +524,101 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
-  const supportedChains = yield* call(getSupportedChains)
-
   const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
-  const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
-  let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
-  let prepareTransactionErrorMessage: string | undefined = undefined
-  if (
-    method === SupportedActions.eth_signTransaction ||
-    method === SupportedActions.eth_sendTransaction
-  ) {
-    const rawTx = request.params.request.params[0]
-    Logger.debug(TAG + '@showActionRequest', 'Received transaction', rawTx)
-    const network = walletConnectChainIdToNetwork[request.params.chainId]
-    try {
-      const normalizedTx = yield* call(normalizeTransaction, rawTx, network)
-      preparedTransactionsResult = yield* call(prepareTransactions, {
-        feeCurrencies,
-        decreasedAmountGasFeeMultiplier: 1,
-        baseTransactions: [normalizedTx],
-        origin: 'wallet-connect' as const,
-      })
-    } catch (err) {
-      Logger.warn(TAG + '@showActionRequest', 'Failed to prepare transaction', err)
-      const e = ensureError(err)
-      // Viem has short user-friendly error messages
-      prepareTransactionErrorMessage = e instanceof BaseError ? e.shortMessage : e.message
+
+  if (method === SupportedActions.wallet_sendCalls) {
+    // check support for requested capabilities
+    const supportedCapabilities = capabilitiesByNetworkId[networkId] ?? {}
+    let requestedCapabilitiesSupported = true
+
+    // check global capabilities
+    const requestedCapabilities = request.params.request.params[0].capabilities ?? {}
+    if (
+      !(yield* call(validateRequestedCapabilities, requestedCapabilities, supportedCapabilities))
+    ) {
+      requestedCapabilitiesSupported = false
+    }
+
+    // check per-call capabilities
+    for (const callDef of request.params.request.params[0].calls) {
+      const callCapabilities = callDef.capabilities ?? {}
+      if (!(yield* call(validateRequestedCapabilities, callCapabilities, supportedCapabilities))) {
+        requestedCapabilitiesSupported = false
+        break
+      }
+    }
+
+    if (!requestedCapabilitiesSupported) {
+      yield* put(
+        denyRequest(request, {
+          // TODO: use getSdkError() once this error code is supported
+          code: 5700,
+          message: 'Unsupported non-optional capability',
+        })
+      )
+      return
+    }
+
+    // check support for atomic execution
+    if (request.params.request.params[0].atomicRequired) {
+      const atomicSupportStatus = yield* call(getAtomicCapability, networkId)
+
+      if (atomicSupportStatus === 'unsupported') {
+        yield* put(
+          denyRequest(request, {
+            // TODO: use getSdkError() once this error code is supported
+            code: 5760,
+            message: 'Atomicity not supported',
+          })
+        )
+        return
+      } else if (atomicSupportStatus === 'ready') {
+        // TODO: enable atomic operations
+      }
     }
   }
 
-  const preparedTransaction =
+  const supportedChains = yield* call(getSupportedChains)
+
+  const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
+  let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
+  let prepareTransactionsErrorMessage: string | undefined = undefined
+  if (
+    method === SupportedActions.eth_signTransaction ||
+    method === SupportedActions.eth_sendTransaction ||
+    method === SupportedActions.wallet_sendCalls
+  ) {
+    const rawTxs =
+      method === SupportedActions.wallet_sendCalls
+        ? request.params.request.params[0].calls
+        : [request.params.request.params[0]]
+    Logger.debug(TAG + '@showActionRequest', 'Received transactions', rawTxs)
+    const network = walletConnectChainIdToNetwork[request.params.chainId]
+    try {
+      const normalizedTxs = yield* call(normalizeTransactions, rawTxs, network)
+      preparedTransactionsResult = yield* call(prepareTransactions, {
+        feeCurrencies,
+        decreasedAmountGasFeeMultiplier: 1,
+        baseTransactions: normalizedTxs,
+        origin: 'wallet-connect' as const,
+      })
+    } catch (err) {
+      Logger.warn(TAG + '@showActionRequest', 'Failed to prepare transactions', err)
+      const e = ensureError(err)
+      // Viem has short user-friendly error messages
+      prepareTransactionsErrorMessage = e instanceof BaseError ? e.shortMessage : e.message
+    }
+  }
+
+  const preparedTransactions =
     preparedTransactionsResult?.type === 'possible'
-      ? getSerializablePreparedTransaction(preparedTransactionsResult.transactions[0])
-      : undefined
+      ? preparedTransactionsResult.transactions.map(getSerializablePreparedTransaction)
+      : []
   Logger.debug(
     TAG + '@showActionRequest',
-    'Prepared transaction',
+    'Prepared transactions',
     preparedTransactionsResult?.type,
-    preparedTransaction
+    preparedTransactions
   )
 
   navigate(Screens.WalletConnectRequest, {
@@ -554,8 +628,8 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     version: 2,
     hasInsufficientGasFunds: preparedTransactionsResult?.type === 'not-enough-balance-for-gas',
     feeCurrenciesSymbols: feeCurrencies.map((token) => token.symbol),
-    preparedTransaction,
-    prepareTransactionErrorMessage,
+    preparedTransactions,
+    prepareTransactionsErrorMessage,
   })
 }
 
@@ -695,7 +769,7 @@ export function* getSessionFromRequest(request: WalletKitTypes.EventArguments['s
   return session
 }
 
-function* handleAcceptRequest({ request, preparedTransaction }: AcceptRequest) {
+function* handleAcceptRequest({ request, preparedTransactions }: AcceptRequest) {
   const session: SessionTypes.Struct = yield* call(getSessionFromRequest, request)
   const defaultSessionTrackedProperties: WalletConnect2Properties = yield* call(
     getDefaultSessionTrackedProperties,
@@ -721,7 +795,8 @@ function* handleAcceptRequest({ request, preparedTransaction }: AcceptRequest) {
       throw new Error(`Missing active session for topic ${topic}`)
     }
 
-    const result = yield* call(handleRequest, params, preparedTransaction)
+    const result = yield* call(handleRequest, params, preparedTransactions)
+    Logger.debug(TAG + '@acceptRequest', 'Result', result)
     const response: JsonRpcResult<WalletConnectRequestResult> = formatJsonRpcResult(id, result)
     yield* call([client, 'respondSessionRequest'], { topic, response })
 
