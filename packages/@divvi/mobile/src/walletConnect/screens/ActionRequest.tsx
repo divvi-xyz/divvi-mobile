@@ -129,7 +129,7 @@ function ActionRequest({
   }
 
   if (
-    !preparedTransactions &&
+    (!preparedTransactions || preparedTransactions.length === 0) &&
     (method === InteractiveActions.eth_signTransaction ||
       method === InteractiveActions.eth_sendTransaction)
   ) {
