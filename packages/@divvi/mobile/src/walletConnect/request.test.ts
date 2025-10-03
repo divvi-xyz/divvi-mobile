@@ -168,7 +168,7 @@ describe(handleRequest, () => {
   })
 
   it('supports eth_signTransaction for supported chain', async () => {
-    await expectSaga(handleRequest, signTransactionRequest, serializableTransactionRequest)
+    await expectSaga(handleRequest, signTransactionRequest, [serializableTransactionRequest])
       .withState(state)
       .call(unlockAccount, '0xwallet')
       .call([viemWallet, 'signTransaction'], getPreparedTransaction(serializableTransactionRequest))
@@ -181,7 +181,7 @@ describe(handleRequest, () => {
         await expectSaga(
           handleRequest,
           { ...signTransactionRequest, chainId: 'eip155:unsupported' },
-          serializableTransactionRequest
+          [serializableTransactionRequest]
         )
           .withState(state)
           .run()
@@ -190,7 +190,7 @@ describe(handleRequest, () => {
   })
 
   it('supports eth_sendTransaction for supported chain', async () => {
-    await expectSaga(handleRequest, sendTransactionRequest, serializableSendTransactionRequest)
+    await expectSaga(handleRequest, sendTransactionRequest, [serializableSendTransactionRequest])
       .withState(state)
       .call(unlockAccount, '0xwallet')
       .call(
@@ -206,7 +206,7 @@ describe(handleRequest, () => {
         await expectSaga(
           handleRequest,
           { ...sendTransactionRequest, chainId: 'eip155:unsupported' },
-          serializableSendTransactionRequest
+          [serializableSendTransactionRequest]
         )
           .withState(state)
           .run()

@@ -652,8 +652,8 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: mockPreparedTransactions.transactions[0],
-      prepareTransactionErrorMessage: undefined,
+      preparedTransactions: mockPreparedTransactions.transactions,
+      prepareTransactionsErrorMessage: undefined,
     })
   })
 
@@ -687,8 +687,8 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: undefined,
-      prepareTransactionErrorMessage: 'Some error',
+      preparedTransactions: undefined,
+      prepareTransactionsErrorMessage: 'Some error',
     })
   })
 
@@ -722,8 +722,8 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: undefined,
-      prepareTransactionErrorMessage: 'viem short message',
+      preparedTransactions: undefined,
+      prepareTransactionsErrorMessage: 'viem short message',
     })
   })
 
