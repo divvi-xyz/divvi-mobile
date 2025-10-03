@@ -796,7 +796,6 @@ function* handleAcceptRequest({ request, preparedTransactions }: AcceptRequest) 
     }
 
     const result = yield* call(handleRequest, params, preparedTransactions)
-    Logger.debug(TAG + '@acceptRequest', 'Result', result)
     const response: JsonRpcResult<WalletConnectRequestResult> = formatJsonRpcResult(id, result)
     yield* call([client, 'respondSessionRequest'], { topic, response })
 
