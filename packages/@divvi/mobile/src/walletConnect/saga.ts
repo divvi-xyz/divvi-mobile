@@ -61,10 +61,13 @@ import {
   getDefaultSessionTrackedProperties as getDefaultSessionTrackedPropertiesAnalytics,
 } from 'src/walletConnect/analytics'
 import {
+  getAtomicCapability,
   getWalletCapabilitiesByHexChainId,
   getWalletCapabilitiesByWalletConnectChainId,
+  validateRequestedCapabilities,
 } from 'src/walletConnect/capabilities'
 import {
+  capabilitiesByNetworkId,
   isInteractiveAction,
   isSupportedAction,
   SupportedActions,
@@ -424,6 +427,10 @@ export function* normalizeTransactions(rawTxs: any[], network: Network) {
       value: convertToBigInt(rawTx.value),
     }
 
+    if (!tx.from) {
+      tx.from = walletAddress as Address
+    }
+
     // Handle `gasLimit` as a misnomer for `gas`, it usually comes through in hex format
     if ('gasLimit' in tx && tx.gas === undefined) {
       tx.gas = convertToBigInt(tx.gasLimit)
@@ -517,17 +524,74 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
+  const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
+
+  if (method === SupportedActions.wallet_sendCalls) {
+    // check support for requested capabilities
+    const supportedCapabilities = capabilitiesByNetworkId[networkId] ?? {}
+    let requestedCapabilitiesSupported = true
+
+    // check global capabilities
+    const requestedCapabilities = request.params.request.params[0].capabilities ?? {}
+    if (
+      !(yield* call(validateRequestedCapabilities, requestedCapabilities, supportedCapabilities))
+    ) {
+      requestedCapabilitiesSupported = false
+    }
+
+    // check per-call capabilities
+    for (const call of request.params.request.params[0].calls) {
+      const callCapabilities = call.capabilities ?? {}
+      if (!(yield* call(validateRequestedCapabilities, callCapabilities, supportedCapabilities))) {
+        requestedCapabilitiesSupported = false
+        break
+      }
+    }
+
+    if (!requestedCapabilitiesSupported) {
+      yield* put(
+        denyRequest(request, {
+          // TODO: use getSdkError() once this error code is supported
+          code: 5700,
+          message: 'Unsupported non-optional capability',
+        })
+      )
+      return
+    }
+
+    // check support for atomic execution
+    if (request.params.request.params[0].atomicRequired) {
+      const atomicSupportStatus = yield* call(getAtomicCapability, networkId)
+
+      if (atomicSupportStatus === 'unsupported') {
+        yield* put(
+          denyRequest(request, {
+            // TODO: use getSdkError() once this error code is supported
+            code: 5760,
+            message: 'Atomicity not supported',
+          })
+        )
+        return
+      } else if (atomicSupportStatus === 'ready') {
+        // TODO: enable atomic operations
+      }
+    }
+  }
+
   const supportedChains = yield* call(getSupportedChains)
 
-  const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
   const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
   let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
   let prepareTransactionsErrorMessage: string | undefined = undefined
   if (
     method === SupportedActions.eth_signTransaction ||
-    method === SupportedActions.eth_sendTransaction
+    method === SupportedActions.eth_sendTransaction ||
+    method === SupportedActions.wallet_sendCalls
   ) {
-    const rawTxs = [request.params.request.params[0]]
+    const rawTxs =
+      method === SupportedActions.wallet_sendCalls
+        ? request.params.request.params[0].calls
+        : [request.params.request.params[0]]
     Logger.debug(TAG + '@showActionRequest', 'Received transactions', rawTxs)
     const network = walletConnectChainIdToNetwork[request.params.chainId]
     try {

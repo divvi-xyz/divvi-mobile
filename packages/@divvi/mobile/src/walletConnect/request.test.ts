@@ -303,4 +303,79 @@ describe(handleRequest, () => {
       ).rejects.toThrow('requested chainIds must be provided as an array')
     })
   })
+
+  describe('wallet_sendCalls', () => {
+    it('supports sequential exectution and returns capabilities for supported network', async () => {
+      const request = {
+        request: {
+          method: SupportedActions.wallet_sendCalls,
+          params: [
+            {
+              id: '0xabc',
+              calls: [
+                { to: '0xTEST', data: '0x' },
+                { to: '0xTEST', data: '0x' },
+              ],
+            },
+          ],
+        },
+        chainId: 'eip155:11155111',
+      }
+
+      const expectedResult = {
+        id: '0xabc',
+        capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+      }
+
+      await expectSaga(handleRequest, request, [
+        serializableSendTransactionRequest,
+        serializableSendTransactionRequest,
+      ])
+        .withState(state)
+        .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
+        .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
+        .returns(expectedResult)
+        .run()
+    })
+
+    it('aborts sequential execution if one transaction fails', async () => {
+      viemWallet.sendTransaction = jest
+        .fn()
+        .mockResolvedValueOnce('0x1234')
+        .mockRejectedValueOnce(new Error('error'))
+
+      const request = {
+        request: {
+          method: SupportedActions.wallet_sendCalls,
+          params: [
+            {
+              id: '0xbeef',
+              calls: [
+                { to: '0xTEST', data: '0x' },
+                { to: '0xTEST', data: '0x' },
+                { to: '0xTEST', data: '0x' },
+              ],
+            },
+          ],
+        },
+        chainId: 'eip155:11155111',
+      }
+
+      const expectedResult = {
+        id: '0xbeef',
+        capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+      }
+
+      await expectSaga(handleRequest, request, [
+        serializableSendTransactionRequest,
+        serializableSendTransactionRequest,
+        serializableSendTransactionRequest,
+      ])
+        .withState(state)
+        .returns(expectedResult)
+        .run()
+
+      expect(viemWallet.sendTransaction).toHaveBeenCalledTimes(2)
+    })
+  })
 })

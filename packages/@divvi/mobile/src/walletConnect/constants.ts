@@ -10,6 +10,7 @@ export enum SupportedActions {
   eth_sign = 'eth_sign',
   personal_sign = 'personal_sign',
   wallet_getCapabilities = 'wallet_getCapabilities',
+  wallet_sendCalls = 'wallet_sendCalls',
 }
 
 export enum InteractiveActions {
@@ -19,6 +20,7 @@ export enum InteractiveActions {
   eth_signTypedData_v4 = SupportedActions.eth_signTypedData_v4,
   eth_sign = SupportedActions.eth_sign,
   personal_sign = SupportedActions.personal_sign,
+  wallet_sendCalls = SupportedActions.wallet_sendCalls,
 }
 
 export enum SupportedEvents {
@@ -42,7 +44,8 @@ export function getDisplayTextFromAction(
   t: TFunction,
   action: InteractiveActions,
   dappName: string,
-  networkName: string
+  networkName: string,
+  transactionsCount: number
 ): { description: string; title: string; action: string } {
   const actionTranslations: {
     [x in InteractiveActions]: { description: string; title: string; action: string }
@@ -79,6 +82,13 @@ export function getDisplayTextFromAction(
     [InteractiveActions.personal_sign]: {
       description: t('walletConnectRequest.signPayload', { dappName }),
       title: t('walletConnectRequest.signPayloadTitle'),
+      action: t('allow'),
+    },
+    [InteractiveActions.wallet_sendCalls]: {
+      description: networkName
+        ? t('walletConnectRequest.sendCalls', { dappName, networkName, transactionsCount })
+        : t('walletConnectRequest.sendCallsUnknownNetwork', { dappName, transactionsCount }),
+      title: t('walletConnectRequest.sendCallsTitle'),
       action: t('allow'),
     },
   }

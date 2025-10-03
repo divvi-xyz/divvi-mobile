@@ -69,7 +69,8 @@ function ActionRequest({
     t,
     method as InteractiveActions,
     dappName,
-    networkName
+    networkName,
+    preparedTransactions?.length ?? 0
   )
 
   // Reject and warn if the chain is not supported
@@ -131,7 +132,8 @@ function ActionRequest({
   if (
     (!preparedTransactions || preparedTransactions.length === 0) &&
     (method === InteractiveActions.eth_signTransaction ||
-      method === InteractiveActions.eth_sendTransaction)
+      method === InteractiveActions.eth_sendTransaction ||
+      method === InteractiveActions.wallet_sendCalls)
   ) {
     return (
       <RequestContent
