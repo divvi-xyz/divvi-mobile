@@ -549,7 +549,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   const preparedTransactions =
     preparedTransactionsResult?.type === 'possible'
       ? preparedTransactionsResult.transactions.map(getSerializablePreparedTransaction)
-      : []
+      : undefined
   Logger.debug(
     TAG + '@showActionRequest',
     'Prepared transactions',

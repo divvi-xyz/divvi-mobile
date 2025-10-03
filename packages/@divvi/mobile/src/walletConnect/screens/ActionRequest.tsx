@@ -29,7 +29,7 @@ export interface ActionRequestProps {
   supportedChains: string[]
   hasInsufficientGasFunds: boolean
   feeCurrenciesSymbols: string[]
-  preparedTransactions: SerializableTransactionRequest[]
+  preparedTransactions?: SerializableTransactionRequest[]
   prepareTransactionsErrorMessage?: string
 }
 
