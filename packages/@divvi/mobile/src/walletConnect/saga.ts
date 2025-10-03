@@ -422,10 +422,6 @@ export function* normalizeTransactions(rawTxs: any[], network: Network) {
       value: convertToBigInt(rawTx.value),
     }
 
-    if (!tx.from) {
-      tx.from = walletAddress as Address
-    }
-
     // Handle `gasLimit` as a misnomer for `gas`, it usually comes through in hex format
     if ('gasLimit' in tx && tx.gas === undefined) {
       tx.gas = convertToBigInt(tx.gasLimit)
