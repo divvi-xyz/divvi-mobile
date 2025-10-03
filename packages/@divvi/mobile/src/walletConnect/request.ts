@@ -129,7 +129,7 @@ export function* handleRequest(
           )
         } catch (e) {
           Logger.error(TAG + '@handleRequest', 'Failed to send transaction, abotring batch', e)
-          throw e
+          break
         }
       }
 
