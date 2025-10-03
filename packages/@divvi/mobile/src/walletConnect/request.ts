@@ -135,7 +135,7 @@ export function* handleRequest(
 
       return {
         id,
-        ...(supportedCapabilities[chainId] ? { capabilities: supportedCapabilities[chainId] } : {}),
+        capabilities: supportedCapabilities[chainId],
       }
     }
     default:
