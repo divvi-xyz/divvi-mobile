@@ -115,7 +115,7 @@ export function* handleRequest(
       }
 
       const id = params[0].id ?? bytesToHex(crypto.randomBytes(32))
-      const capabilities = yield* call(getWalletCapabilitiesByWalletConnectChainId, chainId)
+      const supportedCapabilities = yield* call(getWalletCapabilitiesByWalletConnectChainId)
 
       // TODO: handle atomic execution
 
@@ -133,7 +133,10 @@ export function* handleRequest(
         }
       }
 
-      return { id, capabilities }
+      return {
+        id,
+        ...(supportedCapabilities[chainId] ? { capabilities: supportedCapabilities[chainId] } : {}),
+      }
     }
     default:
       throw new Error('unsupported RPC method')
