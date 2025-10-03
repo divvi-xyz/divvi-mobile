@@ -410,7 +410,9 @@ export function* normalizeTransactions(rawTxs: any[], network: Network) {
     address: walletAddress as Address,
     blockTag: 'pending',
   }
-  const nonce = yield* call(getTransactionCount, publicClient[network], txCountParams)
+  const nonce = rawTxs[0]?.nonce
+    ? parseInt(rawTxs[0].nonce)
+    : yield* call(getTransactionCount, publicClient[network], txCountParams)
 
   for (let i = 0; i < rawTxs.length; i++) {
     const rawTx = rawTxs[i]
@@ -450,9 +452,7 @@ export function* normalizeTransactions(rawTxs: any[], network: Network) {
       delete tx.gasPrice
     }
 
-    if (!tx.nonce) {
-      tx.nonce = nonce + i
-    }
+    tx.nonce = nonce + i
 
     if ('chainId' in tx) {
       // Strip chainId as viem on Celo currently doesn't serialize it to a string
@@ -613,7 +613,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   const preparedTransactions =
     preparedTransactionsResult?.type === 'possible'
       ? preparedTransactionsResult.transactions.map(getSerializablePreparedTransaction)
-      : []
+      : undefined
   Logger.debug(
     TAG + '@showActionRequest',
     'Prepared transactions',

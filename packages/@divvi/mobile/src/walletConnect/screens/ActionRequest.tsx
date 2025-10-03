@@ -29,7 +29,7 @@ export interface ActionRequestProps {
   supportedChains: string[]
   hasInsufficientGasFunds: boolean
   feeCurrenciesSymbols: string[]
-  preparedTransactions: SerializableTransactionRequest[]
+  preparedTransactions?: SerializableTransactionRequest[]
   prepareTransactionsErrorMessage?: string
 }
 
@@ -70,7 +70,7 @@ function ActionRequest({
     method as InteractiveActions,
     dappName,
     networkName,
-    preparedTransactions.length
+    preparedTransactions?.length ?? 0
   )
 
   // Reject and warn if the chain is not supported
@@ -130,7 +130,7 @@ function ActionRequest({
   }
 
   if (
-    !preparedTransactions &&
+    (!preparedTransactions || preparedTransactions.length === 0) &&
     (method === InteractiveActions.eth_signTransaction ||
       method === InteractiveActions.eth_sendTransaction ||
       method === InteractiveActions.wallet_sendCalls)
