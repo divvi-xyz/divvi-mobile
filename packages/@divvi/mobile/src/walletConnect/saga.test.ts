@@ -33,7 +33,7 @@ import {
   handlePendingState,
   initialiseWalletConnect,
   initialiseWalletConnectV2,
-  normalizeTransaction,
+  normalizeTransactions,
   walletConnectSaga,
 } from 'src/walletConnect/saga'
 import { WalletConnectRequestType } from 'src/walletConnect/types'
@@ -805,10 +805,10 @@ describe('normalizeTransaction', () => {
   }
 
   function callNormalizeTransaction(transaction: any, network: Network) {
-    return expectSaga(normalizeTransaction, transaction, network)
+    return expectSaga(normalizeTransactions, [transaction], network)
       .provide(createDefaultProviders(network))
       .run()
-      .then((result) => result.returnValue)
+      .then((result) => result.returnValue[0])
   }
 
   it('ensures `gasLimit` value is removed and used as `gas` instead', async () => {

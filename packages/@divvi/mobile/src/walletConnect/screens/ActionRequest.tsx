@@ -29,8 +29,8 @@ export interface ActionRequestProps {
   supportedChains: string[]
   hasInsufficientGasFunds: boolean
   feeCurrenciesSymbols: string[]
-  preparedTransaction?: SerializableTransactionRequest
-  prepareTransactionErrorMessage?: string
+  preparedTransactions: SerializableTransactionRequest[]
+  prepareTransactionsErrorMessage?: string
 }
 
 function ActionRequest({
@@ -38,8 +38,8 @@ function ActionRequest({
   supportedChains,
   hasInsufficientGasFunds,
   feeCurrenciesSymbols,
-  preparedTransaction,
-  prepareTransactionErrorMessage,
+  preparedTransactions,
+  prepareTransactionsErrorMessage,
 }: ActionRequestProps) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -129,7 +129,7 @@ function ActionRequest({
   }
 
   if (
-    !preparedTransaction &&
+    !preparedTransactions &&
     (method === InteractiveActions.eth_signTransaction ||
       method === InteractiveActions.eth_sendTransaction)
   ) {
@@ -146,13 +146,13 @@ function ActionRequest({
         <ActionRequestPayload
           session={activeSession}
           request={pendingAction}
-          preparedTransaction={preparedTransaction}
+          preparedTransactions={preparedTransactions}
         />
         <InLineNotification
           variant={NotificationVariant.Warning}
           title={t('walletConnectRequest.failedToPrepareTransaction.title')}
           description={t('walletConnectRequest.failedToPrepareTransaction.description', {
-            errorMessage: prepareTransactionErrorMessage,
+            errorMessage: prepareTransactionsErrorMessage,
           })}
           style={styles.warning}
         />
@@ -164,7 +164,7 @@ function ActionRequest({
     <RequestContent
       type="confirm"
       buttonText={action}
-      onAccept={() => dispatch(acceptRequest(pendingAction, preparedTransaction))}
+      onAccept={() => dispatch(acceptRequest(pendingAction, preparedTransactions))}
       onDeny={() => {
         dispatch(denyRequest(pendingAction, getSdkError('USER_REJECTED')))
       }}
@@ -177,13 +177,13 @@ function ActionRequest({
       <ActionRequestPayload
         session={activeSession}
         request={pendingAction}
-        preparedTransaction={preparedTransaction}
+        preparedTransactions={preparedTransactions}
       />
-      {preparedTransaction && (
+      {preparedTransactions && (
         <EstimatedNetworkFee
           isLoading={false}
           networkId={networkId}
-          transactions={[preparedTransaction]}
+          transactions={preparedTransactions}
         />
       )}
       <DappsDisclaimer isDappListed={isDappListed} />

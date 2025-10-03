@@ -72,7 +72,7 @@ export interface ShowRequestDetails {
 export interface AcceptRequest {
   type: Actions.ACCEPT_REQUEST
   request: WalletKitTypes.EventArguments['session_request']
-  preparedTransaction?: SerializableTransactionRequest
+  preparedTransactions?: SerializableTransactionRequest[]
 }
 export interface DenyRequest {
   type: Actions.DENY_REQUEST
@@ -179,11 +179,11 @@ export const showRequestDetails = (
 
 export const acceptRequest = (
   request: WalletKitTypes.EventArguments['session_request'],
-  preparedTransaction?: SerializableTransactionRequest
+  preparedTransactions?: SerializableTransactionRequest[]
 ): AcceptRequest => ({
   type: Actions.ACCEPT_REQUEST,
   request,
-  preparedTransaction,
+  preparedTransactions,
 })
 
 export const denyRequest = (
