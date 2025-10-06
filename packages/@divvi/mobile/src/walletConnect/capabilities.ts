@@ -58,3 +58,22 @@ export function getWalletCapabilitiesByWalletConnectChainId(): Record<string, Ca
 
   return result
 }
+
+export function getAtomicCapability(networkId: NetworkId) {
+  const capabilities = capabilitiesByNetworkId[networkId]
+  return capabilities?.atomic?.status ?? 'unsupported'
+}
+
+export function validateRequestedCapabilities(
+  requestedCapabilities: Record<string, any>,
+  supportedCapabilities: Record<string, unknown>
+) {
+  for (const [capabilityKey, capabilityProperties] of Object.entries(requestedCapabilities)) {
+    const isOptional = (capabilityProperties as { optional?: boolean }).optional ?? false
+    const isSupported = capabilityKey in supportedCapabilities
+    if (!isOptional && !isSupported) {
+      return false
+    }
+  }
+  return true
+}

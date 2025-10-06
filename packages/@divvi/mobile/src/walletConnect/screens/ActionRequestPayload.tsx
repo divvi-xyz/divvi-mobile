@@ -32,14 +32,16 @@ function ActionRequestPayload(props: Props) {
       method === SupportedActions.eth_signTransaction ||
       method === SupportedActions.eth_sendTransaction
         ? JSON.stringify(props.preparedTransactions?.[0] ?? params)
-        : method === SupportedActions.eth_signTypedData ||
-            method === SupportedActions.eth_signTypedData_v4
-          ? JSON.stringify(params[1])
-          : method === SupportedActions.personal_sign
-            ? Buffer.from(trimLeading0x(params[0]), 'hex').toString() ||
-              params[0] ||
-              t('action.emptyMessage')
-            : null,
+        : method === SupportedActions.wallet_sendCalls
+          ? JSON.stringify(props.preparedTransactions)
+          : method === SupportedActions.eth_signTypedData ||
+              method === SupportedActions.eth_signTypedData_v4
+            ? JSON.stringify(params[1])
+            : method === SupportedActions.personal_sign
+              ? Buffer.from(trimLeading0x(params[0]), 'hex').toString() ||
+                params[0] ||
+                t('action.emptyMessage')
+              : null,
     [method, params, props.preparedTransactions]
   )
 

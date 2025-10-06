@@ -1014,6 +1014,16 @@ describe('normalizeTransactions', () => {
       ])
       .run()
   })
+
+  it('ensures `from` is set to the wallet address', async () => {
+    const result = await expectSaga(normalizeTransactions, [{ data: '0xABC' }], Network.Ethereum)
+      .provide(createDefaultProviders(Network.Ethereum))
+      .run()
+
+    expect(result.returnValue[0]).toMatchObject({
+      from: mockAccount,
+    })
+  })
 })
 
 const mockRequest = {
