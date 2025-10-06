@@ -1,6 +1,7 @@
 import { TFunction } from 'i18next'
 import { NetworkId } from 'src/transactions/types'
 import { Capabilities } from 'src/walletConnect/types'
+import { z } from 'zod'
 
 export enum SupportedActions {
   eth_signTransaction = 'eth_signTransaction',
@@ -30,12 +31,38 @@ export function isSupportedAction(action: string) {
   return Object.values(SupportedActions).includes(action as SupportedActions)
 }
 
+export const supportedActionsSchema = z.nativeEnum(SupportedActions)
+
 export function isSupportedEvent(event: string) {
   return Object.values(SupportedEvents).includes(event as SupportedEvents)
 }
 
 export function isInteractiveAction(action: string) {
   return Object.values(InteractiveActions).includes(action as InteractiveActions)
+}
+
+export function isTransactionRequest(
+  method: string
+): method is InteractiveActions.eth_sendTransaction | InteractiveActions.eth_signTransaction {
+  return (
+    method === InteractiveActions.eth_sendTransaction ||
+    method === InteractiveActions.eth_signTransaction
+  )
+}
+
+export function isMessageRequest(
+  method: string
+): method is
+  | InteractiveActions.eth_sign
+  | InteractiveActions.eth_signTypedData
+  | InteractiveActions.eth_signTypedData_v4
+  | InteractiveActions.personal_sign {
+  return (
+    method === InteractiveActions.eth_sign ||
+    method === InteractiveActions.eth_signTypedData ||
+    method === InteractiveActions.eth_signTypedData_v4 ||
+    method === InteractiveActions.personal_sign
+  )
 }
 
 export function getDisplayTextFromAction(

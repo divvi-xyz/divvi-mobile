@@ -66,7 +66,9 @@ import {
 } from 'src/walletConnect/capabilities'
 import {
   isInteractiveAction,
+  isMessageRequest,
   isSupportedAction,
+  isTransactionRequest,
   SupportedActions,
   SupportedEvents,
 } from 'src/walletConnect/constants'
@@ -519,14 +521,21 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
 
   const supportedChains = yield* call(getSupportedChains)
 
-  const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
-  const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
-  let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
-  let prepareTransactionsErrorMessage: string | undefined = undefined
-  if (
-    method === SupportedActions.eth_signTransaction ||
-    method === SupportedActions.eth_sendTransaction
-  ) {
+  if (isMessageRequest(method)) {
+    navigate(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method,
+      pendingAction: request,
+      supportedChains,
+      version: 2,
+    })
+  }
+
+  if (isTransactionRequest(method)) {
+    const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
+    const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
+    let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
+    let prepareTransactionsErrorMessage: string | undefined = undefined
     const rawTxs = [request.params.request.params[0]]
     Logger.debug(TAG + '@showActionRequest', 'Received transactions', rawTxs)
     const network = walletConnectChainIdToNetwork[request.params.chainId]
@@ -544,29 +553,30 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       // Viem has short user-friendly error messages
       prepareTransactionsErrorMessage = e instanceof BaseError ? e.shortMessage : e.message
     }
+
+    const preparedTransaction =
+      preparedTransactionsResult?.type === 'possible'
+        ? getSerializablePreparedTransaction(preparedTransactionsResult.transactions[0])
+        : undefined
+    Logger.debug(
+      TAG + '@showActionRequest',
+      'Prepared transactions',
+      preparedTransactionsResult?.type,
+      preparedTransaction
+    )
+
+    navigate(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method,
+      pendingAction: request,
+      supportedChains,
+      version: 2,
+      hasInsufficientGasFunds: preparedTransactionsResult?.type === 'not-enough-balance-for-gas',
+      feeCurrenciesSymbols: feeCurrencies.map((token) => token.symbol),
+      preparedTransaction,
+      prepareTransactionsErrorMessage,
+    })
   }
-
-  const preparedTransactions =
-    preparedTransactionsResult?.type === 'possible'
-      ? preparedTransactionsResult.transactions.map(getSerializablePreparedTransaction)
-      : undefined
-  Logger.debug(
-    TAG + '@showActionRequest',
-    'Prepared transactions',
-    preparedTransactionsResult?.type,
-    preparedTransactions
-  )
-
-  navigate(Screens.WalletConnectRequest, {
-    type: WalletConnectRequestType.Action,
-    pendingAction: request,
-    supportedChains,
-    version: 2,
-    hasInsufficientGasFunds: preparedTransactionsResult?.type === 'not-enough-balance-for-gas',
-    feeCurrenciesSymbols: feeCurrencies.map((token) => token.symbol),
-    preparedTransactions,
-    prepareTransactionsErrorMessage,
-  })
 }
 
 // Export for testing

@@ -18,7 +18,7 @@ import { SupportedActions } from 'src/walletConnect/constants'
 type Props = {
   session: SessionTypes.Struct
   request: WalletKitTypes.EventArguments['session_request']
-  preparedTransactions?: SerializableTransactionRequest[]
+  preparedTransaction: SerializableTransactionRequest
 }
 
 function ActionRequestPayload(props: Props) {
@@ -31,7 +31,7 @@ function ActionRequestPayload(props: Props) {
     () =>
       method === SupportedActions.eth_signTransaction ||
       method === SupportedActions.eth_sendTransaction
-        ? JSON.stringify(props.preparedTransactions?.[0] ?? params)
+        ? JSON.stringify(props.preparedTransaction ?? params)
         : method === SupportedActions.eth_signTypedData ||
             method === SupportedActions.eth_signTypedData_v4
           ? JSON.stringify(params[1])
@@ -40,7 +40,7 @@ function ActionRequestPayload(props: Props) {
               params[0] ||
               t('action.emptyMessage')
             : null,
-    [method, params, props.preparedTransactions]
+    [method, params, props.preparedTransaction]
   )
 
   const handleTrackCopyRequestPayload = () => {

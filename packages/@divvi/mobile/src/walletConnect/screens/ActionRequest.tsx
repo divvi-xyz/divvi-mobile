@@ -23,26 +23,41 @@ import { useIsDappListed } from 'src/walletConnect/screens/useIsDappListed'
 import { sessionsSelector } from 'src/walletConnect/selectors'
 import { walletConnectChainIdToNetworkId } from 'src/web3/networkConfig'
 
-export interface ActionRequestProps {
+interface RequestProps {
   version: 2
   pendingAction: WalletKitTypes.EventArguments['session_request']
   supportedChains: string[]
-  hasInsufficientGasFunds: boolean
-  feeCurrenciesSymbols: string[]
-  preparedTransactions?: SerializableTransactionRequest[]
-  prepareTransactionsErrorMessage?: string
 }
 
-function ActionRequest({
-  pendingAction,
-  supportedChains,
-  hasInsufficientGasFunds,
-  feeCurrenciesSymbols,
-  preparedTransactions,
-  prepareTransactionsErrorMessage,
-}: ActionRequestProps) {
+interface TransactionProps extends RequestProps {
+  method: InteractiveActions.eth_sendTransaction | InteractiveActions.eth_signTransaction
+  hasInsufficientGasFunds: boolean
+  feeCurrenciesSymbols: string[]
+  prepareTransactionsErrorMessage?: string
+  preparedTransaction?: SerializableTransactionRequest
+}
+
+interface MessageProps extends RequestProps {
+  method: Exclude<
+    InteractiveActions,
+    InteractiveActions.eth_sendTransaction | InteractiveActions.eth_signTransaction
+  >
+}
+
+function isTransactionRequest(props: ActionRequestProps): props is TransactionProps {
+  return (
+    props.method === InteractiveActions.eth_sendTransaction ||
+    props.method === InteractiveActions.eth_signTransaction
+  )
+}
+
+export type ActionRequestProps = TransactionProps | MessageProps
+
+function ActionRequest(props: ActionRequestProps) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+
+  const { pendingAction, supportedChains, method } = props
 
   const sessions = useSelector(sessionsSelector)
   const activeSession = useMemo(() => {
@@ -63,7 +78,6 @@ function ActionRequest({
   const chainId = pendingAction.params.chainId
   const networkId = walletConnectChainIdToNetworkId[chainId]
   const networkName = NETWORK_NAMES[networkId]
-  const method = pendingAction.params.request.method
 
   const { description, title, action } = getDisplayTextFromAction(
     t,
@@ -105,7 +119,7 @@ function ActionRequest({
     )
   }
 
-  if (hasInsufficientGasFunds) {
+  if (isTransactionRequest(props) && props.hasInsufficientGasFunds) {
     return (
       <RequestContent
         type="dismiss"
@@ -120,7 +134,7 @@ function ActionRequest({
           variant={NotificationVariant.Warning}
           title={t('walletConnectRequest.notEnoughBalanceForGas.title')}
           description={t('walletConnectRequest.notEnoughBalanceForGas.description', {
-            feeCurrencies: feeCurrenciesSymbols.join(', '),
+            feeCurrencies: props.feeCurrenciesSymbols.join(', '),
           })}
           style={styles.warning}
         />
@@ -128,11 +142,7 @@ function ActionRequest({
     )
   }
 
-  if (
-    (!preparedTransactions || preparedTransactions.length === 0) &&
-    (method === InteractiveActions.eth_signTransaction ||
-      method === InteractiveActions.eth_sendTransaction)
-  ) {
+  if (isTransactionRequest(props) && !props.preparedTransaction) {
     return (
       <RequestContent
         type="dismiss"
@@ -146,13 +156,13 @@ function ActionRequest({
         <ActionRequestPayload
           session={activeSession}
           request={pendingAction}
-          preparedTransactions={preparedTransactions}
+          preparedTransactions={props.preparedTransaction}
         />
         <InLineNotification
           variant={NotificationVariant.Warning}
           title={t('walletConnectRequest.failedToPrepareTransaction.title')}
           description={t('walletConnectRequest.failedToPrepareTransaction.description', {
-            errorMessage: prepareTransactionsErrorMessage,
+            errorMessage: props.prepareTransactionsErrorMessage,
           })}
           style={styles.warning}
         />
@@ -164,7 +174,7 @@ function ActionRequest({
     <RequestContent
       type="confirm"
       buttonText={action}
-      onAccept={() => dispatch(acceptRequest(pendingAction, preparedTransactions))}
+      onAccept={() => dispatch(acceptRequest(pendingAction, props.preparedTransaction))}
       onDeny={() => {
         dispatch(denyRequest(pendingAction, getSdkError('USER_REJECTED')))
       }}
@@ -177,9 +187,9 @@ function ActionRequest({
       <ActionRequestPayload
         session={activeSession}
         request={pendingAction}
-        preparedTransactions={preparedTransactions}
+        preparedTransaction={isTransactionRequest(props) ? props.preparedTransaction : undefined}
       />
-      {preparedTransactions && (
+      {isTransactionRequest(props) && props.preparedTransaction && (
         <EstimatedNetworkFee
           isLoading={false}
           networkId={networkId}
