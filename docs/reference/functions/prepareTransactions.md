@@ -10,7 +10,7 @@
 function prepareTransactions(__namedParameters): Promise<PreparedTransactionsResult>
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/prepareTransactions.ts:50](https://github.com/divvixyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/prepareTransactions.ts#L50)
+Defined in: [packages/@divvi/mobile/src/public/prepareTransactions.ts:50](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/prepareTransactions.ts#L50)
 
 ## Parameters
 

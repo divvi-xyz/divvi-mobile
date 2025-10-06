@@ -10,7 +10,7 @@
 function useWalletClient(__namedParameters): object
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/hooks/useWalletClient.ts:8](https://github.com/divvixyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/hooks/useWalletClient.ts#L8)
+Defined in: [packages/@divvi/mobile/src/public/hooks/useWalletClient.ts:8](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/hooks/useWalletClient.ts#L8)
 
 ## Parameters
 

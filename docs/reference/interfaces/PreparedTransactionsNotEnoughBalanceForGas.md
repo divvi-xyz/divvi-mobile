@@ -6,7 +6,7 @@
 
 # Interface: PreparedTransactionsNotEnoughBalanceForGas
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:59](https://github.com/divvixyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L59)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:60](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L60)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:59](https://
 feeCurrencies: TokenBalance[];
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:61](https://github.com/divvixyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L61)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:62](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L62)
 
 ---
 
@@ -26,4 +26,4 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:61](https://
 type: 'not-enough-balance-for-gas'
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:60](https://github.com/divvixyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L60)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:61](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L61)
