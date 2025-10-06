@@ -106,16 +106,18 @@ describe('ActionRequest with WalletConnect V2', () => {
     },
   }
 
-  const preparedTransaction: SerializableTransactionRequest = {
-    from: mockAccount,
-    to: mockAccount2,
-    data: '0xTEST',
-    nonce: 100,
-    maxFeePerGas: '12000000000',
-    maxPriorityFeePerGas: '2000000000',
-    gas: '100000',
-    _baseFeePerGas: '5000000000',
-  }
+  const preparedTransactions: SerializableTransactionRequest[] = [
+    {
+      from: mockAccount,
+      to: mockAccount2,
+      data: '0xTEST',
+      nonce: 100,
+      maxFeePerGas: '12000000000',
+      maxPriorityFeePerGas: '2000000000',
+      gas: '100000',
+      _baseFeePerGas: '5000000000',
+    },
+  ]
 
   const supportedChains = ['eip155:44787']
 
@@ -166,8 +168,8 @@ describe('ActionRequest with WalletConnect V2', () => {
             supportedChains={supportedChains}
             hasInsufficientGasFunds={false}
             feeCurrenciesSymbols={['CELO']}
-            preparedTransaction={undefined}
-            prepareTransactionErrorMessage="execution reverted"
+            preparedTransactions={undefined}
+            prepareTransactionsErrorMessage="execution reverted"
           />
         </Provider>
       )
@@ -195,14 +197,14 @@ describe('ActionRequest with WalletConnect V2', () => {
             supportedChains={supportedChains}
             hasInsufficientGasFunds={false}
             feeCurrenciesSymbols={['CELO']}
-            preparedTransaction={preparedTransaction}
+            preparedTransactions={preparedTransactions}
           />
         </Provider>
       )
 
       expect(
         within(getByTestId('WalletConnectRequest/ActionRequestPayload/Value')).getByText(
-          JSON.stringify(preparedTransaction)
+          JSON.stringify(preparedTransactions[0])
         )
       ).toBeTruthy()
       expect(
@@ -214,7 +216,7 @@ describe('ActionRequest with WalletConnect V2', () => {
 
       fireEvent.press(getByText('walletConnectRequest.sendTransactionAction'))
       expect(store.getActions()).toEqual([
-        acceptRequestV2(sendTransactionAction, preparedTransaction),
+        acceptRequestV2(sendTransactionAction, preparedTransactions),
       ])
     })
   })
