@@ -30,7 +30,7 @@ export function* handleRequest(
     request: { method, params },
     chainId,
   }: WalletKitTypes.EventArguments['session_request']['params'],
-  serializableTransactionRequest?: SerializableTransactionRequest
+  serializableTransactionRequests?: SerializableTransactionRequest[]
 ) {
   // since the chainId comes from the dapp, we cannot be sure that it is a
   // supported chain id. for transactions that are sent to the blockchain, it is
@@ -60,10 +60,10 @@ export function* handleRequest(
 
   switch (method) {
     case SupportedActions.eth_signTransaction: {
-      if (!serializableTransactionRequest) {
-        throw new Error('preparedTransaction is required when using viem')
+      if (!serializableTransactionRequests || serializableTransactionRequests.length === 0) {
+        throw new Error('preparedTransactions is required when using viem')
       }
-      const tx = getPreparedTransaction(serializableTransactionRequest)
+      const tx = getPreparedTransaction(serializableTransactionRequests[0])
       Logger.debug(TAG + '@handleRequest', 'Signing transaction', tx)
       return yield* call(
         [wallet, 'signTransaction'],
@@ -72,10 +72,10 @@ export function* handleRequest(
       )
     }
     case SupportedActions.eth_sendTransaction: {
-      if (!serializableTransactionRequest) {
+      if (!serializableTransactionRequests || serializableTransactionRequests.length === 0) {
         throw new Error('preparedTransaction is required when using viem')
       }
-      const tx = getPreparedTransaction(serializableTransactionRequest)
+      const tx = getPreparedTransaction(serializableTransactionRequests[0])
       Logger.debug(TAG + '@handleRequest', 'Sending transaction', tx)
       const hash = yield* call(
         [wallet, 'sendTransaction'],

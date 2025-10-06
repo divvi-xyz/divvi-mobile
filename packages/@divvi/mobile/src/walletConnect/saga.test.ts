@@ -33,7 +33,7 @@ import {
   handlePendingState,
   initialiseWalletConnect,
   initialiseWalletConnectV2,
-  normalizeTransaction,
+  normalizeTransactions,
   walletConnectSaga,
 } from 'src/walletConnect/saga'
 import { WalletConnectRequestType } from 'src/walletConnect/types'
@@ -652,8 +652,8 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: mockPreparedTransactions.transactions[0],
-      prepareTransactionErrorMessage: undefined,
+      preparedTransactions: mockPreparedTransactions.transactions,
+      prepareTransactionsErrorMessage: undefined,
     })
   })
 
@@ -687,8 +687,8 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: undefined,
-      prepareTransactionErrorMessage: 'Some error',
+      preparedTransactions: undefined,
+      prepareTransactionsErrorMessage: 'Some error',
     })
   })
 
@@ -722,8 +722,8 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: undefined,
-      prepareTransactionErrorMessage: 'viem short message',
+      preparedTransactions: undefined,
+      prepareTransactionsErrorMessage: 'viem short message',
     })
   })
 
@@ -788,7 +788,7 @@ describe('initialiseWalletConnect', () => {
   })
 })
 
-describe('normalizeTransaction', () => {
+describe('normalizeTransactions', () => {
   function createDefaultProviders(network: Network) {
     const defaultProviders: (EffectProviders | StaticProvider)[] = [
       [select(walletAddressSelector), mockAccount],
@@ -804,16 +804,16 @@ describe('normalizeTransaction', () => {
     return defaultProviders
   }
 
-  function callNormalizeTransaction(transaction: any, network: Network) {
-    return expectSaga(normalizeTransaction, transaction, network)
+  function callNormalizeTransactions(transaction: any, network: Network) {
+    return expectSaga(normalizeTransactions, [transaction], network)
       .provide(createDefaultProviders(network))
       .run()
-      .then((result) => result.returnValue)
+      .then((result) => result.returnValue[0])
   }
 
   it('ensures `gasLimit` value is removed and used as `gas` instead', async () => {
     expect(
-      await callNormalizeTransaction(
+      await callNormalizeTransactions(
         {
           from: '0xTEST',
           data: '0xABC',
@@ -831,7 +831,7 @@ describe('normalizeTransaction', () => {
 
   it('ensures `gasPrice` is stripped away', async () => {
     expect(
-      await callNormalizeTransaction(
+      await callNormalizeTransactions(
         { from: '0xTEST', data: '0xABC', gasPrice: '0x5208' },
         Network.Celo
       )
@@ -844,7 +844,7 @@ describe('normalizeTransaction', () => {
 
   it('ensures `gas` and `feeCurrency` is stripped away for a Celo transaction request', async () => {
     expect(
-      await callNormalizeTransaction(
+      await callNormalizeTransactions(
         { from: '0xTEST', data: '0xABC', gas: '0x5208', feeCurrency: '0xabcd' },
         Network.Celo
       )
@@ -857,7 +857,7 @@ describe('normalizeTransaction', () => {
 
   it('does not strip away `gas` for non-Celo transaction request', async () => {
     expect(
-      await callNormalizeTransaction(
+      await callNormalizeTransactions(
         { from: '0xTEST', data: '0xABC', gas: '0x5208' },
         Network.Ethereum
       )
@@ -871,7 +871,7 @@ describe('normalizeTransaction', () => {
 
   it('accepts `nonce` as a hex string', async () => {
     expect(
-      await callNormalizeTransaction(
+      await callNormalizeTransactions(
         { from: '0xTEST', data: '0xABC', nonce: '0x19' },
         Network.Ethereum
       )
@@ -884,7 +884,7 @@ describe('normalizeTransaction', () => {
 
   it('accepts `nonce` as a string containing a number', async () => {
     expect(
-      await callNormalizeTransaction(
+      await callNormalizeTransactions(
         { from: '0xTEST', data: '0xABC', nonce: '19' },
         Network.Ethereum
       )
@@ -897,7 +897,10 @@ describe('normalizeTransaction', () => {
 
   it('accepts `nonce` as a number', async () => {
     expect(
-      await callNormalizeTransaction({ from: '0xTEST', data: '0xABC', nonce: 19 }, Network.Ethereum)
+      await callNormalizeTransactions(
+        { from: '0xTEST', data: '0xABC', nonce: 19 },
+        Network.Ethereum
+      )
     ).toStrictEqual({
       data: '0xABC',
       from: '0xTEST',
@@ -907,7 +910,7 @@ describe('normalizeTransaction', () => {
 
   it('strips `chainId` if present', async () => {
     expect(
-      await callNormalizeTransaction(
+      await callNormalizeTransactions(
         { from: '0xTEST', data: '0xABC', chainId: 1 },
         Network.Ethereum
       )
@@ -921,7 +924,7 @@ describe('normalizeTransaction', () => {
   for (const bigIntKey of ['gas', 'maxFeePerGas', 'maxPriorityFeePerGas', 'value']) {
     it(`accepts \`${bigIntKey}\` as a hex string`, async () => {
       expect(
-        await callNormalizeTransaction(
+        await callNormalizeTransactions(
           { from: '0xTEST', data: '0xABC', [bigIntKey]: '0x19' },
           Network.Ethereum
         )
@@ -935,7 +938,7 @@ describe('normalizeTransaction', () => {
 
     it(`accepts \`${bigIntKey}\` as a string containing a number`, async () => {
       expect(
-        await callNormalizeTransaction(
+        await callNormalizeTransactions(
           { from: '0xTEST', data: '0xABC', [bigIntKey]: '19' },
           Network.Ethereum
         )
@@ -949,7 +952,7 @@ describe('normalizeTransaction', () => {
 
     it(`accepts \`${bigIntKey}\` as a number`, async () => {
       expect(
-        await callNormalizeTransaction(
+        await callNormalizeTransactions(
           { from: '0xTEST', data: '0xABC', [bigIntKey]: 19 },
           Network.Ethereum
         )
@@ -961,6 +964,56 @@ describe('normalizeTransaction', () => {
       })
     })
   }
+
+  it('assigns consecutive nonces to transactions when nonce is not provided for the first transaction', async () => {
+    await expectSaga(
+      normalizeTransactions,
+      [
+        { from: '0xTEST', data: '0xABC' },
+        { from: '0xTEST', data: '0xABC' },
+      ],
+      Network.Ethereum
+    )
+      .provide(createDefaultProviders(Network.Ethereum))
+      .returns([
+        {
+          data: '0xABC',
+          from: '0xTEST',
+          nonce: 123,
+        },
+        {
+          data: '0xABC',
+          from: '0xTEST',
+          nonce: 124,
+        },
+      ])
+      .run()
+  })
+
+  it('assigns consecutive nonces to transactions when nonce is provided for the first transaction', async () => {
+    await expectSaga(
+      normalizeTransactions,
+      [
+        { from: '0xTEST', data: '0xABC', nonce: '0x0' },
+        { from: '0xTEST', data: '0xABC', nonce: '0xF' },
+      ],
+      Network.Ethereum
+    )
+      .provide(createDefaultProviders(Network.Ethereum))
+      .returns([
+        {
+          data: '0xABC',
+          from: '0xTEST',
+          nonce: 0,
+        },
+        {
+          data: '0xABC',
+          from: '0xTEST',
+          nonce: 1,
+        },
+      ])
+      .run()
+  })
 })
 
 const mockRequest = {
