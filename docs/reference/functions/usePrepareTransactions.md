@@ -10,7 +10,7 @@
 function usePrepareTransactions(): object
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/hooks/usePrepareTransactions.ts:5](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/hooks/usePrepareTransactions.ts#L5)
+Defined in: [packages/@divvi/mobile/src/public/hooks/usePrepareTransactions.ts:5](https://github.com/divvixyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/hooks/usePrepareTransactions.ts#L5)
 
 ## Returns
 

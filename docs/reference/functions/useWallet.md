@@ -10,7 +10,7 @@
 function useWallet(): object
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/hooks/useWallet.ts:39](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/hooks/useWallet.ts#L39)
+Defined in: [packages/@divvi/mobile/src/public/hooks/useWallet.ts:39](https://github.com/divvixyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/hooks/useWallet.ts#L39)
 
 ## Returns
 

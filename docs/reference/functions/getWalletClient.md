@@ -12,7 +12,7 @@ function getWalletClient(__namedParameters): Promise<{
 }>
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/getWalletClient.ts:12](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/getWalletClient.ts#L12)
+Defined in: [packages/@divvi/mobile/src/public/getWalletClient.ts:12](https://github.com/divvixyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/getWalletClient.ts#L12)
 
 ## Parameters
 
