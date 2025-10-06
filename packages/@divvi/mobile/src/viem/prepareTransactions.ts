@@ -179,7 +179,8 @@ export async function tryEstimateTransaction({
     })
   } catch (e) {
     if (
-      (e instanceof Error && e.name === 'EstimateGasExecutionError') &&
+      e instanceof Error &&
+      e.name === 'EstimateGasExecutionError' &&
       (e.cause instanceof InsufficientFundsError ||
         (e.cause instanceof ExecutionRevertedError && // viem does not reliably label node errors as InsufficientFundsError when the user has enough to pay for the transfer, but not for the transfer + gas
           (/transfer value exceeded balance of sender/.test(e.cause.details) ||
