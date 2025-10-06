@@ -26,7 +26,7 @@ import {
   InvalidInputRpcError,
   TransactionRequestEIP1559,
   encodeFunctionData,
-  erc20Abi
+  erc20Abi,
 } from 'viem'
 import { estimateGas } from 'viem/actions'
 import { TransactionRequestCIP64 } from 'viem/chains'
