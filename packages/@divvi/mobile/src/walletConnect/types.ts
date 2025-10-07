@@ -14,7 +14,7 @@ export type WalletConnectRequestResult = string | Record<string, Capabilities>
 
 export type Capabilities = CapabilitiesSchema['getCapabilities']['ReturnType']
 
-export type NonInteractiveMethod = SupportedActions.wallet_getCapabilities
+type NonInteractiveMethod = SupportedActions.wallet_getCapabilities
 
 export type MessageMethod =
   | SupportedActions.eth_sign
@@ -50,7 +50,7 @@ interface RequestBase {
   request: WalletKitTypes.EventArguments['session_request']
 }
 
-export interface NonInteractiveRequest extends RequestBase {
+interface NonInteractiveRequest extends RequestBase {
   method: NonInteractiveMethod
 }
 
