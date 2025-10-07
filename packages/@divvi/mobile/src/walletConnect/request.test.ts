@@ -42,7 +42,8 @@ jest.mock('src/web3/utils', () => ({
 const createMockRequest = <T extends SupportedActions>(
   method: T,
   params: any[],
-  chainId: string = 'eip155:44787'
+  chainId: string = 'eip155:44787',
+  extra: any = {}
 ) =>
   ({
     method,
@@ -64,6 +65,7 @@ const createMockRequest = <T extends SupportedActions>(
         },
       },
     },
+    ...extra,
   }) as WalletConnectRequest
 
 const txParams = {
@@ -74,11 +76,31 @@ const txParams = {
   gas: '0x5208',
   value: '0x01',
 }
-const signTransactionRequest = createMockRequest(SupportedActions.eth_signTransaction, [txParams])
+const signTransactionRequest = createMockRequest(
+  SupportedActions.eth_signTransaction,
+  [txParams],
+  'eip155:44787',
+  {
+    preparedTransaction: {
+      success: true,
+      transactionRequest: txParams,
+    },
+  }
+)
 const serializableTransactionRequest = signTransactionRequest.request.params.request
   .params[0] as SerializableTransactionRequest
 
-const sendTransactionRequest = createMockRequest(SupportedActions.eth_sendTransaction, [txParams])
+const sendTransactionRequest = createMockRequest(
+  SupportedActions.eth_sendTransaction,
+  [txParams],
+  'eip155:44787',
+  {
+    preparedTransaction: {
+      success: true,
+      transactionRequest: txParams,
+    },
+  }
+)
 const serializableSendTransactionRequest = sendTransactionRequest.request.params.request
   .params[0] as SerializableTransactionRequest
 
