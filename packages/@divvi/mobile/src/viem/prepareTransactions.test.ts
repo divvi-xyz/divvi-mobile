@@ -949,7 +949,6 @@ describe('prepareTransactions module', () => {
       customError.cause = new InsufficientFundsError({
         cause: new BaseError('insufficient funds'),
       })
-      
       mocked(estimateGas).mockRejectedValue(customError)
       const baseTransaction: TransactionRequest = { from: '0x123' }
       const estimateTransactionOutput = await tryEstimateTransaction({
