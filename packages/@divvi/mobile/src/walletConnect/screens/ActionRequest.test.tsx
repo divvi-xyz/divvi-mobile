@@ -95,9 +95,13 @@ describe('ActionRequest with WalletConnect V2', () => {
     },
   }
 
+  const supportedChains = ['eip155:44787']
+
   const pendingActionMethod = SupportedActions.personal_sign
 
   const pendingActionRequest = {
+    version: 2,
+    supportedChains: supportedChains,
     method: pendingActionMethod,
     request: pendingAction,
   } as const
@@ -137,14 +141,14 @@ describe('ActionRequest with WalletConnect V2', () => {
   } as const
 
   const sendTransactionRequest = {
+    version: 2,
+    supportedChains,
     method: sendTransactionActionMethod,
     request: sendTransactionAction,
     hasInsufficientGasFunds: false,
     feeCurrenciesSymbols: feeCurrenciesSymbols,
     preparedTransaction: preparedTransactionSuccess,
   }
-
-  const supportedChains = ['eip155:44787']
 
   describe('eth_sendTransaction', () => {
     const store = createMockStore({
@@ -508,12 +512,12 @@ describe('ActionRequest with WalletConnect V2', () => {
   describe('unsupported chain', () => {
     it.each([
       [
-        'eth_sendTransaction',
+        SupportedActions.eth_sendTransaction as const,
         'walletConnectRequest.sendTransactionTitle',
         'walletConnectRequest.sendDappTransactionUnknownNetwork',
       ],
       [
-        'eth_signTransaction',
+        SupportedActions.eth_signTransaction as const,
         'walletConnectRequest.signTransactionTitle',
         'walletConnectRequest.signDappTransactionUnknownNetwork',
       ],
@@ -528,7 +532,7 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={pendingActionMethod}
+            method={method}
             request={{
               ...pendingAction,
               params: {
@@ -541,6 +545,9 @@ describe('ActionRequest with WalletConnect V2', () => {
               },
             }}
             supportedChains={supportedChains}
+            hasInsufficientGasFunds={false}
+            feeCurrenciesSymbols={feeCurrenciesSymbols}
+            preparedTransaction={preparedTransactionSuccess}
           />
         </Provider>
       )
