@@ -184,8 +184,7 @@
     "uuid": "^10.0.0",
     "victory-native": "^36.9.2",
     "viem": "^2.24.3",
-    "web3-utils": "^4.3.3",
-    "zod": "^3.23.8"
+    "web3-utils": "^4.3.3"
   },
   "devDependencies": {
     "@sentry/types": "^7.111.0",
