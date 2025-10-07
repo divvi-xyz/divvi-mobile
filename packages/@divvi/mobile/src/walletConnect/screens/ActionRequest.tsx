@@ -128,11 +128,7 @@ function ActionRequest(props: ActionRequestProps) {
         description={description}
         testId="WalletConnectActionRequest"
       >
-        <ActionRequestPayload
-          session={activeSession}
-          request={request}
-          preparedTransaction={undefined}
-        />
+        <ActionRequestPayload session={activeSession} request={request} method={method} />
         <InLineNotification
           variant={NotificationVariant.Warning}
           title={t('walletConnectRequest.failedToPrepareTransaction.title')}
@@ -162,6 +158,7 @@ function ActionRequest(props: ActionRequestProps) {
       <ActionRequestPayload
         session={activeSession}
         request={request}
+        method={method}
         preparedTransaction={
           isTransactionRequest(props) && props.preparedTransaction.success
             ? props.preparedTransaction.transactionRequest

@@ -14,15 +14,25 @@ import {
   getDefaultSessionTrackedProperties,
 } from 'src/walletConnect/analytics'
 import { SupportedActions } from 'src/walletConnect/constants'
+import { MessageMethod, TransactionMethod } from 'src/walletConnect/types'
 
-type Props = {
+interface BaseProps {
   session: SessionTypes.Struct
   request: WalletKitTypes.EventArguments['session_request']
+}
+
+interface MessageProps extends BaseProps {
+  method: MessageMethod
+}
+
+interface TransactionProps extends BaseProps {
+  method: TransactionMethod
   preparedTransaction?: SerializableTransactionRequest
 }
 
-function ActionRequestPayload(props: Props) {
-  const { method, params } = props.request.params.request
+function ActionRequestPayload(props: MessageProps | TransactionProps) {
+  const method = props.method
+  const { params } = props.request.params.request
 
   const { t } = useTranslation()
   const activeDapp = useSelector(activeDappSelector)
@@ -40,7 +50,7 @@ function ActionRequestPayload(props: Props) {
               params[0] ||
               t('action.emptyMessage')
             : null,
-    [method, params, props.preparedTransaction]
+    [method, params, props]
   )
 
   const handleTrackCopyRequestPayload = () => {
