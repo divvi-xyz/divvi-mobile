@@ -1,7 +1,7 @@
 import { WalletKitTypes } from '@reown/walletkit'
 import { JsonRpcTypes, SessionTypes } from '@walletconnect/types'
 import { WalletConnectPairingOrigin } from 'src/analytics/types'
-import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
+import { MessageRequest, NonInteractiveRequest, TransactionRequest } from 'src/walletConnect/types'
 
 export enum Actions {
   /**
@@ -69,11 +69,11 @@ export interface ShowRequestDetails {
   request: WalletKitTypes.EventArguments['session_request']
   infoString: string
 }
-export interface AcceptRequest {
+
+export type AcceptRequest = {
   type: Actions.ACCEPT_REQUEST
-  request: WalletKitTypes.EventArguments['session_request']
-  preparedTransactions?: SerializableTransactionRequest[]
-}
+} & (NonInteractiveRequest | MessageRequest | TransactionRequest)
+
 export interface DenyRequest {
   type: Actions.DENY_REQUEST
   request: WalletKitTypes.EventArguments['session_request']
@@ -178,12 +178,10 @@ export const showRequestDetails = (
 })
 
 export const acceptRequest = (
-  request: WalletKitTypes.EventArguments['session_request'],
-  preparedTransactions?: SerializableTransactionRequest[]
+  props: NonInteractiveRequest | MessageRequest | TransactionRequest
 ): AcceptRequest => ({
   type: Actions.ACCEPT_REQUEST,
-  request,
-  preparedTransactions,
+  ...props,
 })
 
 export const denyRequest = (

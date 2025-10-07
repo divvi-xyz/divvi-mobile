@@ -7,11 +7,11 @@ import * as React from 'react'
 import 'react-native'
 import { Provider } from 'react-redux'
 import { ActiveDapp, DappSection } from 'src/dapps/types'
-import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
 import {
   acceptRequest as acceptRequestV2,
   denyRequest as denyRequestV2,
 } from 'src/walletConnect/actions'
+import { SupportedActions } from 'src/walletConnect/constants'
 import ActionRequest from 'src/walletConnect/screens/ActionRequest'
 import { createMockStore } from 'test/utils'
 import { mockAccount, mockAccount2 } from 'test/values'
@@ -95,6 +95,17 @@ describe('ActionRequest with WalletConnect V2', () => {
     },
   }
 
+  const pendingActionMethod = SupportedActions.personal_sign
+
+  const pendingActionRequest = {
+    method: pendingActionMethod,
+    request: pendingAction,
+  } as const
+
+  const sendTransactionActionMethod = SupportedActions.eth_sendTransaction
+
+  const feeCurrenciesSymbols = ['CELO']
+
   const sendTransactionAction = {
     ...pendingAction,
     params: {
@@ -106,8 +117,9 @@ describe('ActionRequest with WalletConnect V2', () => {
     },
   }
 
-  const preparedTransactions: SerializableTransactionRequest[] = [
-    {
+  const preparedTransactionSuccess = {
+    success: true,
+    transactionRequest: {
       from: mockAccount,
       to: mockAccount2,
       data: '0xTEST',
@@ -117,7 +129,20 @@ describe('ActionRequest with WalletConnect V2', () => {
       gas: '100000',
       _baseFeePerGas: '5000000000',
     },
-  ]
+  } as const
+
+  const preparedTransactionFailure = {
+    success: false,
+    errorMessage: 'execution reverted',
+  } as const
+
+  const sendTransactionRequest = {
+    method: sendTransactionActionMethod,
+    request: sendTransactionAction,
+    hasInsufficientGasFunds: false,
+    feeCurrenciesSymbols: feeCurrenciesSymbols,
+    preparedTransaction: preparedTransactionSuccess,
+  }
 
   const supportedChains = ['eip155:44787']
 
@@ -137,10 +162,12 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={sendTransactionAction}
+            method={SupportedActions.eth_sendTransaction}
+            request={sendTransactionAction}
             supportedChains={supportedChains}
             hasInsufficientGasFunds={true}
-            feeCurrenciesSymbols={['CELO']}
+            feeCurrenciesSymbols={feeCurrenciesSymbols}
+            preparedTransaction={preparedTransactionFailure}
           />
         </Provider>
       )
@@ -164,12 +191,12 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={sendTransactionAction}
+            method={sendTransactionActionMethod}
+            request={sendTransactionAction}
             supportedChains={supportedChains}
             hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
-            preparedTransactions={undefined}
-            prepareTransactionsErrorMessage="execution reverted"
+            feeCurrenciesSymbols={feeCurrenciesSymbols}
+            preparedTransaction={preparedTransactionFailure}
           />
         </Provider>
       )
@@ -193,18 +220,19 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={sendTransactionAction}
+            method={sendTransactionActionMethod}
+            request={sendTransactionAction}
             supportedChains={supportedChains}
             hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
-            preparedTransactions={preparedTransactions}
+            feeCurrenciesSymbols={feeCurrenciesSymbols}
+            preparedTransaction={preparedTransactionSuccess}
           />
         </Provider>
       )
 
       expect(
         within(getByTestId('WalletConnectRequest/ActionRequestPayload/Value')).getByText(
-          JSON.stringify(preparedTransactions[0])
+          JSON.stringify(preparedTransactionSuccess.transactionRequest)
         )
       ).toBeTruthy()
       expect(
@@ -215,9 +243,7 @@ describe('ActionRequest with WalletConnect V2', () => {
       expect(fee.getByText('₱0.0047')).toBeTruthy()
 
       fireEvent.press(getByText('walletConnectRequest.sendTransactionAction'))
-      expect(store.getActions()).toEqual([
-        acceptRequestV2(sendTransactionAction, preparedTransactions),
-      ])
+      expect(store.getActions()).toEqual([acceptRequestV2(sendTransactionRequest)])
     })
   })
 
@@ -237,10 +263,9 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={pendingAction}
+            method={pendingActionMethod}
+            request={pendingAction}
             supportedChains={supportedChains}
-            hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
           />
         </Provider>
       )
@@ -264,10 +289,9 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={pendingAction}
+            method={pendingActionMethod}
+            request={pendingAction}
             supportedChains={supportedChains}
-            hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
           />
         </Provider>
       )
@@ -282,10 +306,9 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={pendingAction}
+            method={pendingActionMethod}
+            request={pendingAction}
             supportedChains={supportedChains}
-            hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
           />
         </Provider>
       )
@@ -303,10 +326,9 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={pendingAction}
+            method={pendingActionMethod}
+            request={pendingAction}
             supportedChains={supportedChains}
-            hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
           />
         </Provider>
       )
@@ -323,16 +345,15 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={pendingAction}
+            method={pendingActionMethod}
+            request={pendingAction}
             supportedChains={supportedChains}
-            hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
           />
         </Provider>
       )
 
       fireEvent.press(getByText('allow'))
-      expect(store.getActions()).toEqual([acceptRequestV2(pendingAction)])
+      expect(store.getActions()).toEqual([acceptRequestV2(pendingActionRequest)])
     })
 
     it('dispatches the correct action on dismiss bottom sheet', () => {
@@ -340,10 +361,9 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={pendingAction}
+            method={pendingActionMethod}
+            request={pendingAction}
             supportedChains={supportedChains}
-            hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
           />
         </Provider>
       )
@@ -393,10 +413,9 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={pendingAction}
+            method={pendingActionMethod}
+            request={pendingAction}
             supportedChains={supportedChains}
-            hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
           />
         </Provider>
       )
@@ -434,10 +453,9 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={pendingAction}
+            method={pendingActionMethod}
+            request={pendingAction}
             supportedChains={supportedChains}
-            hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
           />
         </Provider>
       )
@@ -475,10 +493,9 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={pendingAction}
+            method={pendingActionMethod}
+            request={pendingAction}
             supportedChains={supportedChains}
-            hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
           />
         </Provider>
       )
@@ -511,7 +528,8 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={{
+            method={pendingActionMethod}
+            request={{
               ...pendingAction,
               params: {
                 ...pendingAction.params,
@@ -523,8 +541,6 @@ describe('ActionRequest with WalletConnect V2', () => {
               },
             }}
             supportedChains={supportedChains}
-            hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
           />
         </Provider>
       )
@@ -552,7 +568,8 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            pendingAction={{
+            method={pendingActionMethod}
+            request={{
               ...pendingAction,
               params: {
                 ...pendingAction.params,
@@ -564,8 +581,6 @@ describe('ActionRequest with WalletConnect V2', () => {
               },
             }}
             supportedChains={supportedChains}
-            hasInsufficientGasFunds={false}
-            feeCurrenciesSymbols={['CELO']}
           />
         </Provider>
       )

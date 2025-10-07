@@ -64,21 +64,21 @@ import {
   getWalletCapabilitiesByHexChainId,
   getWalletCapabilitiesByWalletConnectChainId,
 } from 'src/walletConnect/capabilities'
-import {
-  isInteractiveAction,
-  isMessageRequest,
-  isSupportedAction,
-  isTransactionRequest,
-  SupportedActions,
-  SupportedEvents,
-} from 'src/walletConnect/constants'
+import { isSupportedAction, SupportedActions, SupportedEvents } from 'src/walletConnect/constants'
 import { handleRequest } from 'src/walletConnect/request'
 import {
   selectHasPendingState,
   selectPendingActions,
   selectSessions,
 } from 'src/walletConnect/selectors'
-import { WalletConnectRequestResult, WalletConnectRequestType } from 'src/walletConnect/types'
+import {
+  isMessageMethod,
+  isNonInteractiveMethod,
+  isTransactionMethod,
+  PreparedTransaction,
+  WalletConnectRequestResult,
+  WalletConnectRequestType,
+} from 'src/walletConnect/types'
 import networkConfig, {
   networkIdToWalletConnectChainId,
   walletConnectChainIdToNetwork,
@@ -514,33 +514,33 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   })
 
   // If the action doesn't require user consent, accept it immediately
-  if (!isInteractiveAction(method)) {
-    yield* put(acceptRequest(request))
+  if (isNonInteractiveMethod(method)) {
+    yield* put(acceptRequest({ request, method }))
     return
   }
 
   const supportedChains = yield* call(getSupportedChains)
 
-  if (isMessageRequest(method)) {
+  if (isMessageMethod(method)) {
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
       method,
-      pendingAction: request,
+      request,
       supportedChains,
       version: 2,
     })
   }
 
-  if (isTransactionRequest(method)) {
+  if (isTransactionMethod(method)) {
     const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
     const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
     let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
     let prepareTransactionsErrorMessage: string | undefined = undefined
-    const rawTxs = [request.params.request.params[0]]
-    Logger.debug(TAG + '@showActionRequest', 'Received transactions', rawTxs)
+    const rawTx = request.params.request.params[0]
+    Logger.debug(TAG + '@showActionRequest', 'Received transaction', rawTx)
     const network = walletConnectChainIdToNetwork[request.params.chainId]
     try {
-      const normalizedTxs = yield* call(normalizeTransactions, rawTxs, network)
+      const normalizedTxs = yield* call(normalizeTransactions, [rawTx], network)
       preparedTransactionsResult = yield* call(prepareTransactions, {
         feeCurrencies,
         decreasedAmountGasFeeMultiplier: 1,
@@ -554,10 +554,19 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       prepareTransactionsErrorMessage = e instanceof BaseError ? e.shortMessage : e.message
     }
 
-    const preparedTransaction =
+    const preparedTransaction: PreparedTransaction =
       preparedTransactionsResult?.type === 'possible'
-        ? getSerializablePreparedTransaction(preparedTransactionsResult.transactions[0])
-        : undefined
+        ? {
+            success: true,
+            transactionRequest: getSerializablePreparedTransaction(
+              preparedTransactionsResult.transactions[0]
+            ),
+          }
+        : {
+            success: false,
+            errorMessage: prepareTransactionsErrorMessage!,
+          }
+
     Logger.debug(
       TAG + '@showActionRequest',
       'Prepared transactions',
@@ -568,13 +577,12 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
       method,
-      pendingAction: request,
+      request,
       supportedChains,
       version: 2,
       hasInsufficientGasFunds: preparedTransactionsResult?.type === 'not-enough-balance-for-gas',
       feeCurrenciesSymbols: feeCurrencies.map((token) => token.symbol),
       preparedTransaction,
-      prepareTransactionsErrorMessage,
     })
   }
 }
@@ -715,7 +723,8 @@ export function* getSessionFromRequest(request: WalletKitTypes.EventArguments['s
   return session
 }
 
-function* handleAcceptRequest({ request, preparedTransactions }: AcceptRequest) {
+function* handleAcceptRequest(props: AcceptRequest) {
+  const request = props.request
   const session: SessionTypes.Struct = yield* call(getSessionFromRequest, request)
   const defaultSessionTrackedProperties: WalletConnect2Properties = yield* call(
     getDefaultSessionTrackedProperties,
@@ -733,7 +742,7 @@ function* handleAcceptRequest({ request, preparedTransactions }: AcceptRequest) 
       throw new Error('Missing client')
     }
 
-    const { topic, id, params } = request
+    const { topic, id } = request
     const activeSessions = yield* call([client, 'getActiveSessions'])
     const activeSession = activeSessions[topic]
 
@@ -741,7 +750,7 @@ function* handleAcceptRequest({ request, preparedTransactions }: AcceptRequest) 
       throw new Error(`Missing active session for topic ${topic}`)
     }
 
-    const result = yield* call(handleRequest, params, preparedTransactions)
+    const result = yield* call(handleRequest, props)
     const response: JsonRpcResult<WalletConnectRequestResult> = formatJsonRpcResult(id, result)
     yield* call([client, 'respondSessionRequest'], { topic, response })
 

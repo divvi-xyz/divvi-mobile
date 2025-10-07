@@ -1,19 +1,17 @@
-import { WalletKitTypes } from '@reown/walletkit'
 import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
 import { SentrySpan } from 'src/sentry/SentrySpans'
 import { Network } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
 import { ViemWallet } from 'src/viem/getLockableWallet'
-import {
-  SerializableTransactionRequest,
-  getPreparedTransaction,
-} from 'src/viem/preparedTransactionSerialization'
+import { getPreparedTransaction } from 'src/viem/preparedTransactionSerialization'
 import { getWalletCapabilitiesByHexChainId } from 'src/walletConnect/capabilities'
+import { chainAgnosticActions, SupportedActions } from 'src/walletConnect/constants'
 import {
-  SupportedActions,
-  chainAgnosticActions,
-  isInteractiveAction,
-} from 'src/walletConnect/constants'
+  isNonInteractiveMethod,
+  MessageRequest,
+  NonInteractiveRequest,
+  TransactionRequest,
+} from 'src/walletConnect/types'
 import { getViemWallet } from 'src/web3/contracts'
 import networkConfig, {
   networkIdToNetwork,
@@ -25,13 +23,19 @@ import { SignMessageParameters } from 'viem'
 
 const TAG = 'WalletConnect/request'
 
-export function* handleRequest(
-  {
-    request: { method, params },
-    chainId,
-  }: WalletKitTypes.EventArguments['session_request']['params'],
-  serializableTransactionRequests?: SerializableTransactionRequest[]
+export const handleRequest = function* (
+  input: NonInteractiveRequest | MessageRequest | TransactionRequest
 ) {
+  const {
+    method,
+    request: {
+      params: {
+        request: { params },
+        chainId,
+      },
+    },
+  } = input
+
   // since the chainId comes from the dapp, we cannot be sure that it is a
   // supported chain id. for transactions that are sent to the blockchain, it is
   // required to that the chainId of the request is supported. for transactions
@@ -51,7 +55,7 @@ export function* handleRequest(
   const account = yield* call(getWalletAddress)
 
   // Unlock the account if the action requires user consent
-  if (isInteractiveAction(method)) {
+  if (!isNonInteractiveMethod(method)) {
     yield* call(unlockAccount, account)
   }
 
@@ -60,10 +64,10 @@ export function* handleRequest(
 
   switch (method) {
     case SupportedActions.eth_signTransaction: {
-      if (!serializableTransactionRequests || serializableTransactionRequests.length === 0) {
-        throw new Error('preparedTransactions is required when using viem')
+      if (!input.preparedTransaction.success) {
+        throw new Error(input.preparedTransaction.errorMessage)
       }
-      const tx = getPreparedTransaction(serializableTransactionRequests[0])
+      const tx = getPreparedTransaction(input.preparedTransaction.transactionRequest)
       Logger.debug(TAG + '@handleRequest', 'Signing transaction', tx)
       return yield* call(
         [wallet, 'signTransaction'],
@@ -72,10 +76,10 @@ export function* handleRequest(
       )
     }
     case SupportedActions.eth_sendTransaction: {
-      if (!serializableTransactionRequests || serializableTransactionRequests.length === 0) {
-        throw new Error('preparedTransaction is required when using viem')
+      if (!input.preparedTransaction.success) {
+        throw new Error(input.preparedTransaction.errorMessage)
       }
-      const tx = getPreparedTransaction(serializableTransactionRequests[0])
+      const tx = getPreparedTransaction(input.preparedTransaction.transactionRequest)
       Logger.debug(TAG + '@handleRequest', 'Sending transaction', tx)
       const hash = yield* call(
         [wallet, 'sendTransaction'],

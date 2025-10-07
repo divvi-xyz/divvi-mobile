@@ -18,7 +18,7 @@ import { SupportedActions } from 'src/walletConnect/constants'
 type Props = {
   session: SessionTypes.Struct
   request: WalletKitTypes.EventArguments['session_request']
-  preparedTransaction: SerializableTransactionRequest
+  preparedTransaction?: SerializableTransactionRequest
 }
 
 function ActionRequestPayload(props: Props) {

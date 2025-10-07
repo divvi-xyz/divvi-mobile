@@ -1,4 +1,3 @@
-import { WalletKitTypes } from '@reown/walletkit'
 import { getSdkError } from '@walletconnect/utils'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -8,60 +7,41 @@ import { useDispatch, useSelector } from 'src/redux/hooks'
 import { NETWORK_NAMES } from 'src/shared/conts'
 import { Spacing } from 'src/styles/styles'
 import Logger from 'src/utils/Logger'
-import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
 import { acceptRequest, denyRequest } from 'src/walletConnect/actions'
-import {
-  InteractiveActions,
-  chainAgnosticActions,
-  getDisplayTextFromAction,
-} from 'src/walletConnect/constants'
+import { chainAgnosticActions, getDisplayTextFromAction } from 'src/walletConnect/constants'
 import ActionRequestPayload from 'src/walletConnect/screens/ActionRequestPayload'
 import DappsDisclaimer from 'src/walletConnect/screens/DappsDisclaimer'
 import EstimatedNetworkFee from 'src/walletConnect/screens/EstimatedNetworkFee'
 import RequestContent, { useDappMetadata } from 'src/walletConnect/screens/RequestContent'
 import { useIsDappListed } from 'src/walletConnect/screens/useIsDappListed'
 import { sessionsSelector } from 'src/walletConnect/selectors'
+import { isTransactionMethod, MessageRequest, TransactionRequest } from 'src/walletConnect/types'
 import { walletConnectChainIdToNetworkId } from 'src/web3/networkConfig'
 
-interface RequestProps {
+export type ActionRequestProps = TransactionRequestProps | MessageRequestProps
+
+type RequestProps = {
   version: 2
-  pendingAction: WalletKitTypes.EventArguments['session_request']
   supportedChains: string[]
 }
 
-interface TransactionProps extends RequestProps {
-  method: InteractiveActions.eth_sendTransaction | InteractiveActions.eth_signTransaction
-  hasInsufficientGasFunds: boolean
-  feeCurrenciesSymbols: string[]
-  prepareTransactionsErrorMessage?: string
-  preparedTransaction?: SerializableTransactionRequest
-}
+type TransactionRequestProps = RequestProps & TransactionRequest
 
-interface MessageProps extends RequestProps {
-  method: Exclude<
-    InteractiveActions,
-    InteractiveActions.eth_sendTransaction | InteractiveActions.eth_signTransaction
-  >
-}
+type MessageRequestProps = RequestProps & MessageRequest
 
-function isTransactionRequest(props: ActionRequestProps): props is TransactionProps {
-  return (
-    props.method === InteractiveActions.eth_sendTransaction ||
-    props.method === InteractiveActions.eth_signTransaction
-  )
+function isTransactionRequest(props: ActionRequestProps): props is TransactionRequestProps {
+  return isTransactionMethod(props.method)
 }
-
-export type ActionRequestProps = TransactionProps | MessageProps
 
 function ActionRequest(props: ActionRequestProps) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
 
-  const { pendingAction, supportedChains, method } = props
+  const { request, supportedChains, method } = props
 
   const sessions = useSelector(sessionsSelector)
   const activeSession = useMemo(() => {
-    return sessions.find((s) => s.topic === pendingAction.topic)
+    return sessions.find((s) => s.topic === request.topic)
   }, [sessions])
   const { url, dappName, dappImageUrl } = useDappMetadata(activeSession?.peer.metadata)
   const isDappListed = useIsDappListed(url)
@@ -75,16 +55,11 @@ function ActionRequest(props: ActionRequestProps) {
     return null
   }
 
-  const chainId = pendingAction.params.chainId
+  const chainId = request.params.chainId
   const networkId = walletConnectChainIdToNetworkId[chainId]
   const networkName = NETWORK_NAMES[networkId]
 
-  const { description, title, action } = getDisplayTextFromAction(
-    t,
-    method as InteractiveActions,
-    dappName,
-    networkName
-  )
+  const { description, title, action } = getDisplayTextFromAction(t, method, dappName, networkName)
 
   // Reject and warn if the chain is not supported
   // Note: we still allow off-chain actions like personal_sign on unsupported
@@ -97,7 +72,7 @@ function ActionRequest(props: ActionRequestProps) {
     return (
       <RequestContent
         type="dismiss"
-        onDismiss={() => dispatch(denyRequest(pendingAction, getSdkError('UNSUPPORTED_CHAINS')))}
+        onDismiss={() => dispatch(denyRequest(request, getSdkError('UNSUPPORTED_CHAINS')))}
         dappName={dappName}
         dappImageUrl={dappImageUrl}
         title={title}
@@ -123,7 +98,7 @@ function ActionRequest(props: ActionRequestProps) {
     return (
       <RequestContent
         type="dismiss"
-        onDismiss={() => dispatch(denyRequest(pendingAction, getSdkError('USER_REJECTED')))}
+        onDismiss={() => dispatch(denyRequest(request, getSdkError('USER_REJECTED')))}
         dappName={dappName}
         dappImageUrl={dappImageUrl}
         title={title}
@@ -142,11 +117,11 @@ function ActionRequest(props: ActionRequestProps) {
     )
   }
 
-  if (isTransactionRequest(props) && !props.preparedTransaction) {
+  if (isTransactionRequest(props) && !props.preparedTransaction.success) {
     return (
       <RequestContent
         type="dismiss"
-        onDismiss={() => dispatch(denyRequest(pendingAction, getSdkError('USER_REJECTED')))}
+        onDismiss={() => dispatch(denyRequest(request, getSdkError('USER_REJECTED')))}
         dappName={dappName}
         dappImageUrl={dappImageUrl}
         title={title}
@@ -155,14 +130,14 @@ function ActionRequest(props: ActionRequestProps) {
       >
         <ActionRequestPayload
           session={activeSession}
-          request={pendingAction}
-          preparedTransactions={props.preparedTransaction}
+          request={request}
+          preparedTransaction={undefined}
         />
         <InLineNotification
           variant={NotificationVariant.Warning}
           title={t('walletConnectRequest.failedToPrepareTransaction.title')}
           description={t('walletConnectRequest.failedToPrepareTransaction.description', {
-            errorMessage: props.prepareTransactionsErrorMessage,
+            errorMessage: props.preparedTransaction.errorMessage,
           })}
           style={styles.warning}
         />
@@ -174,9 +149,9 @@ function ActionRequest(props: ActionRequestProps) {
     <RequestContent
       type="confirm"
       buttonText={action}
-      onAccept={() => dispatch(acceptRequest(pendingAction, props.preparedTransaction))}
+      onAccept={() => dispatch(acceptRequest(props))}
       onDeny={() => {
-        dispatch(denyRequest(pendingAction, getSdkError('USER_REJECTED')))
+        dispatch(denyRequest(request, getSdkError('USER_REJECTED')))
       }}
       dappName={dappName}
       dappImageUrl={dappImageUrl}
@@ -186,14 +161,18 @@ function ActionRequest(props: ActionRequestProps) {
     >
       <ActionRequestPayload
         session={activeSession}
-        request={pendingAction}
-        preparedTransaction={isTransactionRequest(props) ? props.preparedTransaction : undefined}
+        request={request}
+        preparedTransaction={
+          isTransactionRequest(props) && props.preparedTransaction.success
+            ? props.preparedTransaction.transactionRequest
+            : undefined
+        }
       />
-      {isTransactionRequest(props) && props.preparedTransaction && (
+      {isTransactionRequest(props) && props.preparedTransaction.success && (
         <EstimatedNetworkFee
           isLoading={false}
           networkId={networkId}
-          transactions={preparedTransactions}
+          transactions={[props.preparedTransaction.transactionRequest]}
         />
       )}
       <DappsDisclaimer isDappListed={isDappListed} />
