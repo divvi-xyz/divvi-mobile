@@ -942,6 +942,27 @@ describe('prepareTransactions module', () => {
         })
       ).rejects.toThrowError(EstimateGasExecutionError)
     })
+    it('returns null if estimateGas throws Error with name EstimateGasExecutionError but not instanceof EstimateGasExecutionError', async () => {
+      // Create a custom error that has the name but is not an instance of EstimateGasExecutionError
+      const customError = new Error('Custom error with EstimateGasExecutionError name')
+      customError.name = 'EstimateGasExecutionError'
+      customError.cause = new InsufficientFundsError({
+        cause: new BaseError('insufficient funds'),
+      })
+      
+      mocked(estimateGas).mockRejectedValue(customError)
+      const baseTransaction: TransactionRequest = { from: '0x123' }
+      const estimateTransactionOutput = await tryEstimateTransaction({
+        client: mockPublicClient,
+        baseTransaction,
+        maxFeePerGas: BigInt(456),
+        feeCurrencySymbol: 'FEE',
+        feeCurrencyAddress: '0xabc',
+        maxPriorityFeePerGas: BigInt(789),
+        baseFeePerGas: BigInt(200),
+      })
+      expect(estimateTransactionOutput).toEqual(null)
+    })
   })
   describe('tryEstimateTransactions', () => {
     it('returns null if estimateGas throws error due to insufficient funds', async () => {
