@@ -1,7 +1,7 @@
 import { WalletKitTypes } from '@reown/walletkit'
 import { JsonRpcTypes, SessionTypes } from '@walletconnect/types'
 import { WalletConnectPairingOrigin } from 'src/analytics/types'
-import { MessageRequest, NonInteractiveRequest, TransactionRequest } from 'src/walletConnect/types'
+import { WalletConnectRequest } from 'src/walletConnect/types'
 
 export enum Actions {
   /**
@@ -72,7 +72,7 @@ export interface ShowRequestDetails {
 
 export type AcceptRequest = {
   type: Actions.ACCEPT_REQUEST
-} & (NonInteractiveRequest | MessageRequest | TransactionRequest)
+} & WalletConnectRequest
 
 export interface DenyRequest {
   type: Actions.DENY_REQUEST
@@ -177,11 +177,9 @@ export const showRequestDetails = (
   infoString,
 })
 
-export const acceptRequest = (
-  props: NonInteractiveRequest | MessageRequest | TransactionRequest
-): AcceptRequest => ({
+export const acceptRequest = (request: WalletConnectRequest): AcceptRequest => ({
   type: Actions.ACCEPT_REQUEST,
-  ...props,
+  ...request,
 })
 
 export const denyRequest = (

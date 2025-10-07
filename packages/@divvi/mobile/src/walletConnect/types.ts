@@ -65,6 +65,8 @@ export interface TransactionRequest extends RequestBase {
   preparedTransaction: PreparedTransaction
 }
 
+export type WalletConnectRequest = NonInteractiveRequest | MessageRequest | TransactionRequest
+
 export type PreparedTransaction =
   | { success: true; transactionRequest: SerializableTransactionRequest }
   | { success: false; errorMessage: string }

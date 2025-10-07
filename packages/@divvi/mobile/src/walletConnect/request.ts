@@ -6,12 +6,7 @@ import { ViemWallet } from 'src/viem/getLockableWallet'
 import { getPreparedTransaction } from 'src/viem/preparedTransactionSerialization'
 import { getWalletCapabilitiesByHexChainId } from 'src/walletConnect/capabilities'
 import { chainAgnosticActions, SupportedActions } from 'src/walletConnect/constants'
-import {
-  isNonInteractiveMethod,
-  MessageRequest,
-  NonInteractiveRequest,
-  TransactionRequest,
-} from 'src/walletConnect/types'
+import { isNonInteractiveMethod, WalletConnectRequest } from 'src/walletConnect/types'
 import { getViemWallet } from 'src/web3/contracts'
 import networkConfig, {
   networkIdToNetwork,
@@ -23,9 +18,7 @@ import { SignMessageParameters } from 'viem'
 
 const TAG = 'WalletConnect/request'
 
-export const handleRequest = function* (
-  input: NonInteractiveRequest | MessageRequest | TransactionRequest
-) {
+export const handleRequest = function* (input: WalletConnectRequest) {
   const {
     method,
     request: {
