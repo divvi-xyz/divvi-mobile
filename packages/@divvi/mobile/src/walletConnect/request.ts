@@ -18,7 +18,7 @@ import { SignMessageParameters } from 'viem'
 
 const TAG = 'WalletConnect/request'
 
-export const handleRequest = function* (input: WalletConnectRequest) {
+export const handleRequest = function* (request: WalletConnectRequest) {
   const {
     method,
     request: {
@@ -27,7 +27,7 @@ export const handleRequest = function* (input: WalletConnectRequest) {
         chainId,
       },
     },
-  } = input
+  } = request
 
   // since the chainId comes from the dapp, we cannot be sure that it is a
   // supported chain id. for transactions that are sent to the blockchain, it is
@@ -57,10 +57,10 @@ export const handleRequest = function* (input: WalletConnectRequest) {
 
   switch (method) {
     case SupportedActions.eth_signTransaction: {
-      if (!input.preparedTransaction.success) {
-        throw new Error(input.preparedTransaction.errorMessage)
+      if (!request.preparedTransaction.success) {
+        throw new Error(request.preparedTransaction.errorMessage)
       }
-      const tx = getPreparedTransaction(input.preparedTransaction.transactionRequest)
+      const tx = getPreparedTransaction(request.preparedTransaction.transactionRequest)
       Logger.debug(TAG + '@handleRequest', 'Signing transaction', tx)
       return yield* call(
         [wallet, 'signTransaction'],
@@ -69,10 +69,10 @@ export const handleRequest = function* (input: WalletConnectRequest) {
       )
     }
     case SupportedActions.eth_sendTransaction: {
-      if (!input.preparedTransaction.success) {
-        throw new Error(input.preparedTransaction.errorMessage)
+      if (!request.preparedTransaction.success) {
+        throw new Error(request.preparedTransaction.errorMessage)
       }
-      const tx = getPreparedTransaction(input.preparedTransaction.transactionRequest)
+      const tx = getPreparedTransaction(request.preparedTransaction.transactionRequest)
       Logger.debug(TAG + '@handleRequest', 'Sending transaction', tx)
       const hash = yield* call(
         [wallet, 'sendTransaction'],
