@@ -78,6 +78,7 @@ export enum SettingsEvents {
   // intentionally not tracking analytics opt in/out
   // to avoid tracking through omission
   settings_recovery_phrase = 'settings_recovery_phrase',
+  settings_private_key = 'settings_private_key',
   settings_haptic_feedback = 'settings_haptic_feedback',
   settings_analytics = 'settings_analytics',
 
