@@ -1,7 +1,6 @@
 import { TFunction } from 'i18next'
 import { NetworkId } from 'src/transactions/types'
 import { Capabilities } from 'src/walletConnect/types'
-import { z } from 'zod'
 
 export enum SupportedActions {
   eth_signTransaction = 'eth_signTransaction',
@@ -29,8 +28,6 @@ export enum SupportedEvents {
 export function isSupportedAction(action: string) {
   return Object.values(SupportedActions).includes(action as SupportedActions)
 }
-
-export const supportedActionsSchema = z.nativeEnum(SupportedActions)
 
 export function isSupportedEvent(event: string) {
   return Object.values(SupportedEvents).includes(event as SupportedEvents)
