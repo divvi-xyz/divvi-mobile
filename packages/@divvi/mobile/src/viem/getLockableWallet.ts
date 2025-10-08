@@ -1,6 +1,8 @@
+import { createSmartAccountClient } from 'permissionless'
+import { to7702KernelSmartAccount } from 'permissionless/accounts'
 import { Network } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
-import { appViemTransports, viemTransports } from 'src/viem'
+import { appViemTransports, publicClient, viemTransports } from 'src/viem'
 import { KeychainAccounts } from 'src/web3/KeychainAccounts'
 import networkConfig from 'src/web3/networkConfig'
 import {
@@ -70,4 +72,38 @@ export default function getLockableViemWallet(
         accounts.unlock(account.address, passphrase, duration),
     }
   })
+}
+
+export async function getLockableViemSmartWallet(
+  accounts: KeychainAccounts,
+  chain: Chain,
+  address: Address,
+  useAppTransport: boolean = false
+) {
+  const result = Object.entries(networkConfig.viemChain).find(
+    ([_, viemChain]) => chain === viemChain
+  )
+  if (!result) {
+    throw new Error(`No network defined for viem chain ${chain}, cannot create wallet`)
+  }
+  const client = publicClient[result[0] as keyof typeof publicClient]
+
+  const viemWallet = getLockableViemWallet(accounts, chain, address, useAppTransport)
+  if (!viemWallet.account) {
+    throw new Error(`Viem wallet not found for address ${address} on chain ${chain.name}`)
+  }
+  const kernelAccount = await to7702KernelSmartAccount({
+    client,
+    owner: viemWallet
+  })
+
+  const smartAccountClient = createSmartAccountClient({
+    client,
+    chain,
+    account: kernelAccount,
+
+  })
+
+  return smartAccountClient
+
 }
