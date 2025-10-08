@@ -229,6 +229,7 @@ interface SettingsEventsProperties {
   [SettingsEvents.settings_biometry_opt_in_error]: undefined
   [SettingsEvents.settings_biometry_opt_in_disable]: undefined
   [SettingsEvents.settings_recovery_phrase]: undefined
+  [SettingsEvents.settings_private_key]: undefined
   [SettingsEvents.settings_haptic_feedback]: { enabled: boolean }
   [SettingsEvents.settings_analytics]: { enabled: boolean }
   [SettingsEvents.settings_revoke_phone_number]: undefined

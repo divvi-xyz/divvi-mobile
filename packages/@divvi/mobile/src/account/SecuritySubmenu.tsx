@@ -207,7 +207,7 @@ const SecuritySubmenu = ({ route, navigation }: Props) => {
     try {
       const pinIsCorrect = await ensurePincode()
       if (pinIsCorrect) {
-        AppAnalytics.track('settings_private_key' as any)
+        AppAnalytics.track(SettingsEvents.settings_private_key)
         navigate(Screens.PrivateKey)
       }
     } catch (error) {

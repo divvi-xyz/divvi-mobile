@@ -329,11 +329,7 @@ const settingsScreens = (Navigator: typeof Stack) => (
       component={SecuritySubmenu}
       options={noHeader}
     />
-    <Navigator.Screen
-      name={Screens.PrivateKey}
-      component={PrivateKey}
-      options={noHeader}
-    />
+    <Navigator.Screen name={Screens.PrivateKey} component={PrivateKey} options={noHeader} />
     <Navigator.Screen
       name={Screens.Language}
       component={Language}

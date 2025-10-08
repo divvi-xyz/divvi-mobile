@@ -111,6 +111,7 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   // intentionally not tracking analytics opt in/out
   // to avoid tracking through omission
   [SettingsEvents.settings_recovery_phrase]: ``,
+  [SettingsEvents.settings_private_key]: ``,
   [SettingsEvents.settings_haptic_feedback]: ``,
   [SettingsEvents.settings_analytics]: ``,
   [SettingsEvents.settings_revoke_phone_number]: ``,

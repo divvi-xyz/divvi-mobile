@@ -44,7 +44,6 @@ const PrivateKey = () => {
     }
   }
 
-
   const copyToClipboard = async () => {
     try {
       await Clipboard.setString(privateKey)
