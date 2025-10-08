@@ -161,7 +161,6 @@
     "is-ip": "^3.1.0",
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
-    "ox": "^0.9.9",
     "permissionless": "^0.2.57",
     "react-async-hook": "^4.0.0",
     "react-i18next": "^15.4.1",

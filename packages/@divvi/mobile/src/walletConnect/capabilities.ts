@@ -12,7 +12,6 @@ import type { Address } from 'viem'
 import { hexToNumber, isHex, toHex } from 'viem'
 import { Capabilities } from './types'
 
-
 export async function getWalletCapabilitiesByHexChainId(
   address: Address,
   requestedChainIds?: unknown,
@@ -56,8 +55,8 @@ export async function getWalletCapabilitiesByHexChainId(
     result[toHex(chainId)] = {
       ...baseCapabilities,
       atomic: {
-        status: isDeployed ? 'supported' : 'ready'
-      }
+        status: isDeployed ? 'supported' : 'ready',
+      },
     }
   }
 
@@ -77,12 +76,7 @@ export async function isSmartAccountDeployedForNetworkId(
 
   const accounts = await getKeychainAccounts()
 
-  const smartWallet = await getLockableViemSmartWallet(
-    accounts,
-    chain,
-    address,
-    useAppTransport
-  )
+  const smartWallet = await getLockableViemSmartWallet(accounts, chain, address, useAppTransport)
 
   const { account } = smartWallet
   if (!account) {
@@ -108,8 +102,8 @@ export async function getWalletCapabilitiesByWalletConnectChainId(
     result[walletConnectChainId] = {
       ...baseCapabilities,
       atomic: {
-        status: isDeployed ? 'supported' : 'ready'
-      }
+        status: isDeployed ? 'supported' : 'ready',
+      },
     }
   }
 

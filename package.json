@@ -23,7 +23,6 @@
   "dependencies": {
     "@actions/github": "^5.1.1",
     "@anolilab/multi-semantic-release": "^1.1.9",
-    "@divvi/mobile": "file:.yalc/@divvi/mobile",
     "@jambit/eslint-plugin-typed-redux-saga": "^0.4.0",
     "@types/shelljs": "^0.8.11",
     "@types/yargs": "^17.0.32",

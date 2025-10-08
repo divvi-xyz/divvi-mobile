@@ -347,7 +347,10 @@ function* showSessionRequest(session: WalletKitTypes.EventArguments['session_pro
 
   // Recommended method
   // https://docs.walletconnect.network/wallet-sdk/react-native/eip5792#wallet-response
-  const scopedProperties = yield* call(getWalletCapabilitiesByWalletConnectChainId, address as Address)
+  const scopedProperties = yield* call(
+    getWalletCapabilitiesByWalletConnectChainId,
+    address as Address
+  )
 
   // Legacy method for compatibility
   // https://github.com/WalletConnect/walletconnect-monorepo/blob/1e6d7793d0a30d2bf684cd3811ba120b4cdc0498/providers/universal-provider/src/providers/eip155.ts#L219-L223
@@ -382,7 +385,7 @@ function convertToBigInt(value: any) {
   return isHex(value)
     ? hexToBigInt(value)
     : // make sure that we can safely parse the value as a BigInt
-    typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint'
+      typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint'
       ? BigInt(value)
       : undefined
 }
@@ -557,15 +560,15 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     const preparedTransaction: PreparedTransaction =
       preparedTransactionsResult?.type === 'possible'
         ? {
-          success: true,
-          transactionRequest: getSerializablePreparedTransaction(
-            preparedTransactionsResult.transactions[0]
-          ),
-        }
+            success: true,
+            transactionRequest: getSerializablePreparedTransaction(
+              preparedTransactionsResult.transactions[0]
+            ),
+          }
         : {
-          success: false,
-          errorMessage: prepareTransactionsErrorMessage!,
-        }
+            success: false,
+            errorMessage: prepareTransactionsErrorMessage!,
+          }
 
     Logger.debug(
       TAG + '@showActionRequest',

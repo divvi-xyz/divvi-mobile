@@ -14,12 +14,11 @@ import networkConfig, {
 } from 'src/web3/networkConfig'
 import { getWalletAddress, unlockAccount } from 'src/web3/saga'
 import { call } from 'typed-redux-saga'
-import { Address, SignMessageParameters } from 'viem'
+import { SignMessageParameters } from 'viem'
 
 const TAG = 'WalletConnect/request'
 
 export const handleRequest = function* (actionableRequest: ActionableRequest) {
-  Logger.debug(TAG + '@handleRequest', 'Handling request', actionableRequest)
   const {
     method,
     request: {
@@ -101,7 +100,7 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
         throw new Error('Unauthorized')
       }
 
-      return yield* call(getWalletCapabilitiesByHexChainId, address as Address, hexNetworkIds)
+      return yield* call(getWalletCapabilitiesByHexChainId, address, hexNetworkIds)
     }
     default:
       throw new Error('unsupported RPC method')

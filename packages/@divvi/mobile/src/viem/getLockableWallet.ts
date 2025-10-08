@@ -98,7 +98,7 @@ export async function getLockableViemSmartWallet(
   const kernelAccount = await to7702KernelSmartAccount({
     client,
     // @ts-expect-error - Type compatibility issue between viem and permissionless versions
-    owner: viemWallet.account!
+    owner: viemWallet.account,
   })
 
   const smartAccountClient = createSmartAccountClient({
