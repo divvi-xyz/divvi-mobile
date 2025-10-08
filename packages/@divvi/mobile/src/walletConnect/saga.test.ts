@@ -18,6 +18,7 @@ import { publicClient } from 'src/viem'
 import { prepareTransactions } from 'src/viem/prepareTransactions'
 import {
   Actions,
+  acceptRequest,
   acceptSession as acceptSessionAction,
   sessionProposal as sessionProposalAction,
 } from 'src/walletConnect/actions'
@@ -647,13 +648,16 @@ describe('showActionRequest', () => {
     })
     expect(navigate).toHaveBeenNthCalledWith(2, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
-      pendingAction: actionRequest,
+      method: SupportedActions.eth_sendTransaction,
+      request: actionRequest,
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransactions: mockPreparedTransactions.transactions,
-      prepareTransactionsErrorMessage: undefined,
+      preparedTransaction: {
+        success: true,
+        transactionRequest: mockPreparedTransactions.transactions[0],
+      },
     })
   })
 
@@ -682,13 +686,16 @@ describe('showActionRequest', () => {
     })
     expect(navigate).toHaveBeenNthCalledWith(2, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
-      pendingAction: actionRequest,
+      method: SupportedActions.eth_sendTransaction,
+      request: actionRequest,
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransactions: undefined,
-      prepareTransactionsErrorMessage: 'Some error',
+      preparedTransaction: {
+        success: false,
+        errorMessage: 'Some error',
+      },
     })
   })
 
@@ -717,14 +724,45 @@ describe('showActionRequest', () => {
     })
     expect(navigate).toHaveBeenNthCalledWith(2, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
-      pendingAction: actionRequest,
+      method: SupportedActions.eth_sendTransaction,
+      request: actionRequest,
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransactions: undefined,
-      prepareTransactionsErrorMessage: 'viem short message',
+      preparedTransaction: {
+        success: false,
+        errorMessage: 'viem short message',
+      },
     })
+  })
+
+  it('accepts non-interactive requests immediately without navigation', async () => {
+    const nonInteractiveRequest: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCapabilities',
+          params: [],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, nonInteractiveRequest)
+      .withState(state)
+      .provide([[select(walletAddressSelector), mockAccount]])
+      .put(
+        acceptRequest({
+          method: SupportedActions.wallet_getCapabilities,
+          request: nonInteractiveRequest,
+        })
+      )
+      .run()
+
+    // Should not navigate to any screen
+    expect(navigate).not.toHaveBeenCalled()
   })
 
   it('throws an error when client is missing', () => {
