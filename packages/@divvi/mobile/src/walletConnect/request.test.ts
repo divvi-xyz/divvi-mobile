@@ -7,7 +7,7 @@ import {
 } from 'src/viem/preparedTransactionSerialization'
 import { SupportedActions } from 'src/walletConnect/constants'
 import { handleRequest } from 'src/walletConnect/request'
-import { WalletConnectRequest } from 'src/walletConnect/types'
+import { ActionableRequest } from 'src/walletConnect/types'
 import { getViemWallet } from 'src/web3/contracts'
 import { unlockAccount } from 'src/web3/saga'
 import { createMockStore } from 'test/utils'
@@ -66,7 +66,7 @@ const createMockRequest = <T extends SupportedActions>(
       },
     },
     ...extra,
-  }) as WalletConnectRequest
+  }) as ActionableRequest
 
 const txParams = {
   from: '0xTEST',
