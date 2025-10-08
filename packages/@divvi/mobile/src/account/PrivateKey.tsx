@@ -1,5 +1,6 @@
 import Clipboard from '@react-native-clipboard/clipboard'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { useAsync } from 'react-async-hook'
 import { useTranslation } from 'react-i18next'
 import { Alert, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -26,8 +27,8 @@ const PrivateKey = () => {
   const [privateKey, setPrivateKey] = useState<string>('')
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    const loadPrivateKeyAsync = async () => {
+  useAsync(
+    async () => {
       try {
         if (!walletAddress) {
           Alert.alert(t('error'), t('noAccountFound'))
@@ -56,9 +57,15 @@ const PrivateKey = () => {
       } finally {
         setIsLoading(false)
       }
+    },
+    [],
+    {
+      onError: (error) => {
+        Logger.error(TAG, 'Error loading private key', error)
+        Alert.alert(t('error'), t('failedToLoadPrivateKey'))
+      },
     }
-    loadPrivateKeyAsync()
-  }, [])
+  )
 
   const copyToClipboard = () => {
     Clipboard.setString(privateKey)
