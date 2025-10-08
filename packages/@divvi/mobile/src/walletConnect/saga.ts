@@ -539,28 +539,31 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     // check support for requested capabilities
     const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
     const supportedCapabilities = capabilitiesByNetworkId[networkId] ?? {}
-    let requestedCapabilitiesSupported = true
 
     // check global capabilities
     const requestedCapabilities = request.params.request.params[0].capabilities ?? {}
-    if (
-      !(yield* call(validateRequestedCapabilities, requestedCapabilities, supportedCapabilities))
-    ) {
-      requestedCapabilitiesSupported = false
+    const requestedCapabilitiesSupported = yield* call(
+      validateRequestedCapabilities,
+      requestedCapabilities,
+      supportedCapabilities
+    )
+    if (!requestedCapabilitiesSupported) {
+      yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
+      return
     }
 
     // check per-call capabilities
     for (const call of request.params.request.params[0].calls) {
       const callCapabilities = call.capabilities ?? {}
-      if (!(yield* call(validateRequestedCapabilities, callCapabilities, supportedCapabilities))) {
-        requestedCapabilitiesSupported = false
+      const callCapabilitiesSupported = yield* call(
+        validateRequestedCapabilities,
+        callCapabilities,
+        supportedCapabilities
+      )
+      if (!callCapabilitiesSupported) {
+        yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
         break
       }
-    }
-
-    if (!requestedCapabilitiesSupported) {
-      yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
-      return
     }
 
     // check support for atomic execution
