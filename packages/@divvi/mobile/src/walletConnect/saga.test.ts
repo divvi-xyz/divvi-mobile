@@ -648,13 +648,16 @@ describe('showActionRequest', () => {
     })
     expect(navigate).toHaveBeenNthCalledWith(2, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
-      pendingAction: actionRequest,
+      method: SupportedActions.eth_sendTransaction,
+      request: actionRequest,
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransactions: mockPreparedTransactions.transactions,
-      prepareTransactionsErrorMessage: undefined,
+      preparedTransaction: {
+        success: true,
+        transactionRequest: mockPreparedTransactions.transactions[0],
+      },
     })
   })
 
@@ -683,13 +686,16 @@ describe('showActionRequest', () => {
     })
     expect(navigate).toHaveBeenNthCalledWith(2, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
-      pendingAction: actionRequest,
+      method: SupportedActions.eth_sendTransaction,
+      request: actionRequest,
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransactions: undefined,
-      prepareTransactionsErrorMessage: 'Some error',
+      preparedTransaction: {
+        success: false,
+        errorMessage: 'Some error',
+      },
     })
   })
 
@@ -718,13 +724,16 @@ describe('showActionRequest', () => {
     })
     expect(navigate).toHaveBeenNthCalledWith(2, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
-      pendingAction: actionRequest,
+      method: SupportedActions.eth_sendTransaction,
+      request: actionRequest,
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransactions: undefined,
-      prepareTransactionsErrorMessage: 'viem short message',
+      preparedTransaction: {
+        success: false,
+        errorMessage: 'viem short message',
+      },
     })
   })
 
@@ -744,7 +753,12 @@ describe('showActionRequest', () => {
     await expectSaga(_showActionRequest, nonInteractiveRequest)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
-      .put(acceptRequest(nonInteractiveRequest))
+      .put(
+        acceptRequest({
+          method: SupportedActions.wallet_getCapabilities,
+          request: nonInteractiveRequest,
+        })
+      )
       .run()
 
     // Should not navigate to any screen
