@@ -642,6 +642,8 @@
   "keepSafe": "Keep your Private Key Safe",
   "privateKeyWarning": "Never share your Private Key or enter it into apps or websites. Anyone who has your Private Key can access your entire wallet.",
   "noAccountFound": "No account found",
+  "noMnemonicFound": "No mnemonic found",
+  "failedToGeneratePrivateKey": "Failed to generate private key",
   "failedToLoadPrivateKey": "Failed to load private key",
   "failedToCopy": "Failed to copy to clipboard",
   "copiedAlert": "Copied",

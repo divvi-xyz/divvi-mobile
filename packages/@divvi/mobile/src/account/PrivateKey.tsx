@@ -3,20 +3,22 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { generateKeysFromMnemonic, getStoredMnemonic } from 'src/backup/utils'
 import BackButton from 'src/components/BackButton'
 import Button, { BtnSizes } from 'src/components/Button'
 import CustomHeader from 'src/components/header/CustomHeader'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
 import CopyIcon from 'src/icons/CopyIcon'
-import { getSECP256k1PrivateKey } from 'src/keylessBackup/keychain'
+import { getPassword } from 'src/pincode/authentication'
 import { useSelector } from 'src/redux/hooks'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
-import { vibrateInformative } from 'src/styles/hapticFeedback'
 import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
 import Logger from 'src/utils/Logger'
 import { walletAddressSelector } from 'src/web3/selectors'
+
+const TAG = 'PrivateKey'
 
 const PrivateKey = () => {
   const { t } = useTranslation()
@@ -25,42 +27,55 @@ const PrivateKey = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    loadPrivateKey()
+    const loadPrivateKeyAsync = async () => {
+      try {
+        if (!walletAddress) {
+          Alert.alert(t('error'), t('noAccountFound'))
+          return
+        }
+
+        // Get the password for the account
+        const password = await getPassword(walletAddress)
+
+        // Get the stored mnemonic
+        const mnemonic = await getStoredMnemonic(walletAddress, password)
+        if (!mnemonic) {
+          throw new Error('No mnemonic found in storage')
+        }
+
+        // Generate private key from mnemonic
+        const { privateKey } = await generateKeysFromMnemonic(mnemonic)
+        if (!privateKey) {
+          throw new Error('Failed to generate private key from mnemonic')
+        }
+
+        setPrivateKey(privateKey)
+      } catch (error) {
+        Logger.error(TAG, 'Error loading private key', error)
+        Alert.alert(t('error'), t('failedToLoadPrivateKey'))
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadPrivateKeyAsync()
   }, [])
 
-  const loadPrivateKey = async () => {
-    try {
-      if (!walletAddress) {
-        Alert.alert(t('error'), t('noAccountFound'))
-        return
-      }
-      const key = await getSECP256k1PrivateKey(walletAddress)
-      setPrivateKey(key)
-    } catch (error) {
-      console.error('Error loading private key:', error)
-      Alert.alert(t('error'), t('failedToLoadPrivateKey'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const copyToClipboard = async () => {
-    try {
-      await Clipboard.setString(privateKey)
-      Logger.showMessage(t('privateKeyCopied'))
-      vibrateInformative()
-    } catch (error) {
-      console.error('Error copying to clipboard:', error)
-      Alert.alert(t('error'), t('failedToCopy'))
-    }
+  const copyToClipboard = () => {
+    Clipboard.setString(privateKey)
+    Logger.showMessage(t('privateKeyCopied'))
   }
 
   const getDisplayKey = () => {
     if (isLoading) {
       return t('loading') + '...'
     }
-    // Create one long line of asterisks that can overflow
-    return '*'.repeat(64)
+    if (!privateKey) {
+      return '*'.repeat(64)
+    }
+    // Show asterisks for most of the key, but display last 4 characters
+    const asterisks = '*'.repeat(Math.max(0, privateKey.length - 4))
+    const lastFour = privateKey.slice(-4)
+    return asterisks + lastFour
   }
 
   return (
