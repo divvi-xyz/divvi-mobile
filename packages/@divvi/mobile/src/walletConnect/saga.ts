@@ -506,18 +506,18 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
+  // If the action doesn't require user consent, accept it immediately
+  if (!isInteractiveAction(method)) {
+    yield* put(acceptRequest(request))
+    return
+  }
+
   // since there are some network requests needed to prepare the transactions,
   // add a loading state
   navigate(Screens.WalletConnectRequest, {
     type: WalletConnectRequestType.Loading,
     origin: WalletConnectPairingOrigin.Deeplink,
   })
-
-  // If the action doesn't require user consent, accept it immediately
-  if (isNonInteractiveMethod(method)) {
-    yield* put(acceptRequest({ method, request }))
-    return
-  }
 
   const supportedChains = yield* call(getSupportedChains)
 
