@@ -353,7 +353,7 @@ describe('store state', () => {
         },
         "web3": {
           "account": "0x0000000000000000000000000000000000007E57",
-          "atomicCapability": "unsupported",
+          "atomic": "unsupported",
           "demoModeEnabled": false,
         },
       }

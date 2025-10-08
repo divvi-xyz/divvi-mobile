@@ -2066,7 +2066,7 @@ export const migrations = {
     ...state,
     web3: {
       ...state.web3,
-      atomicCapability: 'unsupported',
+      atomic: 'unsupported',
     },
   }),
 }

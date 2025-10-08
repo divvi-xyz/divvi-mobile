@@ -4,13 +4,13 @@ import { ActionTypes, Actions } from 'src/web3/actions'
 interface State {
   account: string | null // this is the wallet address (EOA)
   demoModeEnabled: boolean
-  atomicCapability: 'supported' | 'unsupported' | 'ready'
+  atomic: 'supported' | 'unsupported' | 'ready'
 }
 
 const initialState: State = {
   account: null,
   demoModeEnabled: false,
-  atomicCapability: 'unsupported',
+  atomic: 'unsupported',
 }
 
 export const reducer = (

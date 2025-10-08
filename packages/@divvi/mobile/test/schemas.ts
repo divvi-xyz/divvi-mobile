@@ -3752,7 +3752,7 @@ export const v253Schema = {
   },
   web3: {
     ...v252Schema.web3,
-    atomicCapability: 'unsupported',
+    atomic: 'unsupported',
   },
 }
 

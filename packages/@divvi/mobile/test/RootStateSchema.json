@@ -5523,7 +5523,7 @@
                         "string"
                     ]
                 },
-                "atomicCapability": {
+                "atomic": {
                     "enum": [
                         "ready",
                         "supported",
@@ -5537,7 +5537,7 @@
             },
             "required": [
                 "account",
-                "atomicCapability",
+                "atomic",
                 "demoModeEnabled"
             ],
             "type": "object"
