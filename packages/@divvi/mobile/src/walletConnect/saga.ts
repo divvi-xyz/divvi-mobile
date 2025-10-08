@@ -105,6 +105,7 @@ import {
   isHex,
 } from 'viem'
 import { getTransactionCount } from 'viem/actions'
+import { rpcErrors } from './constants'
 
 let client: IWalletKit | null = null
 
@@ -507,29 +508,29 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   if (method === SupportedActions.wallet_getCapabilities) {
     const [address, requestedChainIds] = request.params.request.params
     if (!address) {
-      yield* put(denyRequest(request, { code: -32602, message: 'Invalid params' }))
+      yield* put(denyRequest(request, rpcErrors.INVALID_PARAMS))
       return
     }
 
     const walletAddress = yield* call(getWalletAddress)
     if (address.toLowerCase() !== walletAddress.toLowerCase()) {
-      yield* put(denyRequest(request, { code: 4100, message: 'Unauthorized' }))
+      yield* put(denyRequest(request, rpcErrors.UNAUTHORIZED))
       return
     }
 
     if (requestedChainIds) {
       if (!Array.isArray(requestedChainIds)) {
-        yield* put(denyRequest(request, { code: -32602, message: 'Invalid params' }))
+        yield* put(denyRequest(request, rpcErrors.INVALID_PARAMS))
         return
       }
 
       if (requestedChainIds.length === 0) {
-        yield* put(denyRequest(request, { code: -32602, message: 'Invalid params' }))
+        yield* put(denyRequest(request, rpcErrors.INVALID_PARAMS))
         return
       }
 
       if (requestedChainIds.some((chainId: unknown) => !isHex(chainId))) {
-        yield* put(denyRequest(request, { code: -32602, message: 'Invalid params' }))
+        yield* put(denyRequest(request, rpcErrors.INVALID_PARAMS))
         return
       }
     }
