@@ -120,3 +120,22 @@ export const capabilitiesByNetworkId: Record<keyof typeof NetworkId, Capabilitie
   [NetworkId['base-mainnet']]: defaultCapabilities,
   [NetworkId['base-sepolia']]: defaultCapabilities,
 }
+
+export const rpcError = {
+  INVALID_PARAMS: {
+    code: -32602,
+    message: 'Invalid params',
+  },
+  UNAUTHORIZED: {
+    code: 4100,
+    message: 'Unauthorized',
+  },
+  UNSUPPORTED_NON_OPTIONAL_CAPABILITY: {
+    code: 5700,
+    message: 'Unsupported non-optional capability',
+  },
+  ATOMICITY_NOT_SUPPORTED: {
+    code: 5760,
+    message: 'Atomicity not supported',
+  },
+} as const

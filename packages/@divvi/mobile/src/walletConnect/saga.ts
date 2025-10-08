@@ -116,6 +116,7 @@ import {
   isHex,
 } from 'viem'
 import { getTransactionCount } from 'viem/actions'
+import { rpcError } from './constants'
 
 let client: IWalletKit | null = null
 
@@ -558,13 +559,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     }
 
     if (!requestedCapabilitiesSupported) {
-      yield* put(
-        denyRequest(request, {
-          // TODO: use getSdkError() once this error code is supported
-          code: 5700,
-          message: 'Unsupported non-optional capability',
-        })
-      )
+      yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
       return
     }
 
@@ -573,13 +568,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       const atomicSupportStatus = yield* call(getAtomicCapability, networkId)
 
       if (atomicSupportStatus === 'unsupported') {
-        yield* put(
-          denyRequest(request, {
-            // TODO: use getSdkError() once this error code is supported
-            code: 5760,
-            message: 'Atomicity not supported',
-          })
-        )
+        yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
         return
       } else if (atomicSupportStatus === 'ready') {
         // TODO: enable atomic operations
