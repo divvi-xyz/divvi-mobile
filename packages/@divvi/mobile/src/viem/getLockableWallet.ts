@@ -1,4 +1,6 @@
+// @ts-expect-error - ESM module import in CommonJS context
 import { createSmartAccountClient } from 'permissionless'
+// @ts-expect-error - ESM module import in CommonJS context
 import { to7702KernelSmartAccount } from 'permissionless/accounts'
 import { Network } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
