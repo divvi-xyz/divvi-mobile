@@ -515,7 +515,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
 
   // If the action doesn't require user consent, accept it immediately
   if (isNonInteractiveMethod(method)) {
-    yield* put(acceptRequest({ request, method }))
+    yield* put(acceptRequest({ method, request }))
     return
   }
 
@@ -723,8 +723,8 @@ export function* getSessionFromRequest(request: WalletKitTypes.EventArguments['s
   return session
 }
 
-function* handleAcceptRequest(props: AcceptRequest) {
-  const request = props.request
+function* handleAcceptRequest({ actionableRequest }: AcceptRequest) {
+  const request = actionableRequest.request
   const session: SessionTypes.Struct = yield* call(getSessionFromRequest, request)
   const defaultSessionTrackedProperties: WalletConnect2Properties = yield* call(
     getDefaultSessionTrackedProperties,
@@ -750,7 +750,7 @@ function* handleAcceptRequest(props: AcceptRequest) {
       throw new Error(`Missing active session for topic ${topic}`)
     }
 
-    const result = yield* call(handleRequest, props)
+    const result = yield* call(handleRequest, actionableRequest)
     const response: JsonRpcResult<WalletConnectRequestResult> = formatJsonRpcResult(id, result)
     yield* call([client, 'respondSessionRequest'], { topic, response })
 
