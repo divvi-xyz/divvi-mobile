@@ -91,7 +91,7 @@ describe('PrivateKey', () => {
     it('shows loading state initially', () => {
       const { getByTestId } = renderComponent()
 
-      expect(getByTestId('PrivateKeyText')).toHaveTextContent('loading...')
+      expect(getByTestId('PrivateKeyText')).toHaveTextContent('loading')
     })
 
     it('shows loading state while fetching private key', async () => {
@@ -102,7 +102,7 @@ describe('PrivateKey', () => {
 
       const { getByTestId } = renderComponent()
 
-      expect(getByTestId('PrivateKeyText')).toHaveTextContent('loading...')
+      expect(getByTestId('PrivateKeyText')).toHaveTextContent('loading')
     })
   })
 
@@ -292,7 +292,7 @@ describe('PrivateKey', () => {
       const { getByTestId } = renderComponent()
 
       // Initially loading
-      expect(getByTestId('PrivateKeyText')).toHaveTextContent('loading...')
+      expect(getByTestId('PrivateKeyText')).toHaveTextContent('loading')
       expect(getByTestId('CopyPrivateKeyButton')).toBeDisabled()
 
       // Wait for async operations to complete
