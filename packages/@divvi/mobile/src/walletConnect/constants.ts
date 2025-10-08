@@ -110,3 +110,14 @@ export const capabilitiesByNetworkId: Record<keyof typeof NetworkId, Capabilitie
   [NetworkId['base-mainnet']]: defaultCapabilities,
   [NetworkId['base-sepolia']]: defaultCapabilities,
 }
+
+export const rpcError = {
+  INVALID_PARAMS: {
+    code: -32602,
+    message: 'Invalid params',
+  },
+  UNAUTHORIZED: {
+    code: 4100,
+    message: 'Unauthorized',
+  },
+} as const
