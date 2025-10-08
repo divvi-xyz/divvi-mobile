@@ -507,8 +507,8 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   }
 
   // If the action doesn't require user consent, accept it immediately
-  if (!isInteractiveAction(method)) {
-    yield* put(acceptRequest(request))
+  if (isNonInteractiveMethod(method)) {
+    yield* put(acceptRequest({ method, request }))
     return
   }
 

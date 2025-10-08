@@ -753,7 +753,12 @@ describe('showActionRequest', () => {
     await expectSaga(_showActionRequest, nonInteractiveRequest)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
-      .put(acceptRequest(nonInteractiveRequest))
+      .put(
+        acceptRequest({
+          method: SupportedActions.wallet_getCapabilities,
+          request: nonInteractiveRequest,
+        })
+      )
       .run()
 
     // Should not navigate to any screen
