@@ -2062,4 +2062,11 @@ export const migrations = {
     jumpstart: _.pick(state.jumpstart, 'reclaimStatus'),
     app: _.omit(state.app, 'inviterAddress'),
   }),
+  253: (state: any) => ({
+    ...state,
+    web3: {
+      ...state.web3,
+      atomicCapability: 'unsupported',
+    },
+  }),
 }

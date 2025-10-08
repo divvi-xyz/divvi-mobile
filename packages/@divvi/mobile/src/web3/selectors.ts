@@ -45,3 +45,5 @@ export const walletAddressSelector = createSelector(
 export const currentAccountSelector = walletAddressSelector
 
 export type WalletAddressSelector = typeof walletAddressSelector
+
+export const atomicCapabilitySelector = (state: RootState) => state.web3.atomicCapability
