@@ -24,7 +24,6 @@ const mockSessionDelete = {} as any
 const mockSessionRequest = {} as any
 const mockError = {} as any
 const mockNamespaces = {} as any
-const mockPreparedTransaction = {} as any
 
 describe('WalletConnect actions', () => {
   it('should create initialiseClient action', () => {
@@ -57,9 +56,7 @@ describe('WalletConnect actions', () => {
   })
 
   it('should create acceptRequest action', () => {
-    expect(acceptRequest(mockSessionRequest, mockPreparedTransaction).type).toEqual(
-      Actions.ACCEPT_REQUEST
-    )
+    expect(acceptRequest(mockSessionRequest).type).toEqual(Actions.ACCEPT_REQUEST)
   })
 
   it('should create denyRequest action', () => {

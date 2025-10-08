@@ -67,6 +67,14 @@ export const reducer = (
         pendingActions: [...state.pendingActions, action.request],
       }
     case Actions.ACCEPT_REQUEST:
+      return {
+        ...state,
+        pendingActions: state.pendingActions.filter(
+          (pendingAction) =>
+            pendingAction.id !== action.actionableRequest.request.id &&
+            pendingAction.topic !== action.actionableRequest.request.topic
+        ),
+      }
     case Actions.DENY_REQUEST:
       return {
         ...state,
