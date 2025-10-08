@@ -60,9 +60,9 @@ describe('PrivateKey', () => {
     })
     mockGetStoredMnemonic.mockResolvedValue(mockMnemonic)
     mockGetPassword.mockResolvedValue(mockPassword)
-    mockClipboardSetString.mockImplementation(() => {})
-    mockLoggerError.mockImplementation(() => {})
-    mockLoggerShowMessage.mockImplementation(() => {})
+    mockClipboardSetString.mockImplementation(jest.fn())
+    mockLoggerError.mockImplementation(jest.fn())
+    mockLoggerShowMessage.mockImplementation(jest.fn())
   })
 
   const renderComponent = (storeOverrides = {}) => {
