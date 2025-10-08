@@ -73,7 +73,7 @@ describe('ActionRequest with WalletConnect V2', () => {
     optionalNamespaces: {},
   }
 
-  const pendingAction: WalletKitTypes.EventArguments['session_request'] = {
+  const signMessageRequest: WalletKitTypes.EventArguments['session_request'] = {
     id: 1669810746892321,
     topic: 'd8afe1f5c3efa38bbb62c68005f572a7218afcd48703e4b02bdc5df2549ac5b5',
     params: {
@@ -95,31 +95,21 @@ describe('ActionRequest with WalletConnect V2', () => {
     },
   }
 
-  const supportedChains = ['eip155:44787']
-
-  const pendingActionMethod = SupportedActions.personal_sign
-
-  const pendingActionRequest = {
-    version: 2,
-    supportedChains: supportedChains,
-    method: pendingActionMethod,
-    request: pendingAction,
-  } as const
-
-  const sendTransactionActionMethod = SupportedActions.eth_sendTransaction
-
-  const feeCurrenciesSymbols = ['CELO']
-
-  const sendTransactionAction = {
-    ...pendingAction,
+  const sendTransactionRequest = {
+    ...signMessageRequest,
     params: {
-      ...pendingAction.params,
+      ...signMessageRequest.params,
       request: {
-        ...pendingAction.params.request,
+        ...signMessageRequest.params.request,
         method: 'eth_sendTransaction',
       },
     },
   }
+
+  const supportedChains = ['eip155:44787']
+  const signMessageMethod = SupportedActions.personal_sign as const
+  const sendTransactionMethod = SupportedActions.eth_sendTransaction as const
+  const feeCurrenciesSymbols = ['CELO']
 
   const preparedTransactionSuccess = {
     success: true,
@@ -140,11 +130,18 @@ describe('ActionRequest with WalletConnect V2', () => {
     errorMessage: 'execution reverted',
   } as const
 
-  const sendTransactionRequest = {
+  const signMessageActionableRequest = {
+    version: 2,
+    supportedChains: supportedChains,
+    method: signMessageMethod,
+    request: signMessageRequest,
+  } as const
+
+  const sendTransactionActionableRequest = {
     version: 2,
     supportedChains,
-    method: sendTransactionActionMethod,
-    request: sendTransactionAction,
+    method: sendTransactionMethod,
+    request: sendTransactionRequest,
     hasInsufficientGasFunds: false,
     feeCurrenciesSymbols: feeCurrenciesSymbols,
     preparedTransaction: preparedTransactionSuccess,
@@ -166,8 +163,8 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={SupportedActions.eth_sendTransaction}
-            request={sendTransactionAction}
+            method={sendTransactionMethod}
+            request={sendTransactionRequest}
             supportedChains={supportedChains}
             hasInsufficientGasFunds={true}
             feeCurrenciesSymbols={feeCurrenciesSymbols}
@@ -186,7 +183,7 @@ describe('ActionRequest with WalletConnect V2', () => {
 
       fireEvent.press(getByText('dismiss'))
       expect(store.getActions()).toEqual([
-        denyRequestV2(sendTransactionAction, getSdkError('USER_REJECTED')),
+        denyRequestV2(sendTransactionRequest, getSdkError('USER_REJECTED')),
       ])
     })
 
@@ -195,8 +192,8 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={sendTransactionActionMethod}
-            request={sendTransactionAction}
+            method={sendTransactionMethod}
+            request={sendTransactionRequest}
             supportedChains={supportedChains}
             hasInsufficientGasFunds={false}
             feeCurrenciesSymbols={feeCurrenciesSymbols}
@@ -215,7 +212,7 @@ describe('ActionRequest with WalletConnect V2', () => {
 
       fireEvent.press(getByText('dismiss'))
       expect(store.getActions()).toEqual([
-        denyRequestV2(sendTransactionAction, getSdkError('USER_REJECTED')),
+        denyRequestV2(sendTransactionRequest, getSdkError('USER_REJECTED')),
       ])
     })
 
@@ -224,8 +221,8 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={sendTransactionActionMethod}
-            request={sendTransactionAction}
+            method={sendTransactionMethod}
+            request={sendTransactionRequest}
             supportedChains={supportedChains}
             hasInsufficientGasFunds={false}
             feeCurrenciesSymbols={feeCurrenciesSymbols}
@@ -247,7 +244,7 @@ describe('ActionRequest with WalletConnect V2', () => {
       expect(fee.getByText('₱0.0047')).toBeTruthy()
 
       fireEvent.press(getByText('walletConnectRequest.sendTransactionAction'))
-      expect(store.getActions()).toEqual([acceptRequestV2(sendTransactionRequest)])
+      expect(store.getActions()).toEqual([acceptRequestV2(sendTransactionActionableRequest)])
     })
   })
 
@@ -267,8 +264,8 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={pendingActionMethod}
-            request={pendingAction}
+            method={signMessageMethod}
+            request={signMessageRequest}
             supportedChains={supportedChains}
           />
         </Provider>
@@ -293,8 +290,8 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={pendingActionMethod}
-            request={pendingAction}
+            method={signMessageMethod}
+            request={signMessageRequest}
             supportedChains={supportedChains}
           />
         </Provider>
@@ -305,13 +302,13 @@ describe('ActionRequest with WalletConnect V2', () => {
     })
 
     it('shows request details with raw string if message cannot be decoded', () => {
-      pendingAction.params.request.params[0] = 'invalid hex'
+      signMessageRequest.params.request.params[0] = 'invalid hex'
       const { getByTestId } = render(
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={pendingActionMethod}
-            request={pendingAction}
+            method={signMessageMethod}
+            request={signMessageRequest}
             supportedChains={supportedChains}
           />
         </Provider>
@@ -325,13 +322,13 @@ describe('ActionRequest with WalletConnect V2', () => {
     })
 
     it('shows request details with empty message', () => {
-      pendingAction.params.request.params[0] = ''
+      signMessageRequest.params.request.params[0] = ''
       const { getByTestId } = render(
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={pendingActionMethod}
-            request={pendingAction}
+            method={signMessageMethod}
+            request={signMessageRequest}
             supportedChains={supportedChains}
           />
         </Provider>
@@ -349,15 +346,15 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={pendingActionMethod}
-            request={pendingAction}
+            method={signMessageMethod}
+            request={signMessageRequest}
             supportedChains={supportedChains}
           />
         </Provider>
       )
 
       fireEvent.press(getByText('allow'))
-      expect(store.getActions()).toEqual([acceptRequestV2(pendingActionRequest)])
+      expect(store.getActions()).toEqual([acceptRequestV2(signMessageActionableRequest)])
     })
 
     it('dispatches the correct action on dismiss bottom sheet', () => {
@@ -365,8 +362,8 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={pendingActionMethod}
-            request={pendingAction}
+            method={signMessageMethod}
+            request={signMessageRequest}
             supportedChains={supportedChains}
           />
         </Provider>
@@ -374,7 +371,7 @@ describe('ActionRequest with WalletConnect V2', () => {
 
       unmount()
       expect(store.getActions()).toEqual([
-        denyRequestV2(pendingAction, getSdkError('USER_REJECTED')),
+        denyRequestV2(signMessageRequest, getSdkError('USER_REJECTED')),
       ])
     })
   })
@@ -417,8 +414,8 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={pendingActionMethod}
-            request={pendingAction}
+            method={signMessageMethod}
+            request={signMessageRequest}
             supportedChains={supportedChains}
           />
         </Provider>
@@ -457,8 +454,8 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={pendingActionMethod}
-            request={pendingAction}
+            method={signMessageMethod}
+            request={signMessageRequest}
             supportedChains={supportedChains}
           />
         </Provider>
@@ -497,8 +494,8 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={pendingActionMethod}
-            request={pendingAction}
+            method={signMessageMethod}
+            request={signMessageRequest}
             supportedChains={supportedChains}
           />
         </Provider>
@@ -512,7 +509,7 @@ describe('ActionRequest with WalletConnect V2', () => {
   describe('unsupported chain', () => {
     it.each([
       [
-        SupportedActions.eth_sendTransaction as const,
+        sendTransactionMethod,
         'walletConnectRequest.sendTransactionTitle',
         'walletConnectRequest.sendDappTransactionUnknownNetwork',
       ],
@@ -534,11 +531,11 @@ describe('ActionRequest with WalletConnect V2', () => {
             version={2}
             method={method}
             request={{
-              ...pendingAction,
+              ...signMessageRequest,
               params: {
-                ...pendingAction.params,
+                ...signMessageRequest.params,
                 request: {
-                  ...pendingAction.params.request,
+                  ...signMessageRequest.params.request,
                   method,
                 },
                 chainId: 'eip155:123456', // unsupported chain
@@ -575,13 +572,13 @@ describe('ActionRequest with WalletConnect V2', () => {
         <Provider store={store}>
           <ActionRequest
             version={2}
-            method={pendingActionMethod}
+            method={signMessageMethod}
             request={{
-              ...pendingAction,
+              ...signMessageRequest,
               params: {
-                ...pendingAction.params,
+                ...signMessageRequest.params,
                 request: {
-                  ...pendingAction.params.request,
+                  ...signMessageRequest.params.request,
                   method: 'personal_sign',
                 },
                 chainId: 'eip155:1', // unsupported chain
