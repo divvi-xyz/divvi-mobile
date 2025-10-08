@@ -77,7 +77,7 @@ const PrivateKey = () => {
 
   const getDisplayKey = () => {
     if (isLoading) {
-      return t('loading') + '...'
+      return t('loading')
     }
     if (!privateKey) {
       return '*'.repeat(64)
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   },
   privateKeyContainer: {
     backgroundColor: colors.backgroundSecondary,
-    borderRadius: 8,
+    borderRadius: Spacing.Smallest8,
     padding: Spacing.Regular16,
     borderWidth: 1,
     borderColor: colors.borderPrimary,
