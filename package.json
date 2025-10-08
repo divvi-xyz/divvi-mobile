@@ -41,7 +41,6 @@
     "jest-diff": "^29.6.4",
     "knip": "^3.13.1",
     "patch-package": "^8.0.0",
-    "permissionless": "^0.2.57",
     "prettier": "3.3.3",
     "prettier-plugin-java": "^2.6.4",
     "semantic-release": "^24.2.1",
