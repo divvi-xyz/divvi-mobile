@@ -3744,6 +3744,18 @@ export const v252Schema = {
   app: _.omit(v251Schema.app, 'inviterAddress'),
 }
 
+export const v253Schema = {
+  ...v252Schema,
+  _persist: {
+    ...v252Schema._persist,
+    version: 253,
+  },
+  web3: {
+    ...v252Schema.web3,
+    atomicCapability: 'unsupported',
+  },
+}
+
 export function getLatestSchema(): Partial<RootState> {
-  return v252Schema as Partial<RootState>
+  return v253Schema as Partial<RootState>
 }
