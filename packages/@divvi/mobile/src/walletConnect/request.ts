@@ -94,12 +94,7 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       return (yield* call([wallet, 'signMessage'], data)) as string
     }
     case SupportedActions.wallet_getCapabilities: {
-      const [address, hexNetworkIds] = params
-
-      if (address.toLowerCase() !== account.toLowerCase()) {
-        throw new Error('Unauthorized')
-      }
-
+      const [_, hexNetworkIds] = params
       return yield* call(getWalletCapabilitiesByHexChainId, hexNetworkIds)
     }
     default:
