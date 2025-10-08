@@ -116,7 +116,7 @@ export const capabilitiesByNetworkId: Record<keyof typeof NetworkId, Capabilitie
   [NetworkId['base-sepolia']]: defaultCapabilities,
 }
 
-export const rpcErrors = {
+export const rpcError = {
   INVALID_PARAMS: {
     code: -32602,
     message: 'Invalid params',
