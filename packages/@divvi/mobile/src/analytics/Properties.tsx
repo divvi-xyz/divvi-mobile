@@ -28,6 +28,7 @@ import {
   PerformanceEvents,
   PhoneVerificationEvents,
   PointsEvents,
+  PrivateKeyEvents,
   QrScreenEvents,
   SendEvents,
   SettingsEvents,
@@ -238,6 +239,10 @@ interface SettingsEventsProperties {
   [SettingsEvents.settings_delete_account_confirm]: undefined
   [SettingsEvents.settings_set_up_keyless_backup]: undefined
   [SettingsEvents.settings_delete_keyless_backup]: undefined
+}
+
+interface PrivateKeyEventsProperties {
+  [PrivateKeyEvents.copy_private_key]: undefined
 }
 
 interface CommonKeylessBackupProps {
@@ -1606,6 +1611,7 @@ interface EarnEventsProperties {
 export type AnalyticsPropertiesList = AppEventsProperties &
   HomeEventsProperties &
   SettingsEventsProperties &
+  PrivateKeyEventsProperties &
   KeylessBackupEventsProperties &
   OnboardingEventsProperties &
   PhoneVerificationEventsProperties &

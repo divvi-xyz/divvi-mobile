@@ -4,6 +4,8 @@ import { useAsync } from 'react-async-hook'
 import { useTranslation } from 'react-i18next'
 import { Alert, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import AppAnalytics from 'src/analytics/AppAnalytics'
+import { PrivateKeyEvents } from 'src/analytics/Events'
 import { generateKeysFromMnemonic, getStoredMnemonic } from 'src/backup/utils'
 import BackButton from 'src/components/BackButton'
 import Button, { BtnSizes } from 'src/components/Button'
@@ -68,6 +70,7 @@ const PrivateKey = () => {
   )
 
   const copyToClipboard = () => {
+    AppAnalytics.track(PrivateKeyEvents.copy_private_key)
     Clipboard.setString(privateKey)
     Logger.showMessage(t('privateKeyCopied'))
   }

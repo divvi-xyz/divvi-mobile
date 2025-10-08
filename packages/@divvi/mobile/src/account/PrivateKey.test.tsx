@@ -5,6 +5,8 @@ import 'react-native'
 import { Alert } from 'react-native'
 import { Provider } from 'react-redux'
 import PrivateKey from 'src/account/PrivateKey'
+import AppAnalytics from 'src/analytics/AppAnalytics'
+import { PrivateKeyEvents } from 'src/analytics/Events'
 import { generateKeysFromMnemonic, getStoredMnemonic } from 'src/backup/utils'
 import { getPassword } from 'src/pincode/authentication'
 import Logger from 'src/utils/Logger'
@@ -225,7 +227,7 @@ describe('PrivateKey', () => {
   })
 
   describe('Copy Functionality', () => {
-    it('copies private key to clipboard when copy button is pressed', async () => {
+    it('copies private key to clipboard when copy button is pressed and tracks event', async () => {
       const { getByTestId } = renderComponent()
 
       await waitFor(() => {
@@ -236,6 +238,7 @@ describe('PrivateKey', () => {
 
       expect(mockClipboardSetString).toHaveBeenCalledWith(mockPrivateKey)
       expect(mockLoggerShowMessage).toHaveBeenCalledWith('privateKeyCopied')
+      expect(AppAnalytics.track).toHaveBeenCalledWith(PrivateKeyEvents.copy_private_key)
     })
 
     it('disables copy button when loading', () => {

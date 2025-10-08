@@ -91,6 +91,10 @@ export enum SettingsEvents {
   settings_delete_keyless_backup = 'settings_delete_keyless_backup',
 }
 
+export enum PrivateKeyEvents {
+  copy_private_key = 'copy_private_key',
+}
+
 export enum KeylessBackupEvents {
   wallet_security_primer_get_started = 'wallet_security_primer_get_started',
   cab_setup_recovery_phrase = 'cab_setup_recovery_phrase',
