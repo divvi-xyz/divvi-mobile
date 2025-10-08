@@ -1,23 +1,12 @@
-import { WalletKitTypes } from '@reown/walletkit'
-import crypto from 'crypto'
 import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
 import { SentrySpan } from 'src/sentry/SentrySpans'
 import { Network } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
 import { ViemWallet } from 'src/viem/getLockableWallet'
-import {
-  SerializableTransactionRequest,
-  getPreparedTransaction,
-} from 'src/viem/preparedTransactionSerialization'
-import {
-  getWalletCapabilitiesByHexChainId,
-  getWalletCapabilitiesByWalletConnectChainId,
-} from 'src/walletConnect/capabilities'
-import {
-  SupportedActions,
-  chainAgnosticActions,
-  isInteractiveAction,
-} from 'src/walletConnect/constants'
+import { getPreparedTransaction } from 'src/viem/preparedTransactionSerialization'
+import { getWalletCapabilitiesByHexChainId } from 'src/walletConnect/capabilities'
+import { chainAgnosticActions, SupportedActions } from 'src/walletConnect/constants'
+import { ActionableRequest, isNonInteractiveMethod } from 'src/walletConnect/types'
 import { getViemWallet } from 'src/web3/contracts'
 import networkConfig, {
   networkIdToNetwork,
@@ -25,17 +14,21 @@ import networkConfig, {
 } from 'src/web3/networkConfig'
 import { getWalletAddress, unlockAccount } from 'src/web3/saga'
 import { call } from 'typed-redux-saga'
-import { SignMessageParameters, bytesToHex } from 'viem'
+import { bytesToHex, SignMessageParameters } from 'viem'
 
 const TAG = 'WalletConnect/request'
 
-export function* handleRequest(
-  {
-    request: { method, params },
-    chainId,
-  }: WalletKitTypes.EventArguments['session_request']['params'],
-  serializableTransactionRequests?: SerializableTransactionRequest[]
-) {
+export const handleRequest = function* (actionableRequest: ActionableRequest) {
+  const {
+    method,
+    request: {
+      params: {
+        request: { params },
+        chainId,
+      },
+    },
+  } = actionableRequest
+
   // since the chainId comes from the dapp, we cannot be sure that it is a
   // supported chain id. for transactions that are sent to the blockchain, it is
   // required to that the chainId of the request is supported. for transactions
@@ -55,7 +48,7 @@ export function* handleRequest(
   const account = yield* call(getWalletAddress)
 
   // Unlock the account if the action requires user consent
-  if (isInteractiveAction(method)) {
+  if (!isNonInteractiveMethod(method)) {
     yield* call(unlockAccount, account)
   }
 
@@ -64,10 +57,10 @@ export function* handleRequest(
 
   switch (method) {
     case SupportedActions.eth_signTransaction: {
-      if (!serializableTransactionRequests || serializableTransactionRequests.length === 0) {
-        throw new Error('preparedTransactions is required when using viem')
+      if (!actionableRequest.preparedTransaction.success) {
+        throw new Error(actionableRequest.preparedTransaction.errorMessage)
       }
-      const tx = getPreparedTransaction(serializableTransactionRequests[0])
+      const tx = getPreparedTransaction(actionableRequest.preparedTransaction.transactionRequest)
       Logger.debug(TAG + '@handleRequest', 'Signing transaction', tx)
       return yield* call(
         [wallet, 'signTransaction'],
@@ -76,10 +69,10 @@ export function* handleRequest(
       )
     }
     case SupportedActions.eth_sendTransaction: {
-      if (!serializableTransactionRequests || serializableTransactionRequests.length === 0) {
-        throw new Error('preparedTransaction is required when using viem')
+      if (!actionableRequest.preparedTransaction.success) {
+        throw new Error(actionableRequest.preparedTransaction.errorMessage)
       }
-      const tx = getPreparedTransaction(serializableTransactionRequests[0])
+      const tx = getPreparedTransaction(actionableRequest.preparedTransaction.transactionRequest)
       Logger.debug(TAG + '@handleRequest', 'Sending transaction', tx)
       const hash = yield* call(
         [wallet, 'sendTransaction'],
@@ -110,17 +103,17 @@ export function* handleRequest(
       return yield* call(getWalletCapabilitiesByHexChainId, hexNetworkIds)
     }
     case SupportedActions.wallet_sendCalls: {
-      if (!serializableTransactionRequests || serializableTransactionRequests.length === 0) {
+      if (!actionableRequest.preparedTransaction.success) {
         throw new Error('preparedTransactions is required when using viem')
       }
 
       const id = params[0].id ?? bytesToHex(crypto.randomBytes(32))
-      const supportedCapabilities = yield* call(getWalletCapabilitiesByWalletConnectChainId)
+      const supportedCapabilities = yield* call(getWalletCapabilitiesByHexChainId)
 
       // TODO: handle atomic execution
 
       // Fallback to sending transactions sequentially without any atomicity/contiguity guarantees
-      for (const tx of serializableTransactionRequests) {
+      for (const tx of actionableRequest.preparedTransaction.transactionRequests) {
         try {
           yield* call(
             [wallet, 'sendTransaction'],

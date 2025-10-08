@@ -7,6 +7,7 @@ import {
 } from 'src/viem/preparedTransactionSerialization'
 import { SupportedActions } from 'src/walletConnect/constants'
 import { handleRequest } from 'src/walletConnect/request'
+import { ActionableRequest, PreparedTransaction } from 'src/walletConnect/types'
 import { getViemWallet } from 'src/web3/contracts'
 import { unlockAccount } from 'src/web3/saga'
 import { createMockStore } from 'test/utils'
@@ -38,45 +39,78 @@ jest.mock('src/web3/utils', () => ({
   getSupportedNetworkIds: () => ['ethereum-sepolia', 'arbitrum-sepolia'],
 }))
 
-const signTransactionRequest = {
-  request: {
-    method: SupportedActions.eth_signTransaction,
-    params: [{ from: '0xTEST', to: '0xTEST', data: '0x', nonce: 7, gas: '0x5208', value: '0x01' }],
-  },
-  chainId: 'eip155:44787',
+const createMockActionableRequest = ({
+  method,
+  params,
+  chainId,
+  preparedTransaction,
+}: {
+  method: SupportedActions
+  params: any[]
+  chainId: string
+  preparedTransaction?: PreparedTransaction
+}) =>
+  ({
+    method,
+    request: {
+      id: 1234567890,
+      topic: '0x1234567890',
+      params: {
+        chainId,
+        request: {
+          method,
+          params,
+        },
+      },
+    },
+    preparedTransaction,
+  }) as ActionableRequest
+
+const txParams = {
+  from: '0xTEST',
+  to: '0xTEST',
+  data: '0x',
+  nonce: 7,
+  gas: '0x5208',
+  value: '0x01',
 }
-const serializableTransactionRequest = signTransactionRequest.request
+
+const preparedTransaction = {
+  success: true as const,
+  transactionRequest: txParams as SerializableTransactionRequest,
+}
+
+const signTransactionRequest = createMockActionableRequest({
+  method: SupportedActions.eth_signTransaction,
+  params: [txParams],
+  chainId: 'eip155:44787',
+  preparedTransaction,
+})
+const serializableTransactionRequest = signTransactionRequest.request.params.request
   .params[0] as SerializableTransactionRequest
-const sendTransactionRequest = {
-  request: {
-    method: SupportedActions.eth_sendTransaction,
-    params: [{ from: '0xTEST', to: '0xTEST', data: '0x', nonce: 7, gas: '0x5208', value: '0x01' }],
-  },
+const sendTransactionRequest = createMockActionableRequest({
+  method: SupportedActions.eth_sendTransaction,
+  params: [txParams],
   chainId: 'eip155:44787',
-}
-const serializableSendTransactionRequest = sendTransactionRequest.request
+  preparedTransaction,
+})
+const serializableSendTransactionRequest = sendTransactionRequest.request.params.request
   .params[0] as SerializableTransactionRequest
-const personalSignRequest = {
-  request: {
-    method: SupportedActions.personal_sign,
-    params: ['Some message', '0xdeadbeef'],
-  },
+const personalSignRequest = createMockActionableRequest({
+  method: SupportedActions.personal_sign,
+  params: ['Some message', '0xdeadbeef'],
   chainId: 'eip155:44787',
-}
-const signTypedDataRequest = {
-  request: {
-    method: SupportedActions.eth_signTypedData,
-    params: ['0xdeadbeef', JSON.stringify(mockTypedData)],
-  },
+})
+const signTypedDataRequest = createMockActionableRequest({
+  method: SupportedActions.eth_signTypedData,
+  params: ['0xdeadbeef', JSON.stringify(mockTypedData)],
   chainId: 'eip155:44787',
-}
-const signTypedDataV4Request = {
-  request: {
-    method: SupportedActions.eth_signTypedData_v4,
-    params: ['0xdeadbeef', JSON.stringify(mockTypedData)],
-  },
+})
+const signTypedDataV4Request = createMockActionableRequest({
+  method: SupportedActions.eth_signTypedData_v4,
+  params: ['0xdeadbeef', JSON.stringify(mockTypedData)],
   chainId: 'eip155:44787',
-}
+})
 
 const state = createMockStore({
   web3: { account: '0xWALLET' },
@@ -128,13 +162,27 @@ describe(handleRequest, () => {
   })
 
   it('chooses the correct wallet for the request', async () => {
-    await expectSaga(handleRequest, { ...personalSignRequest, chainId: 'eip155:11155111' })
+    await expectSaga(
+      handleRequest,
+      createMockActionableRequest({
+        method: SupportedActions.personal_sign,
+        params: ['Some message', '0xdeadbeef'],
+        chainId: 'eip155:11155111',
+      })
+    )
       .withState(state)
       .call(getViemWallet, ethereumSepolia)
       .not.call(getViemWallet, celoAlfajores)
       .run()
 
-    await expectSaga(handleRequest, { ...personalSignRequest, chainId: 'eip155:44787' })
+    await expectSaga(
+      handleRequest,
+      createMockActionableRequest({
+        method: SupportedActions.personal_sign,
+        params: ['Some message', '0xdeadbeef'],
+        chainId: 'eip155:44787',
+      })
+    )
       .withState(state)
       .call(getViemWallet, celoAlfajores)
       .not.call(getViemWallet, ethereumSepolia)
@@ -147,7 +195,14 @@ describe(handleRequest, () => {
       .call([viemWallet, 'signMessage'], { message: { raw: 'Some message' } })
       .run()
 
-    await expectSaga(handleRequest, { ...personalSignRequest, chainId: 'eip155:unsupported' })
+    await expectSaga(
+      handleRequest,
+      createMockActionableRequest({
+        method: SupportedActions.personal_sign,
+        params: ['Some message', '0xdeadbeef'],
+        chainId: 'eip155:unsupported',
+      })
+    )
       .withState(state)
       .call([viemWallet, 'signMessage'], { message: { raw: 'Some message' } })
       .run()
@@ -168,7 +223,7 @@ describe(handleRequest, () => {
   })
 
   it('supports eth_signTransaction for supported chain', async () => {
-    await expectSaga(handleRequest, signTransactionRequest, [serializableTransactionRequest])
+    await expectSaga(handleRequest, signTransactionRequest)
       .withState(state)
       .call(unlockAccount, '0xwallet')
       .call([viemWallet, 'signTransaction'], getPreparedTransaction(serializableTransactionRequest))
@@ -180,8 +235,11 @@ describe(handleRequest, () => {
       async () =>
         await expectSaga(
           handleRequest,
-          { ...signTransactionRequest, chainId: 'eip155:unsupported' },
-          [serializableTransactionRequest]
+          createMockActionableRequest({
+            method: SupportedActions.eth_signTransaction,
+            params: [txParams],
+            chainId: 'eip155:unsupported',
+          })
         )
           .withState(state)
           .run()
@@ -190,7 +248,7 @@ describe(handleRequest, () => {
   })
 
   it('supports eth_sendTransaction for supported chain', async () => {
-    await expectSaga(handleRequest, sendTransactionRequest, [serializableSendTransactionRequest])
+    await expectSaga(handleRequest, sendTransactionRequest)
       .withState(state)
       .call(unlockAccount, '0xwallet')
       .call(
@@ -205,8 +263,11 @@ describe(handleRequest, () => {
       async () =>
         await expectSaga(
           handleRequest,
-          { ...sendTransactionRequest, chainId: 'eip155:unsupported' },
-          [serializableSendTransactionRequest]
+          createMockActionableRequest({
+            method: SupportedActions.eth_sendTransaction,
+            params: [txParams],
+            chainId: 'eip155:unsupported',
+          })
         )
           .withState(state)
           .run()
@@ -215,46 +276,37 @@ describe(handleRequest, () => {
   })
 
   describe('wallet_getCapabilities', () => {
+    const expectedResult = {
+      '0xaa36a7': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+      '0x66eee': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+    }
+
     it('returns all supported chains capabilities when client did not provide any hex chain ids', async () => {
-      const request = {
-        request: {
-          method: SupportedActions.wallet_getCapabilities,
-          params: [state.web3.account],
-        },
+      const request = createMockActionableRequest({
+        method: SupportedActions.wallet_getCapabilities,
+        params: [state.web3.account],
         chainId: 'eip155:11155111',
-      }
-      const expectedResult = {
-        '0xaa36a7': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
-        '0x66eee': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
-      }
+      })
 
       await expectSaga(handleRequest, request).withState(state).returns(expectedResult).run()
     })
 
     it('handles hex chain ids in wallet_getCapabilities when client provided some hex chain ids', async () => {
-      const request = {
-        request: {
-          method: SupportedActions.wallet_getCapabilities,
-          params: [state.web3.account, ['0xaa36a7', '0x66eee']], // ethereum-sepolia and arbitrum-sepolia
-        },
+      const request = createMockActionableRequest({
+        method: SupportedActions.wallet_getCapabilities,
+        params: [state.web3.account, ['0xaa36a7', '0x66eee']], // ethereum-sepolia and arbitrum-sepolia
         chainId: 'eip155:11155111',
-      }
-      const expectedResult = {
-        '0xaa36a7': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
-        '0x66eee': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
-      }
+      })
 
       await expectSaga(handleRequest, request).withState(state).returns(expectedResult).run()
     })
 
     it('throws error when provided account address is not the same as the wallet address', async () => {
-      const request = {
-        request: {
-          method: SupportedActions.wallet_getCapabilities,
-          params: ['0xwrong_account', ['0xaa36a7', '0x66eee']],
-        },
+      const request = createMockActionableRequest({
+        method: SupportedActions.wallet_getCapabilities,
+        params: ['0xwrong_account', ['0xaa36a7', '0x66eee']],
         chainId: 'eip155:11155111',
-      }
+      })
 
       await expect(
         async () => await expectSaga(handleRequest, request).withState(state).run()
@@ -262,13 +314,11 @@ describe(handleRequest, () => {
     })
 
     it('throws error when invalid chain id is provided', async () => {
-      const request = {
-        request: {
-          method: SupportedActions.wallet_getCapabilities,
-          params: [state.web3.account, ['0xaa36a7', 'invalid_chain_id', '0x66eee']],
-        },
+      const request = createMockActionableRequest({
+        method: SupportedActions.wallet_getCapabilities,
+        params: [state.web3.account, ['0xaa36a7', 'invalid_chain_id', '0x66eee']],
         chainId: 'eip155:11155111',
-      }
+      })
 
       await expect(
         async () => await expectSaga(handleRequest, request).withState(state).run()
@@ -276,13 +326,11 @@ describe(handleRequest, () => {
     })
 
     it('throws error when empty chain ids array is provided', async () => {
-      const request = {
-        request: {
-          method: SupportedActions.wallet_getCapabilities,
-          params: [state.web3.account, []],
-        },
+      const request = createMockActionableRequest({
+        method: SupportedActions.wallet_getCapabilities,
+        params: [state.web3.account, []],
         chainId: 'eip155:11155111',
-      }
+      })
 
       await expect(
         async () => await expectSaga(handleRequest, request).withState(state).run()
@@ -290,13 +338,11 @@ describe(handleRequest, () => {
     })
 
     it('throws error when non-array parameter is provided instead of chain ids array', async () => {
-      const request = {
-        request: {
-          method: SupportedActions.wallet_getCapabilities,
-          params: [state.web3.account, 'not_an_array'],
-        },
+      const request = createMockActionableRequest({
+        method: SupportedActions.wallet_getCapabilities,
+        params: [state.web3.account, 'not_an_array'],
         chainId: 'eip155:11155111',
-      }
+      })
 
       await expect(
         async () => await expectSaga(handleRequest, request).withState(state).run()

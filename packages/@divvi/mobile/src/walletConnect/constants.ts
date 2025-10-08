@@ -13,15 +13,14 @@ export enum SupportedActions {
   wallet_sendCalls = 'wallet_sendCalls',
 }
 
-export enum InteractiveActions {
-  eth_signTransaction = SupportedActions.eth_signTransaction,
-  eth_sendTransaction = SupportedActions.eth_sendTransaction,
-  eth_signTypedData = SupportedActions.eth_signTypedData,
-  eth_signTypedData_v4 = SupportedActions.eth_signTypedData_v4,
-  eth_sign = SupportedActions.eth_sign,
-  personal_sign = SupportedActions.personal_sign,
-  wallet_sendCalls = SupportedActions.wallet_sendCalls,
-}
+type InteractiveActions =
+  | SupportedActions.eth_signTransaction
+  | SupportedActions.eth_sendTransaction
+  | SupportedActions.eth_signTypedData
+  | SupportedActions.eth_signTypedData_v4
+  | SupportedActions.eth_sign
+  | SupportedActions.personal_sign
+  | SupportedActions.wallet_sendCalls
 
 export enum SupportedEvents {
   accountsChanged = 'accountsChanged',
@@ -36,10 +35,6 @@ export function isSupportedEvent(event: string) {
   return Object.values(SupportedEvents).includes(event as SupportedEvents)
 }
 
-export function isInteractiveAction(action: string) {
-  return Object.values(InteractiveActions).includes(action as InteractiveActions)
-}
-
 export function getDisplayTextFromAction(
   t: TFunction,
   action: InteractiveActions,
@@ -50,41 +45,41 @@ export function getDisplayTextFromAction(
   const actionTranslations: {
     [x in InteractiveActions]: { description: string; title: string; action: string }
   } = {
-    [InteractiveActions.eth_signTransaction]: {
+    [SupportedActions.eth_signTransaction]: {
       description: networkName
         ? t('walletConnectRequest.signDappTransaction', { dappName, networkName })
         : t('walletConnectRequest.signDappTransactionUnknownNetwork', { dappName }),
       title: t('walletConnectRequest.signTransactionTitle'),
       action: t('walletConnectRequest.signTransactionAction'),
     },
-    [InteractiveActions.eth_sendTransaction]: {
+    [SupportedActions.eth_sendTransaction]: {
       description: networkName
         ? t('walletConnectRequest.sendDappTransaction', { dappName, networkName })
         : t('walletConnectRequest.sendDappTransactionUnknownNetwork', { dappName }),
       title: t('walletConnectRequest.sendTransactionTitle'),
       action: t('walletConnectRequest.sendTransactionAction'),
     },
-    [InteractiveActions.eth_signTypedData]: {
+    [SupportedActions.eth_signTypedData]: {
       description: t('walletConnectRequest.signPayload', { dappName }),
       title: t('walletConnectRequest.signPayloadTitle'),
       action: t('allow'),
     },
-    [InteractiveActions.eth_signTypedData_v4]: {
+    [SupportedActions.eth_signTypedData_v4]: {
       description: t('walletConnectRequest.signPayload', { dappName }),
       title: t('walletConnectRequest.signPayloadTitle'),
       action: t('allow'),
     },
-    [InteractiveActions.eth_sign]: {
+    [SupportedActions.eth_sign]: {
       description: t('walletConnectRequest.signPayload', { dappName }),
       title: t('walletConnectRequest.signPayloadTitle'),
       action: t('allow'),
     },
-    [InteractiveActions.personal_sign]: {
+    [SupportedActions.personal_sign]: {
       description: t('walletConnectRequest.signPayload', { dappName }),
       title: t('walletConnectRequest.signPayloadTitle'),
       action: t('allow'),
     },
-    [InteractiveActions.wallet_sendCalls]: {
+    [SupportedActions.wallet_sendCalls]: {
       description: networkName
         ? t('walletConnectRequest.sendCalls', { dappName, networkName, transactionsCount })
         : t('walletConnectRequest.sendCallsUnknownNetwork', { dappName, transactionsCount }),
