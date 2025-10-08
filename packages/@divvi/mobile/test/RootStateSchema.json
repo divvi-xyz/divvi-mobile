@@ -5523,12 +5523,21 @@
                         "string"
                     ]
                 },
+                "atomicCapability": {
+                    "enum": [
+                        "ready",
+                        "supported",
+                        "unsupported"
+                    ],
+                    "type": "string"
+                },
                 "demoModeEnabled": {
                     "type": "boolean"
                 }
             },
             "required": [
                 "account",
+                "atomicCapability",
                 "demoModeEnabled"
             ],
             "type": "object"
