@@ -1,8 +1,9 @@
-import type { RootState } from 'src/redux/reducers'
+import { atomicSelector } from 'src/web3/selectors'
 import { getMockStoreData } from 'test/utils'
 
-// Import the selector directly to avoid import issues
-const atomicSelector = (state: RootState) => state.web3.atomic
+jest.mock('src/statsig', () => ({
+  getDynamicConfigParams: jest.fn(),
+}))
 
 describe(atomicSelector, () => {
   it('returns the atomic capability from web3 state', () => {
