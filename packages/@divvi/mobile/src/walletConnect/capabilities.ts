@@ -51,7 +51,7 @@ export async function getWalletCapabilitiesByHexChainId(
   return result
 }
 
-export async function isSmartAccountDeployedForNetworkId(
+async function isSmartAccountDeployedForNetworkId(
   address: Address,
   networkId: NetworkId,
   useAppTransport: boolean = false

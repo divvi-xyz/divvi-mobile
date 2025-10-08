@@ -1,6 +1,6 @@
 import { expectSaga } from 'redux-saga-test-plan'
 import { NetworkId } from 'src/transactions/types'
-import { ViemWallet } from 'src/viem/getLockableWallet'
+import { ViemWallet, getLockableViemSmartWallet } from 'src/viem/getLockableWallet'
 import {
   SerializableTransactionRequest,
   getPreparedTransaction,
@@ -37,6 +37,10 @@ jest.mock('src/web3/networkConfig', () => {
 jest.mock('src/web3/utils', () => ({
   ...jest.requireActual('src/web3/utils'),
   getSupportedNetworkIds: () => ['ethereum-sepolia', 'arbitrum-sepolia'],
+}))
+jest.mock('src/viem/getLockableWallet', () => ({
+  ...jest.requireActual('src/viem/getLockableWallet'),
+  getLockableViemSmartWallet: jest.fn(),
 }))
 
 const createMockActionableRequest = ({
@@ -159,6 +163,11 @@ describe(handleRequest, () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(getLockableViemSmartWallet).mockResolvedValue({
+      account: {
+        isDeployed: jest.fn().mockResolvedValue(true),
+      },
+    } as any)
   })
 
   it('chooses the correct wallet for the request', async () => {
@@ -277,8 +286,8 @@ describe(handleRequest, () => {
 
   describe('wallet_getCapabilities', () => {
     const expectedResult = {
-      '0xaa36a7': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
-      '0x66eee': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+      '0xaa36a7': { atomic: { status: 'supported' }, paymasterService: { supported: false } },
+      '0x66eee': { atomic: { status: 'supported' }, paymasterService: { supported: false } },
     }
 
     it('returns all supported chains capabilities when client did not provide any hex chain ids', async () => {
