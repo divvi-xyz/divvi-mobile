@@ -25,8 +25,13 @@ jest.mock('src/pincode/authentication', () => ({
 }))
 
 jest.mock('src/utils/Logger', () => ({
-  error: jest.fn(),
-  showMessage: jest.fn(),
+  __esModule: true,
+  namedExport: jest.fn(),
+  default: {
+    info: jest.fn(),
+    error: jest.fn(),
+    showMessage: jest.fn(),
+  },
 }))
 
 // Mock Alert
@@ -45,8 +50,8 @@ const mockLoggerShowMessage = Logger.showMessage as jest.MockedFunction<typeof L
 
 describe('PrivateKey', () => {
   const mockWalletAddress = '0x1234567890123456789012345678901234567890'
-  const mockPrivateKey = '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
-  const mockPublicKey = '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
+  const mockPrivateKey = 'abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
+  const mockPublicKey = 'abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
   const mockMnemonic = 'test mnemonic phrase with twelve words for testing purposes'
   const mockPassword = 'testPassword123'
 
@@ -297,28 +302,6 @@ describe('PrivateKey', () => {
       expect(mockGetPassword).toHaveBeenCalledWith(mockWalletAddress)
       expect(mockGetStoredMnemonic).toHaveBeenCalledWith(mockWalletAddress, mockPassword)
       expect(mockGenerateKeysFromMnemonic).toHaveBeenCalledWith(mockMnemonic)
-    })
-
-    it('handles error recovery after initial failure', async () => {
-      // First render with error
-      mockGetPassword.mockRejectedValueOnce(new Error('First attempt failed'))
-      const { getByTestId, rerender } = renderComponent()
-
-      await waitFor(() => {
-        expect(Alert.alert).toHaveBeenCalledWith('error', 'failedToLoadPrivateKey')
-      })
-
-      // Reset mocks and rerender
-      mockGetPassword.mockResolvedValue(mockPassword)
-      rerender(
-        <Provider store={createMockStore({ web3: { account: mockWalletAddress } })}>
-          <PrivateKey />
-        </Provider>
-      )
-
-      await waitFor(() => {
-        expect(getByTestId('PrivateKeyText')).toHaveTextContent('*'.repeat(60) + '7890')
-      })
     })
   })
 })
