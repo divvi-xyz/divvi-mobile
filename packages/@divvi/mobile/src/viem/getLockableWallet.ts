@@ -80,6 +80,8 @@ export async function getLockableViemSmartWallet(
   address: Address,
   useAppTransport: boolean = false
 ) {
+  Logger.debug(TAG, `Getting viem smart wallet for ${address} on ${chain.name}`)
+
   const result = Object.entries(networkConfig.viemChain).find(
     ([_, viemChain]) => chain === viemChain
   )
@@ -92,18 +94,25 @@ export async function getLockableViemSmartWallet(
   if (!viemWallet.account) {
     throw new Error(`Viem wallet not found for address ${address} on chain ${chain.name}`)
   }
+
   const kernelAccount = await to7702KernelSmartAccount({
     client,
-    owner: viemWallet
+    // @ts-expect-error - Type compatibility issue between viem and permissionless versions
+    owner: viemWallet.account!
   })
 
   const smartAccountClient = createSmartAccountClient({
     client,
     chain,
     account: kernelAccount,
-
+    bundlerTransport: getTransport({ chain, useApp: useAppTransport }),
   })
 
-  return smartAccountClient
-
+  // Extend the smart account client with unlockAccount functionality
+  return smartAccountClient.extend((client) => {
+    return {
+      unlockAccount: (passphrase: string, duration: number) =>
+        accounts.unlock(address, passphrase, duration),
+    }
+  })
 }

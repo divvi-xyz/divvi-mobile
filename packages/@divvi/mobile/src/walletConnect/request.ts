@@ -19,6 +19,7 @@ import { Address, SignMessageParameters } from 'viem'
 const TAG = 'WalletConnect/request'
 
 export const handleRequest = function* (actionableRequest: ActionableRequest) {
+  Logger.debug(TAG + '@handleRequest', 'Handling request', actionableRequest)
   const {
     method,
     request: {
