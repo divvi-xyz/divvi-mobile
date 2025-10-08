@@ -18,6 +18,7 @@ import { publicClient } from 'src/viem'
 import { prepareTransactions } from 'src/viem/prepareTransactions'
 import {
   Actions,
+  acceptRequest,
   acceptSession as acceptSessionAction,
   sessionProposal as sessionProposalAction,
 } from 'src/walletConnect/actions'
@@ -725,6 +726,29 @@ describe('showActionRequest', () => {
       preparedTransactions: undefined,
       prepareTransactionsErrorMessage: 'viem short message',
     })
+  })
+
+  it('accepts non-interactive requests immediately without navigation', async () => {
+    const nonInteractiveRequest: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCapabilities',
+          params: [],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, nonInteractiveRequest)
+      .withState(state)
+      .provide([[select(walletAddressSelector), mockAccount]])
+      .put(acceptRequest(nonInteractiveRequest))
+      .run()
+
+    // Should not navigate to any screen
+    expect(navigate).not.toHaveBeenCalled()
   })
 
   it('throws an error when client is missing', () => {
