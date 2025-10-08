@@ -15,10 +15,19 @@ import EstimatedNetworkFee from 'src/walletConnect/screens/EstimatedNetworkFee'
 import RequestContent, { useDappMetadata } from 'src/walletConnect/screens/RequestContent'
 import { useIsDappListed } from 'src/walletConnect/screens/useIsDappListed'
 import { sessionsSelector } from 'src/walletConnect/selectors'
-import { isTransactionMethod, MessageRequest, TransactionRequest } from 'src/walletConnect/types'
+import {
+  isSendCallsMethod,
+  isTransactionMethod,
+  MessageRequest,
+  SendCallsRequest,
+  TransactionRequest,
+} from 'src/walletConnect/types'
 import { walletConnectChainIdToNetworkId } from 'src/web3/networkConfig'
 
-export type ActionRequestProps = TransactionRequestProps | MessageRequestProps
+export type ActionRequestProps =
+  | TransactionRequestProps
+  | MessageRequestProps
+  | SendCallsRequestProps
 
 type RequestProps = {
   version: 2
@@ -29,8 +38,14 @@ type TransactionRequestProps = RequestProps & TransactionRequest
 
 type MessageRequestProps = RequestProps & MessageRequest
 
+type SendCallsRequestProps = RequestProps & SendCallsRequest
+
 function isTransactionRequest(props: ActionRequestProps): props is TransactionRequestProps {
   return isTransactionMethod(props.method)
+}
+
+function isSendCallsRequest(props: ActionRequestProps): props is SendCallsRequestProps {
+  return isSendCallsMethod(props.method)
 }
 
 function ActionRequest(props: ActionRequestProps) {
@@ -64,7 +79,10 @@ function ActionRequest(props: ActionRequestProps) {
     method,
     dappName,
     networkName,
-    props.preparedTransaction.success ? props.preparedTransaction.transactionRequests.length : 0
+    (isSendCallsRequest(props) &&
+      props.preparedTransactions.success &&
+      props.preparedTransactions.transactionRequests.length) ||
+      0
   )
 
   // Reject and warn if the chain is not supported
@@ -100,7 +118,7 @@ function ActionRequest(props: ActionRequestProps) {
     )
   }
 
-  if (isTransactionRequest(props) && props.hasInsufficientGasFunds) {
+  if ((isTransactionRequest(props) || isSendCallsRequest(props)) && props.hasInsufficientGasFunds) {
     return (
       <RequestContent
         type="dismiss"
@@ -123,7 +141,15 @@ function ActionRequest(props: ActionRequestProps) {
     )
   }
 
+  let errorMessage: string | undefined
   if (isTransactionRequest(props) && !props.preparedTransaction.success) {
+    errorMessage = props.preparedTransaction.errorMessage
+  }
+  if (isSendCallsRequest(props) && !props.preparedTransactions.success) {
+    errorMessage = props.preparedTransactions.errorMessage
+  }
+
+  if (errorMessage) {
     return (
       <RequestContent
         type="dismiss"
@@ -139,7 +165,7 @@ function ActionRequest(props: ActionRequestProps) {
           variant={NotificationVariant.Warning}
           title={t('walletConnectRequest.failedToPrepareTransaction.title')}
           description={t('walletConnectRequest.failedToPrepareTransaction.description', {
-            errorMessage: props.preparedTransaction.errorMessage,
+            errorMessage,
           })}
           style={styles.warning}
         />
@@ -168,6 +194,11 @@ function ActionRequest(props: ActionRequestProps) {
         preparedTransaction={
           isTransactionRequest(props) && props.preparedTransaction.success
             ? props.preparedTransaction.transactionRequest
+            : undefined
+        }
+        preparedTransactions={
+          isSendCallsRequest(props) && props.preparedTransactions.success
+            ? props.preparedTransactions.transactionRequests
             : undefined
         }
       />

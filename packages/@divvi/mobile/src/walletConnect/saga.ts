@@ -66,7 +66,12 @@ import {
   getWalletCapabilitiesByWalletConnectChainId,
   validateRequestedCapabilities,
 } from 'src/walletConnect/capabilities'
-import { isSupportedAction, SupportedActions, SupportedEvents } from 'src/walletConnect/constants'
+import {
+  capabilitiesByNetworkId,
+  isSupportedAction,
+  SupportedActions,
+  SupportedEvents,
+} from 'src/walletConnect/constants'
 import { handleRequest } from 'src/walletConnect/request'
 import {
   selectHasPendingState,
@@ -76,8 +81,10 @@ import {
 import {
   isMessageMethod,
   isNonInteractiveMethod,
+  isSendCallsMethod,
   isTransactionMethod,
   PreparedTransaction,
+  PreparedTransactions,
   WalletConnectRequestResult,
   WalletConnectRequestType,
 } from 'src/walletConnect/types'
@@ -525,10 +532,11 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
-  const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
+  const supportedChains = yield* call(getSupportedChains)
 
-  if (method === SupportedActions.wallet_sendCalls) {
+  if (isSendCallsMethod(method)) {
     // check support for requested capabilities
+    const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
     const supportedCapabilities = capabilitiesByNetworkId[networkId] ?? {}
     let requestedCapabilitiesSupported = true
 
@@ -577,9 +585,59 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
         // TODO: enable atomic operations
       }
     }
-  }
 
-  const supportedChains = yield* call(getSupportedChains)
+    const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
+    let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
+    let prepareTransactionsErrorMessage: string | undefined = undefined
+    const rawTxs = request.params.request.params[0].calls
+    Logger.debug(TAG + '@showActionRequest', 'Received calls', rawTxs)
+    const network = walletConnectChainIdToNetwork[request.params.chainId]
+    try {
+      const normalizedTxs = yield* call(normalizeTransactions, [rawTxs], network)
+      preparedTransactionsResult = yield* call(prepareTransactions, {
+        feeCurrencies,
+        decreasedAmountGasFeeMultiplier: 1,
+        baseTransactions: normalizedTxs,
+        origin: 'wallet-connect' as const,
+      })
+    } catch (err) {
+      Logger.warn(TAG + '@showActionRequest', 'Failed to prepare calls', err)
+      const e = ensureError(err)
+      // Viem has short user-friendly error messages
+      prepareTransactionsErrorMessage = e instanceof BaseError ? e.shortMessage : e.message
+    }
+
+    const preparedTransactions: PreparedTransactions =
+      preparedTransactionsResult?.type === 'possible'
+        ? {
+            success: true,
+            transactionRequests: preparedTransactionsResult.transactions.map((tx) =>
+              getSerializablePreparedTransaction(tx)
+            ),
+          }
+        : {
+            success: false,
+            errorMessage: prepareTransactionsErrorMessage!,
+          }
+
+    Logger.debug(
+      TAG + '@showActionRequest',
+      'Prepared transactions',
+      preparedTransactionsResult?.type,
+      preparedTransactions
+    )
+
+    navigate(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method,
+      request,
+      supportedChains,
+      version: 2,
+      hasInsufficientGasFunds: preparedTransactionsResult?.type === 'not-enough-balance-for-gas',
+      feeCurrenciesSymbols: feeCurrencies.map((token) => token.symbol),
+      preparedTransactions,
+    })
+  }
 
   if (isMessageMethod(method)) {
     navigate(Screens.WalletConnectRequest, {

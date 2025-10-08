@@ -26,6 +26,8 @@ export type TransactionMethod =
   | SupportedActions.eth_sendTransaction
   | SupportedActions.eth_signTransaction
 
+export type SendCallsMethod = SupportedActions.wallet_sendCalls
+
 export function isNonInteractiveMethod(method: string): method is NonInteractiveMethod {
   return method === SupportedActions.wallet_getCapabilities
 }
@@ -46,6 +48,9 @@ export function isTransactionMethod(method: string): method is TransactionMethod
   )
 }
 
+export function isSendCallsMethod(method: string): method is SendCallsMethod {
+  return method === SupportedActions.wallet_sendCalls
+}
 interface RequestBase {
   request: WalletKitTypes.EventArguments['session_request']
 }
@@ -58,15 +63,31 @@ export interface MessageRequest extends RequestBase {
   method: MessageMethod
 }
 
-export interface TransactionRequest extends RequestBase {
-  method: TransactionMethod
+interface TransactionRequestBase extends RequestBase {
   hasInsufficientGasFunds: boolean
   feeCurrenciesSymbols: string[]
+}
+
+export interface TransactionRequest extends TransactionRequestBase {
+  method: TransactionMethod
   preparedTransaction: PreparedTransaction
 }
 
-export type ActionableRequest = NonInteractiveRequest | MessageRequest | TransactionRequest
+export interface SendCallsRequest extends TransactionRequestBase {
+  method: SendCallsMethod
+  preparedTransactions: PreparedTransactions
+}
+
+export type ActionableRequest =
+  | NonInteractiveRequest
+  | MessageRequest
+  | TransactionRequest
+  | SendCallsRequest
 
 export type PreparedTransaction =
   | { success: true; transactionRequest: SerializableTransactionRequest }
+  | { success: false; errorMessage: string }
+
+export type PreparedTransactions =
+  | { success: true; transactionRequests: SerializableTransactionRequest[] }
   | { success: false; errorMessage: string }

@@ -4,7 +4,10 @@ import { Network } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
 import { ViemWallet } from 'src/viem/getLockableWallet'
 import { getPreparedTransaction } from 'src/viem/preparedTransactionSerialization'
-import { getWalletCapabilitiesByHexChainId } from 'src/walletConnect/capabilities'
+import {
+  getWalletCapabilitiesByHexChainId,
+  getWalletCapabilitiesByWalletConnectChainId,
+} from 'src/walletConnect/capabilities'
 import { chainAgnosticActions, SupportedActions } from 'src/walletConnect/constants'
 import { ActionableRequest, isNonInteractiveMethod } from 'src/walletConnect/types'
 import { getViemWallet } from 'src/web3/contracts'
@@ -103,17 +106,17 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       return yield* call(getWalletCapabilitiesByHexChainId, hexNetworkIds)
     }
     case SupportedActions.wallet_sendCalls: {
-      if (!actionableRequest.preparedTransaction.success) {
-        throw new Error('preparedTransactions is required when using viem')
-      }
-
-      const id = params[0].id ?? bytesToHex(crypto.randomBytes(32))
-      const supportedCapabilities = yield* call(getWalletCapabilitiesByHexChainId)
+      const id = params[0].id ?? bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
+      const supportedCapabilities = yield* call(getWalletCapabilitiesByWalletConnectChainId)
 
       // TODO: handle atomic execution
 
       // Fallback to sending transactions sequentially without any atomicity/contiguity guarantees
-      for (const tx of actionableRequest.preparedTransaction.transactionRequests) {
+      if (!actionableRequest.preparedTransactions.success) {
+        throw new Error(actionableRequest.preparedTransactions.errorMessage)
+      }
+
+      for (const tx of actionableRequest.preparedTransactions.transactionRequests) {
         try {
           yield* call(
             [wallet, 'sendTransaction'],
@@ -121,7 +124,7 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
             tx as any
           )
         } catch (e) {
-          Logger.error(TAG + '@handleRequest', 'Failed to send transaction, abotring batch', e)
+          Logger.warn(TAG + '@handleRequest', 'Failed to send transaction, aborting batch', e)
           break
         }
       }

@@ -351,33 +351,37 @@ describe(handleRequest, () => {
   })
 
   describe('wallet_sendCalls', () => {
-    it('supports sequential exectution and returns capabilities for supported network', async () => {
-      const request = {
-        request: {
-          method: SupportedActions.wallet_sendCalls,
-          params: [
-            {
-              id: '0xabc',
-              calls: [
-                { to: '0xTEST', data: '0x' },
-                { to: '0xTEST', data: '0x' },
-              ],
-            },
+    const sendCallsRequest = createMockActionableRequest({
+      method: SupportedActions.wallet_sendCalls,
+      params: [
+        {
+          id: '0xabc',
+          calls: [
+            { to: '0xTEST', data: '0x' },
+            { to: '0xTEST', data: '0x' },
           ],
         },
-        chainId: 'eip155:11155111',
-      }
+      ],
+      chainId: 'eip155:11155111',
+    })
 
+    const preparedTransactions = {
+      success: true as const,
+      transactionRequests: [serializableSendTransactionRequest, serializableSendTransactionRequest],
+    }
+
+    it('supports sequential execution and returns capabilities for supported network', async () => {
       const expectedResult = {
         id: '0xabc',
         capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
       }
 
-      await expectSaga(handleRequest, request, [
-        serializableSendTransactionRequest,
-        serializableSendTransactionRequest,
-      ])
+      await expectSaga(handleRequest, {
+        ...sendCallsRequest,
+        preparedTransactions,
+      })
         .withState(state)
+        .call(unlockAccount, '0xwallet')
         .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
         .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
         .returns(expectedResult)
@@ -390,38 +394,75 @@ describe(handleRequest, () => {
         .mockResolvedValueOnce('0x1234')
         .mockRejectedValueOnce(new Error('error'))
 
-      const request = {
-        request: {
-          method: SupportedActions.wallet_sendCalls,
-          params: [
-            {
-              id: '0xbeef',
-              calls: [
-                { to: '0xTEST', data: '0x' },
-                { to: '0xTEST', data: '0x' },
-                { to: '0xTEST', data: '0x' },
-              ],
-            },
-          ],
-        },
+      const sendCallsRequest = createMockActionableRequest({
+        method: SupportedActions.wallet_sendCalls,
+        params: [
+          {
+            id: '0xabc',
+            calls: [
+              { to: '0xTEST', data: '0x' },
+              { to: '0xTEST', data: '0x' },
+              { to: '0xTEST', data: '0x' },
+            ],
+          },
+        ],
         chainId: 'eip155:11155111',
-      }
+      })
 
       const expectedResult = {
-        id: '0xbeef',
+        id: '0xabc',
         capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
       }
 
-      await expectSaga(handleRequest, request, [
-        serializableSendTransactionRequest,
-        serializableSendTransactionRequest,
-        serializableSendTransactionRequest,
-      ])
+      await expectSaga(handleRequest, {
+        ...sendCallsRequest,
+        preparedTransactions,
+      })
         .withState(state)
+        .call(unlockAccount, '0xwallet')
         .returns(expectedResult)
         .run()
 
       expect(viemWallet.sendTransaction).toHaveBeenCalledTimes(2)
+    })
+
+    it('throws for a wallet_sendCalls request on unsupported chain', async () => {
+      await expect(
+        async () =>
+          await expectSaga(
+            handleRequest,
+            createMockActionableRequest({
+              method: SupportedActions.wallet_sendCalls,
+              params: [
+                {
+                  id: '0xabc',
+                  calls: [{ to: '0xTEST', data: '0x' }],
+                },
+              ],
+              chainId: 'eip155:unsupported',
+            })
+          )
+            .withState(state)
+            .run()
+      ).rejects.toThrow('unsupported network')
+      expect(viemWallet.sendTransaction).not.toHaveBeenCalled()
+    })
+
+    it('throws error when preparedTransactions fails', async () => {
+      const failedPreparedTransactions = {
+        success: false as const,
+        errorMessage: 'Insufficient balance for gas',
+      }
+
+      await expect(
+        async () =>
+          await expectSaga(handleRequest, {
+            ...sendCallsRequest,
+            preparedTransactions: failedPreparedTransactions,
+          })
+            .withState(state)
+            .run()
+      ).rejects.toThrow('Insufficient balance for gas')
     })
   })
 })

@@ -14,7 +14,7 @@ import {
   getDefaultSessionTrackedProperties,
 } from 'src/walletConnect/analytics'
 import { SupportedActions } from 'src/walletConnect/constants'
-import { MessageMethod, TransactionMethod } from 'src/walletConnect/types'
+import { MessageMethod, SendCallsMethod, TransactionMethod } from 'src/walletConnect/types'
 
 interface BaseProps {
   session: SessionTypes.Struct
@@ -30,7 +30,12 @@ interface TransactionProps extends BaseProps {
   preparedTransaction?: SerializableTransactionRequest
 }
 
-function ActionRequestPayload(props: MessageProps | TransactionProps) {
+interface SendCallsProps extends BaseProps {
+  method: SendCallsMethod
+  preparedTransactions?: SerializableTransactionRequest[]
+}
+
+function ActionRequestPayload(props: MessageProps | TransactionProps | SendCallsProps) {
   const method = props.method
   const { params } = props.request.params.request
 
