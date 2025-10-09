@@ -520,6 +520,8 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
+  const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
+
   if (method === SupportedActions.wallet_getCapabilities) {
     const [address, requestedChainIds] = request.params.request.params
     if (!address) {
@@ -551,17 +553,8 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     }
   }
 
-  // If the action doesn't require user consent, accept it immediately
-  if (isNonInteractiveMethod(method)) {
-    yield* put(acceptRequest({ method, request }))
-    return
-  }
-
-  const supportedChains = yield* call(getSupportedChains)
-
-  if (isSendCallsMethod(method)) {
+  if (method === SupportedActions.wallet_sendCalls) {
     // check support for requested capabilities
-    const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
     const supportedCapabilities = capabilitiesByNetworkId[networkId] ?? {}
 
     // check global capabilities
@@ -588,21 +581,38 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
         yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
         return
       }
+
+      // check support for atomic execution
+      const atomic = yield* call(getAtomicCapabilityByWalletConnectChainId, networkId)
+
+      if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
+        yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
+        return
+      }
+
+      if (atomic === 'ready') {
+        // TODO: suggest user to enable atomic operations
+        // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
+      }
     }
+  }
 
-    // check support for atomic execution
-    const atomic = yield* call(getAtomicCapabilityByWalletConnectChainId, networkId)
+  // If the action doesn't require user consent, accept it immediately
+  if (isNonInteractiveMethod(method)) {
+    yield* put(acceptRequest({ method, request }))
+    return
+  }
 
-    if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
-      yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
-      return
-    }
+  // since there are some network requests needed to prepare the transactions,
+  // add a loading state
+  navigate(Screens.WalletConnectRequest, {
+    type: WalletConnectRequestType.Loading,
+    origin: WalletConnectPairingOrigin.Deeplink,
+  })
 
-    if (atomic === 'ready') {
-      // TODO: suggest user to enable atomic operations
-      // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
-    }
+  const supportedChains = yield* call(getSupportedChains)
 
+  if (isSendCallsMethod(method)) {
     const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
     let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
     let prepareTransactionsErrorMessage: string | undefined = undefined
@@ -667,7 +677,6 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   }
 
   if (isTransactionMethod(method)) {
-    const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
     const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
     let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
     let prepareTransactionsErrorMessage: string | undefined = undefined
