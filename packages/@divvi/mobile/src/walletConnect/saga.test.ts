@@ -13,6 +13,7 @@ import { isBottomSheetVisible, navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
+import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import { Network, NetworkId } from 'src/transactions/types'
 import { publicClient } from 'src/viem'
 import { prepareTransactions } from 'src/viem/prepareTransactions'
@@ -23,7 +24,7 @@ import {
   denyRequest,
   sessionProposal as sessionProposalAction,
 } from 'src/walletConnect/actions'
-import { SupportedActions, SupportedEvents } from 'src/walletConnect/constants'
+import { SupportedActions, SupportedEvents, rpcError } from 'src/walletConnect/constants'
 import {
   _acceptSession,
   _applyIconFixIfNeeded,
@@ -619,9 +620,9 @@ describe('showActionRequest', () => {
       type: 'possible',
       transactions: [
         {
-          from: '0xfrom',
-          to: '0xto',
-          data: '0xdata',
+          from: '0xfrom' as `0x${string}`,
+          to: '0xto' as `0x${string}`,
+          data: '0xdata' as `0x${string}`,
         },
       ],
     }
@@ -1198,6 +1199,468 @@ describe('getSessionFromRequest', () => {
     return expect(expectSaga(getSessionFromRequest, mockRequest).run()).rejects.toThrow(
       'missing client'
     )
+  })
+})
+
+describe('wallet_sendCalls capability validation', () => {
+  const topic = '243b33442b6190b97055201b5a8817f4e604e3f37b5376e78ee0b3715cc6211c'
+  const createSendCallsRequest = (overrides: any = {}) => ({
+    id: 1707297778331031,
+    topic,
+    params: {
+      request: {
+        method: 'wallet_sendCalls',
+        params: [
+          {
+            id: '0xabc',
+            calls: [
+              {
+                to: '0x8D6677192144292870907E3Fa8A5527fE55A7ff6',
+                data: '0x580d747a0000000000000000000000007194dfe766a92308880a943fd70f31c8e7c50e66000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000007c75b0b81a54359e9dccda9cb663ca2e3de6b71000000000000000000000000089d5bd54c43ddd10905a030de6ff02ebb6c51654',
+                value: '0x0',
+              },
+            ],
+            capabilities: {},
+            atomicRequired: false,
+          },
+        ],
+      },
+      chainId: 'eip155:44787',
+    },
+    verifyContext: {
+      verified: {
+        verifyUrl: 'https://verify.walletconnect.com',
+        validation: 'UNKNOWN',
+        origin: 'https://churrito.fi',
+      },
+    },
+    ...overrides,
+  })
+
+  const session = createSession({
+    url: 'someUrl',
+    icons: ['someIcon'],
+    description: 'someDescription',
+    name: 'someName',
+  })
+
+  const mockPreparedTransactions = {
+    type: 'possible',
+    transactions: [{ from: '0xfrom', to: '0xto', data: '0xdata' }],
+  }
+
+  let mockClient: any
+
+  beforeEach(() => {
+    mockClient = {
+      approveSession: jest.fn(),
+      getActiveSessions: jest.fn(() => {
+        return Promise.resolve({
+          [topic]: session,
+        })
+      }),
+    }
+    _setClientForTesting(mockClient as any)
+  })
+
+  afterEach(() => {
+    _setClientForTesting(null)
+  })
+
+  it('denies request when required global capabilities are not supported', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [{ to: '0xTEST', data: '0x' }],
+              capabilities: {
+                paymasterService: { optional: false }, // required
+              },
+              atomicRequired: false,
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+      ])
+      .put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('allows request when global capabilities are optional and not supported', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [{ to: '0xTEST', data: '0x' }],
+              capabilities: {
+                paymasterService: { optional: true }, // optional
+              },
+              atomicRequired: false,
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+        [call.fn(prepareTransactions), mockPreparedTransactions],
+      ])
+      .run()
+
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method: SupportedActions.wallet_sendCalls,
+      request,
+      supportedChains: ['eip155:44787'],
+      version: 2,
+      hasInsufficientGasFunds: false,
+      feeCurrenciesSymbols: [],
+      preparedTransactions: {
+        success: true,
+        transactionRequests: mockPreparedTransactions.transactions,
+      },
+    })
+  })
+
+  it('denies request when per-call required capabilities are not supported', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [
+                {
+                  to: '0xTEST',
+                  data: '0x',
+                  capabilities: {
+                    paymasterService: { optional: false }, // required
+                  },
+                },
+              ],
+              capabilities: {},
+              atomicRequired: false,
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+      ])
+      .put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('allows request when per-call capabilities are optional and not supported', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [
+                {
+                  to: '0xTEST',
+                  data: '0x',
+                  capabilities: {
+                    atomic: { optional: true }, // optional
+                  },
+                },
+              ],
+              capabilities: {},
+              atomicRequired: false,
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+        [call.fn(prepareTransactions), mockPreparedTransactions],
+      ])
+      .run()
+
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method: SupportedActions.wallet_sendCalls,
+      request,
+      supportedChains: ['eip155:44787'],
+      version: 2,
+      hasInsufficientGasFunds: false,
+      feeCurrenciesSymbols: [],
+      preparedTransactions: {
+        success: true,
+        transactionRequests: mockPreparedTransactions.transactions,
+      },
+    })
+  })
+
+  it('denies request when atomic execution is required but not supported', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [{ to: '0xTEST', data: '0x' }],
+              capabilities: {},
+              atomicRequired: true, // required
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+      ])
+      .put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('allows request when atomic execution is not required', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [{ to: '0xTEST', data: '0x' }],
+              capabilities: {},
+              atomicRequired: false, // not required
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+        [call.fn(prepareTransactions), mockPreparedTransactions],
+      ])
+      .run()
+
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method: SupportedActions.wallet_sendCalls,
+      request,
+      supportedChains: ['eip155:44787'],
+      version: 2,
+      hasInsufficientGasFunds: false,
+      feeCurrenciesSymbols: [],
+      preparedTransactions: {
+        success: true,
+        transactionRequests: mockPreparedTransactions.transactions,
+      },
+    })
+  })
+
+  it('handles transaction preparation failure', async () => {
+    const request = createSendCallsRequest()
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+        [call.fn(prepareTransactions), throwError(new Error('Transaction preparation failed'))],
+      ])
+      .run()
+
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method: SupportedActions.wallet_sendCalls,
+      request,
+      supportedChains: ['eip155:44787'],
+      version: 2,
+      hasInsufficientGasFunds: false,
+      feeCurrenciesSymbols: [],
+      preparedTransactions: {
+        success: false,
+        errorMessage: 'Transaction preparation failed',
+      },
+    })
+  })
+
+  it('handles insufficient gas funds scenario', async () => {
+    const request = createSendCallsRequest()
+    const mockPreparedTransactions = {
+      type: 'not-enough-balance-for-gas',
+      transactions: [],
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+        [call.fn(prepareTransactions), mockPreparedTransactions],
+      ])
+      .run()
+
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method: SupportedActions.wallet_sendCalls,
+      request,
+      supportedChains: ['eip155:44787'],
+      version: 2,
+      hasInsufficientGasFunds: true,
+      feeCurrenciesSymbols: [],
+      preparedTransactions: {
+        success: false,
+        errorMessage: undefined,
+      },
+    })
+  })
+
+  it('includes fee currencies symbols in navigation', async () => {
+    const request = createSendCallsRequest()
+
+    const mockFeeCurrencies = [{ symbol: 'CELO' }, { symbol: 'cUSD' }]
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+        [call.fn(prepareTransactions), mockPreparedTransactions],
+        [select(feeCurrenciesSelector, NetworkId['celo-alfajores']), mockFeeCurrencies],
+      ])
+      .run()
+
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method: SupportedActions.wallet_sendCalls,
+      request,
+      supportedChains: ['eip155:44787'],
+      version: 2,
+      hasInsufficientGasFunds: false,
+      feeCurrenciesSymbols: ['CELO', 'cUSD'],
+      preparedTransactions: {
+        success: true,
+        transactionRequests: mockPreparedTransactions.transactions,
+      },
+    })
   })
 })
 
