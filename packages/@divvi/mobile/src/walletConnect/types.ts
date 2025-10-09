@@ -12,7 +12,10 @@ export enum WalletConnectRequestType {
 
 export type WalletConnectRequestResult = string | Record<string, Capabilities>
 
-export type Capabilities = CapabilitiesSchema['getCapabilities']['ReturnType']
+export type Capabilities = Pick<
+  CapabilitiesSchema['getCapabilities']['ReturnType'],
+  'atomic' | 'paymasterService'
+>
 
 type NonInteractiveMethod = SupportedActions.wallet_getCapabilities
 

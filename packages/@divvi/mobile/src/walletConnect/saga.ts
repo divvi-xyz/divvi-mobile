@@ -66,12 +66,7 @@ import {
   getWalletCapabilitiesByWalletConnectChainId,
   validateRequestedCapabilities,
 } from 'src/walletConnect/capabilities'
-import {
-  capabilitiesByNetworkId,
-  isSupportedAction,
-  SupportedActions,
-  SupportedEvents,
-} from 'src/walletConnect/constants'
+import { isSupportedAction, SupportedActions, SupportedEvents } from 'src/walletConnect/constants'
 import { handleRequest } from 'src/walletConnect/request'
 import {
   selectHasPendingState,
@@ -520,8 +515,6 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
-  const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
-
   if (method === SupportedActions.wallet_getCapabilities) {
     const [address, requestedChainIds] = request.params.request.params
     if (!address) {
@@ -554,15 +547,12 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   }
 
   if (method === SupportedActions.wallet_sendCalls) {
-    // check support for requested capabilities
-    const supportedCapabilities = capabilitiesByNetworkId[networkId] ?? {}
-
     // check global capabilities
     const requestedCapabilities = request.params.request.params[0].capabilities ?? {}
     const requestedCapabilitiesSupported = yield* call(
       validateRequestedCapabilities,
-      requestedCapabilities,
-      supportedCapabilities
+      request.params.chainId,
+      requestedCapabilities
     )
     if (!requestedCapabilitiesSupported) {
       yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
@@ -574,8 +564,8 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       const callCapabilities = requestCall.capabilities ?? {}
       const callCapabilitiesSupported = yield* call(
         validateRequestedCapabilities,
-        callCapabilities,
-        supportedCapabilities
+        request.params.chainId,
+        callCapabilities
       )
       if (!callCapabilitiesSupported) {
         yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
@@ -583,7 +573,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       }
 
       // check support for atomic execution
-      const atomic = yield* call(getAtomicCapabilityByWalletConnectChainId, networkId)
+      const atomic = yield* call(getAtomicCapabilityByWalletConnectChainId, request.params.chainId)
 
       if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
         yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
@@ -611,6 +601,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   })
 
   const supportedChains = yield* call(getSupportedChains)
+  const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
 
   if (isSendCallsMethod(method)) {
     const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
