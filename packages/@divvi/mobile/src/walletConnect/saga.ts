@@ -557,13 +557,6 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
-  // since there are some network requests needed to prepare the transactions,
-  // add a loading state
-  navigate(Screens.WalletConnectRequest, {
-    type: WalletConnectRequestType.Loading,
-    origin: WalletConnectPairingOrigin.Deeplink,
-  })
-
   const supportedChains = yield* call(getSupportedChains)
 
   if (isSendCallsMethod(method)) {
@@ -593,7 +586,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       )
       if (!callCapabilitiesSupported) {
         yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
-        break
+        return
       }
     }
 
@@ -617,7 +610,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     Logger.debug(TAG + '@showActionRequest', 'Received calls', rawTxs)
     const network = walletConnectChainIdToNetwork[request.params.chainId]
     try {
-      const normalizedTxs = yield* call(normalizeTransactions, [rawTxs], network)
+      const normalizedTxs = yield* call(normalizeTransactions, rawTxs, network)
       preparedTransactionsResult = yield* call(prepareTransactions, {
         feeCurrencies,
         decreasedAmountGasFeeMultiplier: 1,
