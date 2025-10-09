@@ -579,6 +579,10 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
         // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
       }
     }
+
+    // TODO: add support for wallet_sendCalls
+    yield* put(denyRequest(request, getSdkError('WC_METHOD_UNSUPPORTED')))
+    return
   }
 
   // If the action doesn't require user consent, accept it immediately
