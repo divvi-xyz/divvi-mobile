@@ -61,8 +61,10 @@ import {
   getDefaultSessionTrackedProperties as getDefaultSessionTrackedPropertiesAnalytics,
 } from 'src/walletConnect/analytics'
 import {
+  getAtomicCapabilityByWalletConnectChainId,
   getWalletCapabilitiesByHexChainId,
   getWalletCapabilitiesByWalletConnectChainId,
+  validateRequestedCapabilities,
 } from 'src/walletConnect/capabilities'
 import { isSupportedAction, SupportedActions, SupportedEvents } from 'src/walletConnect/constants'
 import { handleRequest } from 'src/walletConnect/request'
@@ -534,6 +536,47 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       if (requestedChainIds.some((chainId: unknown) => !isHex(chainId))) {
         yield* put(denyRequest(request, rpcError.INVALID_PARAMS))
         return
+      }
+    }
+  }
+
+  if (method === SupportedActions.wallet_sendCalls) {
+    // check global capabilities
+    const requestedCapabilities = request.params.request.params[0].capabilities ?? {}
+    const requestedCapabilitiesSupported = yield* call(
+      validateRequestedCapabilities,
+      request.params.chainId,
+      requestedCapabilities
+    )
+    if (!requestedCapabilitiesSupported) {
+      yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
+      return
+    }
+
+    // check per-call capabilities
+    for (const requestCall of request.params.request.params[0].calls) {
+      const callCapabilities = requestCall.capabilities ?? {}
+      const callCapabilitiesSupported = yield* call(
+        validateRequestedCapabilities,
+        request.params.chainId,
+        callCapabilities
+      )
+      if (!callCapabilitiesSupported) {
+        yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
+        return
+      }
+
+      // check support for atomic execution
+      const atomic = yield* call(getAtomicCapabilityByWalletConnectChainId, request.params.chainId)
+
+      if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
+        yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
+        return
+      }
+
+      if (atomic === 'ready') {
+        // TODO: suggest user to enable atomic operations
+        // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
       }
     }
   }
