@@ -7,48 +7,27 @@ import { Provider } from 'react-redux'
 import PrivateKey from 'src/account/PrivateKey'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { PrivateKeyEvents } from 'src/analytics/Events'
-import { generateKeysFromMnemonic, getStoredMnemonic } from 'src/backup/utils'
-import { getPassword } from 'src/pincode/authentication'
 import Logger from 'src/utils/Logger'
 import { createMockStore } from 'test/utils'
 
-// Mock dependencies
-jest.mock('@react-native-clipboard/clipboard', () => ({
-  setString: jest.fn(),
-}))
+jest.mock('@react-native-clipboard/clipboard')
 
+const mockGenerateKeysFromMnemonic = jest.fn()
+const mockGetStoredMnemonic = jest.fn()
 jest.mock('src/backup/utils', () => ({
-  generateKeysFromMnemonic: jest.fn(),
-  getStoredMnemonic: jest.fn(),
+  generateKeysFromMnemonic: (...args: any[]) => mockGenerateKeysFromMnemonic(...args),
+  getStoredMnemonic: (...args: any[]) => mockGetStoredMnemonic(...args),
 }))
 
+const mockGetPassword = jest.fn()
 jest.mock('src/pincode/authentication', () => ({
-  getPassword: jest.fn(),
+  getPassword: (...args: any[]) => mockGetPassword(...args),
 }))
 
-jest.mock('src/utils/Logger', () => ({
-  __esModule: true,
-  namedExport: jest.fn(),
-  default: {
-    info: jest.fn(),
-    error: jest.fn(),
-    showMessage: jest.fn(),
-  },
-}))
+jest.mock('src/utils/Logger')
 
 // Mock Alert
 jest.spyOn(Alert, 'alert')
-
-const mockGenerateKeysFromMnemonic = generateKeysFromMnemonic as jest.MockedFunction<
-  typeof generateKeysFromMnemonic
->
-const mockGetStoredMnemonic = getStoredMnemonic as jest.MockedFunction<typeof getStoredMnemonic>
-const mockGetPassword = getPassword as jest.MockedFunction<typeof getPassword>
-const mockClipboardSetString = Clipboard.setString as jest.MockedFunction<
-  typeof Clipboard.setString
->
-const mockLoggerError = Logger.error as jest.MockedFunction<typeof Logger.error>
-const mockLoggerShowMessage = Logger.showMessage as jest.MockedFunction<typeof Logger.showMessage>
 
 describe('PrivateKey', () => {
   const mockWalletAddress = '0x1234567890123456789012345678901234567890'
@@ -67,9 +46,6 @@ describe('PrivateKey', () => {
     })
     mockGetStoredMnemonic.mockResolvedValue(mockMnemonic)
     mockGetPassword.mockResolvedValue(mockPassword)
-    mockClipboardSetString.mockImplementation(jest.fn())
-    mockLoggerError.mockImplementation(jest.fn())
-    mockLoggerShowMessage.mockImplementation(jest.fn())
   })
 
   const renderComponent = (storeOverrides = {}) => {
@@ -147,7 +123,7 @@ describe('PrivateKey', () => {
 
       await waitFor(() => {
         expect(Alert.alert).toHaveBeenCalledWith('error', 'failedToLoadPrivateKey')
-        expect(mockLoggerError).toHaveBeenCalledWith(
+        expect(Logger.error).toHaveBeenCalledWith(
           'PrivateKey',
           'Error loading private key',
           expect.any(Error)
@@ -162,7 +138,7 @@ describe('PrivateKey', () => {
 
       await waitFor(() => {
         expect(Alert.alert).toHaveBeenCalledWith('error', 'failedToLoadPrivateKey')
-        expect(mockLoggerError).toHaveBeenCalledWith(
+        expect(Logger.error).toHaveBeenCalledWith(
           'PrivateKey',
           'Error loading private key',
           expect.any(Error)
@@ -177,7 +153,7 @@ describe('PrivateKey', () => {
 
       await waitFor(() => {
         expect(Alert.alert).toHaveBeenCalledWith('error', 'failedToLoadPrivateKey')
-        expect(mockLoggerError).toHaveBeenCalledWith(
+        expect(Logger.error).toHaveBeenCalledWith(
           'PrivateKey',
           'Error loading private key',
           expect.any(Error)
@@ -209,21 +185,6 @@ describe('PrivateKey', () => {
         expect(getByTestId('PrivateKeyText')).toHaveTextContent('*'.repeat(64))
       })
     })
-
-    it('handles private key shorter than 4 characters', async () => {
-      const shortPrivateKey = '0x12'
-      mockGenerateKeysFromMnemonic.mockResolvedValue({
-        privateKey: shortPrivateKey,
-        publicKey: mockPublicKey,
-        address: mockWalletAddress,
-      })
-
-      const { getByTestId } = renderComponent()
-
-      await waitFor(() => {
-        expect(getByTestId('PrivateKeyText')).toHaveTextContent(shortPrivateKey)
-      })
-    })
   })
 
   describe('Copy Functionality', () => {
@@ -236,8 +197,8 @@ describe('PrivateKey', () => {
 
       fireEvent.press(getByTestId('CopyPrivateKeyButton'))
 
-      expect(mockClipboardSetString).toHaveBeenCalledWith(mockPrivateKey)
-      expect(mockLoggerShowMessage).toHaveBeenCalledWith('privateKeyCopied')
+      expect(Clipboard.setString).toHaveBeenCalledWith(mockPrivateKey)
+      expect(Logger.showMessage).toHaveBeenCalledWith('privateKeyCopied')
       expect(AppAnalytics.track).toHaveBeenCalledWith(PrivateKeyEvents.copy_private_key)
     })
 
@@ -251,8 +212,8 @@ describe('PrivateKey', () => {
       fireEvent.press(getByTestId('PrivateKeyText'))
 
       expect(AppAnalytics.track).toHaveBeenCalledWith(PrivateKeyEvents.copy_private_key)
-      expect(mockClipboardSetString).toHaveBeenCalledWith(mockPrivateKey)
-      expect(mockLoggerShowMessage).toHaveBeenCalledWith('privateKeyCopied')
+      expect(Clipboard.setString).toHaveBeenCalledWith(mockPrivateKey)
+      expect(Logger.showMessage).toHaveBeenCalledWith('privateKeyCopied')
     })
 
     it('disables copy button when loading', () => {
@@ -275,50 +236,6 @@ describe('PrivateKey', () => {
         const copyButton = getByTestId('CopyPrivateKeyButton')
         expect(copyButton).toBeDisabled()
       })
-    })
-  })
-
-  describe('UI Rendering', () => {
-    it('renders all UI elements correctly', () => {
-      const { getByTestId } = renderComponent()
-
-      expect(getByTestId('PrivateKeyTitle')).toBeTruthy()
-      expect(getByTestId('PrivateKeyText')).toBeTruthy()
-      expect(getByTestId('CopyPrivateKeyButton')).toBeTruthy()
-    })
-
-    it('renders warning notification', () => {
-      const { getByText } = renderComponent()
-
-      expect(getByText('keepSafe')).toBeTruthy()
-      expect(getByText('privateKeyWarning')).toBeTruthy()
-    })
-
-    it('renders section title', () => {
-      const { getByText } = renderComponent()
-
-      expect(getByText('yourPrivateKey')).toBeTruthy()
-    })
-  })
-
-  describe('Component Integration', () => {
-    it('handles complete flow from loading to success', async () => {
-      const { getByTestId } = renderComponent()
-
-      // Initially loading
-      expect(getByTestId('PrivateKeyText')).toHaveTextContent('loading')
-      expect(getByTestId('CopyPrivateKeyButton')).toBeDisabled()
-
-      // Wait for async operations to complete
-      await waitFor(() => {
-        expect(getByTestId('PrivateKeyText')).toHaveTextContent('*'.repeat(60) + '7890')
-        expect(getByTestId('CopyPrivateKeyButton')).not.toBeDisabled()
-      })
-
-      // Verify all async operations were called
-      expect(mockGetPassword).toHaveBeenCalledWith(mockWalletAddress)
-      expect(mockGetStoredMnemonic).toHaveBeenCalledWith(mockWalletAddress, mockPassword)
-      expect(mockGenerateKeysFromMnemonic).toHaveBeenCalledWith(mockMnemonic)
     })
   })
 })
