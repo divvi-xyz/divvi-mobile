@@ -619,9 +619,9 @@ describe('showActionRequest', () => {
       type: 'possible',
       transactions: [
         {
-          from: '0xfrom' as `0x${string}`,
-          to: '0xto' as `0x${string}`,
-          data: '0xdata' as `0x${string}`,
+          from: '0xfrom',
+          to: '0xto',
+          data: '0xdata',
         },
       ],
     }
