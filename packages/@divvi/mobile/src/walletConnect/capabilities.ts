@@ -47,8 +47,8 @@ export function getWalletCapabilitiesByWalletConnectChainId(): Record<string, Ca
   return result
 }
 
-export function getAtomicCapability(networkId: NetworkId) {
-  const capabilities = capabilitiesByNetworkId[networkId]
+export async function getAtomicCapabilityByWalletConnectChainId(chainId: string) {
+  const capabilities = getWalletCapabilitiesByWalletConnectChainId()[chainId]
   return capabilities?.atomic?.status ?? 'unsupported'
 }
 

@@ -61,7 +61,7 @@ import {
   getDefaultSessionTrackedProperties as getDefaultSessionTrackedPropertiesAnalytics,
 } from 'src/walletConnect/analytics'
 import {
-  getAtomicCapability,
+  getAtomicCapabilityByWalletConnectChainId,
   getWalletCapabilitiesByHexChainId,
   getWalletCapabilitiesByWalletConnectChainId,
   validateRequestedCapabilities,
@@ -598,15 +598,16 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     }
 
     // check support for atomic execution
-    if (request.params.request.params[0].atomicRequired) {
-      const atomicSupportStatus = yield* call(getAtomicCapability, networkId)
+    const atomic = yield* call(getAtomicCapabilityByWalletConnectChainId, networkId)
 
-      if (atomicSupportStatus === 'unsupported') {
-        yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
-        return
-      } else if (atomicSupportStatus === 'ready') {
-        // TODO: enable atomic operations
-      }
+    if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
+      yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
+      return
+    }
+
+    if (atomic === 'ready') {
+      // TODO: suggest user to enable atomic operations
+      // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
     }
 
     const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
