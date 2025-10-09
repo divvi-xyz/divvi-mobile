@@ -1,6 +1,10 @@
 import { Network } from 'src/transactions/types'
 import { viemTransports } from 'src/viem'
-import getLockableViemWallet, { getLockableViemSmartWallet, getTransport, ViemWallet } from 'src/viem/getLockableWallet'
+import getLockableViemWallet, {
+  getLockableViemSmartWallet,
+  getTransport,
+  ViemWallet,
+} from 'src/viem/getLockableWallet'
 import { KeychainAccounts } from 'src/web3/KeychainAccounts'
 import {
   mockAccount2,
@@ -234,15 +238,15 @@ describe('getLockableViemSmartWallet', () => {
   })
 
   it("throws if account doesn't exist in the keychain", async () => {
-    await expect(
-      getLockableViemSmartWallet(accounts, celoAlfajores, mockAccount2)
-    ).rejects.toThrow(`Account ${mockAccount2} not found in KeychainAccounts`)
+    await expect(getLockableViemSmartWallet(accounts, celoAlfajores, mockAccount2)).rejects.toThrow(
+      `Account ${mockAccount2} not found in KeychainAccounts`
+    )
   })
 
   it('throws if chain is not supported', async () => {
-    await expect(
-      getLockableViemSmartWallet(accounts, ethereumGoerli, mockAddress)
-    ).rejects.toThrow(`No network defined for viem chain [object Object], cannot create wallet`)
+    await expect(getLockableViemSmartWallet(accounts, ethereumGoerli, mockAddress)).rejects.toThrow(
+      `No network defined for viem chain [object Object], cannot create wallet`
+    )
   })
 
   it('works with useAppTransport parameter', async () => {

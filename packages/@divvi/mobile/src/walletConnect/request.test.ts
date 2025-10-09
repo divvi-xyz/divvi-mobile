@@ -170,8 +170,8 @@ describe(handleRequest, () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    mockGetFeatureGate.mockImplementation((gate) =>
-      gate === StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
+    mockGetFeatureGate.mockImplementation(
+      (gate) => gate === StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
     )
     jest.mocked(getLockableViemSmartWallet).mockResolvedValue({
       account: {
@@ -340,10 +340,7 @@ describe(handleRequest, () => {
         '0x66eee': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
       }
 
-      await expectSaga(handleRequest, request)
-        .withState(state)
-        .returns(expectedDefaultResult)
-        .run()
+      await expectSaga(handleRequest, request).withState(state).returns(expectedDefaultResult).run()
     })
   })
 })
