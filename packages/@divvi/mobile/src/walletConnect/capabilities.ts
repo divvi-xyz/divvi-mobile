@@ -1,3 +1,5 @@
+import { getFeatureGate } from 'src/statsig'
+import { StatsigFeatureGates } from 'src/statsig/types'
 import { NetworkId } from 'src/transactions/types'
 import { getLockableViemSmartWallet } from 'src/viem/getLockableWallet'
 import { capabilitiesByNetworkId } from 'src/walletConnect/constants'
@@ -33,11 +35,22 @@ export async function getWalletCapabilitiesByHexChainId(
 
   const result: Record<string, Capabilities> = {}
 
+  const useSmartAccountCapabilities = getFeatureGate(
+    StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
+  )
+
+  if (!useSmartAccountCapabilities) {
+    for (const networkId of targetNetworkIds) {
+      const chainId = networkConfig.viemChain[networkIdToNetwork[networkId]].id
+      result[toHex(chainId)] = capabilitiesByNetworkId[networkId]
+    }
+    return result
+  }
+
   for (const networkId of targetNetworkIds) {
     const chainId = networkConfig.viemChain[networkIdToNetwork[networkId]].id
     const baseCapabilities = capabilitiesByNetworkId[networkId]
 
-    // Check if smart account is deployed for this network
     const isDeployed = await isSmartAccountDeployedForNetworkId(address, networkId, useAppTransport)
 
     result[toHex(chainId)] = {
@@ -80,11 +93,23 @@ export async function getWalletCapabilitiesByWalletConnectChainId(
 ): Promise<Record<string, Capabilities>> {
   const result: Record<string, Capabilities> = {}
 
-  for (const networkId of getSupportedNetworkIds()) {
+  const supportedNetworkIds = getSupportedNetworkIds()
+  const useSmartAccountCapabilities = getFeatureGate(
+    StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
+  )
+
+  if (!useSmartAccountCapabilities) {
+    for (const networkId of supportedNetworkIds) {
+      const walletConnectChainId = networkIdToWalletConnectChainId[networkId]
+      result[walletConnectChainId] = capabilitiesByNetworkId[networkId]
+    }
+    return result
+  }
+
+  for (const networkId of supportedNetworkIds) {
     const walletConnectChainId = networkIdToWalletConnectChainId[networkId]
     const baseCapabilities = capabilitiesByNetworkId[networkId]
 
-    // Check if smart account is deployed for this network
     const isDeployed = await isSmartAccountDeployedForNetworkId(address, networkId, useAppTransport)
 
     result[walletConnectChainId] = {
