@@ -13,7 +13,6 @@ import { isBottomSheetVisible, navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
-import { feeCurrenciesSelector } from 'src/tokens/selectors'
 import { Network, NetworkId } from 'src/transactions/types'
 import { publicClient } from 'src/viem'
 import { prepareTransactions } from 'src/viem/prepareTransactions'
@@ -1351,7 +1350,7 @@ describe('wallet_sendCalls capability validation', () => {
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: false,
-      feeCurrenciesSymbols: [],
+      feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
       preparedTransactions: {
         success: true,
         transactionRequests: mockPreparedTransactions.transactions,
@@ -1455,7 +1454,7 @@ describe('wallet_sendCalls capability validation', () => {
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: false,
-      feeCurrenciesSymbols: [],
+      feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
       preparedTransactions: {
         success: true,
         transactionRequests: mockPreparedTransactions.transactions,
@@ -1543,7 +1542,7 @@ describe('wallet_sendCalls capability validation', () => {
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: false,
-      feeCurrenciesSymbols: [],
+      feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
       preparedTransactions: {
         success: true,
         transactionRequests: mockPreparedTransactions.transactions,
@@ -1578,7 +1577,7 @@ describe('wallet_sendCalls capability validation', () => {
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: false,
-      feeCurrenciesSymbols: [],
+      feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
       preparedTransactions: {
         success: false,
         errorMessage: 'Transaction preparation failed',
@@ -1617,7 +1616,7 @@ describe('wallet_sendCalls capability validation', () => {
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: true,
-      feeCurrenciesSymbols: [],
+      feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
       preparedTransactions: {
         success: false,
         errorMessage: undefined,
@@ -1627,8 +1626,6 @@ describe('wallet_sendCalls capability validation', () => {
 
   it('includes fee currencies symbols in navigation', async () => {
     const request = createSendCallsRequest()
-
-    const mockFeeCurrencies = [{ symbol: 'CELO' }, { symbol: 'cUSD' }]
 
     const state = createMockStore({}).getState()
     await expectSaga(_showActionRequest, request)
@@ -1644,7 +1641,6 @@ describe('wallet_sendCalls capability validation', () => {
           123,
         ],
         [call.fn(prepareTransactions), mockPreparedTransactions],
-        [select(feeCurrenciesSelector, NetworkId['celo-alfajores']), mockFeeCurrencies],
       ])
       .run()
 
@@ -1655,7 +1651,7 @@ describe('wallet_sendCalls capability validation', () => {
       supportedChains: ['eip155:44787'],
       version: 2,
       hasInsufficientGasFunds: false,
-      feeCurrenciesSymbols: ['CELO', 'cUSD'],
+      feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
       preparedTransactions: {
         success: true,
         transactionRequests: mockPreparedTransactions.transactions,
