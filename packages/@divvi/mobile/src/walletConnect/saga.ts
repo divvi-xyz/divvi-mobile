@@ -584,8 +584,8 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     }
 
     // check per-call capabilities
-    for (const call of request.params.request.params[0].calls) {
-      const callCapabilities = call.capabilities ?? {}
+    for (const requestCall of request.params.request.params[0].calls) {
+      const callCapabilities = requestCall.capabilities ?? {}
       const callCapabilitiesSupported = yield* call(
         validateRequestedCapabilities,
         callCapabilities,
