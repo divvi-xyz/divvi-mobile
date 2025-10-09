@@ -241,6 +241,20 @@ describe('PrivateKey', () => {
       expect(AppAnalytics.track).toHaveBeenCalledWith(PrivateKeyEvents.copy_private_key)
     })
 
+    it('copies private key to clipboard when private key container is pressed', async () => {
+      const { getByTestId } = renderComponent()
+
+      await waitFor(() => {
+        expect(getByTestId('PrivateKeyText')).toHaveTextContent('*'.repeat(60) + '7890')
+      })
+
+      fireEvent.press(getByTestId('PrivateKeyText'))
+
+      expect(AppAnalytics.track).toHaveBeenCalledWith(PrivateKeyEvents.copy_private_key)
+      expect(mockClipboardSetString).toHaveBeenCalledWith(mockPrivateKey)
+      expect(mockLoggerShowMessage).toHaveBeenCalledWith('privateKeyCopied')
+    })
+
     it('disables copy button when loading', () => {
       const { getByTestId } = renderComponent()
 

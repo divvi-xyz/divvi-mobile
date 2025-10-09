@@ -1,8 +1,8 @@
 import Clipboard from '@react-native-clipboard/clipboard'
-import React, { useState } from 'react'
+import React from 'react'
 import { useAsync } from 'react-async-hook'
 import { useTranslation } from 'react-i18next'
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { PrivateKeyEvents } from 'src/analytics/Events'
@@ -26,39 +26,30 @@ const TAG = 'PrivateKey'
 const PrivateKey = () => {
   const { t } = useTranslation()
   const walletAddress = useSelector(walletAddressSelector)
-  const [privateKey, setPrivateKey] = useState<string>('')
-  const [isLoading, setIsLoading] = useState(true)
 
-  useAsync(
+  const privateKeyResults = useAsync(
     async () => {
-      try {
-        if (!walletAddress) {
-          Alert.alert(t('error'), t('noAccountFound'))
-          return
-        }
-
-        // Get the password for the account
-        const password = await getPassword(walletAddress)
-
-        // Get the stored mnemonic
-        const mnemonic = await getStoredMnemonic(walletAddress, password)
-        if (!mnemonic) {
-          throw new Error('No mnemonic found in storage')
-        }
-
-        // Generate private key from mnemonic
-        const { privateKey } = await generateKeysFromMnemonic(mnemonic)
-        if (!privateKey) {
-          throw new Error('Failed to generate private key from mnemonic')
-        }
-
-        setPrivateKey(privateKey)
-      } catch (error) {
-        Logger.error(TAG, 'Error loading private key', error)
-        Alert.alert(t('error'), t('failedToLoadPrivateKey'))
-      } finally {
-        setIsLoading(false)
+      if (!walletAddress) {
+        Alert.alert(t('error'), t('noAccountFound'))
+        return
       }
+
+      // Get the password for the account
+      const password = await getPassword(walletAddress)
+
+      // Get the stored mnemonic
+      const mnemonic = await getStoredMnemonic(walletAddress, password)
+      if (!mnemonic) {
+        throw new Error('No mnemonic found in storage')
+      }
+
+      // Generate private key from mnemonic
+      const { privateKey } = await generateKeysFromMnemonic(mnemonic)
+      if (!privateKey) {
+        throw new Error('Failed to generate private key from mnemonic')
+      }
+
+      return privateKey
     },
     [],
     {
@@ -70,21 +61,23 @@ const PrivateKey = () => {
   )
 
   const copyToClipboard = () => {
-    AppAnalytics.track(PrivateKeyEvents.copy_private_key)
-    Clipboard.setString(privateKey)
-    Logger.showMessage(t('privateKeyCopied'))
+    if (privateKeyResults.result) {
+      AppAnalytics.track(PrivateKeyEvents.copy_private_key)
+      Clipboard.setString(privateKeyResults.result)
+      Logger.showMessage(t('privateKeyCopied'))
+    }
   }
 
   const getDisplayKey = () => {
-    if (isLoading) {
+    if (privateKeyResults.loading) {
       return t('loading')
     }
-    if (!privateKey) {
+    if (!privateKeyResults.result) {
       return '*'.repeat(64)
     }
     // Show asterisks for most of the key, but display last 4 characters
-    const asterisks = '*'.repeat(Math.max(0, privateKey.length - 4))
-    const lastFour = privateKey.slice(-4)
+    const asterisks = '*'.repeat(Math.max(0, privateKeyResults.result.length - 4))
+    const lastFour = privateKeyResults.result.slice(-4)
     return asterisks + lastFour
   }
 
@@ -101,11 +94,15 @@ const PrivateKey = () => {
       />
       <View style={styles.topContent}>
         <Text style={styles.sectionTitle}>{t('yourPrivateKey')}</Text>
-        <View style={styles.privateKeyContainer}>
+        <TouchableOpacity
+          style={styles.privateKeyContainer}
+          onPress={copyToClipboard}
+          disabled={privateKeyResults.loading || !privateKeyResults.result}
+        >
           <Text style={styles.privateKeyText} testID="PrivateKeyText">
             {getDisplayKey()}
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.bottomContent}>
         <InLineNotification
@@ -118,9 +115,9 @@ const PrivateKey = () => {
           text={t('copyPrivateKey')}
           onPress={copyToClipboard}
           icon={<CopyIcon />}
-          iconMargin={12}
+          iconMargin={Spacing.Small12}
           testID="CopyPrivateKeyButton"
-          disabled={isLoading || !privateKey}
+          disabled={privateKeyResults.loading || !privateKeyResults.result}
           size={BtnSizes.FULL}
         />
       </View>
@@ -159,8 +156,6 @@ const styles = StyleSheet.create({
     ...typeScale.bodyMedium,
     textAlign: 'left',
     color: colors.contentSecondary,
-    lineHeight: 24,
-    fontSize: 16,
   },
   bottomContent: {
     marginTop: 'auto',
