@@ -203,6 +203,18 @@ const SecuritySubmenu = ({ route, navigation }: Props) => {
     }
   }
 
+  const goToPrivateKey = async () => {
+    try {
+      const pinIsCorrect = await ensurePincode()
+      if (pinIsCorrect) {
+        AppAnalytics.track(SettingsEvents.settings_private_key)
+        navigate(Screens.PrivateKey)
+      }
+    } catch (error) {
+      Logger.error('SecurityItem@onPress', 'PIN ensure error', error)
+    }
+  }
+
   const confirmAccountRemoval = () => {
     AppAnalytics.track(SettingsEvents.completed_account_removal)
     dispatch(clearStoredAccount(account ?? ''))
@@ -285,6 +297,12 @@ const SecuritySubmenu = ({ route, navigation }: Props) => {
           title={t('accountKey')}
           onPress={goToRecoveryPhrase}
           testID="RecoveryPhrase"
+          showChevron
+        />
+        <SettingsItemTextValue
+          title={t('privateKey')}
+          onPress={goToPrivateKey}
+          testID="PrivateKey"
           showChevron
         />
         {getKeylessBackupItem()}
