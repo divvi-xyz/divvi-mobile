@@ -6,11 +6,11 @@ import networkConfig, {
   viemChainIdToNetworkId,
 } from 'src/web3/networkConfig'
 import { getSupportedNetworkIds } from 'src/web3/utils'
-import { hexToNumber, isHex, toHex } from 'viem'
+import { Hex, hexToNumber, toHex } from 'viem'
 import { Capabilities } from './types'
 
 export function getWalletCapabilitiesByHexChainId(
-  requestedChainIds?: unknown
+  requestedChainIds?: Hex[]
 ): Record<string, Capabilities> {
   const supportedNetworkIds = getSupportedNetworkIds()
 
@@ -19,18 +19,6 @@ export function getWalletCapabilitiesByHexChainId(
   if (!requestedChainIds) {
     targetNetworkIds = supportedNetworkIds
   } else {
-    if (!Array.isArray(requestedChainIds)) {
-      throw new Error('requested chainIds must be provided as an array')
-    }
-
-    if (requestedChainIds.length === 0) {
-      throw new Error('requested chainIds array must not be empty')
-    }
-
-    if (requestedChainIds.some((chainId) => !isHex(chainId))) {
-      throw new Error('requested chainIds must be expressed as hex numbers')
-    }
-
     const requestedNetworkIds = new Set(
       requestedChainIds.map((chainId) => viemChainIdToNetworkId[hexToNumber(chainId)])
     )

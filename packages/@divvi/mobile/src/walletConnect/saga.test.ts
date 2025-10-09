@@ -20,6 +20,7 @@ import {
   Actions,
   acceptRequest,
   acceptSession as acceptSessionAction,
+  denyRequest,
   sessionProposal as sessionProposalAction,
 } from 'src/walletConnect/actions'
 import { SupportedActions, SupportedEvents } from 'src/walletConnect/constants'
@@ -744,7 +745,7 @@ describe('showActionRequest', () => {
         ...actionRequest.params,
         request: {
           method: 'wallet_getCapabilities',
-          params: [],
+          params: [mockAccount],
         },
       },
     }
@@ -763,6 +764,106 @@ describe('showActionRequest', () => {
 
     // Should not navigate to any screen
     expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('denies wallet_getCapabilities when address param is missing', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCapabilities',
+          params: [],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .provide([[select(walletAddressSelector), mockAccount]])
+      .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
+      .run()
+  })
+
+  it('denies wallet_getCapabilities when address does not match wallet address', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCapabilities',
+          params: ['0x0000000000000000000000000000000000000000'],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .provide([[select(walletAddressSelector), mockAccount]])
+      .put(denyRequest(req, { code: 4100, message: 'Unauthorized' }))
+      .run()
+  })
+
+  it('denies wallet_getCapabilities when requestedChainIds is not an array', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCapabilities',
+          params: [mockAccount, 'not_an_array' as any],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .provide([[select(walletAddressSelector), mockAccount]])
+      .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
+      .run()
+  })
+
+  it('denies wallet_getCapabilities when requestedChainIds is an empty array', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCapabilities',
+          params: [mockAccount, []],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .provide([[select(walletAddressSelector), mockAccount]])
+      .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
+      .run()
+  })
+
+  it('denies wallet_getCapabilities when requestedChainIds contains non-hex values', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCapabilities',
+          params: [mockAccount, ['0xaa36a7', 'invalid_chain_id', '0x66eee']],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .provide([[select(walletAddressSelector), mockAccount]])
+      .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
+      .run()
   })
 
   it('throws an error when client is missing', () => {

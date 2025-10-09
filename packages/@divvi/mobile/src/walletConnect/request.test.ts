@@ -300,54 +300,6 @@ describe(handleRequest, () => {
 
       await expectSaga(handleRequest, request).withState(state).returns(expectedResult).run()
     })
-
-    it('throws error when provided account address is not the same as the wallet address', async () => {
-      const request = createMockActionableRequest({
-        method: SupportedActions.wallet_getCapabilities,
-        params: ['0xwrong_account', ['0xaa36a7', '0x66eee']],
-        chainId: 'eip155:11155111',
-      })
-
-      await expect(
-        async () => await expectSaga(handleRequest, request).withState(state).run()
-      ).rejects.toThrow('Unauthorized')
-    })
-
-    it('throws error when invalid chain id is provided', async () => {
-      const request = createMockActionableRequest({
-        method: SupportedActions.wallet_getCapabilities,
-        params: [state.web3.account, ['0xaa36a7', 'invalid_chain_id', '0x66eee']],
-        chainId: 'eip155:11155111',
-      })
-
-      await expect(
-        async () => await expectSaga(handleRequest, request).withState(state).run()
-      ).rejects.toThrow('requested chainIds must be expressed as hex numbers')
-    })
-
-    it('throws error when empty chain ids array is provided', async () => {
-      const request = createMockActionableRequest({
-        method: SupportedActions.wallet_getCapabilities,
-        params: [state.web3.account, []],
-        chainId: 'eip155:11155111',
-      })
-
-      await expect(
-        async () => await expectSaga(handleRequest, request).withState(state).run()
-      ).rejects.toThrow('requested chainIds array must not be empty')
-    })
-
-    it('throws error when non-array parameter is provided instead of chain ids array', async () => {
-      const request = createMockActionableRequest({
-        method: SupportedActions.wallet_getCapabilities,
-        params: [state.web3.account, 'not_an_array'],
-        chainId: 'eip155:11155111',
-      })
-
-      await expect(
-        async () => await expectSaga(handleRequest, request).withState(state).run()
-      ).rejects.toThrow('requested chainIds must be provided as an array')
-    })
   })
 
   describe('wallet_sendCalls', () => {
