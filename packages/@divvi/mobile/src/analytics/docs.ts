@@ -24,6 +24,7 @@ import {
   PerformanceEvents,
   PhoneVerificationEvents,
   PointsEvents,
+  PrivateKeyEvents,
   QrScreenEvents,
   SendEvents,
   SettingsEvents,
@@ -111,6 +112,7 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   // intentionally not tracking analytics opt in/out
   // to avoid tracking through omission
   [SettingsEvents.settings_recovery_phrase]: ``,
+  [SettingsEvents.settings_private_key]: ``,
   [SettingsEvents.settings_haptic_feedback]: ``,
   [SettingsEvents.settings_analytics]: ``,
   [SettingsEvents.settings_revoke_phone_number]: ``,
@@ -160,6 +162,7 @@ export const eventDocs: Record<AnalyticsEventType, string> = {
   [KeylessBackupEvents.cab_phone_verification_help_use_phrase]: `When a user is on the Help bottom sheet on CAB phone verification screen during setup in onboarding, and they hit use recovery phrase`,
   [KeylessBackupEvents.cab_restore_mnemonic_not_found]: `When a user is restoring from CAB and the mnemonic is not found. Meaning one or more of the user's keyshares/auth methods were incorrect`,
   [KeylessBackupEvents.cab_setup_hashed_keyshares]: `When a user is setting up CAB, the hashed keyshares from their phone and email are saved`,
+  [PrivateKeyEvents.copy_private_key]: `When a user copies their private key from the private key screen`,
   [OnboardingEvents.create_account_start]: ``,
   [OnboardingEvents.restore_account_start]: ``,
   [OnboardingEvents.restore_account_cancel]: ``,
