@@ -1201,7 +1201,7 @@ describe('getSessionFromRequest', () => {
   })
 })
 
-describe('wallet_sendCalls capability validation', () => {
+describe('wallet_sendCalls', () => {
   const topic = '243b33442b6190b97055201b5a8817f4e604e3f37b5376e78ee0b3715cc6211c'
   const createSendCallsRequest = (overrides: any = {}) => ({
     id: 1707297778331031,

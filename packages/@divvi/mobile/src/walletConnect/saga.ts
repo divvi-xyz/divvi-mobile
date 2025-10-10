@@ -655,6 +655,13 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   }
 
   if (method === SupportedActions.wallet_sendCalls) {
+    // check support for atomic execution
+    const atomic = yield* call(getAtomicCapabilityByWalletConnectChainId, request.params.chainId)
+    if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
+      yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
+      return
+    }
+
     // check global capabilities
     const requestedCapabilities = request.params.request.params[0].capabilities ?? {}
     const requestedCapabilitiesSupported = yield* call(
@@ -679,20 +686,16 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
         yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
         return
       }
-
-      // check support for atomic execution
-      const atomic = yield* call(getAtomicCapabilityByWalletConnectChainId, request.params.chainId)
-
-      if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
-        yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
-        return
-      }
-
-      if (atomic === 'ready') {
-        // TODO: suggest user to enable atomic operations
-        // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
-      }
     }
+
+    if (atomic === 'ready') {
+      // TODO: suggest user to enable atomic operations
+      // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
+    }
+
+    // TODO: add support for wallet_sendCalls
+    yield* put(denyRequest(request, getSdkError('WC_METHOD_UNSUPPORTED')))
+    return
   }
 
   // If the action doesn't require user consent, accept it immediately
