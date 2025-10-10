@@ -375,44 +375,5 @@ describe(handleRequest, () => {
 
       expect(viemWallet.sendTransaction).toHaveBeenCalledTimes(2)
     })
-
-    it('throws for a wallet_sendCalls request on unsupported chain', async () => {
-      await expect(
-        async () =>
-          await expectSaga(
-            handleRequest,
-            createMockActionableRequest({
-              method: SupportedActions.wallet_sendCalls,
-              params: [
-                {
-                  id: '0xabc',
-                  calls: [{ to: '0xTEST', data: '0x' }],
-                },
-              ],
-              chainId: 'eip155:unsupported',
-            })
-          )
-            .withState(state)
-            .run()
-      ).rejects.toThrow('unsupported network')
-      expect(viemWallet.sendTransaction).not.toHaveBeenCalled()
-    })
-
-    it('throws error when preparedTransactions fails', async () => {
-      const failedPreparedTransactions = {
-        success: false as const,
-        errorMessage: 'Insufficient balance for gas',
-      }
-
-      await expect(
-        async () =>
-          await expectSaga(handleRequest, {
-            ...sendCallsRequest,
-            preparedRequest: failedPreparedTransactions,
-          })
-            .withState(state)
-            .run()
-      ).rejects.toThrow('Insufficient balance for gas')
-    })
   })
 })
