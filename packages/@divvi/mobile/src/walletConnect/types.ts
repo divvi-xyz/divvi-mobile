@@ -73,12 +73,12 @@ interface TransactionRequestBase extends RequestBase {
 
 export interface TransactionRequest extends TransactionRequestBase {
   method: TransactionMethod
-  preparedTransaction: PreparedTransaction
+  preparedTransaction: PreparedTransactionResult<SerializableTransactionRequest>
 }
 
 export interface SendCallsRequest extends TransactionRequestBase {
   method: SendCallsMethod
-  preparedTransactions: PreparedTransactions
+  preparedTransactions: PreparedTransactionResult<SerializableTransactionRequest[]>
 }
 
 export type ActionableRequest =
@@ -87,10 +87,6 @@ export type ActionableRequest =
   | TransactionRequest
   | SendCallsRequest
 
-export type PreparedTransaction =
-  | { success: true; transactionRequest: SerializableTransactionRequest }
-  | { success: false; errorMessage?: string }
-
-export type PreparedTransactions =
-  | { success: true; transactionRequests: SerializableTransactionRequest[] }
+export type PreparedTransactionResult<T> =
+  | { success: true; data: T }
   | { success: false; errorMessage?: string }

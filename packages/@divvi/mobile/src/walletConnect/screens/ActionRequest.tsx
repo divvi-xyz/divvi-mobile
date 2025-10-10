@@ -81,7 +81,7 @@ function ActionRequest(props: ActionRequestProps) {
     networkName,
     (isSendCallsRequest(props) &&
       props.preparedTransactions.success &&
-      props.preparedTransactions.transactionRequests.length) ||
+      props.preparedTransactions.data.length) ||
       0
   )
 
@@ -193,12 +193,12 @@ function ActionRequest(props: ActionRequestProps) {
         method={method}
         preparedTransaction={
           isTransactionRequest(props) && props.preparedTransaction.success
-            ? props.preparedTransaction.transactionRequest
+            ? props.preparedTransaction.data
             : undefined
         }
         preparedTransactions={
           isSendCallsRequest(props) && props.preparedTransactions.success
-            ? props.preparedTransactions.transactionRequests
+            ? props.preparedTransactions.data
             : undefined
         }
       />
@@ -206,7 +206,7 @@ function ActionRequest(props: ActionRequestProps) {
         <EstimatedNetworkFee
           isLoading={false}
           networkId={networkId}
-          transactions={[props.preparedTransaction.transactionRequest]}
+          transactions={[props.preparedTransaction.data]}
         />
       )}
       <DappsDisclaimer isDappListed={isDappListed} />

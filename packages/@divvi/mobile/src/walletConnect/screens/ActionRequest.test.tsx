@@ -113,7 +113,7 @@ describe('ActionRequest with WalletConnect V2', () => {
 
   const preparedTransactionSuccess = {
     success: true,
-    transactionRequest: {
+    data: {
       from: mockAccount,
       to: mockAccount2,
       data: '0xTEST',
@@ -233,7 +233,7 @@ describe('ActionRequest with WalletConnect V2', () => {
 
       expect(
         within(getByTestId('WalletConnectRequest/ActionRequestPayload/Value')).getByText(
-          JSON.stringify(preparedTransactionSuccess.transactionRequest)
+          JSON.stringify(preparedTransactionSuccess.data)
         )
       ).toBeTruthy()
       expect(

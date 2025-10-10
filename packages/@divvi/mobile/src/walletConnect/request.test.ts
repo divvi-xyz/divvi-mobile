@@ -7,7 +7,7 @@ import {
 } from 'src/viem/preparedTransactionSerialization'
 import { SupportedActions } from 'src/walletConnect/constants'
 import { handleRequest } from 'src/walletConnect/request'
-import { ActionableRequest, PreparedTransaction } from 'src/walletConnect/types'
+import { ActionableRequest, PreparedTransactionResult } from 'src/walletConnect/types'
 import { getViemWallet } from 'src/web3/contracts'
 import { unlockAccount } from 'src/web3/saga'
 import { createMockStore } from 'test/utils'
@@ -48,7 +48,7 @@ const createMockActionableRequest = ({
   method: SupportedActions
   params: any[]
   chainId: string
-  preparedTransaction?: PreparedTransaction
+  preparedTransaction?: PreparedTransactionResult<SerializableTransactionRequest>
 }) =>
   ({
     method,
@@ -77,7 +77,7 @@ const txParams = {
 
 const preparedTransaction = {
   success: true as const,
-  transactionRequest: txParams as SerializableTransactionRequest,
+  data: txParams as SerializableTransactionRequest,
 }
 
 const signTransactionRequest = createMockActionableRequest({
@@ -319,7 +319,7 @@ describe(handleRequest, () => {
 
     const preparedTransactions = {
       success: true as const,
-      transactionRequests: [serializableSendTransactionRequest, serializableSendTransactionRequest],
+      data: [serializableSendTransactionRequest, serializableSendTransactionRequest],
     }
 
     it('supports sequential execution and returns capabilities for supported network', async () => {

@@ -28,7 +28,10 @@ import Logger from 'src/utils/Logger'
 import { safely } from 'src/utils/safely'
 import { appendPath } from 'src/utils/string'
 import { publicClient } from 'src/viem'
-import { getSerializablePreparedTransaction } from 'src/viem/preparedTransactionSerialization'
+import {
+  getSerializablePreparedTransaction,
+  SerializableTransactionRequest,
+} from 'src/viem/preparedTransactionSerialization'
 import {
   PreparedTransactionsResult,
   prepareTransactions,
@@ -78,8 +81,7 @@ import {
   isNonInteractiveMethod,
   isSendCallsMethod,
   isTransactionMethod,
-  PreparedTransaction,
-  PreparedTransactions,
+  PreparedTransactionResult,
   WalletConnectRequestResult,
   WalletConnectRequestType,
 } from 'src/walletConnect/types'
@@ -677,17 +679,16 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   if (isSendCallsMethod(method)) {
     const rawTxs = request.params.request.params[0]
     const result = yield* call(prepareNormalizedTransactions, rawTxs, request.params.chainId)
-    const preparedTransactions: PreparedTransactions = result.success
-      ? {
-          success: true,
-          transactionRequests: result.transactions.map((tx) =>
-            getSerializablePreparedTransaction(tx)
-          ),
-        }
-      : {
-          success: false,
-          errorMessage: result.errorMessage,
-        }
+    const preparedTransactions: PreparedTransactionResult<SerializableTransactionRequest[]> =
+      result.success
+        ? {
+            success: true,
+            data: result.transactions.map((tx) => getSerializablePreparedTransaction(tx)),
+          }
+        : {
+            success: false,
+            errorMessage: result.errorMessage,
+          }
 
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
@@ -704,15 +705,16 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   if (isTransactionMethod(method)) {
     const rawTx = request.params.request.params[0]
     const result = yield* call(prepareNormalizedTransactions, [rawTx], request.params.chainId)
-    const preparedTransaction: PreparedTransaction = result.success
-      ? {
-          success: true,
-          transactionRequest: getSerializablePreparedTransaction(result.transactions[0]),
-        }
-      : {
-          success: false,
-          errorMessage: result.errorMessage,
-        }
+    const preparedTransaction: PreparedTransactionResult<SerializableTransactionRequest> =
+      result.success
+        ? {
+            success: true,
+            data: getSerializablePreparedTransaction(result.transactions[0]),
+          }
+        : {
+            success: false,
+            errorMessage: result.errorMessage,
+          }
 
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,

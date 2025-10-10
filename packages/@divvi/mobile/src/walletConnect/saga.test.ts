@@ -657,7 +657,7 @@ describe('showActionRequest', () => {
       feeCurrenciesSymbols: [],
       preparedTransaction: {
         success: true,
-        transactionRequest: mockPreparedTransactions.transactions[0],
+        data: mockPreparedTransactions.transactions[0],
       },
     })
   })
@@ -1353,7 +1353,7 @@ describe('wallet_sendCalls capability validation', () => {
       feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
       preparedTransactions: {
         success: true,
-        transactionRequests: mockPreparedTransactions.transactions,
+        data: mockPreparedTransactions.transactions,
       },
     })
   })
@@ -1457,7 +1457,7 @@ describe('wallet_sendCalls capability validation', () => {
       feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
       preparedTransactions: {
         success: true,
-        transactionRequests: mockPreparedTransactions.transactions,
+        data: mockPreparedTransactions.transactions,
       },
     })
   })
@@ -1545,7 +1545,7 @@ describe('wallet_sendCalls capability validation', () => {
       feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
       preparedTransactions: {
         success: true,
-        transactionRequests: mockPreparedTransactions.transactions,
+        data: mockPreparedTransactions.transactions,
       },
     })
   })
@@ -1654,7 +1654,7 @@ describe('wallet_sendCalls capability validation', () => {
       feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
       preparedTransactions: {
         success: true,
-        transactionRequests: mockPreparedTransactions.transactions,
+        data: mockPreparedTransactions.transactions,
       },
     })
   })
