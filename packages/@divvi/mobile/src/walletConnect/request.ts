@@ -94,8 +94,13 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       return (yield* call([wallet, 'signMessage'], data)) as string
     }
     case SupportedActions.wallet_getCapabilities: {
-      const [_, hexNetworkIds] = params
-      return yield* call(getWalletCapabilitiesByHexChainId, hexNetworkIds)
+      const [address, hexNetworkIds] = params
+
+      if (address.toLowerCase() !== account.toLowerCase()) {
+        throw new Error('Unauthorized')
+      }
+
+      return yield* call(getWalletCapabilitiesByHexChainId, address, hexNetworkIds)
     }
     default:
       throw new Error('unsupported RPC method')

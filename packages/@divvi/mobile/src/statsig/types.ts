@@ -37,6 +37,7 @@ export enum StatsigFeatureGates {
   DISABLE_WALLET_CONNECT_V2 = 'disable_wallet_connect_v2',
   SHOW_DIVVI_SLICES_BOTTOM_SHEET = 'show_divvi_slices_bottom_sheet',
   RECAPTCHA_ENABLED = 'recaptcha_enabled',
+  USE_SMART_ACCOUNT_CAPABILITIES = 'use_smart_account_capabilities',
 }
 
 export enum StatsigExperiments {

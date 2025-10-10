@@ -1,6 +1,10 @@
+// @ts-expect-error - ESM module import in CommonJS context
+import { createSmartAccountClient } from 'permissionless'
+// @ts-expect-error - ESM module import in CommonJS context
+import { to7702KernelSmartAccount } from 'permissionless/accounts'
 import { Network } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
-import { appViemTransports, viemTransports } from 'src/viem'
+import { appViemTransports, publicClient, viemTransports } from 'src/viem'
 import { KeychainAccounts } from 'src/web3/KeychainAccounts'
 import networkConfig from 'src/web3/networkConfig'
 import {
@@ -68,6 +72,49 @@ export default function getLockableViemWallet(
     return {
       unlockAccount: (passphrase: string, duration: number) =>
         accounts.unlock(account.address, passphrase, duration),
+    }
+  })
+}
+
+export async function getLockableViemSmartWallet(
+  accounts: KeychainAccounts,
+  chain: Chain,
+  address: Address,
+  useAppTransport: boolean = false
+) {
+  Logger.debug(TAG, `Getting viem smart wallet for ${address} on ${chain.name}`)
+
+  const result = Object.entries(networkConfig.viemChain).find(
+    ([_, viemChain]) => chain === viemChain
+  )
+  if (!result) {
+    throw new Error(`No network defined for viem chain ${chain}, cannot create wallet`)
+  }
+  const client = publicClient[result[0] as keyof typeof publicClient]
+
+  const viemWallet = getLockableViemWallet(accounts, chain, address, useAppTransport)
+  if (!viemWallet.account) {
+    throw new Error(`Viem wallet not found for address ${address} on chain ${chain.name}`)
+  }
+
+  const kernelAccount = await to7702KernelSmartAccount({
+    client,
+    // @ts-expect-error - Type compatibility issue between viem and permissionless versions
+    owner: viemWallet.account,
+  })
+
+  const smartAccountClient = createSmartAccountClient({
+    client,
+    chain,
+    account: kernelAccount,
+    bundlerTransport: getTransport({ chain, useApp: useAppTransport }),
+  })
+
+  // Extend the smart account client with unlockAccount functionality
+  return smartAccountClient.extend((client) => {
+    return {
+      unlockAccount: (passphrase: string, duration: number) =>
+        accounts.unlock(address, passphrase, duration),
     }
   })
 }

@@ -348,13 +348,16 @@ function* showSessionRequest(session: WalletKitTypes.EventArguments['session_pro
 
   // Recommended method
   // https://docs.walletconnect.network/wallet-sdk/react-native/eip5792#wallet-response
-  const scopedProperties = getWalletCapabilitiesByWalletConnectChainId()
+  const scopedProperties = yield* call(
+    getWalletCapabilitiesByWalletConnectChainId,
+    address as Address
+  )
 
   // Legacy method for compatibility
   // https://github.com/WalletConnect/walletconnect-monorepo/blob/1e6d7793d0a30d2bf684cd3811ba120b4cdc0498/providers/universal-provider/src/providers/eip155.ts#L219-L223
   const sessionProperties = {
     capabilities: {
-      [getAddress(address)]: getWalletCapabilitiesByHexChainId(),
+      [getAddress(address)]: yield* call(getWalletCapabilitiesByHexChainId, address as Address),
     },
   } as any
 
