@@ -481,15 +481,45 @@ export function* normalizeTransactions(rawTxs: any[], network: Network) {
   return normalizedTransactions
 }
 
-function* prepareNormalizedTransactions(
-  rawTxs: any[],
+function prepareNormalizedTransactions(
+  rawTxs: unknown[],
   walletConnectChainId: string
 ): Generator<
   any,
-  { hasInsufficientGasFunds: boolean; feeCurrenciesSymbols: string[] } & (
-    | { success: true; transactions: TransactionRequest[] }
-    | { success: false; errorMessage?: string }
-  ),
+  {
+    hasInsufficientGasFunds: boolean
+    feeCurrenciesSymbols: string[]
+    result: PreparedTransactionResult<SerializableTransactionRequest[]>
+  },
+  any
+>
+function prepareNormalizedTransactions(
+  rawTx: unknown,
+  walletConnectChainId: string
+): Generator<
+  any,
+  {
+    hasInsufficientGasFunds: boolean
+    feeCurrenciesSymbols: string[]
+    result: PreparedTransactionResult<SerializableTransactionRequest>
+  },
+  any
+>
+function* prepareNormalizedTransactions(
+  rawTxOrTxs: unknown[] | unknown,
+  walletConnectChainId: string
+): Generator<
+  any,
+  | {
+      hasInsufficientGasFunds: boolean
+      feeCurrenciesSymbols: string[]
+      result: PreparedTransactionResult<SerializableTransactionRequest>
+    }
+  | {
+      hasInsufficientGasFunds: boolean
+      feeCurrenciesSymbols: string[]
+      result: PreparedTransactionResult<SerializableTransactionRequest[]>
+    },
   any
 > {
   const networkId = walletConnectChainIdToNetworkId[walletConnectChainId]
@@ -499,9 +529,10 @@ function* prepareNormalizedTransactions(
   let result: PreparedTransactionsResult | undefined
   let errorMessage: string | undefined
 
-  Logger.debug(TAG + '@prepareNormalizedTransactions', 'Received transactions', rawTxs)
+  Logger.debug(TAG + '@prepareNormalizedTransactions', 'Received transactions', rawTxOrTxs)
 
   try {
+    const rawTxs = Array.isArray(rawTxOrTxs) ? rawTxOrTxs : [rawTxOrTxs]
     const normalizedTxs = yield* call(normalizeTransactions, rawTxs, network)
     result = yield* call(prepareTransactions, {
       feeCurrencies,
@@ -527,19 +558,32 @@ function* prepareNormalizedTransactions(
   )
 
   if (result?.type === 'possible') {
+    const serializableTransactions = result.transactions.map((tx) =>
+      getSerializablePreparedTransaction(tx)
+    )
+
+    if (!Array.isArray(rawTxOrTxs)) {
+      return {
+        hasInsufficientGasFunds,
+        feeCurrenciesSymbols,
+        result: { success: true, data: serializableTransactions[0] },
+      }
+    }
+
     return {
-      success: true,
-      transactions: result.transactions,
       hasInsufficientGasFunds,
       feeCurrenciesSymbols,
+      result: { success: true, data: serializableTransactions },
     }
   }
 
   return {
-    success: false,
-    errorMessage,
     hasInsufficientGasFunds,
     feeCurrenciesSymbols,
+    result: {
+      success: false,
+      errorMessage,
+    },
   }
 }
 
@@ -676,19 +720,13 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     })
   }
 
-  if (isSendCallsMethod(method)) {
-    const rawTxs = request.params.request.params[0]
-    const result = yield* call(prepareNormalizedTransactions, rawTxs, request.params.chainId)
-    const preparedTransactions: PreparedTransactionResult<SerializableTransactionRequest[]> =
-      result.success
-        ? {
-            success: true,
-            data: result.transactions.map((tx) => getSerializablePreparedTransaction(tx)),
-          }
-        : {
-            success: false,
-            errorMessage: result.errorMessage,
-          }
+  if (isTransactionMethod(method)) {
+    const rawTx: unknown = request.params.request.params[0]
+    const {
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+      result: preparedTransaction,
+    } = yield* prepareNormalizedTransactions(rawTx, request.params.chainId)
 
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
@@ -696,25 +734,19 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       request,
       supportedChains,
       version: 2,
-      hasInsufficientGasFunds: result.hasInsufficientGasFunds,
-      feeCurrenciesSymbols: result.feeCurrenciesSymbols,
-      preparedTransactions,
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+      preparedTransaction,
     })
   }
 
-  if (isTransactionMethod(method)) {
-    const rawTx = request.params.request.params[0]
-    const result = yield* call(prepareNormalizedTransactions, [rawTx], request.params.chainId)
-    const preparedTransaction: PreparedTransactionResult<SerializableTransactionRequest> =
-      result.success
-        ? {
-            success: true,
-            data: getSerializablePreparedTransaction(result.transactions[0]),
-          }
-        : {
-            success: false,
-            errorMessage: result.errorMessage,
-          }
+  if (isSendCallsMethod(method)) {
+    const rawTxs: unknown[] = request.params.request.params[0].calls
+    const {
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+      result: preparedTransactions,
+    } = yield* prepareNormalizedTransactions(rawTxs, request.params.chainId)
 
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
@@ -722,9 +754,9 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       request,
       supportedChains,
       version: 2,
-      hasInsufficientGasFunds: result.hasInsufficientGasFunds,
-      feeCurrenciesSymbols: result.feeCurrenciesSymbols,
-      preparedTransaction,
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+      preparedTransactions,
     })
   }
 }
