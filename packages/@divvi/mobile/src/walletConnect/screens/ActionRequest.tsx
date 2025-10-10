@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'src/redux/hooks'
 import { NETWORK_NAMES } from 'src/shared/conts'
 import { Spacing } from 'src/styles/styles'
 import Logger from 'src/utils/Logger'
-import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
 import { acceptRequest, denyRequest } from 'src/walletConnect/actions'
 import { chainAgnosticActions, getDisplayTextFromAction } from 'src/walletConnect/constants'
 import ActionRequestPayload from 'src/walletConnect/screens/ActionRequestPayload'
@@ -81,8 +80,8 @@ function ActionRequest(props: ActionRequestProps) {
     dappName,
     networkName,
     (isSendCallsRequest(props) &&
-      props.preparedTransactions.success &&
-      props.preparedTransactions.data.length) ||
+      props.preparedRequest.success &&
+      props.preparedRequest.data.length) ||
       0
   )
 
@@ -142,15 +141,10 @@ function ActionRequest(props: ActionRequestProps) {
     )
   }
 
-  let errorMessage: string | undefined
-  if (isTransactionRequest(props) && !props.preparedTransaction.success) {
-    errorMessage = props.preparedTransaction.errorMessage
-  }
-  if (isSendCallsRequest(props) && !props.preparedTransactions.success) {
-    errorMessage = props.preparedTransactions.errorMessage
-  }
-
-  if (errorMessage) {
+  if (
+    (isTransactionRequest(props) || isSendCallsRequest(props)) &&
+    !props.preparedRequest.success
+  ) {
     return (
       <RequestContent
         type="dismiss"
@@ -166,20 +160,12 @@ function ActionRequest(props: ActionRequestProps) {
           variant={NotificationVariant.Warning}
           title={t('walletConnectRequest.failedToPrepareTransaction.title')}
           description={t('walletConnectRequest.failedToPrepareTransaction.description', {
-            errorMessage,
+            errorMessage: props.preparedRequest.errorMessage,
           })}
           style={styles.warning}
         />
       </RequestContent>
     )
-  }
-
-  let preparedInfo: SerializableTransactionRequest | SerializableTransactionRequest[] | undefined
-  if (isTransactionRequest(props) && props.preparedTransaction.success) {
-    preparedInfo = props.preparedTransaction.data
-  }
-  if (isSendCallsRequest(props) && props.preparedTransactions.success) {
-    preparedInfo = props.preparedTransactions.data
   }
 
   return (
@@ -200,15 +186,25 @@ function ActionRequest(props: ActionRequestProps) {
         session={activeSession}
         request={request}
         method={method}
-        preparedInfo={preparedInfo}
+        preparedRequest={
+          (isTransactionRequest(props) || isSendCallsRequest(props)) &&
+          props.preparedRequest.success
+            ? props.preparedRequest.data
+            : undefined
+        }
       />
-      {isTransactionRequest(props) && props.preparedTransaction.success && (
-        <EstimatedNetworkFee
-          isLoading={false}
-          networkId={networkId}
-          transactions={[props.preparedTransaction.data]}
-        />
-      )}
+      {(isTransactionRequest(props) || isSendCallsRequest(props)) &&
+        props.preparedRequest.success && (
+          <EstimatedNetworkFee
+            isLoading={false}
+            networkId={networkId}
+            transactions={
+              isTransactionRequest(props)
+                ? [props.preparedRequest.data]
+                : props.preparedRequest.data
+            }
+          />
+        )}
       <DappsDisclaimer isDappListed={isDappListed} />
     </RequestContent>
   )

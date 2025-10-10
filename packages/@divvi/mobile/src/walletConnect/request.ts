@@ -60,10 +60,10 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
 
   switch (method) {
     case SupportedActions.eth_signTransaction: {
-      if (!actionableRequest.preparedTransaction.success) {
-        throw new Error(actionableRequest.preparedTransaction.errorMessage)
+      if (!actionableRequest.preparedRequest.success) {
+        throw new Error(actionableRequest.preparedRequest.errorMessage)
       }
-      const tx = getPreparedTransaction(actionableRequest.preparedTransaction.data)
+      const tx = getPreparedTransaction(actionableRequest.preparedRequest.data)
       Logger.debug(TAG + '@handleRequest', 'Signing transaction', tx)
       return yield* call(
         [wallet, 'signTransaction'],
@@ -72,10 +72,10 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       )
     }
     case SupportedActions.eth_sendTransaction: {
-      if (!actionableRequest.preparedTransaction.success) {
-        throw new Error(actionableRequest.preparedTransaction.errorMessage)
+      if (!actionableRequest.preparedRequest.success) {
+        throw new Error(actionableRequest.preparedRequest.errorMessage)
       }
-      const tx = getPreparedTransaction(actionableRequest.preparedTransaction.data)
+      const tx = getPreparedTransaction(actionableRequest.preparedRequest.data)
       Logger.debug(TAG + '@handleRequest', 'Sending transaction', tx)
       const hash = yield* call(
         [wallet, 'sendTransaction'],
@@ -107,11 +107,11 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       // TODO: handle atomic execution
 
       // Fallback to sending transactions sequentially without any atomicity/contiguity guarantees
-      if (!actionableRequest.preparedTransactions.success) {
-        throw new Error(actionableRequest.preparedTransactions.errorMessage)
+      if (!actionableRequest.preparedRequest.success) {
+        throw new Error(actionableRequest.preparedRequest.errorMessage)
       }
 
-      for (const tx of actionableRequest.preparedTransactions.data) {
+      for (const tx of actionableRequest.preparedRequest.data) {
         try {
           yield* call(
             [wallet, 'sendTransaction'],

@@ -724,7 +724,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     const {
       hasInsufficientGasFunds,
       feeCurrenciesSymbols,
-      result: preparedTransaction,
+      result: preparedRequest,
     } = yield* prepareNormalizedTransactions(rawTx, request.params.chainId)
 
     navigate(Screens.WalletConnectRequest, {
@@ -735,7 +735,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       version: 2,
       hasInsufficientGasFunds,
       feeCurrenciesSymbols,
-      preparedTransaction,
+      preparedRequest,
     })
   }
 
@@ -744,7 +744,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     const {
       hasInsufficientGasFunds,
       feeCurrenciesSymbols,
-      result: preparedTransactions,
+      result: preparedRequest,
     } = yield* prepareNormalizedTransactions(rawTxs, request.params.chainId)
 
     navigate(Screens.WalletConnectRequest, {
@@ -755,7 +755,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       version: 2,
       hasInsufficientGasFunds,
       feeCurrenciesSymbols,
-      preparedTransactions,
+      preparedRequest,
     })
   }
 }

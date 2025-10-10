@@ -70,14 +70,14 @@ export interface TransactionRequest extends RequestBase {
   method: TransactionMethod
   hasInsufficientGasFunds: boolean
   feeCurrenciesSymbols: string[]
-  preparedTransaction: PreparedTransactionResult<SerializableTransactionRequest>
+  preparedRequest: PreparedTransactionResult<SerializableTransactionRequest>
 }
 
 export interface SendCallsRequest extends RequestBase {
   method: SendCallsMethod
   hasInsufficientGasFunds: boolean
   feeCurrenciesSymbols: string[]
-  preparedTransactions: PreparedTransactionResult<SerializableTransactionRequest[]>
+  preparedRequest: PreparedTransactionResult<SerializableTransactionRequest[]>
 }
 
 export type ActionableRequest =

@@ -655,7 +655,7 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: {
+      preparedRequest: {
         success: true,
         data: mockPreparedTransactions.transactions[0],
       },
@@ -693,7 +693,7 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: {
+      preparedRequest: {
         success: false,
         errorMessage: 'Some error',
       },
@@ -731,7 +731,7 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: {
+      preparedRequest: {
         success: false,
         errorMessage: 'viem short message',
       },
@@ -1351,7 +1351,7 @@ describe('wallet_sendCalls', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
-      preparedTransactions: {
+      preparedRequest: {
         success: true,
         data: mockPreparedTransactions.transactions,
       },
@@ -1455,7 +1455,7 @@ describe('wallet_sendCalls', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
-      preparedTransactions: {
+      preparedRequest: {
         success: true,
         data: mockPreparedTransactions.transactions,
       },
@@ -1543,7 +1543,7 @@ describe('wallet_sendCalls', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
-      preparedTransactions: {
+      preparedRequest: {
         success: true,
         data: mockPreparedTransactions.transactions,
       },
@@ -1578,7 +1578,7 @@ describe('wallet_sendCalls', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
-      preparedTransactions: {
+      preparedRequest: {
         success: false,
         errorMessage: 'Transaction preparation failed',
       },
@@ -1617,7 +1617,7 @@ describe('wallet_sendCalls', () => {
       version: 2,
       hasInsufficientGasFunds: true,
       feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
-      preparedTransactions: {
+      preparedRequest: {
         success: false,
         errorMessage: undefined,
       },
@@ -1652,7 +1652,7 @@ describe('wallet_sendCalls', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
-      preparedTransactions: {
+      preparedRequest: {
         success: true,
         data: mockPreparedTransactions.transactions,
       },

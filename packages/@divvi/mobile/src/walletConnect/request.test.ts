@@ -43,12 +43,14 @@ const createMockActionableRequest = ({
   method,
   params,
   chainId,
-  preparedTransaction,
+  preparedRequest,
 }: {
   method: SupportedActions
   params: any[]
   chainId: string
-  preparedTransaction?: PreparedTransactionResult<SerializableTransactionRequest>
+  preparedRequest?:
+    | PreparedTransactionResult<SerializableTransactionRequest>
+    | PreparedTransactionResult<SerializableTransactionRequest[]>
 }) =>
   ({
     method,
@@ -63,7 +65,7 @@ const createMockActionableRequest = ({
         },
       },
     },
-    preparedTransaction,
+    preparedRequest,
   }) as ActionableRequest
 
 const txParams = {
@@ -75,7 +77,7 @@ const txParams = {
   value: '0x01',
 }
 
-const preparedTransaction = {
+const preparedRequest = {
   success: true as const,
   data: txParams as SerializableTransactionRequest,
 }
@@ -84,7 +86,7 @@ const signTransactionRequest = createMockActionableRequest({
   method: SupportedActions.eth_signTransaction,
   params: [txParams],
   chainId: 'eip155:44787',
-  preparedTransaction,
+  preparedRequest,
 })
 const serializableTransactionRequest = signTransactionRequest.request.params.request
   .params[0] as SerializableTransactionRequest
@@ -92,7 +94,7 @@ const sendTransactionRequest = createMockActionableRequest({
   method: SupportedActions.eth_sendTransaction,
   params: [txParams],
   chainId: 'eip155:44787',
-  preparedTransaction,
+  preparedRequest,
 })
 const serializableSendTransactionRequest = sendTransactionRequest.request.params.request
   .params[0] as SerializableTransactionRequest
@@ -303,6 +305,11 @@ describe(handleRequest, () => {
   })
 
   describe('wallet_sendCalls', () => {
+    const preparedRequest = {
+      success: true as const,
+      data: [serializableSendTransactionRequest, serializableSendTransactionRequest],
+    }
+
     const sendCallsRequest = createMockActionableRequest({
       method: SupportedActions.wallet_sendCalls,
       params: [
@@ -315,12 +322,8 @@ describe(handleRequest, () => {
         },
       ],
       chainId: 'eip155:11155111',
+      preparedRequest,
     })
-
-    const preparedTransactions = {
-      success: true as const,
-      data: [serializableSendTransactionRequest, serializableSendTransactionRequest],
-    }
 
     it('supports sequential execution and returns capabilities for supported network', async () => {
       const expectedResult = {
@@ -328,10 +331,7 @@ describe(handleRequest, () => {
         capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
       }
 
-      await expectSaga(handleRequest, {
-        ...sendCallsRequest,
-        preparedTransactions,
-      })
+      await expectSaga(handleRequest, sendCallsRequest)
         .withState(state)
         .call(unlockAccount, '0xwallet')
         .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
@@ -359,6 +359,7 @@ describe(handleRequest, () => {
           },
         ],
         chainId: 'eip155:11155111',
+        preparedRequest,
       })
 
       const expectedResult = {
@@ -366,10 +367,7 @@ describe(handleRequest, () => {
         capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
       }
 
-      await expectSaga(handleRequest, {
-        ...sendCallsRequest,
-        preparedTransactions,
-      })
+      await expectSaga(handleRequest, sendCallsRequest)
         .withState(state)
         .call(unlockAccount, '0xwallet')
         .returns(expectedResult)
@@ -410,7 +408,7 @@ describe(handleRequest, () => {
         async () =>
           await expectSaga(handleRequest, {
             ...sendCallsRequest,
-            preparedTransactions: failedPreparedTransactions,
+            preparedRequest: failedPreparedTransactions,
           })
             .withState(state)
             .run()

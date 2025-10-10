@@ -144,7 +144,7 @@ describe('ActionRequest with WalletConnect V2', () => {
     request: sendTransactionRequest,
     hasInsufficientGasFunds: false,
     feeCurrenciesSymbols: feeCurrenciesSymbols,
-    preparedTransaction: preparedTransactionSuccess,
+    preparedRequest: preparedTransactionSuccess,
   }
 
   describe('eth_sendTransaction', () => {
@@ -168,7 +168,7 @@ describe('ActionRequest with WalletConnect V2', () => {
             supportedChains={supportedChains}
             hasInsufficientGasFunds={true}
             feeCurrenciesSymbols={feeCurrenciesSymbols}
-            preparedTransaction={preparedTransactionFailure}
+            preparedRequest={preparedTransactionFailure}
           />
         </Provider>
       )
@@ -197,7 +197,7 @@ describe('ActionRequest with WalletConnect V2', () => {
             supportedChains={supportedChains}
             hasInsufficientGasFunds={false}
             feeCurrenciesSymbols={feeCurrenciesSymbols}
-            preparedTransaction={preparedTransactionFailure}
+            preparedRequest={preparedTransactionFailure}
           />
         </Provider>
       )
@@ -226,7 +226,7 @@ describe('ActionRequest with WalletConnect V2', () => {
             supportedChains={supportedChains}
             hasInsufficientGasFunds={false}
             feeCurrenciesSymbols={feeCurrenciesSymbols}
-            preparedTransaction={preparedTransactionSuccess}
+            preparedRequest={preparedTransactionSuccess}
           />
         </Provider>
       )
@@ -544,7 +544,7 @@ describe('ActionRequest with WalletConnect V2', () => {
             supportedChains={supportedChains}
             hasInsufficientGasFunds={false}
             feeCurrenciesSymbols={feeCurrenciesSymbols}
-            preparedTransaction={preparedTransactionSuccess}
+            preparedRequest={preparedTransactionSuccess}
           />
         </Provider>
       )
