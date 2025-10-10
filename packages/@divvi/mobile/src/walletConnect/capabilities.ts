@@ -46,3 +46,43 @@ export function getWalletCapabilitiesByWalletConnectChainId(): Record<string, Ca
 
   return result
 }
+
+export async function getAtomicCapabilityByWalletConnectChainId(chainId: string) {
+  const capabilities = getWalletCapabilitiesByWalletConnectChainId()
+  return capabilities?.[chainId]?.atomic?.status ?? 'unsupported'
+}
+
+export async function validateRequestedCapabilities(
+  chainId: string,
+  requestedCapabilities: Record<string, { optional?: boolean } | undefined>
+) {
+  const supportedCapabilities = getWalletCapabilitiesByWalletConnectChainId()[chainId] ?? {}
+
+  for (const [capabilityKey, capabilityProperties] of Object.entries(requestedCapabilities)) {
+    // if capability key is requested, but not marked as optional, it is required
+    const isOptional = capabilityProperties?.optional ?? false
+    const isRequired = !isOptional
+
+    switch (capabilityKey) {
+      case 'atomic': {
+        const atomic = await getAtomicCapabilityByWalletConnectChainId(chainId)
+        if (isRequired && atomic === 'unsupported') {
+          return false
+        }
+      }
+      case 'paymasterService': {
+        const isSupported = supportedCapabilities['paymasterService']?.supported ?? false
+        if (isRequired && !isSupported) {
+          return false
+        }
+      }
+      default: {
+        if (isRequired) {
+          return false
+        }
+      }
+    }
+  }
+
+  return true
+}
