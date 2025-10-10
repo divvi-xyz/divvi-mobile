@@ -22,7 +22,6 @@ import {
   Client,
   ExecutionRevertedError,
   Hex,
-  InsufficientFundsError,
   InvalidInputRpcError,
   TransactionRequestEIP1559,
   encodeFunctionData,
@@ -178,15 +177,19 @@ export async function tryEstimateTransaction({
       baseFeePerGas,
     })
   } catch (e) {
+    // Checking for error types by `name` instead of instanceof, instanceof returns false incorrectly. Cause unknown, maybe due to having multiple instances of the viem module.
     if (
       e instanceof Error &&
       e.name === 'EstimateGasExecutionError' &&
-      (e.cause instanceof InsufficientFundsError ||
-        (e.cause instanceof ExecutionRevertedError && // viem does not reliably label node errors as InsufficientFundsError when the user has enough to pay for the transfer, but not for the transfer + gas
-          (/transfer value exceeded balance of sender/.test(e.cause.details) ||
-            /transfer amount exceeds balance/.test(e.cause.details))) ||
-        (e.cause instanceof InvalidInputRpcError &&
-          /gas required exceeds allowance/.test(e.cause.details)))
+      e.cause instanceof Error &&
+      (e.cause.name == 'InsufficientFundsError' ||
+        (e.cause.name === 'ExecutionRevertedError' && // viem does not reliably label node errors as InsufficientFundsError when the user has enough to pay for the transfer, but not for the transfer + gas
+          (/transfer value exceeded balance of sender/.test(
+            (e.cause as ExecutionRevertedError).details
+          ) ||
+            /transfer amount exceeds balance/.test((e.cause as ExecutionRevertedError).details))) ||
+        (e.cause.name === 'InvalidInputRpcError' &&
+          /gas required exceeds allowance/.test((e.cause as InvalidInputRpcError).details)))
     ) {
       // too much gas was needed
       Logger.warn(TAG, `Couldn't estimate gas with feeCurrency ${feeCurrencySymbol}`, e)

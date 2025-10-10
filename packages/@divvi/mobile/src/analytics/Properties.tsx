@@ -28,6 +28,7 @@ import {
   PerformanceEvents,
   PhoneVerificationEvents,
   PointsEvents,
+  PrivateKeyEvents,
   QrScreenEvents,
   SendEvents,
   SettingsEvents,
@@ -229,6 +230,7 @@ interface SettingsEventsProperties {
   [SettingsEvents.settings_biometry_opt_in_error]: undefined
   [SettingsEvents.settings_biometry_opt_in_disable]: undefined
   [SettingsEvents.settings_recovery_phrase]: undefined
+  [SettingsEvents.settings_private_key]: undefined
   [SettingsEvents.settings_haptic_feedback]: { enabled: boolean }
   [SettingsEvents.settings_analytics]: { enabled: boolean }
   [SettingsEvents.settings_revoke_phone_number]: undefined
@@ -237,6 +239,10 @@ interface SettingsEventsProperties {
   [SettingsEvents.settings_delete_account_confirm]: undefined
   [SettingsEvents.settings_set_up_keyless_backup]: undefined
   [SettingsEvents.settings_delete_keyless_backup]: undefined
+}
+
+interface PrivateKeyEventsProperties {
+  [PrivateKeyEvents.copy_private_key]: undefined
 }
 
 interface CommonKeylessBackupProps {
@@ -1605,6 +1611,7 @@ interface EarnEventsProperties {
 export type AnalyticsPropertiesList = AppEventsProperties &
   HomeEventsProperties &
   SettingsEventsProperties &
+  PrivateKeyEventsProperties &
   KeylessBackupEventsProperties &
   OnboardingEventsProperties &
   PhoneVerificationEventsProperties &
