@@ -66,18 +66,17 @@ export interface MessageRequest extends RequestBase {
   method: MessageMethod
 }
 
-interface TransactionRequestBase extends RequestBase {
+export interface TransactionRequest extends RequestBase {
+  method: TransactionMethod
   hasInsufficientGasFunds: boolean
   feeCurrenciesSymbols: string[]
-}
-
-export interface TransactionRequest extends TransactionRequestBase {
-  method: TransactionMethod
   preparedTransaction: PreparedTransactionResult<SerializableTransactionRequest>
 }
 
-export interface SendCallsRequest extends TransactionRequestBase {
+export interface SendCallsRequest extends RequestBase {
   method: SendCallsMethod
+  hasInsufficientGasFunds: boolean
+  feeCurrenciesSymbols: string[]
   preparedTransactions: PreparedTransactionResult<SerializableTransactionRequest[]>
 }
 
