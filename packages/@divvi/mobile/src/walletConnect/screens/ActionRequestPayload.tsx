@@ -26,16 +26,11 @@ interface MessageProps extends BaseProps {
 }
 
 interface TransactionProps extends BaseProps {
-  method: TransactionMethod
-  preparedTransaction?: SerializableTransactionRequest
+  method: TransactionMethod | SendCallsMethod
+  preparedInfo?: SerializableTransactionRequest | SerializableTransactionRequest[]
 }
 
-interface SendCallsProps extends BaseProps {
-  method: SendCallsMethod
-  preparedTransactions?: SerializableTransactionRequest[]
-}
-
-function ActionRequestPayload(props: MessageProps | TransactionProps | SendCallsProps) {
+function ActionRequestPayload(props: MessageProps | TransactionProps) {
   const method = props.method
   const { params } = props.request.params.request
 
@@ -46,9 +41,9 @@ function ActionRequestPayload(props: MessageProps | TransactionProps | SendCalls
     () =>
       method === SupportedActions.eth_signTransaction ||
       method === SupportedActions.eth_sendTransaction
-        ? JSON.stringify(props.preparedTransaction ?? params)
+        ? JSON.stringify(props.preparedInfo ?? params)
         : method === SupportedActions.wallet_sendCalls
-          ? JSON.stringify(props.preparedTransactions ?? params)
+          ? JSON.stringify(props.preparedInfo ?? params)
           : method === SupportedActions.eth_signTypedData ||
               method === SupportedActions.eth_signTypedData_v4
             ? JSON.stringify(params[1])

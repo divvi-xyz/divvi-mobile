@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'src/redux/hooks'
 import { NETWORK_NAMES } from 'src/shared/conts'
 import { Spacing } from 'src/styles/styles'
 import Logger from 'src/utils/Logger'
+import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
 import { acceptRequest, denyRequest } from 'src/walletConnect/actions'
 import { chainAgnosticActions, getDisplayTextFromAction } from 'src/walletConnect/constants'
 import ActionRequestPayload from 'src/walletConnect/screens/ActionRequestPayload'
@@ -173,6 +174,14 @@ function ActionRequest(props: ActionRequestProps) {
     )
   }
 
+  let preparedInfo: SerializableTransactionRequest | SerializableTransactionRequest[] | undefined
+  if (isTransactionRequest(props) && props.preparedTransaction.success) {
+    preparedInfo = props.preparedTransaction.data
+  }
+  if (isSendCallsRequest(props) && props.preparedTransactions.success) {
+    preparedInfo = props.preparedTransactions.data
+  }
+
   return (
     <RequestContent
       type="confirm"
@@ -191,16 +200,7 @@ function ActionRequest(props: ActionRequestProps) {
         session={activeSession}
         request={request}
         method={method}
-        preparedTransaction={
-          isTransactionRequest(props) && props.preparedTransaction.success
-            ? props.preparedTransaction.data
-            : undefined
-        }
-        preparedTransactions={
-          isSendCallsRequest(props) && props.preparedTransactions.success
-            ? props.preparedTransactions.data
-            : undefined
-        }
+        preparedInfo={preparedInfo}
       />
       {isTransactionRequest(props) && props.preparedTransaction.success && (
         <EstimatedNetworkFee
