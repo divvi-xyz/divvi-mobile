@@ -89,8 +89,8 @@ export type ActionableRequest =
 
 export type PreparedTransaction =
   | { success: true; transactionRequest: SerializableTransactionRequest }
-  | { success: false; errorMessage: string }
+  | { success: false; errorMessage?: string }
 
 export type PreparedTransactions =
   | { success: true; transactionRequests: SerializableTransactionRequest[] }
-  | { success: false; errorMessage: string }
+  | { success: false; errorMessage?: string }

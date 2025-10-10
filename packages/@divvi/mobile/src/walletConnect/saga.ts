@@ -479,6 +479,68 @@ export function* normalizeTransactions(rawTxs: any[], network: Network) {
   return normalizedTransactions
 }
 
+function* prepareNormalizedTransactions(
+  rawTxs: any[],
+  walletConnectChainId: string
+): Generator<
+  any,
+  { hasInsufficientGasFunds: boolean; feeCurrenciesSymbols: string[] } & (
+    | { success: true; transactions: TransactionRequest[] }
+    | { success: false; errorMessage?: string }
+  ),
+  any
+> {
+  const networkId = walletConnectChainIdToNetworkId[walletConnectChainId]
+  const network = walletConnectChainIdToNetwork[walletConnectChainId]
+  const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
+
+  let result: PreparedTransactionsResult | undefined
+  let errorMessage: string | undefined
+
+  Logger.debug(TAG + '@prepareNormalizedTransactions', 'Received transactions', rawTxs)
+
+  try {
+    const normalizedTxs = yield* call(normalizeTransactions, rawTxs, network)
+    result = yield* call(prepareTransactions, {
+      feeCurrencies,
+      decreasedAmountGasFeeMultiplier: 1,
+      baseTransactions: normalizedTxs,
+      origin: 'wallet-connect' as const,
+    })
+  } catch (err) {
+    Logger.warn(TAG + '@showActionRequest', 'Failed to prepare transactions', err)
+    const e = ensureError(err)
+    // Viem has short user-friendly error messages
+    errorMessage = e instanceof BaseError ? e.shortMessage : e.message
+  }
+
+  const hasInsufficientGasFunds = result?.type === 'not-enough-balance-for-gas'
+  const feeCurrenciesSymbols = feeCurrencies.map((token) => token.symbol)
+
+  Logger.debug(
+    TAG + '@prepareNormalizedTransactions',
+    'Prepared transactions',
+    result?.type,
+    result?.type === 'possible' && result.transactions
+  )
+
+  if (result?.type === 'possible') {
+    return {
+      success: true,
+      transactions: result.transactions,
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+    }
+  }
+
+  return {
+    success: false,
+    errorMessage,
+    hasInsufficientGasFunds,
+    feeCurrenciesSymbols,
+  }
+}
+
 function* showActionRequest(request: WalletKitTypes.EventArguments['session_request']) {
   if (!client) {
     throw new Error('missing client')
@@ -601,61 +663,6 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   })
 
   const supportedChains = yield* call(getSupportedChains)
-  const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
-
-  if (isSendCallsMethod(method)) {
-    const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
-    let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
-    let prepareTransactionsErrorMessage: string | undefined = undefined
-    const rawTxs = request.params.request.params[0].calls
-    Logger.debug(TAG + '@showActionRequest', 'Received calls', rawTxs)
-    const network = walletConnectChainIdToNetwork[request.params.chainId]
-    try {
-      const normalizedTxs = yield* call(normalizeTransactions, rawTxs, network)
-      preparedTransactionsResult = yield* call(prepareTransactions, {
-        feeCurrencies,
-        decreasedAmountGasFeeMultiplier: 1,
-        baseTransactions: normalizedTxs,
-        origin: 'wallet-connect' as const,
-      })
-    } catch (err) {
-      Logger.warn(TAG + '@showActionRequest', 'Failed to prepare calls', err)
-      const e = ensureError(err)
-      // Viem has short user-friendly error messages
-      prepareTransactionsErrorMessage = e instanceof BaseError ? e.shortMessage : e.message
-    }
-
-    const preparedTransactions: PreparedTransactions =
-      preparedTransactionsResult?.type === 'possible'
-        ? {
-            success: true,
-            transactionRequests: preparedTransactionsResult.transactions.map((tx) =>
-              getSerializablePreparedTransaction(tx)
-            ),
-          }
-        : {
-            success: false,
-            errorMessage: prepareTransactionsErrorMessage!,
-          }
-
-    Logger.debug(
-      TAG + '@showActionRequest',
-      'Prepared transactions',
-      preparedTransactionsResult?.type,
-      preparedTransactions
-    )
-
-    navigate(Screens.WalletConnectRequest, {
-      type: WalletConnectRequestType.Action,
-      method,
-      request,
-      supportedChains,
-      version: 2,
-      hasInsufficientGasFunds: preparedTransactionsResult?.type === 'not-enough-balance-for-gas',
-      feeCurrenciesSymbols: feeCurrencies.map((token) => token.symbol),
-      preparedTransactions,
-    })
-  }
 
   if (isMessageMethod(method)) {
     navigate(Screens.WalletConnectRequest, {
@@ -667,47 +674,20 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     })
   }
 
-  if (isTransactionMethod(method)) {
-    const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
-    let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
-    let prepareTransactionsErrorMessage: string | undefined = undefined
-    const rawTx = request.params.request.params[0]
-    Logger.debug(TAG + '@showActionRequest', 'Received transaction', rawTx)
-    const network = walletConnectChainIdToNetwork[request.params.chainId]
-    try {
-      const normalizedTxs = yield* call(normalizeTransactions, [rawTx], network)
-      preparedTransactionsResult = yield* call(prepareTransactions, {
-        feeCurrencies,
-        decreasedAmountGasFeeMultiplier: 1,
-        baseTransactions: normalizedTxs,
-        origin: 'wallet-connect' as const,
-      })
-    } catch (err) {
-      Logger.warn(TAG + '@showActionRequest', 'Failed to prepare transactions', err)
-      const e = ensureError(err)
-      // Viem has short user-friendly error messages
-      prepareTransactionsErrorMessage = e instanceof BaseError ? e.shortMessage : e.message
-    }
-
-    const preparedTransaction: PreparedTransaction =
-      preparedTransactionsResult?.type === 'possible'
-        ? {
-            success: true,
-            transactionRequest: getSerializablePreparedTransaction(
-              preparedTransactionsResult.transactions[0]
-            ),
-          }
-        : {
-            success: false,
-            errorMessage: prepareTransactionsErrorMessage!,
-          }
-
-    Logger.debug(
-      TAG + '@showActionRequest',
-      'Prepared transactions',
-      preparedTransactionsResult?.type,
-      preparedTransaction
-    )
+  if (isSendCallsMethod(method)) {
+    const rawTxs = request.params.request.params[0]
+    const result = yield* call(prepareNormalizedTransactions, rawTxs, request.params.chainId)
+    const preparedTransactions: PreparedTransactions = result.success
+      ? {
+          success: true,
+          transactionRequests: result.transactions.map((tx) =>
+            getSerializablePreparedTransaction(tx)
+          ),
+        }
+      : {
+          success: false,
+          errorMessage: result.errorMessage,
+        }
 
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
@@ -715,8 +695,33 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       request,
       supportedChains,
       version: 2,
-      hasInsufficientGasFunds: preparedTransactionsResult?.type === 'not-enough-balance-for-gas',
-      feeCurrenciesSymbols: feeCurrencies.map((token) => token.symbol),
+      hasInsufficientGasFunds: result.hasInsufficientGasFunds,
+      feeCurrenciesSymbols: result.feeCurrenciesSymbols,
+      preparedTransactions,
+    })
+  }
+
+  if (isTransactionMethod(method)) {
+    const rawTx = request.params.request.params[0]
+    const result = yield* call(prepareNormalizedTransactions, [rawTx], request.params.chainId)
+    const preparedTransaction: PreparedTransaction = result.success
+      ? {
+          success: true,
+          transactionRequest: getSerializablePreparedTransaction(result.transactions[0]),
+        }
+      : {
+          success: false,
+          errorMessage: result.errorMessage,
+        }
+
+    navigate(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method,
+      request,
+      supportedChains,
+      version: 2,
+      hasInsufficientGasFunds: result.hasInsufficientGasFunds,
+      feeCurrenciesSymbols: result.feeCurrenciesSymbols,
       preparedTransaction,
     })
   }
