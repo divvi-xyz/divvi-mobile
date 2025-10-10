@@ -93,6 +93,7 @@ import networkConfig, {
 import { getWalletAddress } from 'src/web3/saga'
 import { demoModeEnabledSelector, walletAddressSelector } from 'src/web3/selectors'
 import { getSupportedNetworkIds } from 'src/web3/utils'
+import type { SagaGenerator } from 'typed-redux-saga'
 import {
   call,
   delay,
@@ -484,32 +485,23 @@ export function* normalizeTransactions(rawTxs: any[], network: Network) {
 function prepareNormalizedTransactions(
   rawTxs: unknown[],
   walletConnectChainId: string
-): Generator<
-  any,
-  {
-    hasInsufficientGasFunds: boolean
-    feeCurrenciesSymbols: string[]
-    result: PreparedTransactionResult<SerializableTransactionRequest[]>
-  },
-  any
->
+): SagaGenerator<{
+  hasInsufficientGasFunds: boolean
+  feeCurrenciesSymbols: string[]
+  result: PreparedTransactionResult<SerializableTransactionRequest[]>
+}>
 function prepareNormalizedTransactions(
   rawTx: unknown,
   walletConnectChainId: string
-): Generator<
-  any,
-  {
-    hasInsufficientGasFunds: boolean
-    feeCurrenciesSymbols: string[]
-    result: PreparedTransactionResult<SerializableTransactionRequest>
-  },
-  any
->
+): SagaGenerator<{
+  hasInsufficientGasFunds: boolean
+  feeCurrenciesSymbols: string[]
+  result: PreparedTransactionResult<SerializableTransactionRequest>
+}>
 function* prepareNormalizedTransactions(
   rawTxOrTxs: unknown[] | unknown,
   walletConnectChainId: string
-): Generator<
-  any,
+): SagaGenerator<
   | {
       hasInsufficientGasFunds: boolean
       feeCurrenciesSymbols: string[]
@@ -519,8 +511,7 @@ function* prepareNormalizedTransactions(
       hasInsufficientGasFunds: boolean
       feeCurrenciesSymbols: string[]
       result: PreparedTransactionResult<SerializableTransactionRequest[]>
-    },
-  any
+    }
 > {
   const networkId = walletConnectChainIdToNetworkId[walletConnectChainId]
   const network = walletConnectChainIdToNetwork[walletConnectChainId]
