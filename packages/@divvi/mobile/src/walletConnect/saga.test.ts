@@ -655,9 +655,9 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: {
+      preparedRequest: {
         success: true,
-        transactionRequest: mockPreparedTransactions.transactions[0],
+        data: mockPreparedTransactions.transactions[0],
       },
     })
   })
@@ -693,7 +693,7 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: {
+      preparedRequest: {
         success: false,
         errorMessage: 'Some error',
       },
@@ -731,7 +731,7 @@ describe('showActionRequest', () => {
       version: 2,
       hasInsufficientGasFunds: false,
       feeCurrenciesSymbols: [],
-      preparedTransaction: {
+      preparedRequest: {
         success: false,
         errorMessage: 'viem short message',
       },
@@ -1153,6 +1153,16 @@ describe('normalizeTransactions', () => {
       ])
       .run()
   })
+
+  it('ensures `from` is set to the wallet address', async () => {
+    const result = await expectSaga(normalizeTransactions, [{ data: '0xABC' }], Network.Ethereum)
+      .provide(createDefaultProviders(Network.Ethereum))
+      .run()
+
+    expect(result.returnValue[0]).toMatchObject({
+      from: mockAccount,
+    })
+  })
 })
 
 const mockRequest = {
@@ -1233,6 +1243,11 @@ describe('wallet_sendCalls', () => {
     name: 'someName',
   })
 
+  const mockPreparedTransactions = {
+    type: 'possible',
+    transactions: [{ from: '0xfrom', to: '0xto', data: '0xdata' }],
+  }
+
   let mockClient: any
 
   beforeEach(() => {
@@ -1291,6 +1306,58 @@ describe('wallet_sendCalls', () => {
     expect(navigate).not.toHaveBeenCalled()
   })
 
+  it('allows request when global capabilities are optional and not supported', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [{ to: '0xTEST', data: '0x' }],
+              capabilities: {
+                paymasterService: { optional: true }, // optional
+              },
+              atomicRequired: false,
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+        [call.fn(prepareTransactions), mockPreparedTransactions],
+      ])
+      .run()
+
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method: SupportedActions.wallet_sendCalls,
+      request,
+      supportedChains: ['eip155:44787'],
+      version: 2,
+      hasInsufficientGasFunds: false,
+      feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
+      preparedRequest: {
+        success: true,
+        data: mockPreparedTransactions.transactions,
+      },
+    })
+  })
+
   it('denies request when per-call required capabilities are not supported', async () => {
     const request = createSendCallsRequest({
       params: {
@@ -1337,6 +1404,64 @@ describe('wallet_sendCalls', () => {
     expect(navigate).not.toHaveBeenCalled()
   })
 
+  it('allows request when per-call capabilities are optional and not supported', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [
+                {
+                  to: '0xTEST',
+                  data: '0x',
+                  capabilities: {
+                    atomic: { optional: true }, // optional
+                  },
+                },
+              ],
+              capabilities: {},
+              atomicRequired: false,
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+        [call.fn(prepareTransactions), mockPreparedTransactions],
+      ])
+      .run()
+
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method: SupportedActions.wallet_sendCalls,
+      request,
+      supportedChains: ['eip155:44787'],
+      version: 2,
+      hasInsufficientGasFunds: false,
+      feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
+      preparedRequest: {
+        success: true,
+        data: mockPreparedTransactions.transactions,
+      },
+    })
+  })
+
   it('denies request when atomic execution is required but not supported', async () => {
     const request = createSendCallsRequest({
       params: {
@@ -1373,6 +1498,56 @@ describe('wallet_sendCalls', () => {
       .run()
 
     expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('allows request when atomic execution is not required', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [{ to: '0xTEST', data: '0x' }],
+              capabilities: {},
+              atomicRequired: false, // not required
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+        [call.fn(prepareTransactions), mockPreparedTransactions],
+      ])
+      .run()
+
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method: SupportedActions.wallet_sendCalls,
+      request,
+      supportedChains: ['eip155:44787'],
+      version: 2,
+      hasInsufficientGasFunds: false,
+      feeCurrenciesSymbols: ['CELO', 'cEUR', 'cUSD'],
+      preparedRequest: {
+        success: true,
+        data: mockPreparedTransactions.transactions,
+      },
+    })
   })
 })
 

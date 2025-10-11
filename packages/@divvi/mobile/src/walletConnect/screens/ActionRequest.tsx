@@ -15,10 +15,19 @@ import EstimatedNetworkFee from 'src/walletConnect/screens/EstimatedNetworkFee'
 import RequestContent, { useDappMetadata } from 'src/walletConnect/screens/RequestContent'
 import { useIsDappListed } from 'src/walletConnect/screens/useIsDappListed'
 import { sessionsSelector } from 'src/walletConnect/selectors'
-import { isTransactionMethod, MessageRequest, TransactionRequest } from 'src/walletConnect/types'
+import {
+  isSendCallsMethod,
+  isTransactionMethod,
+  MessageRequest,
+  SendCallsRequest,
+  TransactionRequest,
+} from 'src/walletConnect/types'
 import { walletConnectChainIdToNetworkId } from 'src/web3/networkConfig'
 
-export type ActionRequestProps = TransactionRequestProps | MessageRequestProps
+export type ActionRequestProps =
+  | TransactionRequestProps
+  | MessageRequestProps
+  | SendCallsRequestProps
 
 type RequestProps = {
   version: 2
@@ -29,8 +38,14 @@ type TransactionRequestProps = RequestProps & TransactionRequest
 
 type MessageRequestProps = RequestProps & MessageRequest
 
+type SendCallsRequestProps = RequestProps & SendCallsRequest
+
 function isTransactionRequest(props: ActionRequestProps): props is TransactionRequestProps {
   return isTransactionMethod(props.method)
+}
+
+function isSendCallsRequest(props: ActionRequestProps): props is SendCallsRequestProps {
+  return isSendCallsMethod(props.method)
 }
 
 function ActionRequest(props: ActionRequestProps) {
@@ -59,7 +74,16 @@ function ActionRequest(props: ActionRequestProps) {
   const networkId = walletConnectChainIdToNetworkId[chainId]
   const networkName = NETWORK_NAMES[networkId]
 
-  const { description, title, action } = getDisplayTextFromAction(t, method, dappName, networkName)
+  const { description, title, action } = getDisplayTextFromAction(
+    t,
+    method,
+    dappName,
+    networkName,
+    (isSendCallsRequest(props) &&
+      props.preparedRequest.success &&
+      props.preparedRequest.data.length) ||
+      0
+  )
 
   // Reject and warn if the chain is not supported
   // Note: we still allow off-chain actions like personal_sign on unsupported
@@ -94,7 +118,7 @@ function ActionRequest(props: ActionRequestProps) {
     )
   }
 
-  if (isTransactionRequest(props) && props.hasInsufficientGasFunds) {
+  if ((isTransactionRequest(props) || isSendCallsRequest(props)) && props.hasInsufficientGasFunds) {
     return (
       <RequestContent
         type="dismiss"
@@ -117,7 +141,10 @@ function ActionRequest(props: ActionRequestProps) {
     )
   }
 
-  if (isTransactionRequest(props) && !props.preparedTransaction.success) {
+  if (
+    (isTransactionRequest(props) || isSendCallsRequest(props)) &&
+    !props.preparedRequest.success
+  ) {
     return (
       <RequestContent
         type="dismiss"
@@ -133,7 +160,7 @@ function ActionRequest(props: ActionRequestProps) {
           variant={NotificationVariant.Warning}
           title={t('walletConnectRequest.failedToPrepareTransaction.title')}
           description={t('walletConnectRequest.failedToPrepareTransaction.description', {
-            errorMessage: props.preparedTransaction.errorMessage,
+            errorMessage: props.preparedRequest.errorMessage,
           })}
           style={styles.warning}
         />
@@ -159,19 +186,25 @@ function ActionRequest(props: ActionRequestProps) {
         session={activeSession}
         request={request}
         method={method}
-        preparedTransaction={
-          isTransactionRequest(props) && props.preparedTransaction.success
-            ? props.preparedTransaction.transactionRequest
+        preparedRequest={
+          (isTransactionRequest(props) || isSendCallsRequest(props)) &&
+          props.preparedRequest.success
+            ? props.preparedRequest.data
             : undefined
         }
       />
-      {isTransactionRequest(props) && props.preparedTransaction.success && (
-        <EstimatedNetworkFee
-          isLoading={false}
-          networkId={networkId}
-          transactions={[props.preparedTransaction.transactionRequest]}
-        />
-      )}
+      {(isTransactionRequest(props) || isSendCallsRequest(props)) &&
+        props.preparedRequest.success && (
+          <EstimatedNetworkFee
+            isLoading={false}
+            networkId={networkId}
+            transactions={
+              isTransactionRequest(props)
+                ? [props.preparedRequest.data]
+                : props.preparedRequest.data
+            }
+          />
+        )}
       <DappsDisclaimer isDappListed={isDappListed} />
     </RequestContent>
   )
