@@ -326,9 +326,21 @@ describe(handleRequest, () => {
     })
 
     it('supports sequential execution and returns capabilities for supported network', async () => {
+      viemWallet.sendTransaction = jest
+        .fn()
+        .mockResolvedValueOnce('0x1234')
+        .mockResolvedValueOnce('0x5678')
+
       const expectedResult = {
         id: '0xabc',
-        capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+        capabilities: {
+          atomic: { status: 'unsupported' },
+          paymasterService: { supported: false },
+          caip345: {
+            caip2: 'eip155:11155111',
+            transactionHashes: ['0x1234', '0x5678'],
+          },
+        },
       }
 
       await expectSaga(handleRequest, sendCallsRequest)
@@ -364,7 +376,14 @@ describe(handleRequest, () => {
 
       const expectedResult = {
         id: '0xabc',
-        capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+        capabilities: {
+          atomic: { status: 'unsupported' },
+          paymasterService: { supported: false },
+          caip345: {
+            caip2: 'eip155:11155111',
+            transactionHashes: ['0x1234'],
+          },
+        },
       }
 
       await expectSaga(handleRequest, sendCallsRequest)
