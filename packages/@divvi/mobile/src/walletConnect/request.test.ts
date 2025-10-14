@@ -1,4 +1,6 @@
 import { expectSaga } from 'redux-saga-test-plan'
+import { BATCH_STATUS_TTL } from 'src/sendCalls/constants'
+import { addBatch, pruneExpiredBatches } from 'src/sendCalls/slice'
 import { NetworkId } from 'src/transactions/types'
 import { ViemWallet } from 'src/viem/getLockableWallet'
 import {
@@ -305,6 +307,16 @@ describe(handleRequest, () => {
   })
 
   describe('wallet_sendCalls', () => {
+    const NOW = 1_000_000_000_000
+
+    beforeEach(() => {
+      jest.useFakeTimers()
+      jest.setSystemTime(NOW)
+    })
+
+    afterEach(() => {
+      jest.useRealTimers()
+    })
     const preparedRequest = {
       success: true as const,
       data: [serializableSendTransactionRequest, serializableSendTransactionRequest],
@@ -325,7 +337,12 @@ describe(handleRequest, () => {
       preparedRequest,
     })
 
-    it('supports sequential execution and returns capabilities for supported network', async () => {
+    it('supports sequential execution, records batch, and returns capabilities', async () => {
+      viemWallet.sendTransaction = jest
+        .fn()
+        .mockResolvedValueOnce('0xaaa')
+        .mockResolvedValueOnce('0xbbb')
+
       const expectedResult = {
         id: '0xabc',
         capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
@@ -336,6 +353,14 @@ describe(handleRequest, () => {
         .call(unlockAccount, '0xwallet')
         .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
         .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
+        .put(pruneExpiredBatches({ now: NOW }))
+        .put(
+          addBatch({
+            id: '0xabc',
+            transactionHashes: ['0xaaa', '0xbbb'],
+            expiresAt: NOW + BATCH_STATUS_TTL,
+          })
+        )
         .returns(expectedResult)
         .run()
     })
