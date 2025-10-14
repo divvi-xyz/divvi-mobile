@@ -17,7 +17,9 @@ export type Capabilities = Pick<
   'atomic' | 'paymasterService'
 >
 
-type NonInteractiveMethod = SupportedActions.wallet_getCapabilities
+type NonInteractiveMethod =
+  | SupportedActions.wallet_getCapabilities
+  | SupportedActions.wallet_getCallsStatus
 
 export type MessageMethod =
   | SupportedActions.eth_sign
@@ -32,7 +34,10 @@ export type TransactionMethod =
 export type SendCallsMethod = SupportedActions.wallet_sendCalls
 
 export function isNonInteractiveMethod(method: string): method is NonInteractiveMethod {
-  return method === SupportedActions.wallet_getCapabilities
+  return (
+    method === SupportedActions.wallet_getCapabilities ||
+    method === SupportedActions.wallet_getCallsStatus
+  )
 }
 
 export function isMessageMethod(method: string): method is MessageMethod {

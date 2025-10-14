@@ -1,9 +1,11 @@
 import { BATCH_STATUS_TTL } from 'src/sendCalls/constants'
+import { selectBatch } from 'src/sendCalls/selectors'
 import { addBatch, pruneExpiredBatches } from 'src/sendCalls/slice'
 import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
 import { SentrySpan } from 'src/sentry/SentrySpans'
 import { Network } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
+import { publicClient } from 'src/viem'
 import { ViemWallet } from 'src/viem/getLockableWallet'
 import { getPreparedTransaction } from 'src/viem/preparedTransactionSerialization'
 import {
@@ -18,7 +20,7 @@ import networkConfig, {
   walletConnectChainIdToNetwork,
 } from 'src/web3/networkConfig'
 import { getWalletAddress, unlockAccount } from 'src/web3/saga'
-import { call, put } from 'typed-redux-saga'
+import { call, put, select } from 'typed-redux-saga'
 import { bytesToHex, Hex, SignMessageParameters } from 'viem'
 
 const TAG = 'WalletConnect/request'
@@ -134,6 +136,58 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
 
       return {
         id,
+        capabilities: supportedCapabilities[chainId],
+      }
+    }
+    case SupportedActions.wallet_getCallsStatus: {
+      const [id] = params
+      const batch = yield* select(selectBatch, id)
+
+      if (!batch) {
+        // Should never happen, as we already checked for the batch id in the saga
+        throw new Error('unknown batch id')
+      }
+
+      const network = walletConnectChainIdToNetwork[chainId]
+
+      const requests = yield* call(
+        Promise.allSettled,
+        batch.transactionHashes.map((hash) => publicClient[network].getTransactionReceipt({ hash }))
+      )
+
+      const receipts = requests.filter((r) => r.status === 'fulfilled').map((r) => r.value)
+
+      requests
+        .filter((r) => r.status === 'rejected')
+        // eslint-disable-next-line no-console
+        .forEach((r) => console.warn('Failed to fetch transaction receipt:', (r as any).reason))
+
+      const someReceiptsPending = receipts.length === 0
+      const allReceiptsSuccessful =
+        receipts.length > 0 && receipts.every((r) => r?.status === 'success')
+      const allReceiptsFailed =
+        receipts.length > 0 && receipts.every((r) => r?.status === 'reverted')
+      const someReceiptsFailed = receipts.some((r) => r?.status === 'reverted')
+
+      let status: number
+      if (someReceiptsPending) {
+        status = 100
+      } else if (allReceiptsSuccessful) {
+        status = 200
+      } else if (allReceiptsFailed) {
+        status = 500
+      } else if (someReceiptsFailed) {
+        status = 600
+      } else {
+        status = 100
+      }
+
+      const supportedCapabilities = yield* call(getWalletCapabilitiesByWalletConnectChainId)
+
+      return {
+        id,
+        status,
+        receipts,
         capabilities: supportedCapabilities[chainId],
       }
     }

@@ -11,6 +11,7 @@ export enum SupportedActions {
   personal_sign = 'personal_sign',
   wallet_getCapabilities = 'wallet_getCapabilities',
   wallet_sendCalls = 'wallet_sendCalls',
+  wallet_getCallsStatus = 'wallet_getCallsStatus',
 }
 
 type InteractiveActions =
@@ -133,6 +134,10 @@ export const rpcError = {
   UNSUPPORTED_NON_OPTIONAL_CAPABILITY: {
     code: 5700,
     message: 'Unsupported non-optional capability',
+  },
+  UNKNOWN_BUNDLE_ID: {
+    code: 5730,
+    message: 'Unknown bundle id',
   },
   ATOMICITY_NOT_SUPPORTED: {
     code: 5760,

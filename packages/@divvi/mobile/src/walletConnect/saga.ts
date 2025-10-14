@@ -18,6 +18,7 @@ import { ActiveDapp } from 'src/dapps/types'
 import i18n from 'src/i18n'
 import { isBottomSheetVisible, navigate, navigateBack } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+import { selectBatch } from 'src/sendCalls/selectors'
 import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
 import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
@@ -683,6 +684,21 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       // TODO: suggest user to enable atomic operations
       // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
     }
+  }
+
+  if (method === SupportedActions.wallet_getCallsStatus) {
+    const [id] = request.params.request.params
+    if (!id) {
+      yield* put(denyRequest(request, rpcError.INVALID_PARAMS))
+      return
+    }
+
+    const batch = yield* select(selectBatch, id, Date.now())
+    if (!batch) {
+      yield* put(denyRequest(request, rpcError.UNKNOWN_BUNDLE_ID))
+      return
+    }
+    return
   }
 
   // If the action doesn't require user consent, accept it immediately
