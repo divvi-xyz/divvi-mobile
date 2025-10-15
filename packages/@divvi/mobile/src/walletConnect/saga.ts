@@ -501,18 +501,13 @@ function prepareNormalizedTransactions(
 function* prepareNormalizedTransactions(
   rawTxOrTxs: unknown[] | unknown,
   walletConnectChainId: string
-): SagaGenerator<
-  | {
-      hasInsufficientGasFunds: boolean
-      feeCurrenciesSymbols: string[]
-      result: PreparedTransactionResult<SerializableTransactionRequest>
-    }
-  | {
-      hasInsufficientGasFunds: boolean
-      feeCurrenciesSymbols: string[]
-      result: PreparedTransactionResult<SerializableTransactionRequest[]>
-    }
-> {
+): SagaGenerator<{
+  hasInsufficientGasFunds: boolean
+  feeCurrenciesSymbols: string[]
+  result:
+    | PreparedTransactionResult<SerializableTransactionRequest>
+    | PreparedTransactionResult<SerializableTransactionRequest[]>
+}> {
   const networkId = walletConnectChainIdToNetworkId[walletConnectChainId]
   const network = walletConnectChainIdToNetwork[walletConnectChainId]
   const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
