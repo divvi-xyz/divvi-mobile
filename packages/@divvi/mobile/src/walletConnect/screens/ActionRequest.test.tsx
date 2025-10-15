@@ -520,6 +520,16 @@ describe('ActionRequest with WalletConnect V2', () => {
 
     const sendCallsMethod = SupportedActions.wallet_sendCalls as const
 
+    const singleTransaction = [preparedTransactionSuccess.data]
+
+    const manyTransactions = [
+      preparedTransactionSuccess.data,
+      {
+        ...preparedTransactionSuccess.data,
+        nonce: preparedTransactionSuccess.data.nonce + 1,
+      },
+    ]
+
     const store = createMockStore({
       walletConnect: {
         sessions: [v2Session],
@@ -543,7 +553,7 @@ describe('ActionRequest with WalletConnect V2', () => {
             feeCurrenciesSymbols={feeCurrenciesSymbols}
             preparedRequest={{
               success: true,
-              data: [preparedTransactionSuccess.data],
+              data: manyTransactions,
             }}
           />
         </Provider>
@@ -551,6 +561,29 @@ describe('ActionRequest with WalletConnect V2', () => {
 
       expect(getByText('walletConnectRequest.nonAtomicExecution.title')).toBeTruthy()
       expect(getByText('walletConnectRequest.nonAtomicExecution.description')).toBeTruthy()
+    })
+
+    it('should not show a warning for non-atomic SendCalls requests with a single transaction', () => {
+      const { queryByText } = render(
+        <Provider store={store}>
+          <ActionRequest
+            version={2}
+            method={sendCallsMethod}
+            request={sendCallsRequest}
+            supportedChains={supportedChains}
+            atomic={false}
+            hasInsufficientGasFunds={false}
+            feeCurrenciesSymbols={feeCurrenciesSymbols}
+            preparedRequest={{
+              success: true,
+              data: singleTransaction,
+            }}
+          />
+        </Provider>
+      )
+
+      expect(queryByText('walletConnectRequest.nonAtomicExecution.title')).toBeFalsy()
+      expect(queryByText('walletConnectRequest.nonAtomicExecution.description')).toBeFalsy()
     })
 
     it('should not show a warning for atomic SendCalls requests', () => {
@@ -566,7 +599,7 @@ describe('ActionRequest with WalletConnect V2', () => {
             feeCurrenciesSymbols={feeCurrenciesSymbols}
             preparedRequest={{
               success: true,
-              data: [preparedTransactionSuccess.data],
+              data: manyTransactions,
             }}
           />
         </Provider>
