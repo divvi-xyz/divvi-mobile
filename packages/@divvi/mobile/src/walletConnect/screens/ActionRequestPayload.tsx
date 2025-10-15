@@ -37,23 +37,25 @@ function ActionRequestPayload(props: MessageProps | TransactionProps) {
   const { t } = useTranslation()
   const activeDapp = useSelector(activeDappSelector)
 
-  const moreInfoString = useMemo(
-    () =>
-      method === SupportedActions.eth_signTransaction ||
-      method === SupportedActions.eth_sendTransaction
-        ? JSON.stringify(props.preparedRequest ?? params)
-        : method === SupportedActions.wallet_sendCalls
-          ? JSON.stringify(props.preparedRequest ?? params)
-          : method === SupportedActions.eth_signTypedData ||
-              method === SupportedActions.eth_signTypedData_v4
-            ? JSON.stringify(params[1])
-            : method === SupportedActions.personal_sign
-              ? Buffer.from(trimLeading0x(params[0]), 'hex').toString() ||
-                params[0] ||
-                t('action.emptyMessage')
-              : null,
-    [method, params, props]
-  )
+  const moreInfoString = useMemo(() => {
+    switch (method) {
+      case SupportedActions.eth_signTransaction:
+      case SupportedActions.eth_sendTransaction:
+      case SupportedActions.wallet_sendCalls:
+        return JSON.stringify(props.preparedRequest ?? params)
+      case SupportedActions.eth_signTypedData:
+      case SupportedActions.eth_signTypedData_v4:
+        return JSON.stringify(params[1])
+      case SupportedActions.personal_sign:
+        return (
+          Buffer.from(trimLeading0x(params[0]), 'hex').toString() ||
+          params[0] ||
+          t('action.emptyMessage')
+        )
+      default:
+        return null
+    }
+  }, [method, params, props])
 
   const handleTrackCopyRequestPayload = () => {
     const defaultTrackedProps = {
