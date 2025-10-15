@@ -230,6 +230,7 @@ export type StackParamList = {
     | undefined
   [Screens.PointsHome]: undefined
   [Screens.PointsIntro]: undefined
+  [Screens.PrivateKey]: undefined
   [Screens.ProtectWallet]: undefined
   [Screens.OnboardingRecoveryPhrase]:
     | {

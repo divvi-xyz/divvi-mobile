@@ -12,6 +12,7 @@ import GoldEducation from 'src/account/GoldEducation'
 import LegalSubmenu from 'src/account/LegalSubmenu'
 import Licenses from 'src/account/Licenses'
 import PreferencesSubmenu from 'src/account/PreferencesSubmenu'
+import PrivateKey from 'src/account/PrivateKey'
 import Profile from 'src/account/Profile'
 import ProfileSubmenu from 'src/account/ProfileSubmenu'
 import SecuritySubmenu from 'src/account/SecuritySubmenu'
@@ -328,6 +329,7 @@ const settingsScreens = (Navigator: typeof Stack) => (
       component={SecuritySubmenu}
       options={noHeader}
     />
+    <Navigator.Screen name={Screens.PrivateKey} component={PrivateKey} options={noHeader} />
     <Navigator.Screen
       name={Screens.Language}
       component={Language}

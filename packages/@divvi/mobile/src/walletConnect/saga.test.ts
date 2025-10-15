@@ -24,7 +24,7 @@ import {
   denyRequest,
   sessionProposal as sessionProposalAction,
 } from 'src/walletConnect/actions'
-import { SupportedActions, SupportedEvents } from 'src/walletConnect/constants'
+import { SupportedActions, SupportedEvents, rpcError } from 'src/walletConnect/constants'
 import {
   _acceptSession,
   _applyIconFixIfNeeded,
@@ -1272,6 +1272,191 @@ describe('getSessionFromRequest', () => {
     return expect(expectSaga(getSessionFromRequest, mockRequest).run()).rejects.toThrow(
       'missing client'
     )
+  })
+})
+
+describe('wallet_sendCalls', () => {
+  const topic = '243b33442b6190b97055201b5a8817f4e604e3f37b5376e78ee0b3715cc6211c'
+  const createSendCallsRequest = (overrides: any = {}) => ({
+    id: 1707297778331031,
+    topic,
+    params: {
+      request: {
+        method: 'wallet_sendCalls',
+        params: [
+          {
+            id: '0xabc',
+            calls: [
+              {
+                to: '0x8D6677192144292870907E3Fa8A5527fE55A7ff6',
+                data: '0x580d747a0000000000000000000000007194dfe766a92308880a943fd70f31c8e7c50e66000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000007c75b0b81a54359e9dccda9cb663ca2e3de6b71000000000000000000000000089d5bd54c43ddd10905a030de6ff02ebb6c51654',
+                value: '0x0',
+              },
+            ],
+            capabilities: {},
+            atomicRequired: false,
+          },
+        ],
+      },
+      chainId: 'eip155:44787',
+    },
+    verifyContext: {
+      verified: {
+        verifyUrl: 'https://verify.walletconnect.com',
+        validation: 'UNKNOWN',
+        origin: 'https://churrito.fi',
+      },
+    },
+    ...overrides,
+  })
+
+  const session = createSession({
+    url: 'someUrl',
+    icons: ['someIcon'],
+    description: 'someDescription',
+    name: 'someName',
+  })
+
+  let mockClient: any
+
+  beforeEach(() => {
+    mockClient = {
+      approveSession: jest.fn(),
+      getActiveSessions: jest.fn(() => {
+        return Promise.resolve({
+          [topic]: session,
+        })
+      }),
+    }
+    _setClientForTesting(mockClient as any)
+  })
+
+  afterEach(() => {
+    _setClientForTesting(null)
+  })
+
+  it('denies request when required global capabilities are not supported', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [{ to: '0xTEST', data: '0x' }],
+              capabilities: {
+                paymasterService: { optional: false }, // required
+              },
+              atomicRequired: false,
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+      ])
+      .put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('denies request when per-call required capabilities are not supported', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [
+                {
+                  to: '0xTEST',
+                  data: '0x',
+                  capabilities: {
+                    paymasterService: { optional: false }, // required
+                  },
+                },
+              ],
+              capabilities: {},
+              atomicRequired: false,
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+      ])
+      .put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('denies request when atomic execution is required but not supported', async () => {
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: '0xabc',
+              calls: [{ to: '0xTEST', data: '0x' }],
+              capabilities: {},
+              atomicRequired: true, // required
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+        [
+          call(getTransactionCount, publicClient[Network.Celo], {
+            address: mockAccount,
+            blockTag: 'pending',
+          }),
+          123,
+        ],
+      ])
+      .put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
   })
 })
 

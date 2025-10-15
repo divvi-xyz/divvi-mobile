@@ -10,6 +10,7 @@ export enum SupportedActions {
   eth_sign = 'eth_sign',
   personal_sign = 'personal_sign',
   wallet_getCapabilities = 'wallet_getCapabilities',
+  wallet_sendCalls = 'wallet_sendCalls',
 }
 
 type InteractiveActions =
@@ -119,5 +120,13 @@ export const rpcError = {
   UNAUTHORIZED: {
     code: 4100,
     message: 'Unauthorized',
+  },
+  UNSUPPORTED_NON_OPTIONAL_CAPABILITY: {
+    code: 5700,
+    message: 'Unsupported non-optional capability',
+  },
+  ATOMICITY_NOT_SUPPORTED: {
+    code: 5760,
+    message: 'Atomicity not supported',
   },
 } as const
