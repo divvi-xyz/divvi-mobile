@@ -685,6 +685,34 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       }
     }
 
+
+
+    // If the action doesn't require user consent, accept it immediately
+    if (isNonInteractiveMethod(method)) {
+      yield* put(acceptRequest({ method, request }))
+      return
+    }
+
+    // since there are some network requests needed to prepare the transactions,
+    // add a loading state
+    navigate(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Loading,
+      origin: WalletConnectPairingOrigin.Deeplink,
+    })
+
+    const supportedChains = yield* call(getSupportedChains)
+
+    if (isMessageMethod(method)) {
+      navigate(Screens.WalletConnectRequest, {
+        type: WalletConnectRequestType.Action,
+        method,
+        request,
+        supportedChains,
+        version: 2,
+      })
+      return
+    }
+
     if (atomic === 'ready') {
       // Show smart account conversion prompt
       const rawTxs: unknown[] = request.params.request.params[0].calls
@@ -710,32 +738,6 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       return
     }
   }
-
-  // If the action doesn't require user consent, accept it immediately
-  if (isNonInteractiveMethod(method)) {
-    yield* put(acceptRequest({ method, request }))
-    return
-  }
-
-  // since there are some network requests needed to prepare the transactions,
-  // add a loading state
-  navigate(Screens.WalletConnectRequest, {
-    type: WalletConnectRequestType.Loading,
-    origin: WalletConnectPairingOrigin.Deeplink,
-  })
-
-  const supportedChains = yield* call(getSupportedChains)
-
-  if (isMessageMethod(method)) {
-    navigate(Screens.WalletConnectRequest, {
-      type: WalletConnectRequestType.Action,
-      method,
-      request,
-      supportedChains,
-      version: 2,
-    })
-  }
-
   if (isTransactionMethod(method)) {
     const rawTx: unknown = request.params.request.params[0]
     const {
