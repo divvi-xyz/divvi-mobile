@@ -6,7 +6,7 @@ import InLineNotification, { NotificationVariant } from 'src/components/InLineNo
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { Spacing } from 'src/styles/styles'
 import Logger from 'src/utils/Logger'
-import { acceptRequest, denyRequest } from 'src/walletConnect/actions'
+import { acceptRequest, denyOptionalUpgrade, denyRequest } from 'src/walletConnect/actions'
 import ActionRequestPayload from 'src/walletConnect/screens/ActionRequestPayload'
 import DappsDisclaimer from 'src/walletConnect/screens/DappsDisclaimer'
 import EstimatedNetworkFee from 'src/walletConnect/screens/EstimatedNetworkFee'
@@ -62,8 +62,8 @@ function SmartAccountConversionRequestComponent(props: SmartAccountConversionReq
       // If atomic is required and user denies conversion, cancel the transaction
       dispatch(denyRequest(request, getSdkError('USER_REJECTED')))
     } else {
-      // If atomic is not required, proceed with regular transaction
-      dispatch(acceptRequest(props))
+      // If atomic is not required, proceed with regular transaction without showing upgrade prompt again
+      dispatch(denyOptionalUpgrade(request))
     }
   }
 

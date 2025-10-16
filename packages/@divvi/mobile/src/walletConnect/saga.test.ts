@@ -24,6 +24,7 @@ import {
   denyRequest,
   sessionProposal as sessionProposalAction,
 } from 'src/walletConnect/actions'
+import { getAtomicCapabilityByWalletConnectChainId } from 'src/walletConnect/capabilities'
 import { SupportedActions, SupportedEvents, rpcError } from 'src/walletConnect/constants'
 import {
   _acceptSession,
@@ -40,8 +41,9 @@ import {
   walletConnectSaga,
 } from 'src/walletConnect/saga'
 import { WalletConnectRequestType } from 'src/walletConnect/types'
+import { getWalletAddress } from 'src/web3/saga'
 import { demoModeEnabledSelector, walletAddressSelector } from 'src/web3/selectors'
-import { getSupportedNetworkIds } from 'src/web3/utils'
+import { getSupportedChains, getSupportedNetworkIds } from 'src/web3/utils'
 import { createMockStore } from 'test/utils'
 import { mockAccount } from 'test/values'
 import { BaseError } from 'viem'
@@ -710,7 +712,7 @@ describe('showActionRequest', () => {
       ],
     }
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, actionRequest)
+    await expectSaga(_showActionRequest, actionRequest, true)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -722,10 +724,14 @@ describe('showActionRequest', () => {
           123,
         ],
         [call.fn(prepareTransactions), mockPreparedTransactions],
+        [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
+        [call.fn(getWalletAddress), mockAccount],
+        [call.fn(getSupportedChains), ['eip155:42220']],
+        [select(demoModeEnabledSelector), false],
       ])
       .run()
 
-    // 2 calls, one in loading state and one in the action request state
+    // 2 calls: loading state, then action request state
     expect(navigate).toHaveBeenCalledTimes(2)
     expect(navigate).toHaveBeenNthCalledWith(1, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Loading,
@@ -748,7 +754,7 @@ describe('showActionRequest', () => {
 
   it('navigates to the screen to reject the request when the transaction preparation fails', async () => {
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, actionRequest)
+    await expectSaga(_showActionRequest, actionRequest, true)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -763,7 +769,7 @@ describe('showActionRequest', () => {
       ])
       .run()
 
-    // 2 calls, one in loading state and one in the action request state
+    // 2 calls: loading state, then action request state
     expect(navigate).toHaveBeenCalledTimes(2)
     expect(navigate).toHaveBeenNthCalledWith(1, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Loading,
@@ -786,7 +792,7 @@ describe('showActionRequest', () => {
 
   it('navigates to the screen to reject the request when the transaction preparation fails with a viem error', async () => {
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, actionRequest)
+    await expectSaga(_showActionRequest, actionRequest, true)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -801,7 +807,7 @@ describe('showActionRequest', () => {
       ])
       .run()
 
-    // 2 calls, one in loading state and one in the action request state
+    // 2 calls: loading state, then action request state
     expect(navigate).toHaveBeenCalledTimes(2)
     expect(navigate).toHaveBeenNthCalledWith(1, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Loading,
@@ -835,7 +841,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, nonInteractiveRequest)
+    await expectSaga(_showActionRequest, nonInteractiveRequest, true)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(
@@ -863,7 +869,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, req)
+    await expectSaga(_showActionRequest, req, true)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
@@ -883,7 +889,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, req)
+    await expectSaga(_showActionRequest, req, true)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(denyRequest(req, { code: 4100, message: 'Unauthorized' }))
@@ -903,7 +909,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, req)
+    await expectSaga(_showActionRequest, req, true)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
@@ -923,7 +929,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, req)
+    await expectSaga(_showActionRequest, req, true)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
@@ -943,7 +949,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, req)
+    await expectSaga(_showActionRequest, req, true)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
@@ -953,7 +959,7 @@ describe('showActionRequest', () => {
   it('throws an error when client is missing', () => {
     _setClientForTesting(null)
 
-    return expect(expectSaga(_showActionRequest, mockRequest).run()).rejects.toThrow(
+    return expect(expectSaga(_showActionRequest, mockRequest, true).run()).rejects.toThrow(
       'missing client'
     )
   })
@@ -1267,7 +1273,7 @@ describe('handleIncomingActionRequest', () => {
   })
 
   it('throws an error when client is missing', () => {
-    return expect(expectSaga(_showActionRequest, mockRequest).run()).rejects.toThrow(
+    return expect(expectSaga(_showActionRequest, mockRequest, true).run()).rejects.toThrow(
       'missing client'
     )
   })
@@ -1371,7 +1377,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request)
+    await expectSaga(_showActionRequest, request, true)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1411,7 +1417,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request)
+    await expectSaga(_showActionRequest, request, true)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1424,6 +1430,10 @@ describe('wallet_sendCalls', () => {
           123,
         ],
         [call.fn(prepareTransactions), mockPreparedTransactions],
+        [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
+        [call.fn(getWalletAddress), mockAccount],
+        [call.fn(getSupportedChains), ['eip155:42220']],
+        [select(demoModeEnabledSelector), false],
       ])
       .run()
 
@@ -1469,7 +1479,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request)
+    await expectSaga(_showActionRequest, request, true)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1515,7 +1525,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request)
+    await expectSaga(_showActionRequest, request, true)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1528,6 +1538,10 @@ describe('wallet_sendCalls', () => {
           123,
         ],
         [call.fn(prepareTransactions), mockPreparedTransactions],
+        [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
+        [call.fn(getWalletAddress), mockAccount],
+        [call.fn(getSupportedChains), ['eip155:42220']],
+        [select(demoModeEnabledSelector), false],
       ])
       .run()
 
@@ -1565,7 +1579,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request)
+    await expectSaga(_showActionRequest, request, true)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1603,7 +1617,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request)
+    await expectSaga(_showActionRequest, request, true)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1616,6 +1630,10 @@ describe('wallet_sendCalls', () => {
           123,
         ],
         [call.fn(prepareTransactions), mockPreparedTransactions],
+        [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
+        [call.fn(getWalletAddress), mockAccount],
+        [call.fn(getSupportedChains), ['eip155:42220']],
+        [select(demoModeEnabledSelector), false],
       ])
       .run()
 
@@ -1724,7 +1742,7 @@ describe('handlePendingState', () => {
           123,
         ],
       ])
-      .call(_showActionRequest, mockRequest)
+      .call(_showActionRequest, mockRequest, true)
       .run()
   })
 

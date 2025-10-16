@@ -44,6 +44,7 @@ import {
   Actions,
   clientInitialised,
   CloseSession,
+  DenyOptionalUpgrade,
   DenyRequest,
   denyRequest,
   DenySession,
@@ -576,12 +577,13 @@ function* prepareNormalizedTransactions(
   }
 }
 
-function* showActionRequest(request: WalletKitTypes.EventArguments['session_request']) {
+function* showActionRequest(request: WalletKitTypes.EventArguments['session_request'], promptAccountUpgrade: boolean = true) {
   if (!client) {
     throw new Error('missing client')
   }
 
   const demoModeEnabled = yield* select(demoModeEnabledSelector)
+  const supportedChains = yield* call(getSupportedChains)
   if (demoModeEnabled) {
     navigate(Screens.DemoModeAuthBlock)
     yield* put(denyRequest(request, getSdkError('USER_REJECTED')))
@@ -643,6 +645,18 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     }
   }
 
+  // If the action doesn't require user consent, accept it immediately
+  if (isNonInteractiveMethod(method)) {
+    yield* put(acceptRequest({ method, request }))
+    return
+  }
+
+  // Navigate to loading state for interactive requests
+  navigate(Screens.WalletConnectRequest, {
+    type: WalletConnectRequestType.Loading,
+    origin: WalletConnectPairingOrigin.Deeplink,
+  })
+
   if (method === SupportedActions.wallet_sendCalls) {
     const walletAddress = yield* call(getWalletAddress)
 
@@ -650,7 +664,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     const atomic = yield* call(
       getAtomicCapabilityByWalletConnectChainId,
       walletAddress as Address,
-      request.params.chainId
+      request.params.chainId,
     )
     if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
       yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
@@ -663,7 +677,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       validateRequestedCapabilities,
       walletAddress as Address,
       request.params.chainId,
-      requestedCapabilities
+      requestedCapabilities,
     )
     if (!requestedCapabilitiesSupported) {
       yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
@@ -677,7 +691,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
         validateRequestedCapabilities,
         walletAddress as Address,
         request.params.chainId,
-        callCapabilities
+        callCapabilities,
       )
       if (!callCapabilitiesSupported) {
         yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
@@ -685,22 +699,8 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       }
     }
 
-
-
-    // If the action doesn't require user consent, accept it immediately
-    if (isNonInteractiveMethod(method)) {
-      yield* put(acceptRequest({ method, request }))
-      return
-    }
-
     // since there are some network requests needed to prepare the transactions,
-    // add a loading state
-    navigate(Screens.WalletConnectRequest, {
-      type: WalletConnectRequestType.Loading,
-      origin: WalletConnectPairingOrigin.Deeplink,
-    })
-
-    const supportedChains = yield* call(getSupportedChains)
+    // the loading state has already been set
 
     if (isMessageMethod(method)) {
       navigate(Screens.WalletConnectRequest, {
@@ -713,7 +713,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       return
     }
 
-    if (atomic === 'ready') {
+    if (atomic === 'ready' && promptAccountUpgrade) {
       // Show smart account conversion prompt
       const rawTxs: unknown[] = request.params.request.params[0].calls
       const {
@@ -721,8 +721,6 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
         feeCurrenciesSymbols,
         result: preparedRequest,
       } = yield* prepareNormalizedTransactions(rawTxs, request.params.chainId)
-
-      const supportedChains = yield* call(getSupportedChains)
 
       navigate(Screens.WalletConnectRequest, {
         type: WalletConnectRequestType.SmartAccountConversion,
@@ -765,6 +763,26 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       feeCurrenciesSymbols,
       result: preparedRequest,
     } = yield* prepareNormalizedTransactions(rawTxs, request.params.chainId)
+
+    navigate(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method,
+      request,
+      supportedChains,
+      version: 2,
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+      preparedRequest,
+    })
+  }
+
+  if (isTransactionMethod(method)) {
+    const rawTx: unknown = request.params.request.params[0]
+    const {
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+      result: preparedRequest,
+    } = yield* prepareNormalizedTransactions(rawTx, request.params.chainId)
 
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
@@ -1011,6 +1029,12 @@ function* handleDenyRequest({ request, reason }: DenyRequest) {
   yield* call(handlePendingStateOrNavigateBack)
 }
 
+function* handleDenyOptionalUpgrade({ request }: DenyOptionalUpgrade) {
+  // When user denies optional upgrade, proceed with normal transaction flow
+  // without showing the upgrade prompt again
+  yield* call(showActionRequest, request, false)
+}
+
 function* closeSession({ session }: CloseSession) {
   const defaultTrackedProperties: WalletConnect2Properties = yield* call(
     getDefaultSessionTrackedProperties,
@@ -1096,6 +1120,7 @@ export function* walletConnectSaga() {
   yield* takeEvery(Actions.SESSION_PAYLOAD, safely(handleIncomingActionRequest))
   yield* takeEvery(Actions.ACCEPT_REQUEST, safely(handleAcceptRequest))
   yield* takeEvery(Actions.DENY_REQUEST, safely(handleDenyRequest))
+  yield* takeEvery(Actions.DENY_OPTIONAL_UPGRADE, safely(handleDenyOptionalUpgrade))
 
   yield* spawn(checkPersistedState)
 }
