@@ -7,13 +7,14 @@ import 'react-native'
 import { Provider } from 'react-redux'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
 import {
   acceptRequest as acceptRequestV2,
   denyRequest as denyRequestV2,
 } from 'src/walletConnect/actions'
 import { SupportedActions } from 'src/walletConnect/constants'
 import SmartAccountConversionRequest from 'src/walletConnect/screens/SmartAccountConversionRequest'
-import { WalletConnectRequestType } from 'src/walletConnect/types'
+import { PreparedTransactionResult, WalletConnectRequestType } from 'src/walletConnect/types'
 import { createMockStore } from 'test/utils'
 import { mockAccount, mockAccount2 } from 'test/values'
 
@@ -74,8 +75,8 @@ describe('SmartAccountConversionRequest', () => {
             calls: [
               {
                 to: mockAccount2,
-                data: '0xTEST',
-                value: '0x0',
+                data: '0x1234567890abcdef',
+                value: '0x00',
               },
             ],
             capabilities: {
@@ -107,8 +108,8 @@ describe('SmartAccountConversionRequest', () => {
         params: [
           {
             to: mockAccount2,
-            data: '0xTEST',
-            value: '0x0',
+            data: '0x1234567890abcdef',
+            value: '0x00',
           },
         ],
       },
@@ -120,22 +121,25 @@ describe('SmartAccountConversionRequest', () => {
   const sendTransactionMethod = SupportedActions.eth_sendTransaction as const
   const feeCurrenciesSymbols = ['CELO']
 
-  const preparedTransactionSuccess = {
+  const preparedTransactionSuccess: PreparedTransactionResult<SerializableTransactionRequest[]> = {
     success: true,
-    data: {
-      from: mockAccount,
-      to: mockAccount2,
-      data: '0xTEST',
-      nonce: 100,
-      maxFeePerGas: '12000000000',
-      maxPriorityFeePerGas: '2000000000',
-      gas: '100000',
-      _baseFeePerGas: '5000000000',
-    },
-  } as const
+    data: [
+      {
+        from: mockAccount as `0x${string}`,
+        to: mockAccount2 as `0x${string}`,
+        data: '0x1234567890abcdef' as `0x${string}`,
+        nonce: 100,
+        maxFeePerGas: '12000000000',
+        maxPriorityFeePerGas: '2000000000',
+        gas: '100000',
+        _baseFeePerGas: '5000000000',
+        value: '0x00' as `0x${string}`,
+      } satisfies SerializableTransactionRequest,
+    ],
+  }
 
   const baseProps = {
-    version: 2,
+    version: 2 as const,
     supportedChains,
     hasInsufficientGasFunds: false,
     feeCurrenciesSymbols,
@@ -187,7 +191,7 @@ describe('SmartAccountConversionRequest', () => {
       ).toBeTruthy()
       expect(
         within(getByTestId('WalletConnectRequest/ActionRequestPayload/Value')).getByText(
-          JSON.stringify(preparedTransactionSuccess.data)
+          JSON.stringify(preparedTransactionSuccess.data[0])
         )
       ).toBeTruthy()
     })
@@ -349,7 +353,7 @@ describe('SmartAccountConversionRequest', () => {
       ).toBeTruthy()
       expect(
         within(getByTestId('WalletConnectRequest/ActionRequestPayload/Value')).getByText(
-          JSON.stringify(preparedTransactionSuccess.data)
+          JSON.stringify(preparedTransactionSuccess.data[0])
         )
       ).toBeTruthy()
     })
