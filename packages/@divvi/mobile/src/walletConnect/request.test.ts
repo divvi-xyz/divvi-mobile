@@ -1,6 +1,8 @@
 import { expectSaga } from 'redux-saga-test-plan'
+import { getFeatureGate } from 'src/statsig'
+import { StatsigFeatureGates } from 'src/statsig/types'
 import { NetworkId } from 'src/transactions/types'
-import { ViemWallet } from 'src/viem/getLockableWallet'
+import { ViemWallet, getLockableViemSmartWallet } from 'src/viem/getLockableWallet'
 import {
   SerializableTransactionRequest,
   getPreparedTransaction,
@@ -37,6 +39,14 @@ jest.mock('src/web3/networkConfig', () => {
 jest.mock('src/web3/utils', () => ({
   ...jest.requireActual('src/web3/utils'),
   getSupportedNetworkIds: () => ['ethereum-sepolia', 'arbitrum-sepolia'],
+}))
+jest.mock('src/viem/getLockableWallet', () => ({
+  ...jest.requireActual('src/viem/getLockableWallet'),
+  getLockableViemSmartWallet: jest.fn(),
+}))
+jest.mock('src/statsig', () => ({
+  ...jest.requireActual('src/statsig'),
+  getFeatureGate: jest.fn(),
 }))
 
 const createMockActionableRequest = ({
@@ -154,6 +164,7 @@ const state = createMockStore({
 
 describe(handleRequest, () => {
   let viemWallet: Partial<ViemWallet>
+  const mockGetFeatureGate = jest.mocked(getFeatureGate)
 
   beforeAll(function* () {
     viemWallet = yield* getViemWallet(celoAlfajores)
@@ -161,6 +172,14 @@ describe(handleRequest, () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockGetFeatureGate.mockImplementation(
+      (gate) => gate === StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
+    )
+    jest.mocked(getLockableViemSmartWallet).mockResolvedValue({
+      account: {
+        isDeployed: jest.fn().mockResolvedValue(true),
+      },
+    } as any)
   })
 
   it('chooses the correct wallet for the request', async () => {
@@ -278,9 +297,9 @@ describe(handleRequest, () => {
   })
 
   describe('wallet_getCapabilities', () => {
-    const expectedResult = {
-      '0xaa36a7': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
-      '0x66eee': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+    const expectedSmartAccountResult = {
+      '0xaa36a7': { atomic: { status: 'supported' }, paymasterService: { supported: false } },
+      '0x66eee': { atomic: { status: 'supported' }, paymasterService: { supported: false } },
     }
 
     it('returns all supported chains capabilities when client did not provide any hex chain ids', async () => {
@@ -290,7 +309,10 @@ describe(handleRequest, () => {
         chainId: 'eip155:11155111',
       })
 
-      await expectSaga(handleRequest, request).withState(state).returns(expectedResult).run()
+      await expectSaga(handleRequest, request)
+        .withState(state)
+        .returns(expectedSmartAccountResult)
+        .run()
     })
 
     it('handles hex chain ids in wallet_getCapabilities when client provided some hex chain ids', async () => {
@@ -300,7 +322,27 @@ describe(handleRequest, () => {
         chainId: 'eip155:11155111',
       })
 
-      await expectSaga(handleRequest, request).withState(state).returns(expectedResult).run()
+      await expectSaga(handleRequest, request)
+        .withState(state)
+        .returns(expectedSmartAccountResult)
+        .run()
+    })
+
+    it('falls back to default capabilities when feature gate is disabled', async () => {
+      mockGetFeatureGate.mockReturnValueOnce(false)
+
+      const request = createMockActionableRequest({
+        method: SupportedActions.wallet_getCapabilities,
+        params: [state.web3.account],
+        chainId: 'eip155:11155111',
+      })
+
+      const expectedDefaultResult = {
+        '0xaa36a7': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+        '0x66eee': { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+      }
+
+      await expectSaga(handleRequest, request).withState(state).returns(expectedDefaultResult).run()
     })
   })
 
@@ -323,6 +365,12 @@ describe(handleRequest, () => {
       ],
       chainId: 'eip155:11155111',
       preparedRequest,
+    })
+
+    beforeEach(() => {
+      mockGetFeatureGate.mockImplementation(
+        (gate) => gate !== StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
+      )
     })
 
     it('supports sequential execution and returns capabilities for supported network', async () => {
