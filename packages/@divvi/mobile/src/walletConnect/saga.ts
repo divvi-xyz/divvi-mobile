@@ -698,20 +698,6 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       origin: WalletConnectPairingOrigin.Deeplink,
     })
 
-    // since there are some network requests needed to prepare the transactions,
-    // the loading state has already been set
-
-    if (isMessageMethod(method)) {
-      navigate(Screens.WalletConnectRequest, {
-        type: WalletConnectRequestType.Action,
-        method,
-        request,
-        supportedChains,
-        version: 2,
-      })
-      return
-    }
-
     if (atomic === 'ready') {
       // Show smart account conversion prompt
       const rawTxs: unknown[] = request.params.request.params[0].calls
@@ -734,6 +720,18 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       })
       return
     }
+  }
+
+  // Handle message signing requests
+  if (isMessageMethod(method)) {
+    navigate(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method,
+      request,
+      supportedChains,
+      version: 2,
+    })
+    return
   }
 
   // Navigate to loading state for other interactive requests
