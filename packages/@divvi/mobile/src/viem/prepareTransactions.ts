@@ -351,7 +351,7 @@ export async function prepareTransactions({
     let transactionsToEstimate = baseTransactions
     if (isSameToken && !isGasSubsidized && spendTokenAmount.isGreaterThan(0)) {
       // Estimate with 80% of the requested amount to ensure gas estimation succeeds
-      const reducedAmount = spendTokenAmount.times(0.8).integerValue(BigNumber.ROUND_DOWN)
+      const reducedAmount = spendTokenAmount.times(0.6).integerValue(BigNumber.ROUND_DOWN)
       transactionsToEstimate = baseTransactions.map((tx) => {
         // For ERC20 transfers, modify the data field
         if (tx.data && tx.data.startsWith('0xa9059cbb')) {
@@ -362,13 +362,6 @@ export async function prepareTransactions({
           return {
             ...tx,
             data: (recipientPart + newAmount) as Hex,
-          }
-        }
-        // For native token transfers, modify the value field
-        if (tx.value) {
-          return {
-            ...tx,
-            value: BigInt(reducedAmount.toString()),
           }
         }
         return tx
