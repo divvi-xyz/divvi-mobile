@@ -9,7 +9,6 @@ import { estimateFeesPerGas } from 'src/viem/estimateFeesPerGas'
 import { appPublicClient, publicClient } from 'src/viem/index'
 import {
   TransactionRequest,
-  createReducedAmountTransactions,
   getEstimatedGasFee,
   getFeeCurrency,
   getFeeCurrencyAddress,
@@ -17,12 +16,9 @@ import {
   getFeeCurrencyToken,
   getFeeDecimals,
   getMaxGasFee,
-  isERC20Transfer,
-  modifyERC20TransferAmount,
   prepareERC20TransferTransaction,
   prepareSendNativeAssetTransaction,
   prepareTransactions,
-  rebuildTransactionsWithOriginalAmounts,
   tryEstimateTransaction,
   tryEstimateTransactions,
 } from 'src/viem/prepareTransactions'
@@ -966,6 +962,133 @@ describe('prepareTransactions module', () => {
       })
       expect(estimateTransactionOutput).toEqual(null)
     })
+    it('estimates with reduced amount for same-token ERC20 transfers and restores original amount', async () => {
+      const originalTransferData =
+        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex // 1000
+      const baseTransaction: TransactionRequest = {
+        from: '0x123' as Address,
+        to: mockSpendToken.address as Address,
+        data: originalTransferData,
+      }
+
+      // Mock estimateGas to capture what data is passed
+      let capturedData: Hex | undefined
+      mocked(estimateGas).mockImplementation(async (_client, tx: any) => {
+        capturedData = tx.data
+        return BigInt(21000)
+      })
+
+      const result = await tryEstimateTransaction({
+        client: mockPublicClient,
+        baseTransaction,
+        maxFeePerGas: BigInt(100),
+        maxPriorityFeePerGas: BigInt(2),
+        baseFeePerGas: BigInt(50),
+        feeCurrencySymbol: mockSpendToken.symbol,
+        feeCurrencyAddress: mockSpendToken.address as Address,
+        spendToken: mockSpendToken,
+        spendTokenAmount: new BigNumber(1000),
+        isGasSubsidized: false,
+      })
+
+      // The estimateGas should have been called with reduced amount (600 = 1000 * 0.6)
+      expect(capturedData).toContain(
+        '0000000000000000000000000000000000000000000000000000000000000258'
+      ) // 600 in hex
+
+      // But the returned transaction should have the original data
+      expect(result).toBeDefined()
+      expect(result?.data).toBe(originalTransferData)
+      expect(result?.gas).toBe(BigInt(21000))
+    })
+    it('does not modify amount for same-token transfers when gas is subsidized', async () => {
+      const originalTransferData =
+        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex // 1000
+      const baseTransaction: TransactionRequest = {
+        from: '0x123' as Address,
+        to: mockSpendToken.address as Address,
+        data: originalTransferData,
+      }
+
+      let capturedData: Hex | undefined
+      mocked(estimateGas).mockImplementation(async (_client, tx: any) => {
+        capturedData = tx.data
+        return BigInt(21000)
+      })
+
+      await tryEstimateTransaction({
+        client: mockPublicClient,
+        baseTransaction,
+        maxFeePerGas: BigInt(100),
+        maxPriorityFeePerGas: BigInt(2),
+        baseFeePerGas: BigInt(50),
+        feeCurrencySymbol: mockSpendToken.symbol,
+        feeCurrencyAddress: mockSpendToken.address as Address,
+        spendToken: mockSpendToken,
+        spendTokenAmount: new BigNumber(1000),
+        isGasSubsidized: true, // Gas is subsidized
+      })
+
+      // Should NOT reduce the amount when gas is subsidized
+      expect(capturedData).toBe(originalTransferData)
+    })
+    it('does not modify amount for different token transfers', async () => {
+      const originalTransferData =
+        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex
+      const baseTransaction: TransactionRequest = {
+        from: '0x123' as Address,
+        to: mockSpendToken.address as Address,
+        data: originalTransferData,
+      }
+
+      let capturedData: Hex | undefined
+      mocked(estimateGas).mockImplementation(async (_client, tx: any) => {
+        capturedData = tx.data
+        return BigInt(21000)
+      })
+
+      await tryEstimateTransaction({
+        client: mockPublicClient,
+        baseTransaction,
+        maxFeePerGas: BigInt(100),
+        maxPriorityFeePerGas: BigInt(2),
+        baseFeePerGas: BigInt(50),
+        feeCurrencySymbol: 'DIFFERENT',
+        feeCurrencyAddress: '0xdifferent' as Address,
+        spendToken: mockSpendToken,
+        spendTokenAmount: new BigNumber(1000),
+        isGasSubsidized: false,
+      })
+
+      // Should NOT reduce the amount when fee currency is different
+      expect(capturedData).toBe(originalTransferData)
+    })
+    it('does not modify amount for non-ERC20 transactions', async () => {
+      const baseTransaction: TransactionRequest = {
+        from: '0x123' as Address,
+        to: mockSpendToken.address as Address,
+        value: BigInt(1000),
+      }
+
+      mocked(estimateGas).mockResolvedValue(BigInt(21000))
+
+      const result = await tryEstimateTransaction({
+        client: mockPublicClient,
+        baseTransaction,
+        maxFeePerGas: BigInt(100),
+        maxPriorityFeePerGas: BigInt(2),
+        baseFeePerGas: BigInt(50),
+        feeCurrencySymbol: mockSpendToken.symbol,
+        feeCurrencyAddress: mockSpendToken.address as Address,
+        spendToken: mockSpendToken,
+        spendTokenAmount: new BigNumber(1000),
+        isGasSubsidized: false,
+      })
+
+      // Should not modify non-ERC20 transactions
+      expect(result?.value).toBe(BigInt(1000))
+      expect(result?.data).toBeUndefined()
+    })
   })
   describe('tryEstimateTransactions', () => {
     it('returns null if estimateGas throws error due to insufficient funds', async () => {
@@ -1181,274 +1304,6 @@ describe('prepareTransactions module', () => {
       ).toThrowError(
         'Unable to determine fee currency address for fee currency celo-mainnet:0xfee3'
       )
-    })
-  })
-
-  describe('isERC20Transfer', () => {
-    it('returns true for valid ERC20 transfer data', () => {
-      const transferData =
-        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f00000000000000000000000000000000000000000000000000000000000000064' as Hex
-      expect(isERC20Transfer(transferData)).toBe(true)
-    })
-
-    it('returns false for non-ERC20 transfer data', () => {
-      expect(isERC20Transfer('0x12345678' as Hex)).toBe(false)
-    })
-
-    it('returns false for undefined data', () => {
-      expect(isERC20Transfer(undefined)).toBe(false)
-    })
-
-    it('returns false for empty data', () => {
-      expect(isERC20Transfer('0x' as Hex)).toBe(false)
-    })
-  })
-
-  describe('modifyERC20TransferAmount', () => {
-    it('modifies the amount in valid ERC20 transfer data', () => {
-      const originalData =
-        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f00000000000000000000000000000000000000000000000000000000000000064' as Hex
-      const newAmount = new BigNumber(1000)
-      const result = modifyERC20TransferAmount(originalData, newAmount)
-
-      expect(result).toBe(
-        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8'
-      )
-      expect(isERC20Transfer(result)).toBe(true)
-    })
-
-    it('pads the amount with leading zeros', () => {
-      const originalData =
-        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f00000000000000000000000000000000000000000000000000000000000000064' as Hex
-      const newAmount = new BigNumber(1)
-      const result = modifyERC20TransferAmount(originalData, newAmount)
-
-      // Amount should be padded to 64 hex characters (32 bytes)
-      expect(result).toBe(
-        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f00000000000000000000000000000000000000000000000000000000000000001'
-      )
-    })
-
-    it('throws if data is not an ERC20 transfer', () => {
-      const invalidData = '0x12345678' as Hex
-      const newAmount = new BigNumber(100)
-
-      expect(() => modifyERC20TransferAmount(invalidData, newAmount)).toThrow(
-        'Data is not an ERC20 transfer'
-      )
-    })
-
-    it('throws if data length is invalid', () => {
-      const invalidLengthData = '0xa9059cbb00000000' as Hex
-      const newAmount = new BigNumber(100)
-
-      expect(() => modifyERC20TransferAmount(invalidLengthData, newAmount)).toThrow(
-        /Invalid ERC20 transfer data length/
-      )
-    })
-  })
-
-  describe('createReducedAmountTransactions', () => {
-    it('reduces ERC20 transfer amount by 60%', () => {
-      const originalAmount = new BigNumber(1000)
-      const baseTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xtoken' as Address,
-          data: '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex,
-        },
-      ]
-
-      const result = createReducedAmountTransactions(baseTransactions, originalAmount)
-
-      expect(result).toHaveLength(1)
-      expect(result[0].from).toBe('0xfrom')
-      expect(result[0].to).toBe('0xtoken')
-      // Should contain reduced amount (600 = 1000 * 0.6 = 0x258)
-      expect(result[0].data).toBe(
-        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f00000000000000000000000000000000000000000000000000000000000000258'
-      )
-    })
-
-    it('returns unchanged transaction for non-ERC20 transfers', () => {
-      const originalAmount = new BigNumber(1000)
-      const baseTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xto' as Address,
-          value: BigInt(1000),
-        },
-      ]
-
-      const result = createReducedAmountTransactions(baseTransactions, originalAmount)
-
-      expect(result).toEqual(baseTransactions)
-    })
-
-    it('handles multiple transactions', () => {
-      const originalAmount = new BigNumber(1000)
-      const baseTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xtoken' as Address,
-          data: '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex,
-        },
-        {
-          from: '0xfrom' as Address,
-          to: '0xto' as Address,
-          value: BigInt(500),
-        },
-      ]
-
-      const result = createReducedAmountTransactions(baseTransactions, originalAmount)
-
-      expect(result).toHaveLength(2)
-      expect(isERC20Transfer(result[0].data)).toBe(true)
-      expect(result[1].value).toBe(BigInt(500))
-    })
-
-    it('returns original transaction if modification fails', () => {
-      const originalAmount = new BigNumber(1000)
-      const baseTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xtoken' as Address,
-          data: '0xa9059cbb0000' as Hex, // Invalid length
-        },
-      ]
-
-      const result = createReducedAmountTransactions(baseTransactions, originalAmount)
-
-      // Should return the original transaction due to error handling
-      expect(result[0].data).toBe('0xa9059cbb0000')
-    })
-  })
-
-  describe('rebuildTransactionsWithOriginalAmounts', () => {
-    it('preserves original transaction data while copying gas estimates', () => {
-      const baseTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xto' as Address,
-          data: '0xoriginaldata' as Hex,
-        },
-      ]
-
-      const estimatedTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xto' as Address,
-          data: '0xmodifieddata' as Hex,
-          gas: BigInt(21000),
-          maxFeePerGas: BigInt(100),
-          maxPriorityFeePerGas: BigInt(2),
-          _baseFeePerGas: BigInt(50),
-          _estimatedGasUse: BigInt(18000),
-        },
-      ]
-
-      const result = rebuildTransactionsWithOriginalAmounts(baseTransactions, estimatedTransactions)
-
-      expect(result).toHaveLength(1)
-      expect(result[0].data).toBe('0xoriginaldata') // Original data preserved
-      expect(result[0].gas).toBe(BigInt(21000)) // Gas estimate copied
-      expect(result[0].maxFeePerGas).toBe(BigInt(100))
-      expect(result[0].maxPriorityFeePerGas).toBe(BigInt(2))
-      expect(result[0]._baseFeePerGas).toBe(BigInt(50))
-      expect(result[0]._estimatedGasUse).toBe(BigInt(18000))
-    })
-
-    it('includes feeCurrency when present in estimated transaction', () => {
-      const baseTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xto' as Address,
-        },
-      ]
-
-      const estimatedTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xto' as Address,
-          gas: BigInt(21000),
-          maxFeePerGas: BigInt(100),
-          maxPriorityFeePerGas: BigInt(2),
-          _baseFeePerGas: BigInt(50),
-          feeCurrency: '0xfee' as Address,
-        },
-      ]
-
-      const result = rebuildTransactionsWithOriginalAmounts(baseTransactions, estimatedTransactions)
-
-      expect(result[0]).toHaveProperty('feeCurrency', '0xfee')
-    })
-
-    it('uses gas as _estimatedGasUse if _estimatedGasUse is not present', () => {
-      const baseTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xto' as Address,
-        },
-      ]
-
-      const estimatedTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xto' as Address,
-          gas: BigInt(21000),
-          maxFeePerGas: BigInt(100),
-          maxPriorityFeePerGas: BigInt(2),
-          _baseFeePerGas: BigInt(50),
-        },
-      ]
-
-      const result = rebuildTransactionsWithOriginalAmounts(baseTransactions, estimatedTransactions)
-
-      expect(result[0]._estimatedGasUse).toBe(BigInt(21000))
-    })
-
-    it('handles multiple transactions correctly', () => {
-      const baseTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xto1' as Address,
-          data: '0xdata1' as Hex,
-        },
-        {
-          from: '0xfrom' as Address,
-          to: '0xto2' as Address,
-          data: '0xdata2' as Hex,
-        },
-      ]
-
-      const estimatedTransactions: TransactionRequest[] = [
-        {
-          from: '0xfrom' as Address,
-          to: '0xto1' as Address,
-          data: '0xmodified1' as Hex,
-          gas: BigInt(50000),
-          maxFeePerGas: BigInt(100),
-          maxPriorityFeePerGas: BigInt(2),
-          _baseFeePerGas: BigInt(50),
-        },
-        {
-          from: '0xfrom' as Address,
-          to: '0xto2' as Address,
-          data: '0xmodified2' as Hex,
-          gas: BigInt(30000),
-          maxFeePerGas: BigInt(100),
-          maxPriorityFeePerGas: BigInt(2),
-          _baseFeePerGas: BigInt(50),
-        },
-      ]
-
-      const result = rebuildTransactionsWithOriginalAmounts(baseTransactions, estimatedTransactions)
-
-      expect(result).toHaveLength(2)
-      expect(result[0].data).toBe('0xdata1')
-      expect(result[0].gas).toBe(BigInt(50000))
-      expect(result[1].data).toBe('0xdata2')
-      expect(result[1].gas).toBe(BigInt(30000))
     })
   })
 

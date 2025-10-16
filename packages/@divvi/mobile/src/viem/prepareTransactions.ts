@@ -104,7 +104,7 @@ export function getEstimatedGasFee(txs: TransactionRequest[]): BigNumber {
 /**
  * Checks if transaction data represents an ERC20 transfer call
  */
-export function isERC20Transfer(data: Hex | undefined): boolean {
+function isERC20Transfer(data: Hex | undefined): boolean {
   return !!(data && data.startsWith(ERC20_TRANSFER_SELECTOR))
 }
 
@@ -116,7 +116,7 @@ export function isERC20Transfer(data: Hex | undefined): boolean {
  * @returns Modified transaction data with the new amount
  * @throws If the data is not a valid ERC20 transfer
  */
-export function modifyERC20TransferAmount(originalData: Hex, newAmount: BigNumber): Hex {
+function modifyERC20TransferAmount(originalData: Hex, newAmount: BigNumber): Hex {
   if (!isERC20Transfer(originalData)) {
     throw new Error('Data is not an ERC20 transfer')
   }
@@ -134,66 +134,6 @@ export function modifyERC20TransferAmount(originalData: Hex, newAmount: BigNumbe
   const newAmountHex = newAmount.toString(16).padStart(AMOUNT_HEX_LENGTH, '0')
 
   return (recipientPart + newAmountHex) as Hex
-}
-
-/**
- * Creates a modified version of base transactions with reduced ERC20 transfer amounts
- * for gas estimation purposes. This prevents "transfer amount exceeds balance" errors
- * when the fee currency is the same as the token being transferred.
- *
- * @param baseTransactions - Original transactions to modify
- * @param spendTokenAmount - The original spend amount
- * @returns Transactions with reduced amounts for gas estimation
- */
-export function createReducedAmountTransactions(
-  baseTransactions: TransactionRequest[],
-  spendTokenAmount: BigNumber
-): TransactionRequest[] {
-  const reducedAmount = spendTokenAmount
-    .times(GAS_ESTIMATION_AMOUNT_REDUCTION)
-    .integerValue(BigNumber.ROUND_DOWN)
-
-  return baseTransactions.map((tx) => {
-    if (!tx.data || !isERC20Transfer(tx.data)) {
-      return tx
-    }
-
-    try {
-      return {
-        ...tx,
-        data: modifyERC20TransferAmount(tx.data, reducedAmount),
-      }
-    } catch (error) {
-      Logger.warn(TAG, 'Failed to modify ERC20 transfer amount for gas estimation', error)
-      return tx
-    }
-  })
-}
-
-/**
- * Rebuilds transactions with original amounts after gas estimation, preserving
- * the gas parameters calculated during estimation with reduced amounts.
- *
- * @param baseTransactions - Original transactions with full amounts
- * @param estimatedTransactions - Transactions with gas estimates (from reduced amount estimation)
- * @returns Transactions with original amounts and calculated gas parameters
- */
-export function rebuildTransactionsWithOriginalAmounts(
-  baseTransactions: TransactionRequest[],
-  estimatedTransactions: TransactionRequest[]
-): TransactionRequest[] {
-  return baseTransactions.map((baseTx, index) => {
-    const estimatedTx = estimatedTransactions[index]
-    return {
-      ...baseTx,
-      gas: estimatedTx.gas,
-      maxFeePerGas: estimatedTx.maxFeePerGas,
-      maxPriorityFeePerGas: estimatedTx.maxPriorityFeePerGas,
-      _baseFeePerGas: estimatedTx._baseFeePerGas,
-      _estimatedGasUse: estimatedTx._estimatedGasUse ?? estimatedTx.gas,
-      ...('feeCurrency' in estimatedTx && { feeCurrency: estimatedTx.feeCurrency }),
-    }
-  })
 }
 
 export function getFeeCurrencyAddress(feeCurrency: TokenBalance): Address | undefined {
@@ -279,6 +219,7 @@ export async function tryEstimateTransaction({
   if (needsReducedAmountEstimation && baseTransaction.data) {
     // Estimate with a reduced amount to ensure gas estimation succeeds while leaving
     // sufficient balance to cover both the transfer and gas costs
+    // This is safe because the amount does not affect gas usage for ERC20 transfers
     const reducedAmount = spendTokenAmount!
       .times(GAS_ESTIMATION_AMOUNT_REDUCTION)
       .integerValue(BigNumber.ROUND_DOWN)
