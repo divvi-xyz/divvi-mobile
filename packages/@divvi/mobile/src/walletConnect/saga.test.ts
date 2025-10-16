@@ -43,7 +43,7 @@ import {
 import { WalletConnectRequestType } from 'src/walletConnect/types'
 import { getWalletAddress } from 'src/web3/saga'
 import { demoModeEnabledSelector, walletAddressSelector } from 'src/web3/selectors'
-import { getSupportedChains, getSupportedNetworkIds } from 'src/web3/utils'
+import { getSupportedNetworkIds } from 'src/web3/utils'
 import { createMockStore } from 'test/utils'
 import { mockAccount } from 'test/values'
 import { BaseError } from 'viem'
@@ -712,7 +712,7 @@ describe('showActionRequest', () => {
       ],
     }
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, actionRequest, true)
+    await expectSaga(_showActionRequest, actionRequest)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -726,7 +726,6 @@ describe('showActionRequest', () => {
         [call.fn(prepareTransactions), mockPreparedTransactions],
         [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
         [call.fn(getWalletAddress), mockAccount],
-        [call.fn(getSupportedChains), ['eip155:42220']],
         [select(demoModeEnabledSelector), false],
       ])
       .run()
@@ -754,7 +753,7 @@ describe('showActionRequest', () => {
 
   it('navigates to the screen to reject the request when the transaction preparation fails', async () => {
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, actionRequest, true)
+    await expectSaga(_showActionRequest, actionRequest)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -792,7 +791,7 @@ describe('showActionRequest', () => {
 
   it('navigates to the screen to reject the request when the transaction preparation fails with a viem error', async () => {
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, actionRequest, true)
+    await expectSaga(_showActionRequest, actionRequest)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -841,7 +840,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, nonInteractiveRequest, true)
+    await expectSaga(_showActionRequest, nonInteractiveRequest)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(
@@ -869,7 +868,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, req, true)
+    await expectSaga(_showActionRequest, req)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
@@ -889,7 +888,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, req, true)
+    await expectSaga(_showActionRequest, req)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(denyRequest(req, { code: 4100, message: 'Unauthorized' }))
@@ -909,7 +908,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, req, true)
+    await expectSaga(_showActionRequest, req)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
@@ -929,7 +928,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, req, true)
+    await expectSaga(_showActionRequest, req)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
@@ -949,7 +948,7 @@ describe('showActionRequest', () => {
     }
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, req, true)
+    await expectSaga(_showActionRequest, req)
       .withState(state)
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
@@ -959,7 +958,7 @@ describe('showActionRequest', () => {
   it('throws an error when client is missing', () => {
     _setClientForTesting(null)
 
-    return expect(expectSaga(_showActionRequest, mockRequest, true).run()).rejects.toThrow(
+    return expect(expectSaga(_showActionRequest, mockRequest).run()).rejects.toThrow(
       'missing client'
     )
   })
@@ -1273,7 +1272,7 @@ describe('handleIncomingActionRequest', () => {
   })
 
   it('throws an error when client is missing', () => {
-    return expect(expectSaga(_showActionRequest, mockRequest, true).run()).rejects.toThrow(
+    return expect(expectSaga(_showActionRequest, mockRequest).run()).rejects.toThrow(
       'missing client'
     )
   })
@@ -1377,7 +1376,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request, true)
+    await expectSaga(_showActionRequest, request)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1417,7 +1416,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request, true)
+    await expectSaga(_showActionRequest, request)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1432,7 +1431,6 @@ describe('wallet_sendCalls', () => {
         [call.fn(prepareTransactions), mockPreparedTransactions],
         [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
         [call.fn(getWalletAddress), mockAccount],
-        [call.fn(getSupportedChains), ['eip155:42220']],
         [select(demoModeEnabledSelector), false],
       ])
       .run()
@@ -1479,7 +1477,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request, true)
+    await expectSaga(_showActionRequest, request)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1525,7 +1523,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request, true)
+    await expectSaga(_showActionRequest, request)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1540,7 +1538,6 @@ describe('wallet_sendCalls', () => {
         [call.fn(prepareTransactions), mockPreparedTransactions],
         [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
         [call.fn(getWalletAddress), mockAccount],
-        [call.fn(getSupportedChains), ['eip155:42220']],
         [select(demoModeEnabledSelector), false],
       ])
       .run()
@@ -1579,7 +1576,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request, true)
+    await expectSaga(_showActionRequest, request)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1617,7 +1614,7 @@ describe('wallet_sendCalls', () => {
     })
 
     const state = createMockStore({}).getState()
-    await expectSaga(_showActionRequest, request, true)
+    await expectSaga(_showActionRequest, request)
       .withState(state)
       .provide([
         [select(walletAddressSelector), mockAccount],
@@ -1632,7 +1629,6 @@ describe('wallet_sendCalls', () => {
         [call.fn(prepareTransactions), mockPreparedTransactions],
         [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
         [call.fn(getWalletAddress), mockAccount],
-        [call.fn(getSupportedChains), ['eip155:42220']],
         [select(demoModeEnabledSelector), false],
       ])
       .run()
@@ -1742,7 +1738,7 @@ describe('handlePendingState', () => {
           123,
         ],
       ])
-      .call(_showActionRequest, mockRequest, true)
+      .call(_showActionRequest, mockRequest)
       .run()
   })
 

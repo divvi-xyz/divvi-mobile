@@ -18,7 +18,6 @@ export enum Actions {
   SHOW_REQUEST_DETAILS = 'WALLETCONNECT/SHOW_REQUEST_DETAILS',
   ACCEPT_REQUEST = 'WALLETCONNECT/ACCEPT_REQUEST',
   DENY_REQUEST = 'WALLETCONNECT/DENY_REQUEST',
-  DENY_OPTIONAL_UPGRADE = 'WALLETCONNECT/DENY_OPTIONAL_UPGRADE',
   REQUEST_FULFILLED = 'WALLETCONNECT/REQUEST_FULFILLED',
 
   CLIENT_INITIALISED = 'WALLETCONNECT/CLIENT_INITIALISED',
@@ -82,11 +81,6 @@ export interface DenyRequest {
   reason: JsonRpcTypes.Error
 }
 
-export interface DenyOptionalUpgrade {
-  type: Actions.DENY_OPTIONAL_UPGRADE
-  request: WalletKitTypes.EventArguments['session_request']
-}
-
 export interface RemoveExpiredSessions {
   type: Actions.REMOVE_EXPIRED_SESSIONS
   dateInSeconds: number
@@ -133,7 +127,6 @@ export type UserActions =
   | ShowRequestDetails
   | AcceptRequest
   | DenyRequest
-  | DenyOptionalUpgrade
   | RemoveExpiredSessions
 
 export const initialiseClient = (): InitialiseClient => ({
@@ -197,13 +190,6 @@ export const denyRequest = (
   type: Actions.DENY_REQUEST,
   request,
   reason,
-})
-
-export const denyOptionalUpgrade = (
-  request: WalletKitTypes.EventArguments['session_request']
-): DenyOptionalUpgrade => ({
-  type: Actions.DENY_OPTIONAL_UPGRADE,
-  request,
 })
 
 export const removeExpiredSessions = (dateInSeconds: number): RemoveExpiredSessions => ({

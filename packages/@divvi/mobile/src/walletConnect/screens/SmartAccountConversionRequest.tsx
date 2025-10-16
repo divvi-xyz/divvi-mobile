@@ -3,17 +3,19 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet } from 'react-native'
 import InLineNotification, { NotificationVariant } from 'src/components/InLineNotification'
+import { navigate } from 'src/navigator/NavigationService'
+import { Screens } from 'src/navigator/Screens'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { Spacing } from 'src/styles/styles'
 import Logger from 'src/utils/Logger'
-import { acceptRequest, denyOptionalUpgrade, denyRequest } from 'src/walletConnect/actions'
+import { acceptRequest, denyRequest } from 'src/walletConnect/actions'
 import ActionRequestPayload from 'src/walletConnect/screens/ActionRequestPayload'
 import DappsDisclaimer from 'src/walletConnect/screens/DappsDisclaimer'
 import EstimatedNetworkFee from 'src/walletConnect/screens/EstimatedNetworkFee'
 import RequestContent, { useDappMetadata } from 'src/walletConnect/screens/RequestContent'
 import { useIsDappListed } from 'src/walletConnect/screens/useIsDappListed'
 import { sessionsSelector } from 'src/walletConnect/selectors'
-import { SmartAccountConversionRequest } from 'src/walletConnect/types'
+import { SmartAccountConversionRequest, WalletConnectRequestType } from 'src/walletConnect/types'
 import { walletConnectChainIdToNetworkId } from 'src/web3/networkConfig'
 
 export type SmartAccountConversionRequestProps = SmartAccountConversionRequest & {
@@ -63,7 +65,17 @@ function SmartAccountConversionRequestComponent(props: SmartAccountConversionReq
       dispatch(denyRequest(request, getSdkError('USER_REJECTED')))
     } else {
       // If atomic is not required, proceed with regular transaction without showing upgrade prompt again
-      dispatch(denyOptionalUpgrade(request))
+      // Navigate directly to the action request screen (similar to lines 747 or 767 in saga.ts)
+      navigate(Screens.WalletConnectRequest, {
+        type: WalletConnectRequestType.Action,
+        method: props.method,
+        request: props.request,
+        supportedChains: props.supportedChains,
+        version: props.version,
+        hasInsufficientGasFunds: props.hasInsufficientGasFunds,
+        feeCurrenciesSymbols: props.feeCurrenciesSymbols,
+        preparedRequest: props.preparedRequest,
+      })
     }
   }
 

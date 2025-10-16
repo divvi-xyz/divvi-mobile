@@ -44,7 +44,6 @@ import {
   Actions,
   clientInitialised,
   CloseSession,
-  DenyOptionalUpgrade,
   DenyRequest,
   denyRequest,
   DenySession,
@@ -577,7 +576,7 @@ function* prepareNormalizedTransactions(
   }
 }
 
-function* showActionRequest(request: WalletKitTypes.EventArguments['session_request'], promptAccountUpgrade: boolean = true) {
+function* showActionRequest(request: WalletKitTypes.EventArguments['session_request']) {
   if (!client) {
     throw new Error('missing client')
   }
@@ -713,7 +712,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       return
     }
 
-    if (atomic === 'ready' && promptAccountUpgrade) {
+    if (atomic === 'ready') {
       // Show smart account conversion prompt
       const rawTxs: unknown[] = request.params.request.params[0].calls
       const {
@@ -1029,11 +1028,6 @@ function* handleDenyRequest({ request, reason }: DenyRequest) {
   yield* call(handlePendingStateOrNavigateBack)
 }
 
-function* handleDenyOptionalUpgrade({ request }: DenyOptionalUpgrade) {
-  // When user denies optional upgrade, proceed with normal transaction flow
-  // without showing the upgrade prompt again
-  yield* call(showActionRequest, request, false)
-}
 
 function* closeSession({ session }: CloseSession) {
   const defaultTrackedProperties: WalletConnect2Properties = yield* call(
@@ -1120,7 +1114,6 @@ export function* walletConnectSaga() {
   yield* takeEvery(Actions.SESSION_PAYLOAD, safely(handleIncomingActionRequest))
   yield* takeEvery(Actions.ACCEPT_REQUEST, safely(handleAcceptRequest))
   yield* takeEvery(Actions.DENY_REQUEST, safely(handleDenyRequest))
-  yield* takeEvery(Actions.DENY_OPTIONAL_UPGRADE, safely(handleDenyOptionalUpgrade))
 
   yield* spawn(checkPersistedState)
 }
