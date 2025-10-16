@@ -6,7 +6,7 @@
 
 # Interface: PreparedTransactionsPossible
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:44](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L44)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:51](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L51)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:44](https://
 feeCurrency: TokenBalance
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:47](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L47)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:54](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L54)
 
 ---
 
@@ -26,7 +26,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:47](https://
 transactions: TransactionRequest[];
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:46](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L46)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:53](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L53)
 
 ---
 
@@ -36,4 +36,4 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:46](https://
 type: 'possible'
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:45](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L45)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:52](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L52)
