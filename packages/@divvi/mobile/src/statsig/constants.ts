@@ -35,7 +35,7 @@ export const FeatureGates = {
   [StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2]: false,
   [StatsigFeatureGates.SHOW_DIVVI_SLICES_BOTTOM_SHEET]: false,
   [StatsigFeatureGates.RECAPTCHA_ENABLED]: false,
-  [StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES]: true,
+  [StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES]: false,
 } satisfies { [key in StatsigFeatureGates]: boolean }
 
 export const ExperimentConfigs = {
