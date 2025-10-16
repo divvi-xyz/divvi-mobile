@@ -8,6 +8,7 @@ export enum WalletConnectRequestType {
   Session,
   Action,
   TimeOut,
+  SmartAccountConversion,
 }
 
 export type WalletConnectRequestResult = string | Record<string, Capabilities>
@@ -80,11 +81,20 @@ export interface SendCallsRequest extends RequestBase {
   preparedRequest: PreparedTransactionResult<SerializableTransactionRequest[]>
 }
 
+export interface SmartAccountConversionRequest extends RequestBase {
+  method: SendCallsMethod
+  atomicRequired: boolean
+  hasInsufficientGasFunds: boolean
+  feeCurrenciesSymbols: string[]
+  preparedRequest: PreparedTransactionResult<SerializableTransactionRequest[]>
+}
+
 export type ActionableRequest =
   | NonInteractiveRequest
   | MessageRequest
   | TransactionRequest
   | SendCallsRequest
+  | SmartAccountConversionRequest
 
 export type PreparedTransactionResult<T> =
   | { success: true; data: T }

@@ -393,7 +393,7 @@ function convertToBigInt(value: any) {
   return isHex(value)
     ? hexToBigInt(value)
     : // make sure that we can safely parse the value as a BigInt
-      typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint'
+    typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint'
       ? BigInt(value)
       : undefined
 }
@@ -508,8 +508,8 @@ function* prepareNormalizedTransactions(
   hasInsufficientGasFunds: boolean
   feeCurrenciesSymbols: string[]
   result:
-    | PreparedTransactionResult<SerializableTransactionRequest>
-    | PreparedTransactionResult<SerializableTransactionRequest[]>
+  | PreparedTransactionResult<SerializableTransactionRequest>
+  | PreparedTransactionResult<SerializableTransactionRequest[]>
 }> {
   const networkId = walletConnectChainIdToNetworkId[walletConnectChainId]
   const network = walletConnectChainIdToNetwork[walletConnectChainId]
@@ -686,8 +686,28 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     }
 
     if (atomic === 'ready') {
-      // TODO: suggest user to enable atomic operations
-      // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
+      // Show smart account conversion prompt
+      const rawTxs: unknown[] = request.params.request.params[0].calls
+      const {
+        hasInsufficientGasFunds,
+        feeCurrenciesSymbols,
+        result: preparedRequest,
+      } = yield* prepareNormalizedTransactions(rawTxs, request.params.chainId)
+
+      const supportedChains = yield* call(getSupportedChains)
+
+      navigate(Screens.WalletConnectRequest, {
+        type: WalletConnectRequestType.SmartAccountConversion,
+        method,
+        request,
+        supportedChains,
+        version: 2,
+        atomicRequired: request.params.request.params[0].atomicRequired,
+        hasInsufficientGasFunds,
+        feeCurrenciesSymbols,
+        preparedRequest,
+      })
+      return
     }
   }
 

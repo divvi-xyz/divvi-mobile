@@ -1220,6 +1220,16 @@
         "title": "Unsupported events",
         "description": "{{dappName}} specified some events that are not supported by {{appName}}. Some features may not work as expected."
       }
+    },
+    "smartAccountConversion": {
+      "title": "Convert to Smart Account",
+      "convertButton": "Convert Account",
+      "continueWithoutConverting": "Continue Without Converting",
+      "descriptionRequired": "{{dappName}} requires smart wallet capabilities for this transaction. Converting your account will enable advanced features like atomic transactions.",
+      "descriptionOptional": "{{dappName}} can use smart wallet capabilities for this transaction. Converting your account will enable advanced features like atomic transactions.",
+      "notificationTitle": "Smart Account Benefits",
+      "notificationDescriptionRequired": "This transaction requires smart wallet capabilities. If you deny conversion, the transaction will be cancelled.",
+      "notificationDescriptionOptional": "Smart accounts enable advanced features like atomic transactions and paymaster services. You can still proceed without conversion."
     }
   },
   "sessionInfo": "This application may ask to perform the following actions:",

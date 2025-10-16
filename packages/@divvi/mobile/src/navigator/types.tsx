@@ -20,13 +20,14 @@ import { Currency } from 'src/utils/currencies'
 import { type SerializablePreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
 import { ActionRequestProps } from 'src/walletConnect/screens/ActionRequest'
 import { SessionRequestProps } from 'src/walletConnect/screens/SessionRequest'
+import { SmartAccountConversionRequestProps } from 'src/walletConnect/screens/SmartAccountConversionRequest'
 import { WalletConnectRequestType } from 'src/walletConnect/types'
 
 // Typed nested navigator params
 type NestedNavigatorParams<ParamList> = {
   [K in keyof ParamList]: undefined extends ParamList[K]
-    ? { screen: K; params?: ParamList[K] }
-    : { screen: K; params: ParamList[K] }
+  ? { screen: K; params?: ParamList[K] }
+  : { screen: K; params: ParamList[K] }
 }[keyof ParamList]
 
 interface SendConfirmationParams {
@@ -56,11 +57,11 @@ export type StackParamList = {
   [Screens.BackupComplete]: { isAccountRemoval?: boolean } | undefined
   [Screens.BackupIntroduction]: {} | undefined
   [Screens.AccountKeyEducation]:
-    | undefined
-    | {
-        nextScreen?: keyof StackParamList
-        origin?: 'cabOnboarding'
-      }
+  | undefined
+  | {
+    nextScreen?: keyof StackParamList
+    origin?: 'cabOnboarding'
+  }
   [Screens.AccounSetupFailureScreen]: undefined
   [Screens.BackupPhrase]: { isAccountRemoval?: boolean } | undefined
   [Screens.BackupQuiz]: { isAccountRemoval?: boolean } | undefined
@@ -92,16 +93,16 @@ export type StackParamList = {
     swapTransaction?: SwapTransaction
   }
   [Screens.EarnWithdrawConfirmationScreen]:
-    | {
-        mode: Extract<EarnActiveMode, 'claim-rewards' | 'exit'>
-        pool: EarnPosition
-      }
-    | {
-        mode: Extract<EarnActiveMode, 'withdraw'>
-        pool: EarnPosition
-        inputTokenAmount: string
-        useMax: boolean
-      }
+  | {
+    mode: Extract<EarnActiveMode, 'claim-rewards' | 'exit'>
+    pool: EarnPosition
+  }
+  | {
+    mode: Extract<EarnActiveMode, 'withdraw'>
+    pool: EarnPosition
+    inputTokenAmount: string
+    useMax: boolean
+  }
 
   [Screens.EarnHome]: { activeEarnTab?: EarnTabType } | undefined
   [Screens.TabEarn]: { activeEarnTab?: EarnTabType } | undefined
@@ -189,22 +190,22 @@ export type StackParamList = {
   [Screens.GoldEducation]: undefined
   [Screens.ImportSelect]: undefined
   [Screens.ImportWallet]:
-    | {
-        clean: boolean
-        showZeroBalanceModal?: boolean
-      }
-    | undefined
+  | {
+    clean: boolean
+    showZeroBalanceModal?: boolean
+  }
+  | undefined
   [Screens.EnableBiometry]: undefined
   [Screens.Language]:
-    | {
-        nextScreen: keyof StackParamList
-      }
-    | undefined
+  | {
+    nextScreen: keyof StackParamList
+  }
+  | undefined
   [Screens.LanguageModal]:
-    | {
-        nextScreen: keyof StackParamList
-      }
-    | undefined
+  | {
+    nextScreen: keyof StackParamList
+  }
+  | undefined
   [Screens.Licenses]: undefined
   [Screens.LinkPhoneNumber]: undefined
   [Screens.JumpstartTransactionDetailsScreen]: {
@@ -221,22 +222,22 @@ export type StackParamList = {
     account?: string
   }
   [Screens.PincodeSet]:
-    | {
-        changePin?: boolean
-        choseToRestoreAccount?: boolean
-        registrationStep?: { step: number; totalSteps: number }
-        showGuidedOnboarding?: boolean
-      }
-    | undefined
+  | {
+    changePin?: boolean
+    choseToRestoreAccount?: boolean
+    registrationStep?: { step: number; totalSteps: number }
+    showGuidedOnboarding?: boolean
+  }
+  | undefined
   [Screens.PointsHome]: undefined
   [Screens.PointsIntro]: undefined
   [Screens.PrivateKey]: undefined
   [Screens.ProtectWallet]: undefined
   [Screens.OnboardingRecoveryPhrase]:
-    | {
-        origin?: 'cabOnboarding'
-      }
-    | undefined
+  | {
+    origin?: 'cabOnboarding'
+  }
+  | undefined
   [Screens.Profile]: undefined
   [Screens.ProfileSubmenu]: undefined
   [Screens.LegalSubmenu]: undefined
@@ -261,11 +262,11 @@ export type StackParamList = {
     }
   }
   [Screens.SendSelectRecipient]:
-    | {
-        forceTokenId?: boolean
-        defaultTokenIdOverride?: string
-      }
-    | undefined
+  | {
+    forceTokenId?: boolean
+    defaultTokenIdOverride?: string
+  }
+  | undefined
   [Screens.SendConfirmation]: SendConfirmationParams
   [Screens.SendEnterAmount]: SendEnterAmountParams
   [Screens.SignInWithEmail]: {
@@ -276,23 +277,23 @@ export type StackParamList = {
   [Screens.StoreWipeRecoveryScreen]: undefined
   [Screens.Support]: undefined
   [Screens.SupportContact]:
-    | {
-        prefilledText: string
-      }
-    | undefined
+  | {
+    prefilledText: string
+  }
+  | undefined
   [Screens.SwapScreenWithBack]:
-    | {
-        fromTokenId?: string
-        toTokenId?: string
-        toTokenNetworkId?: NetworkId
-      }
-    | undefined
+  | {
+    fromTokenId?: string
+    toTokenId?: string
+    toTokenNetworkId?: NetworkId
+  }
+  | undefined
   [Screens.TabDiscover]: {} | undefined
   [Screens.TabHome]: {} | undefined
   [Screens.TabWallet]: { activeAssetTab?: AssetTabType } | undefined
   [Screens.TabNavigator]:
-    | { initialScreen?: Screens.TabHome | Screens.TabWallet | Screens.TabDiscover | string }
-    | undefined
+  | { initialScreen?: Screens.TabHome | Screens.TabWallet | Screens.TabDiscover | string }
+  | undefined
   [Screens.TokenDetails]: { tokenId: string }
   [Screens.TokenImport]: undefined
   [Screens.TransactionDetailsScreen]: {
@@ -302,11 +303,11 @@ export type StackParamList = {
   [Screens.ValidateRecipientIntro]: ValidateRecipientParams
   [Screens.ValidateRecipientAccount]: ValidateRecipientParams
   [Screens.VerificationStartScreen]:
-    | {
-        hasOnboarded?: boolean
-        selectedCountryCodeAlpha2?: string
-      }
-    | undefined
+  | {
+    hasOnboarded?: boolean
+    selectedCountryCodeAlpha2?: string
+  }
+  | undefined
   [Screens.VerificationCodeInputScreen]: {
     registrationStep?: { step: number; totalSteps: number }
     e164Number: string
@@ -315,14 +316,17 @@ export type StackParamList = {
   }
   [Screens.OnboardingSuccessScreen]: undefined
   [Screens.WalletConnectRequest]:
-    | { type: WalletConnectRequestType.Loading; origin: WalletConnectPairingOrigin }
-    | ({
-        type: WalletConnectRequestType.Action
-      } & ActionRequestProps)
-    | ({
-        type: WalletConnectRequestType.Session
-      } & SessionRequestProps)
-    | { type: WalletConnectRequestType.TimeOut }
+  | { type: WalletConnectRequestType.Loading; origin: WalletConnectPairingOrigin }
+  | ({
+    type: WalletConnectRequestType.Action
+  } & ActionRequestProps)
+  | ({
+    type: WalletConnectRequestType.Session
+  } & SessionRequestProps)
+  | ({
+    type: WalletConnectRequestType.SmartAccountConversion
+  } & SmartAccountConversionRequestProps)
+  | { type: WalletConnectRequestType.TimeOut }
   [Screens.WalletConnectSessions]: undefined
   [Screens.WalletSecurityPrimer]: undefined
   [Screens.WebViewScreen]: { uri: string }
@@ -332,15 +336,15 @@ export type StackParamList = {
 
 export type QRTabParamList = {
   [Screens.QRCode]:
-    | {
-        showSecureSendStyling?: true
-      }
-    | undefined
+  | {
+    showSecureSendStyling?: true
+  }
+  | undefined
   [Screens.QRScanner]:
-    | {
-        showSecureSendStyling?: true
-        onQRCodeDetected?: (qrCode: QrCode) => void
-        defaultTokenIdOverride?: string
-      }
-    | undefined
+  | {
+    showSecureSendStyling?: true
+    onQRCodeDetected?: (qrCode: QrCode) => void
+    defaultTokenIdOverride?: string
+  }
+  | undefined
 }
