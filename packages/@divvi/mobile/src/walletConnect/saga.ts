@@ -735,6 +735,11 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       return
     }
   }
+
+  // We have either:
+  // A transaction request
+  // A sendCalls request, and the user already has a smart account OR smart accounts are not enabled.
+
   if (isTransactionMethod(method)) {
     const rawTx: unknown = request.params.request.params[0]
     const {
@@ -762,26 +767,6 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       feeCurrenciesSymbols,
       result: preparedRequest,
     } = yield* prepareNormalizedTransactions(rawTxs, request.params.chainId)
-
-    navigate(Screens.WalletConnectRequest, {
-      type: WalletConnectRequestType.Action,
-      method,
-      request,
-      supportedChains,
-      version: 2,
-      hasInsufficientGasFunds,
-      feeCurrenciesSymbols,
-      preparedRequest,
-    })
-  }
-
-  if (isTransactionMethod(method)) {
-    const rawTx: unknown = request.params.request.params[0]
-    const {
-      hasInsufficientGasFunds,
-      feeCurrenciesSymbols,
-      result: preparedRequest,
-    } = yield* prepareNormalizedTransactions(rawTx, request.params.chainId)
 
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,

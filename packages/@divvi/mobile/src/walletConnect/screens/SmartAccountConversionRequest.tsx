@@ -48,8 +48,6 @@ function SmartAccountConversionRequestComponent(props: SmartAccountConversionReq
   const chainId = request.params.chainId
   const networkId = walletConnectChainIdToNetworkId[chainId]
 
-  // Note: We don't use getDisplayTextFromAction here since we have custom titles and descriptions
-
   const handleAcceptSmartAccountConversion = () => {
     // TODO: Implement smart account conversion logic
     Logger.info('SmartAccountConversionRequest', 'User accepted smart account conversion')
@@ -58,14 +56,10 @@ function SmartAccountConversionRequestComponent(props: SmartAccountConversionReq
   }
 
   const handleDenySmartAccountConversion = () => {
-    // TODO: Implement smart account conversion denial logic
     Logger.info('SmartAccountConversionRequest', 'User denied smart account conversion')
     if (atomicRequired) {
-      // If atomic is required and user denies conversion, cancel the transaction
       dispatch(denyRequest(request, getSdkError('USER_REJECTED')))
     } else {
-      // If atomic is not required, proceed with regular transaction without showing upgrade prompt again
-      // Navigate directly to the action request screen (similar to lines 747 or 767 in saga.ts)
       navigate(Screens.WalletConnectRequest, {
         type: WalletConnectRequestType.Action,
         method: props.method,
