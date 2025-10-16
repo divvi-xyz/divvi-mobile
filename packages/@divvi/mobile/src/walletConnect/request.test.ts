@@ -59,8 +59,8 @@ const createMockActionableRequest = ({
   params: any[]
   chainId: string
   preparedRequest?:
-  | PreparedTransactionResult<SerializableTransactionRequest>
-  | PreparedTransactionResult<SerializableTransactionRequest[]>
+    | PreparedTransactionResult<SerializableTransactionRequest>
+    | PreparedTransactionResult<SerializableTransactionRequest[]>
 }) =>
   ({
     method,

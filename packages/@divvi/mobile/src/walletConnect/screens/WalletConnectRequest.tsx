@@ -24,7 +24,7 @@ function WalletConnectRequest({ route: { params } }: Props) {
     <BottomSheetScrollView
       containerStyle={
         params.type === WalletConnectRequestType.Loading ||
-          params.type === WalletConnectRequestType.TimeOut
+        params.type === WalletConnectRequestType.TimeOut
           ? styles.loadingTimeoutContainer
           : undefined
       }

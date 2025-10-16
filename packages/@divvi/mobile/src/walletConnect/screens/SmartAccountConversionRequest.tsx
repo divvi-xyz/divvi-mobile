@@ -115,9 +115,7 @@ function SmartAccountConversionRequestComponent(props: SmartAccountConversionReq
         session={activeSession}
         request={request}
         method={method}
-        preparedRequest={
-          props.preparedRequest.success ? props.preparedRequest.data : undefined
-        }
+        preparedRequest={props.preparedRequest.success ? props.preparedRequest.data : undefined}
       />
 
       {props.preparedRequest.success && (

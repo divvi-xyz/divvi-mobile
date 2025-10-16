@@ -393,7 +393,7 @@ function convertToBigInt(value: any) {
   return isHex(value)
     ? hexToBigInt(value)
     : // make sure that we can safely parse the value as a BigInt
-    typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint'
+      typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint'
       ? BigInt(value)
       : undefined
 }
@@ -508,8 +508,8 @@ function* prepareNormalizedTransactions(
   hasInsufficientGasFunds: boolean
   feeCurrenciesSymbols: string[]
   result:
-  | PreparedTransactionResult<SerializableTransactionRequest>
-  | PreparedTransactionResult<SerializableTransactionRequest[]>
+    | PreparedTransactionResult<SerializableTransactionRequest>
+    | PreparedTransactionResult<SerializableTransactionRequest[]>
 }> {
   const networkId = walletConnectChainIdToNetworkId[walletConnectChainId]
   const network = walletConnectChainIdToNetwork[walletConnectChainId]
@@ -663,7 +663,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     const atomic = yield* call(
       getAtomicCapabilityByWalletConnectChainId,
       walletAddress as Address,
-      request.params.chainId,
+      request.params.chainId
     )
     if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
       yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
@@ -676,7 +676,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       validateRequestedCapabilities,
       walletAddress as Address,
       request.params.chainId,
-      requestedCapabilities,
+      requestedCapabilities
     )
     if (!requestedCapabilitiesSupported) {
       yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
@@ -690,7 +690,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
         validateRequestedCapabilities,
         walletAddress as Address,
         request.params.chainId,
-        callCapabilities,
+        callCapabilities
       )
       if (!callCapabilitiesSupported) {
         yield* put(denyRequest(request, rpcError.UNSUPPORTED_NON_OPTIONAL_CAPABILITY))
@@ -1027,7 +1027,6 @@ function* handleDenyRequest({ request, reason }: DenyRequest) {
 
   yield* call(handlePendingStateOrNavigateBack)
 }
-
 
 function* closeSession({ session }: CloseSession) {
   const defaultTrackedProperties: WalletConnect2Properties = yield* call(
