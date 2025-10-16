@@ -379,6 +379,12 @@ describe(handleRequest, () => {
       preparedRequest,
     })
 
+    beforeEach(() => {
+      mockGetFeatureGate.mockImplementation(
+        (gate) => gate !== StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
+      )
+    })
+
     it('supports sequential execution, records batch, and returns capabilities', async () => {
       viemWallet.sendTransaction = jest
         .fn()
