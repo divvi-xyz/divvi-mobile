@@ -237,6 +237,9 @@ export function getFeeCurrencyAddress(feeCurrency: TokenBalance): Address | unde
  * @param feeCurrencySymbol
  * @param feeCurrencyAddress
  * @param maxPriorityFeePerGas
+ * @param spendToken - Optional: the token being spent in the transaction
+ * @param spendTokenAmount - Optional: the amount being spent (in smallest units)
+ * @param isGasSubsidized - Whether gas is subsidized (if true, skip same-token handling)
  */
 export async function tryEstimateTransaction({
   client,
@@ -246,6 +249,9 @@ export async function tryEstimateTransaction({
   baseFeePerGas,
   feeCurrencySymbol,
   feeCurrencyAddress,
+  spendToken,
+  spendTokenAmount,
+  isGasSubsidized = false,
 }: {
   client: Client
   baseTransaction: TransactionRequest
@@ -254,9 +260,43 @@ export async function tryEstimateTransaction({
   baseFeePerGas: bigint
   feeCurrencySymbol: string
   feeCurrencyAddress?: Address
+  spendToken?: TokenBalance
+  spendTokenAmount?: BigNumber
+  isGasSubsidized?: boolean
 }) {
+  // When sending a token and paying fees in the same token, we need special handling
+  // because estimating gas with the full send amount will fail with "transfer amount exceeds balance"
+  const isSameToken =
+    spendToken && spendToken.tokenId === getTokenId(spendToken.networkId, feeCurrencyAddress)
+  const needsReducedAmountEstimation =
+    isSameToken &&
+    !isGasSubsidized &&
+    spendTokenAmount &&
+    spendTokenAmount.isGreaterThan(0) &&
+    isERC20Transfer(baseTransaction.data)
+
+  let txToEstimate = baseTransaction
+  if (needsReducedAmountEstimation && baseTransaction.data) {
+    // Estimate with a reduced amount to ensure gas estimation succeeds while leaving
+    // sufficient balance to cover both the transfer and gas costs
+    const reducedAmount = spendTokenAmount!
+      .times(GAS_ESTIMATION_AMOUNT_REDUCTION)
+      .integerValue(BigNumber.ROUND_DOWN)
+
+    try {
+      txToEstimate = {
+        ...baseTransaction,
+        data: modifyERC20TransferAmount(baseTransaction.data, reducedAmount),
+      }
+    } catch (error) {
+      Logger.warn(TAG, 'Failed to modify ERC20 transfer amount for gas estimation', error)
+      // Fall back to original transaction
+      txToEstimate = baseTransaction
+    }
+  }
+
   const tx = {
-    ...baseTransaction,
+    ...txToEstimate,
     maxFeePerGas,
     maxPriorityFeePerGas,
     // Don't include the feeCurrency field if not present.
@@ -300,13 +340,25 @@ export async function tryEstimateTransaction({
     throw e
   }
 
+  // If we estimated with a reduced amount, restore the original transaction data
+  // while preserving the gas estimates we just calculated
+  if (needsReducedAmountEstimation) {
+    return {
+      ...tx,
+      data: baseTransaction.data,
+    }
+  }
+
   return tx
 }
 
 export async function tryEstimateTransactions(
   baseTransactions: TransactionRequest[],
   feeCurrency: TokenBalance,
-  useAppTransport: boolean = false
+  useAppTransport: boolean = false,
+  spendToken?: TokenBalance,
+  spendTokenAmount?: BigNumber,
+  isGasSubsidized: boolean = false
 ) {
   const transactions: TransactionRequest[] = []
 
@@ -353,6 +405,9 @@ export async function tryEstimateTransactions(
         maxFeePerGas,
         maxPriorityFeePerGas,
         baseFeePerGas,
+        spendToken,
+        spendTokenAmount,
+        isGasSubsidized,
       })
       if (!tx) {
         return null
@@ -445,21 +500,14 @@ export async function prepareTransactions({
       continue
     }
 
-    // When sending a token and paying fees in the same token, we need special handling
-    // because estimating gas with the full send amount will fail with "transfer amount exceeds balance"
-    const isSameToken = spendToken && spendToken.tokenId === feeCurrency.tokenId
     const spendAmountDecimal = spendTokenAmount.shiftedBy(-(spendToken?.decimals ?? 0))
 
-    let transactionsToEstimate = baseTransactions
-    if (isSameToken && !isGasSubsidized && spendTokenAmount.isGreaterThan(0)) {
-      // Estimate with a reduced amount to ensure gas estimation succeeds while leaving
-      // sufficient balance to cover both the transfer and gas costs
-      transactionsToEstimate = createReducedAmountTransactions(baseTransactions, spendTokenAmount)
-    }
-
     const estimatedTransactions = await tryEstimateTransactions(
-      transactionsToEstimate,
+      baseTransactions,
       feeCurrency,
+      isGasSubsidized,
+      spendToken,
+      spendTokenAmount,
       isGasSubsidized
     )
     if (!estimatedTransactions) {
@@ -467,20 +515,10 @@ export async function prepareTransactions({
       continue
     }
 
-    // If we estimated with a reduced amount, rebuild transactions with the full amount
-    // while preserving the gas estimates we just calculated
-    let finalTransactions = estimatedTransactions
-    if (isSameToken && !isGasSubsidized && spendTokenAmount.isGreaterThan(0)) {
-      finalTransactions = rebuildTransactionsWithOriginalAmounts(
-        baseTransactions,
-        estimatedTransactions
-      )
-    }
-
-    const feeDecimals = getFeeDecimals(finalTransactions, feeCurrency)
-    const maxGasFee = getMaxGasFee(finalTransactions)
+    const feeDecimals = getFeeDecimals(estimatedTransactions, feeCurrency)
+    const maxGasFee = getMaxGasFee(estimatedTransactions)
     const maxGasFeeInDecimal = maxGasFee.shiftedBy(-feeDecimals)
-    const estimatedGasFee = getEstimatedGasFee(finalTransactions)
+    const estimatedGasFee = getEstimatedGasFee(estimatedTransactions)
     const estimatedGasFeeInDecimal = estimatedGasFee?.shiftedBy(-feeDecimals)
     gasFees.push({ feeCurrency, maxGasFeeInDecimal, estimatedGasFeeInDecimal })
     if (maxGasFeeInDecimal.isGreaterThan(feeCurrency.balance) && !isGasSubsidized) {
@@ -500,7 +538,7 @@ export async function prepareTransactions({
     // This is the one we can use
     return {
       type: 'possible',
-      transactions: finalTransactions,
+      transactions: estimatedTransactions,
       feeCurrency,
     } satisfies PreparedTransactionsPossible
   }

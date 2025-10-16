@@ -1255,8 +1255,7 @@ describe('prepareTransactions module', () => {
         {
           from: '0xfrom' as Address,
           to: '0xtoken' as Address,
-          data:
-            '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex,
+          data: '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex,
         },
       ]
 
@@ -1292,8 +1291,7 @@ describe('prepareTransactions module', () => {
         {
           from: '0xfrom' as Address,
           to: '0xtoken' as Address,
-          data:
-            '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex,
+          data: '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex,
         },
         {
           from: '0xfrom' as Address,
@@ -1349,10 +1347,7 @@ describe('prepareTransactions module', () => {
         },
       ]
 
-      const result = rebuildTransactionsWithOriginalAmounts(
-        baseTransactions,
-        estimatedTransactions
-      )
+      const result = rebuildTransactionsWithOriginalAmounts(baseTransactions, estimatedTransactions)
 
       expect(result).toHaveLength(1)
       expect(result[0].data).toBe('0xoriginaldata') // Original data preserved
@@ -1383,10 +1378,7 @@ describe('prepareTransactions module', () => {
         },
       ]
 
-      const result = rebuildTransactionsWithOriginalAmounts(
-        baseTransactions,
-        estimatedTransactions
-      )
+      const result = rebuildTransactionsWithOriginalAmounts(baseTransactions, estimatedTransactions)
 
       expect(result[0]).toHaveProperty('feeCurrency', '0xfee')
     })
@@ -1410,10 +1402,7 @@ describe('prepareTransactions module', () => {
         },
       ]
 
-      const result = rebuildTransactionsWithOriginalAmounts(
-        baseTransactions,
-        estimatedTransactions
-      )
+      const result = rebuildTransactionsWithOriginalAmounts(baseTransactions, estimatedTransactions)
 
       expect(result[0]._estimatedGasUse).toBe(BigInt(21000))
     })
@@ -1453,10 +1442,7 @@ describe('prepareTransactions module', () => {
         },
       ]
 
-      const result = rebuildTransactionsWithOriginalAmounts(
-        baseTransactions,
-        estimatedTransactions
-      )
+      const result = rebuildTransactionsWithOriginalAmounts(baseTransactions, estimatedTransactions)
 
       expect(result).toHaveLength(2)
       expect(result[0].data).toBe('0xdata1')
