@@ -123,16 +123,23 @@ export async function getWalletCapabilitiesByWalletConnectChainId(
   return result
 }
 
-export async function getAtomicCapabilityByWalletConnectChainId(chainId: string) {
-  const capabilities = getWalletCapabilitiesByWalletConnectChainId()
+export async function getAtomicCapabilityByWalletConnectChainId(
+  address: Address,
+  chainId: string,
+  useAppTransport: boolean = false
+) {
+  const capabilities = await getWalletCapabilitiesByWalletConnectChainId(address, useAppTransport)
   return capabilities?.[chainId]?.atomic?.status ?? 'unsupported'
 }
 
 export async function validateRequestedCapabilities(
+  address: Address,
   chainId: string,
-  requestedCapabilities: Record<string, { optional?: boolean } | undefined>
+  requestedCapabilities: Record<string, { optional?: boolean } | undefined>,
+  useAppTransport: boolean = false
 ) {
-  const supportedCapabilities = getWalletCapabilitiesByWalletConnectChainId()[chainId] ?? {}
+  const capabilities = await getWalletCapabilitiesByWalletConnectChainId(address, useAppTransport)
+  const supportedCapabilities = capabilities[chainId] ?? {}
 
   for (const [capabilityKey, capabilityProperties] of Object.entries(requestedCapabilities)) {
     // if capability key is requested, but not marked as optional, it is required
@@ -141,7 +148,11 @@ export async function validateRequestedCapabilities(
 
     switch (capabilityKey) {
       case 'atomic': {
-        const atomic = await getAtomicCapabilityByWalletConnectChainId(chainId)
+        const atomic = await getAtomicCapabilityByWalletConnectChainId(
+          address,
+          chainId,
+          useAppTransport
+        )
         if (isRequired && atomic === 'unsupported') {
           return false
         }

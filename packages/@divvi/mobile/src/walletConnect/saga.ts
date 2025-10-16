@@ -544,8 +544,14 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   }
 
   if (method === SupportedActions.wallet_sendCalls) {
+    const walletAddress = yield* call(getWalletAddress)
+
     // check support for atomic execution
-    const atomic = yield* call(getAtomicCapabilityByWalletConnectChainId, request.params.chainId)
+    const atomic = yield* call(
+      getAtomicCapabilityByWalletConnectChainId,
+      walletAddress as Address,
+      request.params.chainId
+    )
     if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
       yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
       return
@@ -555,6 +561,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     const requestedCapabilities = request.params.request.params[0].capabilities ?? {}
     const requestedCapabilitiesSupported = yield* call(
       validateRequestedCapabilities,
+      walletAddress as Address,
       request.params.chainId,
       requestedCapabilities
     )
@@ -568,6 +575,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       const callCapabilities = requestCall.capabilities ?? {}
       const callCapabilitiesSupported = yield* call(
         validateRequestedCapabilities,
+        walletAddress as Address,
         request.params.chainId,
         callCapabilities
       )
