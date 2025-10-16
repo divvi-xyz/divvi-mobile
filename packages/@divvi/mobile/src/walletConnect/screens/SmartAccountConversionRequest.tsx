@@ -18,6 +18,8 @@ import { sessionsSelector } from 'src/walletConnect/selectors'
 import { SmartAccountConversionRequest, WalletConnectRequestType } from 'src/walletConnect/types'
 import { walletConnectChainIdToNetworkId } from 'src/web3/networkConfig'
 
+const TAG = 'SmartAccountConversionRequest'
+
 export type SmartAccountConversionRequestProps = SmartAccountConversionRequest & {
   version: 2
   supportedChains: string[]
@@ -38,10 +40,7 @@ function SmartAccountConversionRequestComponent(props: SmartAccountConversionReq
 
   if (!activeSession) {
     // should never happen
-    Logger.error(
-      'WalletConnectRequest/SmartAccountConversionRequest',
-      'No active WallectConnect session could be found'
-    )
+    Logger.error(TAG, 'No active WallectConnect session could be found')
     return null
   }
 
@@ -50,13 +49,13 @@ function SmartAccountConversionRequestComponent(props: SmartAccountConversionReq
 
   const handleAcceptSmartAccountConversion = () => {
     // TODO: Implement smart account conversion logic
-    Logger.info('SmartAccountConversionRequest', 'User accepted smart account conversion')
+    Logger.info(TAG, 'User accepted smart account conversion')
     // For now, just accept the original request
     dispatch(acceptRequest(props))
   }
 
   const handleDenySmartAccountConversion = () => {
-    Logger.info('SmartAccountConversionRequest', 'User denied smart account conversion')
+    Logger.info(TAG, 'User denied smart account conversion')
     if (atomicRequired) {
       dispatch(denyRequest(request, getSdkError('USER_REJECTED')))
     } else {
