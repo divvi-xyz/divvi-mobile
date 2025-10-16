@@ -186,7 +186,7 @@ function RequestContent(props: Props) {
             onPress={onPress}
             testID={`${testId}/Allow`}
           />
-          {secondaryButtonText && (
+          {!!secondaryButtonText && (
             <Button
               type={BtnTypes.SECONDARY}
               size={BtnSizes.FULL}
