@@ -355,13 +355,16 @@ function* showSessionRequest(session: WalletKitTypes.EventArguments['session_pro
 
   // Recommended method
   // https://docs.walletconnect.network/wallet-sdk/react-native/eip5792#wallet-response
-  const scopedProperties = getWalletCapabilitiesByWalletConnectChainId()
+  const scopedProperties = yield* call(
+    getWalletCapabilitiesByWalletConnectChainId,
+    address as Address
+  )
 
   // Legacy method for compatibility
   // https://github.com/WalletConnect/walletconnect-monorepo/blob/1e6d7793d0a30d2bf684cd3811ba120b4cdc0498/providers/universal-provider/src/providers/eip155.ts#L219-L223
   const sessionProperties = {
     capabilities: {
-      [getAddress(address)]: getWalletCapabilitiesByHexChainId(),
+      [getAddress(address)]: yield* call(getWalletCapabilitiesByHexChainId, address as Address),
     },
   } as any
 
@@ -501,18 +504,13 @@ function prepareNormalizedTransactions(
 function* prepareNormalizedTransactions(
   rawTxOrTxs: unknown[] | unknown,
   walletConnectChainId: string
-): SagaGenerator<
-  | {
-      hasInsufficientGasFunds: boolean
-      feeCurrenciesSymbols: string[]
-      result: PreparedTransactionResult<SerializableTransactionRequest>
-    }
-  | {
-      hasInsufficientGasFunds: boolean
-      feeCurrenciesSymbols: string[]
-      result: PreparedTransactionResult<SerializableTransactionRequest[]>
-    }
-> {
+): SagaGenerator<{
+  hasInsufficientGasFunds: boolean
+  feeCurrenciesSymbols: string[]
+  result:
+    | PreparedTransactionResult<SerializableTransactionRequest>
+    | PreparedTransactionResult<SerializableTransactionRequest[]>
+}> {
   const networkId = walletConnectChainIdToNetworkId[walletConnectChainId]
   const network = walletConnectChainIdToNetwork[walletConnectChainId]
   const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
@@ -646,8 +644,14 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   }
 
   if (method === SupportedActions.wallet_sendCalls) {
+    const walletAddress = yield* call(getWalletAddress)
+
     // check support for atomic execution
-    const atomic = yield* call(getAtomicCapabilityByWalletConnectChainId, request.params.chainId)
+    const atomic = yield* call(
+      getAtomicCapabilityByWalletConnectChainId,
+      walletAddress as Address,
+      request.params.chainId
+    )
     if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
       yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
       return
@@ -657,6 +661,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     const requestedCapabilities = request.params.request.params[0].capabilities ?? {}
     const requestedCapabilitiesSupported = yield* call(
       validateRequestedCapabilities,
+      walletAddress as Address,
       request.params.chainId,
       requestedCapabilities
     )
@@ -670,6 +675,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       const callCapabilities = requestCall.capabilities ?? {}
       const callCapabilitiesSupported = yield* call(
         validateRequestedCapabilities,
+        walletAddress as Address,
         request.params.chainId,
         callCapabilities
       )

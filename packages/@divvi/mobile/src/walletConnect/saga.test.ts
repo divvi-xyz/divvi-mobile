@@ -15,6 +15,7 @@ import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import { Network, NetworkId } from 'src/transactions/types'
 import { publicClient } from 'src/viem'
+import { getLockableViemSmartWallet } from 'src/viem/getLockableWallet'
 import { prepareTransactions } from 'src/viem/prepareTransactions'
 import {
   Actions,
@@ -50,6 +51,10 @@ jest.mock('src/statsig')
 jest.mock('src/web3/utils', () => ({
   ...jest.requireActual('src/web3/utils'),
   getSupportedNetworkIds: jest.fn(),
+}))
+jest.mock('src/viem/getLockableWallet', () => ({
+  ...jest.requireActual('src/viem/getLockableWallet'),
+  getLockableViemSmartWallet: jest.fn(),
 }))
 
 function createSessionProposal(
@@ -133,11 +138,20 @@ function createSession(proposerMetadata: CoreTypes.Metadata): SessionTypes.Struc
 beforeEach(() => {
   jest.clearAllMocks()
   jest.mocked(getSupportedNetworkIds).mockReturnValue([NetworkId['celo-alfajores']])
+  jest.mocked(getLockableViemSmartWallet).mockResolvedValue({
+    account: {
+      isDeployed: jest.fn().mockResolvedValue(true),
+    },
+  } as any)
   jest.mocked(getFeatureGate).mockImplementation((featureGate) => {
-    if (featureGate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2) {
-      return false
+    switch (featureGate) {
+      case StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2:
+        return false
+      case StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES:
+        return false
+      default:
+        throw new Error(`Unexpected feature gate: ${featureGate}`)
     }
-    throw new Error(`Unexpected feature gate: ${featureGate}`)
   })
 })
 
@@ -283,6 +297,25 @@ describe('showSessionRequest', () => {
     name: 'someName',
   })
 
+  beforeEach(() => {
+    jest.clearAllMocks()
+    jest.mocked(getSupportedNetworkIds).mockReturnValue([NetworkId['celo-alfajores']])
+    jest.mocked(getLockableViemSmartWallet).mockResolvedValue({
+      account: {
+        isDeployed: jest.fn().mockResolvedValue(true),
+      },
+    } as any)
+    jest.mocked(getFeatureGate).mockImplementation((gate) => {
+      if (gate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2) {
+        return false
+      }
+      if (gate === StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES) {
+        return true
+      }
+      return false
+    })
+  })
+
   it('navigates to the screen to approve the session', async () => {
     const state = createMockStore({}).getState()
     await expectSaga(_showSessionRequest, sessionProposal)
@@ -369,7 +402,7 @@ describe('showSessionRequest', () => {
       scopedProperties: {
         'eip155:44787': {
           atomic: {
-            status: 'unsupported',
+            status: 'supported',
           },
           paymasterService: {
             supported: false,
@@ -381,7 +414,7 @@ describe('showSessionRequest', () => {
           '0x0000000000000000000000000000000000007e57': {
             '0xaef3': {
               atomic: {
-                status: 'unsupported',
+                status: 'supported',
               },
               paymasterService: {
                 supported: false,
@@ -489,6 +522,57 @@ describe('showSessionRequest', () => {
       version: 2,
       sessionProperties: expect.anything(),
       scopedProperties: expect.anything(),
+    })
+  })
+
+  it('falls back to default capabilities when feature gate is disabled', async () => {
+    jest.mocked(getFeatureGate).mockImplementation((gate) => {
+      if (gate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2) {
+        return false
+      }
+      if (gate === StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES) {
+        return false
+      }
+      return false
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showSessionRequest, sessionProposal)
+      .withState(state)
+      .provide([[select(activeDappSelector), null]])
+      .run()
+
+    expect(navigate).toHaveBeenCalledTimes(1)
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Session,
+      pendingSession: sessionProposal,
+      namespacesToApprove: expect.anything(),
+      supportedChains: expect.anything(),
+      version: expect.anything(),
+      scopedProperties: {
+        'eip155:44787': {
+          atomic: {
+            status: 'unsupported',
+          },
+          paymasterService: {
+            supported: false,
+          },
+        },
+      },
+      sessionProperties: {
+        capabilities: {
+          '0x0000000000000000000000000000000000007e57': {
+            '0xaef3': {
+              atomic: {
+                status: 'unsupported',
+              },
+              paymasterService: {
+                supported: false,
+              },
+            },
+          },
+        },
+      },
     })
   })
 })
@@ -1556,6 +1640,12 @@ describe('handlePendingState', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(getFeatureGate).mockImplementation((featureGate) => {
+      if (featureGate === StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES) {
+        return false
+      }
+      throw new Error(`Unexpected feature gate: ${featureGate}`)
+    })
     mockClient = {
       approveSession: jest.fn(),
       getActiveSessions: jest.fn(() => {

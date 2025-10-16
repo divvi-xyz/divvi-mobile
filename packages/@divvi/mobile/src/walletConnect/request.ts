@@ -19,7 +19,7 @@ import networkConfig, {
 } from 'src/web3/networkConfig'
 import { getWalletAddress, unlockAccount } from 'src/web3/saga'
 import { call, put } from 'typed-redux-saga'
-import { bytesToHex, Hex, SignMessageParameters } from 'viem'
+import { Address, bytesToHex, Hex, SignMessageParameters } from 'viem'
 
 const TAG = 'WalletConnect/request'
 
@@ -99,12 +99,20 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       return (yield* call([wallet, 'signMessage'], data)) as string
     }
     case SupportedActions.wallet_getCapabilities: {
-      const [_, hexNetworkIds] = params
-      return yield* call(getWalletCapabilitiesByHexChainId, hexNetworkIds)
+      const [address, hexNetworkIds] = params
+
+      if (address.toLowerCase() !== account.toLowerCase()) {
+        throw new Error('Unauthorized')
+      }
+
+      return yield* call(getWalletCapabilitiesByHexChainId, address, hexNetworkIds)
     }
     case SupportedActions.wallet_sendCalls: {
       const id = params[0].id ?? bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
-      const supportedCapabilities = yield* call(getWalletCapabilitiesByWalletConnectChainId)
+      const supportedCapabilities = yield* call(
+        getWalletCapabilitiesByWalletConnectChainId,
+        account as Address
+      )
 
       // TODO: handle atomic execution
 
