@@ -175,7 +175,7 @@ describe(handleRequest, () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockGetFeatureGate.mockImplementation(
-      (gate) => gate === StatsigFeatureGates.ALLOW_CROSS_CHAIN_SWAPS
+      (gate) => gate === StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
     )
     jest.mocked(getLockableViemSmartWallet).mockResolvedValue({
       account: {
