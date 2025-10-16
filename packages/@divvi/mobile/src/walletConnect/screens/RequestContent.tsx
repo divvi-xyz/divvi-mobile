@@ -186,20 +186,22 @@ function RequestContent(props: Props) {
             onPress={onPress}
             testID={`${testId}/Allow`}
           />
-          <Button
-            type={BtnTypes.SECONDARY}
-            size={BtnSizes.FULL}
-            text={secondaryButtonText ?? t('dismiss')}
-            showLoading={showButtonLoading}
-            disabled={showButtonLoading}
-            onPress={() => {
-              if (props.type === 'confirm') {
-                props.onDeny()
-              }
-            }}
-            testID={`${testId}/Dismiss`}
-            style={styles.secondaryButton}
-          />
+          {secondaryButtonText && (
+            <Button
+              type={BtnTypes.SECONDARY}
+              size={BtnSizes.FULL}
+              text={secondaryButtonText}
+              showLoading={showButtonLoading}
+              disabled={showButtonLoading}
+              onPress={() => {
+                if (props.type === 'confirm') {
+                  props.onDeny()
+                }
+              }}
+              testID={`${testId}/Dismiss`}
+              style={styles.secondaryButton}
+            />
+          )}
         </>
       )}
       {type == 'dismiss' && (
