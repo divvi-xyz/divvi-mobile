@@ -650,12 +650,6 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
-  // Navigate to loading state for interactive requests
-  navigate(Screens.WalletConnectRequest, {
-    type: WalletConnectRequestType.Loading,
-    origin: WalletConnectPairingOrigin.Deeplink,
-  })
-
   if (method === SupportedActions.wallet_sendCalls) {
     const walletAddress = yield* call(getWalletAddress)
 
@@ -698,6 +692,12 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       }
     }
 
+    // Navigate to loading state after capability checks pass
+    navigate(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Loading,
+      origin: WalletConnectPairingOrigin.Deeplink,
+    })
+
     // since there are some network requests needed to prepare the transactions,
     // the loading state has already been set
 
@@ -735,6 +735,12 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       return
     }
   }
+
+  // Navigate to loading state for other interactive requests
+  navigate(Screens.WalletConnectRequest, {
+    type: WalletConnectRequestType.Loading,
+    origin: WalletConnectPairingOrigin.Deeplink,
+  })
 
   // We have either:
   // A transaction request
