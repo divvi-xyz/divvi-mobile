@@ -367,6 +367,12 @@ describe(handleRequest, () => {
       preparedRequest,
     })
 
+    beforeEach(() => {
+      mockGetFeatureGate.mockImplementation(
+        (gate) => gate !== StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
+      )
+    })
+
     it('supports sequential execution and returns capabilities for supported network', async () => {
       const expectedResult = {
         id: '0xabc',
