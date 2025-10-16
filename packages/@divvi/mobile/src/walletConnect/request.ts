@@ -109,6 +109,7 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
     }
     case SupportedActions.wallet_sendCalls: {
       const id = params[0].id ?? bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
+      const callsCount = params[0].calls.length
       const supportedCapabilities = yield* call(
         getWalletCapabilitiesByWalletConnectChainId,
         account as Address
@@ -138,7 +139,15 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
 
       const now = Date.now()
       yield* put(pruneExpiredBatches({ now }))
-      yield* put(addBatch({ id, transactionHashes, expiresAt: now + BATCH_STATUS_TTL }))
+      yield* put(
+        addBatch({
+          id,
+          transactionHashes,
+          callsCount,
+          atomic: false,
+          expiresAt: now + BATCH_STATUS_TTL,
+        })
+      )
 
       return {
         id,

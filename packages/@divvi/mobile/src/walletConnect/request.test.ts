@@ -175,7 +175,7 @@ describe(handleRequest, () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockGetFeatureGate.mockImplementation(
-      (gate) => gate === StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
+      (gate) => gate === StatsigFeatureGates.ALLOW_CROSS_CHAIN_SWAPS
     )
     jest.mocked(getLockableViemSmartWallet).mockResolvedValue({
       account: {
@@ -385,13 +385,6 @@ describe(handleRequest, () => {
         .mockResolvedValueOnce('0xaaa')
         .mockResolvedValueOnce('0xbbb')
 
-    beforeEach(() => {
-      mockGetFeatureGate.mockImplementation(
-        (gate) => gate !== StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
-      )
-    })
-
-    it('supports sequential execution and returns capabilities for supported network', async () => {
       const expectedResult = {
         id: '0xabc',
         capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
@@ -407,6 +400,8 @@ describe(handleRequest, () => {
           addBatch({
             id: '0xabc',
             transactionHashes: ['0xaaa', '0xbbb'],
+            callsCount: 2,
+            atomic: false,
             expiresAt: NOW + BATCH_STATUS_TTL,
           })
         )
@@ -444,6 +439,16 @@ describe(handleRequest, () => {
       await expectSaga(handleRequest, sendCallsRequest)
         .withState(state)
         .call(unlockAccount, '0xwallet')
+        .put(pruneExpiredBatches({ now: NOW }))
+        .put(
+          addBatch({
+            id: '0xabc',
+            transactionHashes: ['0x1234'],
+            callsCount: 3,
+            atomic: false,
+            expiresAt: NOW + BATCH_STATUS_TTL,
+          })
+        )
         .returns(expectedResult)
         .run()
 
