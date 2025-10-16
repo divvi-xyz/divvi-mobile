@@ -28,7 +28,10 @@ import Logger from 'src/utils/Logger'
 import { safely } from 'src/utils/safely'
 import { appendPath } from 'src/utils/string'
 import { publicClient } from 'src/viem'
-import { getSerializablePreparedTransaction } from 'src/viem/preparedTransactionSerialization'
+import {
+  getSerializablePreparedTransaction,
+  SerializableTransactionRequest,
+} from 'src/viem/preparedTransactionSerialization'
 import {
   PreparedTransactionsResult,
   prepareTransactions,
@@ -76,8 +79,9 @@ import {
 import {
   isMessageMethod,
   isNonInteractiveMethod,
+  isSendCallsMethod,
   isTransactionMethod,
-  PreparedTransaction,
+  PreparedTransactionResult,
   WalletConnectRequestResult,
   WalletConnectRequestType,
 } from 'src/walletConnect/types'
@@ -89,6 +93,7 @@ import networkConfig, {
 import { getWalletAddress } from 'src/web3/saga'
 import { demoModeEnabledSelector, walletAddressSelector } from 'src/web3/selectors'
 import { getSupportedNetworkIds } from 'src/web3/utils'
+import type { SagaGenerator } from 'typed-redux-saga'
 import {
   call,
   delay,
@@ -432,6 +437,10 @@ export function* normalizeTransactions(rawTxs: any[], network: Network) {
       value: convertToBigInt(rawTx.value),
     }
 
+    if (!tx.from) {
+      tx.from = walletAddress as Address
+    }
+
     // Handle `gasLimit` as a misnomer for `gas`, it usually comes through in hex format
     if ('gasLimit' in tx && tx.gas === undefined) {
       tx.gas = convertToBigInt(tx.gasLimit)
@@ -474,6 +483,97 @@ export function* normalizeTransactions(rawTxs: any[], network: Network) {
   }
 
   return normalizedTransactions
+}
+
+function prepareNormalizedTransactions(
+  rawTxs: unknown[],
+  walletConnectChainId: string
+): SagaGenerator<{
+  hasInsufficientGasFunds: boolean
+  feeCurrenciesSymbols: string[]
+  result: PreparedTransactionResult<SerializableTransactionRequest[]>
+}>
+function prepareNormalizedTransactions(
+  rawTx: unknown,
+  walletConnectChainId: string
+): SagaGenerator<{
+  hasInsufficientGasFunds: boolean
+  feeCurrenciesSymbols: string[]
+  result: PreparedTransactionResult<SerializableTransactionRequest>
+}>
+function* prepareNormalizedTransactions(
+  rawTxOrTxs: unknown[] | unknown,
+  walletConnectChainId: string
+): SagaGenerator<{
+  hasInsufficientGasFunds: boolean
+  feeCurrenciesSymbols: string[]
+  result:
+    | PreparedTransactionResult<SerializableTransactionRequest>
+    | PreparedTransactionResult<SerializableTransactionRequest[]>
+}> {
+  const networkId = walletConnectChainIdToNetworkId[walletConnectChainId]
+  const network = walletConnectChainIdToNetwork[walletConnectChainId]
+  const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
+
+  let result: PreparedTransactionsResult | undefined
+  let errorMessage: string | undefined
+
+  Logger.debug(TAG + '@prepareNormalizedTransactions', 'Received transactions', rawTxOrTxs)
+
+  try {
+    const rawTxs = Array.isArray(rawTxOrTxs) ? rawTxOrTxs : [rawTxOrTxs]
+    const normalizedTxs = yield* call(normalizeTransactions, rawTxs, network)
+    result = yield* call(prepareTransactions, {
+      feeCurrencies,
+      decreasedAmountGasFeeMultiplier: 1,
+      baseTransactions: normalizedTxs,
+      origin: 'wallet-connect' as const,
+    })
+  } catch (err) {
+    Logger.warn(TAG + '@showActionRequest', 'Failed to prepare transactions', err)
+    const e = ensureError(err)
+    // Viem has short user-friendly error messages
+    errorMessage = e instanceof BaseError ? e.shortMessage : e.message
+  }
+
+  const hasInsufficientGasFunds = result?.type === 'not-enough-balance-for-gas'
+  const feeCurrenciesSymbols = feeCurrencies.map((token) => token.symbol)
+
+  Logger.debug(
+    TAG + '@prepareNormalizedTransactions',
+    'Prepared transactions',
+    result?.type,
+    result?.type === 'possible' && result.transactions
+  )
+
+  if (result?.type === 'possible') {
+    const serializableTransactions = result.transactions.map((tx) =>
+      getSerializablePreparedTransaction(tx)
+    )
+
+    if (!Array.isArray(rawTxOrTxs)) {
+      return {
+        hasInsufficientGasFunds,
+        feeCurrenciesSymbols,
+        result: { success: true, data: serializableTransactions[0] },
+      }
+    }
+
+    return {
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+      result: { success: true, data: serializableTransactions },
+    }
+  }
+
+  return {
+    hasInsufficientGasFunds,
+    feeCurrenciesSymbols,
+    result: {
+      success: false,
+      errorMessage,
+    },
+  }
 }
 
 function* showActionRequest(request: WalletKitTypes.EventArguments['session_request']) {
@@ -589,10 +689,6 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       // TODO: suggest user to enable atomic operations
       // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
     }
-
-    // TODO: add support for wallet_sendCalls
-    yield* put(denyRequest(request, getSdkError('WC_METHOD_UNSUPPORTED')))
-    return
   }
 
   // If the action doesn't require user consent, accept it immediately
@@ -621,47 +717,12 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   }
 
   if (isTransactionMethod(method)) {
-    const networkId = walletConnectChainIdToNetworkId[request.params.chainId]
-    const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
-    let preparedTransactionsResult: PreparedTransactionsResult | undefined = undefined
-    let prepareTransactionsErrorMessage: string | undefined = undefined
-    const rawTx = request.params.request.params[0]
-    Logger.debug(TAG + '@showActionRequest', 'Received transaction', rawTx)
-    const network = walletConnectChainIdToNetwork[request.params.chainId]
-    try {
-      const normalizedTxs = yield* call(normalizeTransactions, [rawTx], network)
-      preparedTransactionsResult = yield* call(prepareTransactions, {
-        feeCurrencies,
-        decreasedAmountGasFeeMultiplier: 1,
-        baseTransactions: normalizedTxs,
-        origin: 'wallet-connect' as const,
-      })
-    } catch (err) {
-      Logger.warn(TAG + '@showActionRequest', 'Failed to prepare transactions', err)
-      const e = ensureError(err)
-      // Viem has short user-friendly error messages
-      prepareTransactionsErrorMessage = e instanceof BaseError ? e.shortMessage : e.message
-    }
-
-    const preparedTransaction: PreparedTransaction =
-      preparedTransactionsResult?.type === 'possible'
-        ? {
-            success: true,
-            transactionRequest: getSerializablePreparedTransaction(
-              preparedTransactionsResult.transactions[0]
-            ),
-          }
-        : {
-            success: false,
-            errorMessage: prepareTransactionsErrorMessage!,
-          }
-
-    Logger.debug(
-      TAG + '@showActionRequest',
-      'Prepared transactions',
-      preparedTransactionsResult?.type,
-      preparedTransaction
-    )
+    const rawTx: unknown = request.params.request.params[0]
+    const {
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+      result: preparedRequest,
+    } = yield* prepareNormalizedTransactions(rawTx, request.params.chainId)
 
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
@@ -669,9 +730,29 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       request,
       supportedChains,
       version: 2,
-      hasInsufficientGasFunds: preparedTransactionsResult?.type === 'not-enough-balance-for-gas',
-      feeCurrenciesSymbols: feeCurrencies.map((token) => token.symbol),
-      preparedTransaction,
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+      preparedRequest,
+    })
+  }
+
+  if (isSendCallsMethod(method)) {
+    const rawTxs: unknown[] = request.params.request.params[0].calls
+    const {
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+      result: preparedRequest,
+    } = yield* prepareNormalizedTransactions(rawTxs, request.params.chainId)
+
+    navigate(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Action,
+      method,
+      request,
+      supportedChains,
+      version: 2,
+      hasInsufficientGasFunds,
+      feeCurrenciesSymbols,
+      preparedRequest,
     })
   }
 }

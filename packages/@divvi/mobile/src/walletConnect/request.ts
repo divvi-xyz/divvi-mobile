@@ -4,7 +4,10 @@ import { Network } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
 import { ViemWallet } from 'src/viem/getLockableWallet'
 import { getPreparedTransaction } from 'src/viem/preparedTransactionSerialization'
-import { getWalletCapabilitiesByHexChainId } from 'src/walletConnect/capabilities'
+import {
+  getWalletCapabilitiesByHexChainId,
+  getWalletCapabilitiesByWalletConnectChainId,
+} from 'src/walletConnect/capabilities'
 import { chainAgnosticActions, SupportedActions } from 'src/walletConnect/constants'
 import { ActionableRequest, isNonInteractiveMethod } from 'src/walletConnect/types'
 import { getViemWallet } from 'src/web3/contracts'
@@ -14,7 +17,7 @@ import networkConfig, {
 } from 'src/web3/networkConfig'
 import { getWalletAddress, unlockAccount } from 'src/web3/saga'
 import { call } from 'typed-redux-saga'
-import { SignMessageParameters } from 'viem'
+import { Address, bytesToHex, SignMessageParameters } from 'viem'
 
 const TAG = 'WalletConnect/request'
 
@@ -57,10 +60,10 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
 
   switch (method) {
     case SupportedActions.eth_signTransaction: {
-      if (!actionableRequest.preparedTransaction.success) {
-        throw new Error(actionableRequest.preparedTransaction.errorMessage)
+      if (!actionableRequest.preparedRequest.success) {
+        throw new Error(actionableRequest.preparedRequest.errorMessage)
       }
-      const tx = getPreparedTransaction(actionableRequest.preparedTransaction.transactionRequest)
+      const tx = getPreparedTransaction(actionableRequest.preparedRequest.data)
       Logger.debug(TAG + '@handleRequest', 'Signing transaction', tx)
       return yield* call(
         [wallet, 'signTransaction'],
@@ -69,10 +72,10 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       )
     }
     case SupportedActions.eth_sendTransaction: {
-      if (!actionableRequest.preparedTransaction.success) {
-        throw new Error(actionableRequest.preparedTransaction.errorMessage)
+      if (!actionableRequest.preparedRequest.success) {
+        throw new Error(actionableRequest.preparedRequest.errorMessage)
       }
-      const tx = getPreparedTransaction(actionableRequest.preparedTransaction.transactionRequest)
+      const tx = getPreparedTransaction(actionableRequest.preparedRequest.data)
       Logger.debug(TAG + '@handleRequest', 'Sending transaction', tx)
       const hash = yield* call(
         [wallet, 'sendTransaction'],
@@ -101,6 +104,38 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       }
 
       return yield* call(getWalletCapabilitiesByHexChainId, address, hexNetworkIds)
+    }
+    case SupportedActions.wallet_sendCalls: {
+      const id = params[0].id ?? bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
+      const supportedCapabilities = yield* call(
+        getWalletCapabilitiesByWalletConnectChainId,
+        account as Address
+      )
+
+      // TODO: handle atomic execution
+
+      // Fallback to sending transactions sequentially without any atomicity/contiguity guarantees
+      if (!actionableRequest.preparedRequest.success) {
+        throw new Error(actionableRequest.preparedRequest.errorMessage)
+      }
+
+      for (const tx of actionableRequest.preparedRequest.data) {
+        try {
+          yield* call(
+            [wallet, 'sendTransaction'],
+            // TODO: fix types
+            tx as any
+          )
+        } catch (e) {
+          Logger.warn(TAG + '@handleRequest', 'Failed to send transaction, aborting batch', e)
+          break
+        }
+      }
+
+      return {
+        id,
+        capabilities: supportedCapabilities[chainId],
+      }
     }
     default:
       throw new Error('unsupported RPC method')

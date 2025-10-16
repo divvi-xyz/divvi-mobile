@@ -9,7 +9,7 @@ import {
 } from 'src/viem/preparedTransactionSerialization'
 import { SupportedActions } from 'src/walletConnect/constants'
 import { handleRequest } from 'src/walletConnect/request'
-import { ActionableRequest, PreparedTransaction } from 'src/walletConnect/types'
+import { ActionableRequest, PreparedTransactionResult } from 'src/walletConnect/types'
 import { getViemWallet } from 'src/web3/contracts'
 import { unlockAccount } from 'src/web3/saga'
 import { createMockStore } from 'test/utils'
@@ -53,12 +53,14 @@ const createMockActionableRequest = ({
   method,
   params,
   chainId,
-  preparedTransaction,
+  preparedRequest,
 }: {
   method: SupportedActions
   params: any[]
   chainId: string
-  preparedTransaction?: PreparedTransaction
+  preparedRequest?:
+    | PreparedTransactionResult<SerializableTransactionRequest>
+    | PreparedTransactionResult<SerializableTransactionRequest[]>
 }) =>
   ({
     method,
@@ -73,7 +75,7 @@ const createMockActionableRequest = ({
         },
       },
     },
-    preparedTransaction,
+    preparedRequest,
   }) as ActionableRequest
 
 const txParams = {
@@ -85,16 +87,16 @@ const txParams = {
   value: '0x01',
 }
 
-const preparedTransaction = {
+const preparedRequest = {
   success: true as const,
-  transactionRequest: txParams as SerializableTransactionRequest,
+  data: txParams as SerializableTransactionRequest,
 }
 
 const signTransactionRequest = createMockActionableRequest({
   method: SupportedActions.eth_signTransaction,
   params: [txParams],
   chainId: 'eip155:44787',
-  preparedTransaction,
+  preparedRequest,
 })
 const serializableTransactionRequest = signTransactionRequest.request.params.request
   .params[0] as SerializableTransactionRequest
@@ -102,7 +104,7 @@ const sendTransactionRequest = createMockActionableRequest({
   method: SupportedActions.eth_sendTransaction,
   params: [txParams],
   chainId: 'eip155:44787',
-  preparedTransaction,
+  preparedRequest,
 })
 const serializableSendTransactionRequest = sendTransactionRequest.request.params.request
   .params[0] as SerializableTransactionRequest
@@ -341,6 +343,85 @@ describe(handleRequest, () => {
       }
 
       await expectSaga(handleRequest, request).withState(state).returns(expectedDefaultResult).run()
+    })
+  })
+
+  describe('wallet_sendCalls', () => {
+    const preparedRequest = {
+      success: true as const,
+      data: [serializableSendTransactionRequest, serializableSendTransactionRequest],
+    }
+
+    const sendCallsRequest = createMockActionableRequest({
+      method: SupportedActions.wallet_sendCalls,
+      params: [
+        {
+          id: '0xabc',
+          calls: [
+            { to: '0xTEST', data: '0x' },
+            { to: '0xTEST', data: '0x' },
+          ],
+        },
+      ],
+      chainId: 'eip155:11155111',
+      preparedRequest,
+    })
+
+    beforeEach(() => {
+      mockGetFeatureGate.mockImplementation(
+        (gate) => gate !== StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES
+      )
+    })
+
+    it('supports sequential execution and returns capabilities for supported network', async () => {
+      const expectedResult = {
+        id: '0xabc',
+        capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+      }
+
+      await expectSaga(handleRequest, sendCallsRequest)
+        .withState(state)
+        .call(unlockAccount, '0xwallet')
+        .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
+        .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
+        .returns(expectedResult)
+        .run()
+    })
+
+    it('aborts sequential execution if one transaction fails', async () => {
+      viemWallet.sendTransaction = jest
+        .fn()
+        .mockResolvedValueOnce('0x1234')
+        .mockRejectedValueOnce(new Error('error'))
+
+      const sendCallsRequest = createMockActionableRequest({
+        method: SupportedActions.wallet_sendCalls,
+        params: [
+          {
+            id: '0xabc',
+            calls: [
+              { to: '0xTEST', data: '0x' },
+              { to: '0xTEST', data: '0x' },
+              { to: '0xTEST', data: '0x' },
+            ],
+          },
+        ],
+        chainId: 'eip155:11155111',
+        preparedRequest,
+      })
+
+      const expectedResult = {
+        id: '0xabc',
+        capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+      }
+
+      await expectSaga(handleRequest, sendCallsRequest)
+        .withState(state)
+        .call(unlockAccount, '0xwallet')
+        .returns(expectedResult)
+        .run()
+
+      expect(viemWallet.sendTransaction).toHaveBeenCalledTimes(2)
     })
   })
 })
