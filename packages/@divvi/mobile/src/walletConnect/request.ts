@@ -109,7 +109,6 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
     }
     case SupportedActions.wallet_sendCalls: {
       const id = params[0].id ?? bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
-      const callsCount = params[0].calls.length
       const supportedCapabilities = yield* call(
         getWalletCapabilitiesByWalletConnectChainId,
         account as Address
@@ -143,7 +142,6 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
         addBatch({
           id,
           transactionHashes,
-          callsCount,
           atomic: false,
           expiresAt: now + BATCH_STATUS_TTL,
         })

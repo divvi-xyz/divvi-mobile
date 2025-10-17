@@ -9,11 +9,10 @@ function getMockState() {
       batchById: {
         activeId: {
           transactionHashes: ['0x1', '0x2'],
-          callsCount: 2,
           atomic: false,
           expiresAt: NOW + 5000,
         },
-        expiredId: { transactionHashes: ['0x1'], callsCount: 1, atomic: false, expiresAt: NOW - 1 },
+        expiredId: { transactionHashes: ['0x1'], atomic: false, expiresAt: NOW - 1 },
       },
     },
   })
@@ -24,7 +23,6 @@ describe('selectBatch', () => {
     const state = getMockState()
     expect(selectBatch(state, 'activeId', NOW)).toEqual({
       transactionHashes: ['0x1', '0x2'],
-      callsCount: 2,
       atomic: false,
       expiresAt: NOW + 5000,
     })

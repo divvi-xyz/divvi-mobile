@@ -406,7 +406,6 @@ describe(handleRequest, () => {
           addBatch({
             id: '0xabc',
             transactionHashes: ['0xaaa', '0xbbb'],
-            callsCount: 2,
             atomic: false,
             expiresAt: NOW + BATCH_STATUS_TTL,
           })
@@ -450,7 +449,6 @@ describe(handleRequest, () => {
           addBatch({
             id: '0xabc',
             transactionHashes: ['0x1234'],
-            callsCount: 3,
             atomic: false,
             expiresAt: NOW + BATCH_STATUS_TTL,
           })
