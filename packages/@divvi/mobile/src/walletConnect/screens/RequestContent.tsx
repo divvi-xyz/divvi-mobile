@@ -25,6 +25,7 @@ interface BaseProps {
   testId: string
   children?: React.ReactNode
   buttonText?: string | null
+  secondaryButtonText?: string | null
   buttonLoading?: boolean
 }
 
@@ -91,6 +92,7 @@ function RequestContent(props: Props) {
     testId,
     children,
     buttonText,
+    secondaryButtonText,
     buttonLoading,
   } = props
   const { t } = useTranslation()
@@ -174,15 +176,33 @@ function RequestContent(props: Props) {
       {children}
 
       {type == 'confirm' && (
-        <Button
-          type={BtnTypes.PRIMARY}
-          size={BtnSizes.FULL}
-          text={buttonText ?? t('allow')}
-          showLoading={showButtonLoading}
-          disabled={showButtonLoading}
-          onPress={onPress}
-          testID={`${testId}/Allow`}
-        />
+        <>
+          <Button
+            type={BtnTypes.PRIMARY}
+            size={BtnSizes.FULL}
+            text={buttonText ?? t('allow')}
+            showLoading={showButtonLoading}
+            disabled={showButtonLoading}
+            onPress={onPress}
+            testID={`${testId}/Allow`}
+          />
+          {!!secondaryButtonText && (
+            <Button
+              type={BtnTypes.SECONDARY}
+              size={BtnSizes.FULL}
+              text={secondaryButtonText}
+              showLoading={showButtonLoading}
+              disabled={showButtonLoading}
+              onPress={() => {
+                if (props.type === 'confirm') {
+                  props.onDeny()
+                }
+              }}
+              testID={`${testId}/Dismiss`}
+              style={styles.secondaryButton}
+            />
+          )}
+        </>
       )}
       {type == 'dismiss' && (
         <Button
@@ -218,6 +238,9 @@ const styles = StyleSheet.create({
   },
   requestDetailValue: {
     ...typeScale.labelSemiBoldSmall,
+  },
+  secondaryButton: {
+    marginTop: Spacing.Regular16,
   },
 })
 
