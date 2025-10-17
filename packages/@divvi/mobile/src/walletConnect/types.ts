@@ -82,7 +82,7 @@ export interface SendCallsRequest extends RequestBase {
 }
 
 export interface SmartAccountConversionRequest extends RequestBase {
-  method: SendCallsMethod
+  method: TransactionMethod | SendCallsMethod
   atomicRequired: boolean
   hasInsufficientGasFunds: boolean
   feeCurrenciesSymbols: string[]
