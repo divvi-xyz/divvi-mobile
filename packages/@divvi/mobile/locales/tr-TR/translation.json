@@ -1197,6 +1197,10 @@
       "title": "İşlem hazırlanamadı",
       "description": "İşlem hazırlanırken bir hata oluştu. Daha fazla ayrıntı için altta yatan hataya bakın.\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "Atomik olmayan yürütme",
+      "description": "İşlemler, herhangi bir atomiklik/bütünlük garantisi olmaksızın sırayla gerçekleştirilecektir."
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "Desteklenmeyen zincir",
