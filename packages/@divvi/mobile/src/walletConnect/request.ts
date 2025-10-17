@@ -21,7 +21,14 @@ import networkConfig, {
 } from 'src/web3/networkConfig'
 import { getWalletAddress, unlockAccount } from 'src/web3/saga'
 import { call, put, select } from 'typed-redux-saga'
-import { Address, bytesToHex, Hex, SignMessageParameters } from 'viem'
+import {
+  Address,
+  bytesToHex,
+  Hex,
+  SignMessageParameters,
+  TransactionReceipt,
+  TransactionReceiptNotFoundError,
+} from 'viem'
 
 const TAG = 'WalletConnect/request'
 
@@ -167,43 +174,47 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
 
       const network = walletConnectChainIdToNetwork[chainId]
 
-      const requests = yield* call(
+      const { transactionHashes, callsCount, atomic } = batch
+
+      const allTransactionsSubmitted = transactionHashes.length === callsCount
+
+      const receiptRequests = yield* call(
         Promise.allSettled,
-        batch.transactionHashes.map((hash) => publicClient[network].getTransactionReceipt({ hash }))
+        transactionHashes.map((hash) => publicClient[network].getTransactionReceipt({ hash }))
       )
 
-      const receipts = requests.filter((r) => r.status === 'fulfilled').map((r) => r.value)
-
-      requests
-        .filter((r) => r.status === 'rejected')
-        // eslint-disable-next-line no-console
-        .forEach((r) => console.warn('Failed to fetch transaction receipt:', (r as any).reason))
-
-      const someReceiptsPending = receipts.length === 0
-      const allReceiptsSuccessful =
-        receipts.length > 0 && receipts.every((r) => r?.status === 'success')
-      const allReceiptsFailed =
-        receipts.length > 0 && receipts.every((r) => r?.status === 'reverted')
-      const someReceiptsFailed = receipts.some((r) => r?.status === 'reverted')
-
-      let status: number
-      if (someReceiptsPending) {
-        status = 100
-      } else if (allReceiptsSuccessful) {
-        status = 200
-      } else if (allReceiptsFailed) {
-        status = 500
-      } else if (someReceiptsFailed) {
-        status = 600
-      } else {
-        status = 100
+      const receipts: (TransactionReceipt | null)[] = []
+      for (const r of receiptRequests) {
+        if (r.status === 'fulfilled') {
+          receipts.push(r.value as TransactionReceipt)
+        } else {
+          if (r.reason instanceof TransactionReceiptNotFoundError) {
+            receipts.push(null) // transaction pending
+          } else {
+            throw r.reason // RPC request failed
+          }
+        }
       }
 
-      const supportedCapabilities = yield* call(getWalletCapabilitiesByWalletConnectChainId)
+      const status = (() => {
+        if (!allTransactionsSubmitted) return 600 // pending
+
+        if (receipts.some((r) => r === null)) return 100 // pending
+        if (receipts.every((r) => r?.status === 'success')) return 200 // success
+        if (receipts.every((r) => r?.status === 'reverted')) return 500 // complete failure
+        return 600 // partial failure
+      })()
+
+      const supportedCapabilities = yield* call(
+        getWalletCapabilitiesByWalletConnectChainId,
+        account as Address
+      )
 
       return {
+        version: '2.0.0',
         id,
         status,
+        atomic,
         receipts,
         capabilities: supportedCapabilities[chainId],
       }
