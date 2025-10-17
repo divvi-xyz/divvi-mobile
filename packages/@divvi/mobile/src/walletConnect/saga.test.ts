@@ -1439,6 +1439,7 @@ describe('wallet_sendCalls', () => {
         success: true,
         data: mockPreparedTransactions.transactions,
       },
+      atomic: false,
     })
   })
 
@@ -1543,6 +1544,7 @@ describe('wallet_sendCalls', () => {
         success: true,
         data: mockPreparedTransactions.transactions,
       },
+      atomic: false,
     })
   })
 
@@ -1631,6 +1633,7 @@ describe('wallet_sendCalls', () => {
         success: true,
         data: mockPreparedTransactions.transactions,
       },
+      atomic: false,
     })
   })
 })
