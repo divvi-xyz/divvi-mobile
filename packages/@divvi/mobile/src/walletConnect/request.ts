@@ -146,13 +146,12 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
         }
       }
 
-      const now = Date.now()
       yield* put(
         addBatch({
           id,
           transactionHashes,
           atomic: false,
-          expiresAt: now + BATCH_STATUS_TTL,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
         })
       )
 
