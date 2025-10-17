@@ -1,7 +1,7 @@
 import { WalletKitTypes } from '@reown/walletkit'
 import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
 import { SupportedActions } from 'src/walletConnect/constants'
-import { CapabilitiesSchema } from 'viem'
+import { CapabilitiesSchema, WalletGetCallsStatusReturnType, WalletSendCallsReturnType } from 'viem'
 
 export enum WalletConnectRequestType {
   Loading,
@@ -10,7 +10,11 @@ export enum WalletConnectRequestType {
   TimeOut,
 }
 
-export type WalletConnectRequestResult = string | Record<string, Capabilities>
+export type WalletConnectRequestResult =
+  | string
+  | Record<string, Capabilities>
+  | WalletSendCallsReturnType
+  | WalletGetCallsStatusReturnType
 
 export type Capabilities = Pick<
   CapabilitiesSchema['getCapabilities']['ReturnType'],

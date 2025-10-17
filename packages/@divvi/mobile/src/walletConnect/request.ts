@@ -1,4 +1,5 @@
 import { BATCH_STATUS_TTL } from 'src/sendCalls/constants'
+import { selectBatch } from 'src/sendCalls/selectors'
 import { addBatch } from 'src/sendCalls/slice'
 import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
 import { SentrySpan } from 'src/sentry/SentrySpans'
@@ -25,6 +26,7 @@ import {
   bytesToHex,
   Hex,
   SignMessageParameters,
+  toHex,
   TransactionReceipt,
   TransactionReceiptNotFoundError,
 } from 'viem'
@@ -161,40 +163,29 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
     }
     case SupportedActions.wallet_getCallsStatus: {
       const [id] = params
-      const batch = yield* select(selectBatch, id, Date.now())
+      const batch = yield* select(selectBatch, id)
 
       if (!batch) {
         // Should never happen, as we already checked for the batch id in the saga
         throw new Error('unknown batch id')
       }
 
+      const { transactionHashes, atomic } = batch
+
       const network = walletConnectChainIdToNetwork[chainId]
-
-      const { transactionHashes, callsCount, atomic } = batch
-
-      const allTransactionsSubmitted = transactionHashes.length === callsCount
-
-      const receiptRequests = yield* call(
-        Promise.allSettled,
-        transactionHashes.map((hash) => publicClient[network].getTransactionReceipt({ hash }))
-      )
-
+      const receiptRequests = yield* call(fetchTransactionReceipts, network, transactionHashes)
       const receipts: (TransactionReceipt | null)[] = []
       for (const r of receiptRequests) {
         if (r.status === 'fulfilled') {
-          receipts.push(r.value as TransactionReceipt)
+          receipts.push(r.value)
+        } else if (r.reason instanceof TransactionReceiptNotFoundError) {
+          receipts.push(null) // transaction is pending
         } else {
-          if (r.reason instanceof TransactionReceiptNotFoundError) {
-            receipts.push(null) // transaction pending
-          } else {
-            throw r.reason // RPC request failed
-          }
+          throw r.reason
         }
       }
 
       const status = (() => {
-        if (!allTransactionsSubmitted) return 600 // pending
-
         if (receipts.some((r) => r === null)) return 100 // pending
         if (receipts.every((r) => r?.status === 'success')) return 200 // success
         if (receipts.every((r) => r?.status === 'reverted')) return 500 // complete failure
@@ -209,13 +200,23 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       return {
         version: '2.0.0',
         id,
+        chainId: toHex(networkConfig.viemChain[network].id),
         status,
         atomic,
-        receipts,
+        receipts: receipts.filter(Boolean) as TransactionReceipt[],
         capabilities: supportedCapabilities[chainId],
       }
     }
     default:
       throw new Error('unsupported RPC method')
   }
+}
+
+async function fetchTransactionReceipts(
+  network: Network,
+  transactionHashes: Hex[]
+): Promise<PromiseSettledResult<TransactionReceipt>[]> {
+  return Promise.allSettled(
+    transactionHashes.map((hash) => publicClient[network].getTransactionReceipt({ hash }))
+  )
 }
