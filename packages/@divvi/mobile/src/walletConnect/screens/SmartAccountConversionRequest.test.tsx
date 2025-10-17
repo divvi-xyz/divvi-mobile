@@ -191,7 +191,7 @@ describe('SmartAccountConversionRequest', () => {
       ).toBeTruthy()
       expect(
         within(getByTestId('WalletConnectRequest/ActionRequestPayload/Value')).getByText(
-          JSON.stringify(preparedTransactionSuccess.data[0])
+          JSON.stringify(preparedTransactionSuccess.data)
         )
       ).toBeTruthy()
     })
@@ -353,7 +353,7 @@ describe('SmartAccountConversionRequest', () => {
       ).toBeTruthy()
       expect(
         within(getByTestId('WalletConnectRequest/ActionRequestPayload/Value')).getByText(
-          JSON.stringify(preparedTransactionSuccess.data[0])
+          JSON.stringify(preparedTransactionSuccess.data)
         )
       ).toBeTruthy()
     })
