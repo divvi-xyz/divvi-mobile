@@ -38,6 +38,7 @@ import {
 } from 'src/recipients/reducer'
 import { recipientsSaga } from 'src/recipients/saga'
 import { sendSaga } from 'src/send/saga'
+import { sendCallsSaga } from 'src/sendCalls/saga'
 import { sentrySaga } from 'src/sentry/saga'
 import { swapSaga } from 'src/swap/saga'
 import { tokensSaga } from 'src/tokens/saga'
@@ -143,6 +144,7 @@ export function* rootSaga() {
     yield* spawn(priceHistorySaga)
     yield* spawn(pointsSaga)
     yield* spawn(earnSaga)
+    yield* spawn(sendCallsSaga)
   } catch (error) {
     Logger.error('@rootSaga', 'Error while initializing sagas', error)
     // Propagate so it's handled by Sentry

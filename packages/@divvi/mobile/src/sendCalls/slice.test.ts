@@ -19,7 +19,6 @@ describe('sendCalls reducer', () => {
       addBatch({
         id: 'test',
         transactionHashes: ['0x1', '0x2'],
-        callsCount: 2,
         atomic: false,
         expiresAt: NOW + 1000,
       })
@@ -27,7 +26,6 @@ describe('sendCalls reducer', () => {
 
     expect(state.batchById['test']).toEqual({
       transactionHashes: ['0x1', '0x2'],
-      callsCount: 2,
       atomic: false,
       expiresAt: NOW + 1000,
     })
@@ -39,7 +37,6 @@ describe('sendCalls reducer', () => {
       addBatch({
         id: 'keep',
         transactionHashes: ['0x1'],
-        callsCount: 1,
         atomic: false,
         expiresAt: NOW + 1000,
       })
@@ -49,7 +46,6 @@ describe('sendCalls reducer', () => {
       addBatch({
         id: 'drop',
         transactionHashes: ['0x2'],
-        callsCount: 1,
         atomic: false,
         expiresAt: NOW - 1,
       })
@@ -58,7 +54,6 @@ describe('sendCalls reducer', () => {
 
     expect(pruned.batchById['keep']).toEqual({
       transactionHashes: ['0x1'],
-      callsCount: 1,
       atomic: false,
       expiresAt: NOW + 1000,
     })
@@ -69,8 +64,8 @@ describe('sendCalls reducer', () => {
     const persisted = {
       sendCalls: {
         batchById: {
-          keep: { transactionHashes: ['0x1'], callsCount: 1, atomic: false, expiresAt: NOW + 1000 },
-          drop: { transactionHashes: ['0x2'], callsCount: 1, atomic: false, expiresAt: NOW - 1 },
+          keep: { transactionHashes: ['0x1'], atomic: false, expiresAt: NOW + 1000 },
+          drop: { transactionHashes: ['0x2'], atomic: false, expiresAt: NOW - 1 },
         },
       },
     }
@@ -82,7 +77,6 @@ describe('sendCalls reducer', () => {
 
     expect(rehydrated.batchById['keep']).toEqual({
       transactionHashes: ['0x1'],
-      callsCount: 1,
       atomic: false,
       expiresAt: NOW + 1000,
     })

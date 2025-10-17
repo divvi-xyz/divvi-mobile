@@ -760,6 +760,13 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       result: preparedRequest,
     } = yield* prepareNormalizedTransactions(rawTxs, request.params.chainId)
 
+    const walletAddress = yield* call(getWalletAddress)
+    const atomic = yield* call(
+      getAtomicCapabilityByWalletConnectChainId,
+      walletAddress as Address,
+      request.params.chainId
+    )
+
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
       method,
@@ -769,6 +776,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       hasInsufficientGasFunds,
       feeCurrenciesSymbols,
       preparedRequest,
+      atomic: atomic === 'supported',
     })
   }
 }

@@ -1,6 +1,5 @@
 import { BATCH_STATUS_TTL } from 'src/sendCalls/constants'
-import { selectBatch } from 'src/sendCalls/selectors'
-import { addBatch, pruneExpiredBatches } from 'src/sendCalls/slice'
+import { addBatch } from 'src/sendCalls/slice'
 import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
 import { SentrySpan } from 'src/sentry/SentrySpans'
 import { Network } from 'src/transactions/types'
@@ -118,7 +117,6 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
     }
     case SupportedActions.wallet_sendCalls: {
       const id = params[0].id ?? bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
-      const callsCount = params[0].calls.length
       const supportedCapabilities = yield* call(
         getWalletCapabilitiesByWalletConnectChainId,
         account as Address
@@ -147,12 +145,10 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       }
 
       const now = Date.now()
-      yield* put(pruneExpiredBatches({ now }))
       yield* put(
         addBatch({
           id,
           transactionHashes,
-          callsCount,
           atomic: false,
           expiresAt: now + BATCH_STATUS_TTL,
         })
