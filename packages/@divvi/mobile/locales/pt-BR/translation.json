@@ -1197,6 +1197,10 @@
       "title": "Falha ao preparar a transação",
       "description": "Ocorreu um erro ao preparar a transação. Consulte o erro subjacente para obter mais detalhes.\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "Execução não atômica",
+      "description": "As transações serão executadas sequencialmente sem nenhuma garantia de atomicidade/contiguidade."
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "Cadeia não suportada",
