@@ -382,7 +382,10 @@ describe('SmartAccountConversionRequest', () => {
         version: 2,
         hasInsufficientGasFunds: false,
         feeCurrenciesSymbols,
-        preparedRequest: preparedTransactionSuccess,
+        preparedRequest: {
+          ...preparedTransactionSuccess,
+          data: preparedTransactionSuccess.data[0],
+        },
       })
     })
   })

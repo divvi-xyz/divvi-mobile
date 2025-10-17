@@ -63,7 +63,10 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       if (!actionableRequest.preparedRequest.success) {
         throw new Error(actionableRequest.preparedRequest.errorMessage)
       }
-      const tx = getPreparedTransaction(actionableRequest.preparedRequest.data)
+      const txData = Array.isArray(actionableRequest.preparedRequest.data)
+        ? actionableRequest.preparedRequest.data[0]
+        : actionableRequest.preparedRequest.data
+      const tx = getPreparedTransaction(txData)
       Logger.debug(TAG + '@handleRequest', 'Signing transaction', tx)
       return yield* call(
         [wallet, 'signTransaction'],
@@ -75,7 +78,10 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       if (!actionableRequest.preparedRequest.success) {
         throw new Error(actionableRequest.preparedRequest.errorMessage)
       }
-      const tx = getPreparedTransaction(actionableRequest.preparedRequest.data)
+      const txData = Array.isArray(actionableRequest.preparedRequest.data)
+        ? actionableRequest.preparedRequest.data[0]
+        : actionableRequest.preparedRequest.data
+      const tx = getPreparedTransaction(txData)
       Logger.debug(TAG + '@handleRequest', 'Sending transaction', tx)
       const hash = yield* call(
         [wallet, 'sendTransaction'],

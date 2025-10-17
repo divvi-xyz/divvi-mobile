@@ -9,13 +9,18 @@ import { useDispatch, useSelector } from 'src/redux/hooks'
 import { Spacing } from 'src/styles/styles'
 import Logger from 'src/utils/Logger'
 import { acceptRequest, denyRequest } from 'src/walletConnect/actions'
+import { SupportedActions } from 'src/walletConnect/constants'
 import ActionRequestPayload from 'src/walletConnect/screens/ActionRequestPayload'
 import DappsDisclaimer from 'src/walletConnect/screens/DappsDisclaimer'
 import EstimatedNetworkFee from 'src/walletConnect/screens/EstimatedNetworkFee'
 import RequestContent, { useDappMetadata } from 'src/walletConnect/screens/RequestContent'
 import { useIsDappListed } from 'src/walletConnect/screens/useIsDappListed'
 import { sessionsSelector } from 'src/walletConnect/selectors'
-import { SmartAccountConversionRequest, WalletConnectRequestType } from 'src/walletConnect/types'
+import {
+  SmartAccountConversionRequest,
+  TransactionMethod,
+  WalletConnectRequestType,
+} from 'src/walletConnect/types'
 import { walletConnectChainIdToNetworkId } from 'src/web3/networkConfig'
 
 const TAG = 'SmartAccountConversionRequest'
@@ -59,16 +64,39 @@ function SmartAccountConversionRequestComponent(props: SmartAccountConversionReq
     if (atomicRequired) {
       dispatch(denyRequest(request, getSdkError('USER_REJECTED')))
     } else {
-      navigate(Screens.WalletConnectRequest, {
-        type: WalletConnectRequestType.Action,
-        method: props.method,
-        request: props.request,
-        supportedChains: props.supportedChains,
-        version: props.version,
-        hasInsufficientGasFunds: props.hasInsufficientGasFunds,
-        feeCurrenciesSymbols: props.feeCurrenciesSymbols,
-        preparedRequest: props.preparedRequest,
-      })
+      // Navigate based on the method type
+      if (method === SupportedActions.wallet_sendCalls) {
+        navigate(Screens.WalletConnectRequest, {
+          type: WalletConnectRequestType.Action,
+          method: SupportedActions.wallet_sendCalls,
+          request: props.request,
+          supportedChains: props.supportedChains,
+          version: props.version,
+          hasInsufficientGasFunds: props.hasInsufficientGasFunds,
+          feeCurrenciesSymbols: props.feeCurrenciesSymbols,
+          preparedRequest: props.preparedRequest,
+        })
+      } else {
+        // For transaction methods, we need to extract the first transaction from the array
+        const preparedRequest = props.preparedRequest.success
+          ? {
+              ...props.preparedRequest,
+              data: Array.isArray(props.preparedRequest.data)
+                ? props.preparedRequest.data[0]
+                : props.preparedRequest.data,
+            }
+          : props.preparedRequest
+        navigate(Screens.WalletConnectRequest, {
+          type: WalletConnectRequestType.Action,
+          method: method as TransactionMethod,
+          request: props.request,
+          supportedChains: props.supportedChains,
+          version: props.version,
+          hasInsufficientGasFunds: props.hasInsufficientGasFunds,
+          feeCurrenciesSymbols: props.feeCurrenciesSymbols,
+          preparedRequest,
+        })
+      }
     }
   }
 
