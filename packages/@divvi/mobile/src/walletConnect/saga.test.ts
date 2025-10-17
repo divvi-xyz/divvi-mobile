@@ -950,6 +950,48 @@ describe('showActionRequest', () => {
       .run()
   })
 
+  it('denies wallet_getCallsStatus when id param is missing', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCallsStatus',
+          params: [],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .put(denyRequest(req, rpcError.INVALID_PARAMS))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('denies wallet_getCallsStatus when batch id is unknown', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCallsStatus',
+          params: ['0xabc'],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .put(denyRequest(req, rpcError.UNKNOWN_BUNDLE_ID))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
   it('throws an error when client is missing', () => {
     _setClientForTesting(null)
 
