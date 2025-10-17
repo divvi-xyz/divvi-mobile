@@ -97,6 +97,14 @@ export function* sendPaymentSaga({
       [createStandbyTransaction]
     )
 
+    // After sending the transaction, navigate back to the previous screen
+    // This ensures that the user can't submit the same transaction again accidentally
+    if (fromExternal) {
+      navigateBack()
+    } else {
+      navigateInitialTab()
+    }
+
     // Retry logic for fetching receipt as nodes may not be immediately updated
     let receipt
     let attempt = 0
@@ -153,12 +161,6 @@ export function* sendPaymentSaga({
       AppAnalytics.track(CeloExchangeEvents.celo_withdraw_completed, {
         amount: amount.toString(),
       })
-    }
-
-    if (fromExternal) {
-      navigateBack()
-    } else {
-      navigateInitialTab()
     }
 
     yield* put(sendPaymentSuccess({ amount, tokenId }))
