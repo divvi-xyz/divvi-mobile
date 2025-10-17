@@ -1195,6 +1195,10 @@
       "title": "准备交易失败",
       "description": "准备交易时发生错误。详情请查看基本错误。\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "非原子执行",
+      "description": "事务将按顺序执行，不保证原子性/连续性。"
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "不受支持的区块链网络",
