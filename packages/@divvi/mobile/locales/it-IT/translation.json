@@ -1197,6 +1197,10 @@
       "title": "Impossibile preparare la transazione",
       "description": "Si è verificato un errore durante la preparazione della transazione. Vedi l'errore sottostante per maggiori dettagli.\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "Esecuzione non atomica",
+      "description": "Le transazioni saranno eseguite in modo sequenziale senza alcuna garanzia di atomicità/contiguità."
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "Chain non supportata",
