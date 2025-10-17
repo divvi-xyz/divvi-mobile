@@ -1,6 +1,6 @@
 import { expectSaga } from 'redux-saga-test-plan'
 import { BATCH_STATUS_TTL } from 'src/sendCalls/constants'
-import { addBatch, pruneExpiredBatches } from 'src/sendCalls/slice'
+import { addBatch } from 'src/sendCalls/slice'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import { NetworkId } from 'src/transactions/types'
@@ -401,7 +401,6 @@ describe(handleRequest, () => {
         .call(unlockAccount, '0xwallet')
         .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
         .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
-        .put(pruneExpiredBatches({ now: NOW }))
         .put(
           addBatch({
             id: '0xabc',
@@ -444,7 +443,6 @@ describe(handleRequest, () => {
       await expectSaga(handleRequest, sendCallsRequest)
         .withState(state)
         .call(unlockAccount, '0xwallet')
-        .put(pruneExpiredBatches({ now: NOW }))
         .put(
           addBatch({
             id: '0xabc',

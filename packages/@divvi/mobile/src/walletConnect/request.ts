@@ -1,5 +1,5 @@
 import { BATCH_STATUS_TTL } from 'src/sendCalls/constants'
-import { addBatch, pruneExpiredBatches } from 'src/sendCalls/slice'
+import { addBatch } from 'src/sendCalls/slice'
 import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
 import { SentrySpan } from 'src/sentry/SentrySpans'
 import { Network } from 'src/transactions/types'
@@ -137,7 +137,6 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       }
 
       const now = Date.now()
-      yield* put(pruneExpiredBatches({ now }))
       yield* put(
         addBatch({
           id,
