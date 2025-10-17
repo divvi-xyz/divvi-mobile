@@ -202,6 +202,17 @@ function ActionRequest(props: ActionRequestProps) {
             }
           />
         )}
+      {isSendCallsRequest(props) &&
+        props.preparedRequest.success &&
+        props.preparedRequest.data.length > 1 &&
+        !props.atomic && (
+          <InLineNotification
+            variant={NotificationVariant.Warning}
+            title={t('walletConnectRequest.nonAtomicExecution.title')}
+            description={t('walletConnectRequest.nonAtomicExecution.description')}
+            style={styles.warning}
+          />
+        )}
       <DappsDisclaimer isDappListed={isDappListed} />
     </RequestContent>
   )
