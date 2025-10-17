@@ -79,10 +79,7 @@ function ActionRequest(props: ActionRequestProps) {
     method,
     dappName,
     networkName,
-    (isSendCallsRequest(props) &&
-      props.preparedRequest.success &&
-      props.preparedRequest.data.length) ||
-      0
+    (isSendCallsRequest(props) && props.request.params.request.params[0].calls.length) || 0
   )
 
   // Reject and warn if the chain is not supported
