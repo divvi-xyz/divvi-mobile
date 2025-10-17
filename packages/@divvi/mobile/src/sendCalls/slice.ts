@@ -4,6 +4,8 @@ import type { Hex } from 'viem'
 
 export type SendCallsBatch = {
   transactionHashes: Hex[]
+  callsCount: number
+  atomic: boolean
   expiresAt: number
 }
 
@@ -31,14 +33,20 @@ const slice = createSlice({
   reducers: {
     addBatch: (
       state,
-      action: PayloadAction<{ id: string; transactionHashes: Hex[]; expiresAt: number }>
+      action: PayloadAction<{
+        id: string
+        transactionHashes: Hex[]
+        callsCount: number
+        atomic: boolean
+        expiresAt: number
+      }>
     ) => {
-      const { id, transactionHashes, expiresAt } = action.payload
+      const { id, transactionHashes, callsCount, atomic, expiresAt } = action.payload
       return {
         ...state,
         batchById: {
           ...state.batchById,
-          [id]: { transactionHashes, expiresAt },
+          [id]: { transactionHashes, callsCount, atomic, expiresAt },
         },
       }
     },

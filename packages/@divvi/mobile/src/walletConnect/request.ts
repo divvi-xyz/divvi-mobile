@@ -21,7 +21,7 @@ import networkConfig, {
 } from 'src/web3/networkConfig'
 import { getWalletAddress, unlockAccount } from 'src/web3/saga'
 import { call, put, select } from 'typed-redux-saga'
-import { bytesToHex, Hex, SignMessageParameters } from 'viem'
+import { Address, bytesToHex, Hex, SignMessageParameters } from 'viem'
 
 const TAG = 'WalletConnect/request'
 
@@ -101,12 +101,21 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       return (yield* call([wallet, 'signMessage'], data)) as string
     }
     case SupportedActions.wallet_getCapabilities: {
-      const [_, hexNetworkIds] = params
-      return yield* call(getWalletCapabilitiesByHexChainId, hexNetworkIds)
+      const [address, hexNetworkIds] = params
+
+      if (address.toLowerCase() !== account.toLowerCase()) {
+        throw new Error('Unauthorized')
+      }
+
+      return yield* call(getWalletCapabilitiesByHexChainId, address, hexNetworkIds)
     }
     case SupportedActions.wallet_sendCalls: {
       const id = params[0].id ?? bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
-      const supportedCapabilities = yield* call(getWalletCapabilitiesByWalletConnectChainId)
+      const callsCount = params[0].calls.length
+      const supportedCapabilities = yield* call(
+        getWalletCapabilitiesByWalletConnectChainId,
+        account as Address
+      )
 
       // TODO: handle atomic execution
 
@@ -132,7 +141,15 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
 
       const now = Date.now()
       yield* put(pruneExpiredBatches({ now }))
-      yield* put(addBatch({ id, transactionHashes, expiresAt: now + BATCH_STATUS_TTL }))
+      yield* put(
+        addBatch({
+          id,
+          transactionHashes,
+          callsCount,
+          atomic: false,
+          expiresAt: now + BATCH_STATUS_TTL,
+        })
+      )
 
       return {
         id,
@@ -141,7 +158,7 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
     }
     case SupportedActions.wallet_getCallsStatus: {
       const [id] = params
-      const batch = yield* select(selectBatch, id)
+      const batch = yield* select(selectBatch, id, Date.now())
 
       if (!batch) {
         // Should never happen, as we already checked for the batch id in the saga
