@@ -81,9 +81,9 @@ export function getDisplayTextFromAction(
     },
     [SupportedActions.wallet_sendCalls]: {
       description: networkName
-        ? t('walletConnectRequest.sendCalls', { dappName, networkName, transactionsCount })
-        : t('walletConnectRequest.sendCallsUnknownNetwork', { dappName, transactionsCount }),
-      title: t('walletConnectRequest.sendCallsTitle'),
+        ? t('walletConnectRequest.sendCalls', { dappName, networkName, count: transactionsCount })
+        : t('walletConnectRequest.sendCallsUnknownNetwork', { dappName, count: transactionsCount }),
+      title: t('walletConnectRequest.sendCallsTitle', { count: transactionsCount }),
       action: t('allow'),
     },
   }
