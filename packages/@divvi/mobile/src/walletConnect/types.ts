@@ -76,6 +76,7 @@ export interface TransactionRequest extends RequestBase {
 
 export interface SendCallsRequest extends RequestBase {
   method: SendCallsMethod
+  atomic: boolean
   hasInsufficientGasFunds: boolean
   feeCurrenciesSymbols: string[]
   preparedRequest: PreparedTransactionResult<SerializableTransactionRequest[]>
