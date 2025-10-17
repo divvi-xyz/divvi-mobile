@@ -32,6 +32,13 @@ import { TransactionRequestCIP64 } from 'viem/chains'
 
 const TAG = 'viem/prepareTransactions'
 
+// Constants for ERC20 transfer data manipulation
+const ERC20_TRANSFER_SELECTOR = '0xa9059cbb' as const
+const SELECTOR_LENGTH = 10 // '0x' + 8 hex chars (function selector)
+const ADDRESS_HEX_LENGTH = 64 // 32 bytes in hex
+const AMOUNT_HEX_LENGTH = 64 // 32 bytes in hex
+const GAS_ESTIMATION_AMOUNT_REDUCTION = 0.6 // Use 60% of amount for gas estimation
+
 // Supported transaction types
 export type TransactionRequest = (TransactionRequestCIP64 | TransactionRequestEIP1559) & {
   // Custom fields needed for showing the user the estimated gas fee
@@ -94,6 +101,41 @@ export function getEstimatedGasFee(txs: TransactionRequest[]): BigNumber {
   return new BigNumber(estimatedGasFee.toString())
 }
 
+/**
+ * Checks if transaction data represents an ERC20 transfer call
+ */
+function isERC20Transfer(data: Hex | undefined): boolean {
+  return !!(data && data.startsWith(ERC20_TRANSFER_SELECTOR))
+}
+
+/**
+ * Modifies the amount in an ERC20 transfer transaction data field
+ *
+ * @param originalData - The original transaction data (must be a valid ERC20 transfer)
+ * @param newAmount - The new amount to encode in the transfer
+ * @returns Modified transaction data with the new amount
+ * @throws If the data is not a valid ERC20 transfer
+ */
+function modifyERC20TransferAmount(originalData: Hex, newAmount: BigNumber): Hex {
+  if (!isERC20Transfer(originalData)) {
+    throw new Error('Data is not an ERC20 transfer')
+  }
+
+  const expectedLength = SELECTOR_LENGTH + ADDRESS_HEX_LENGTH + AMOUNT_HEX_LENGTH
+  if (originalData.length !== expectedLength) {
+    throw new Error(
+      `Invalid ERC20 transfer data length: expected ${expectedLength}, got ${originalData.length}`
+    )
+  }
+
+  // Extract the selector and recipient address (first 74 characters)
+  const recipientPart = originalData.slice(0, SELECTOR_LENGTH + ADDRESS_HEX_LENGTH)
+  // Encode the new amount as a 32-byte hex string
+  const newAmountHex = newAmount.toString(16).padStart(AMOUNT_HEX_LENGTH, '0')
+
+  return (recipientPart + newAmountHex) as Hex
+}
+
 export function getFeeCurrencyAddress(feeCurrency: TokenBalance): Address | undefined {
   if (feeCurrency.isNative) {
     // No address for native currency
@@ -135,6 +177,9 @@ export function getFeeCurrencyAddress(feeCurrency: TokenBalance): Address | unde
  * @param feeCurrencySymbol
  * @param feeCurrencyAddress
  * @param maxPriorityFeePerGas
+ * @param spendToken - Optional: the token being spent in the transaction
+ * @param spendTokenAmount - Optional: the amount being spent (in smallest units)
+ * @param isGasSubsidized - Whether gas is subsidized (if true, skip same-token handling)
  */
 export async function tryEstimateTransaction({
   client,
@@ -144,6 +189,9 @@ export async function tryEstimateTransaction({
   baseFeePerGas,
   feeCurrencySymbol,
   feeCurrencyAddress,
+  spendToken,
+  spendTokenAmount,
+  isGasSubsidized = false,
 }: {
   client: Client
   baseTransaction: TransactionRequest
@@ -152,9 +200,44 @@ export async function tryEstimateTransaction({
   baseFeePerGas: bigint
   feeCurrencySymbol: string
   feeCurrencyAddress?: Address
+  spendToken?: TokenBalance
+  spendTokenAmount?: BigNumber
+  isGasSubsidized?: boolean
 }) {
+  // When sending a token and paying fees in the same token, we need special handling
+  // because estimating gas with the full send amount will fail with "transfer amount exceeds balance"
+  const isSameToken =
+    spendToken && spendToken.tokenId === getTokenId(spendToken.networkId, feeCurrencyAddress)
+  const needsReducedAmountEstimation =
+    isSameToken &&
+    !isGasSubsidized &&
+    spendTokenAmount &&
+    spendTokenAmount.isGreaterThan(0) &&
+    isERC20Transfer(baseTransaction.data)
+
+  let txToEstimate = baseTransaction
+  if (needsReducedAmountEstimation && baseTransaction.data) {
+    // Estimate with a reduced amount to ensure gas estimation succeeds while leaving
+    // sufficient balance to cover both the transfer and gas costs
+    // This is safe because the amount does not affect gas usage for ERC20 transfers
+    const reducedAmount = spendTokenAmount!
+      .times(GAS_ESTIMATION_AMOUNT_REDUCTION)
+      .integerValue(BigNumber.ROUND_DOWN)
+
+    try {
+      txToEstimate = {
+        ...baseTransaction,
+        data: modifyERC20TransferAmount(baseTransaction.data, reducedAmount),
+      }
+    } catch (error) {
+      Logger.warn(TAG, 'Failed to modify ERC20 transfer amount for gas estimation', error)
+      // Fall back to original transaction
+      txToEstimate = baseTransaction
+    }
+  }
+
   const tx = {
-    ...baseTransaction,
+    ...txToEstimate,
     maxFeePerGas,
     maxPriorityFeePerGas,
     // Don't include the feeCurrency field if not present.
@@ -198,13 +281,25 @@ export async function tryEstimateTransaction({
     throw e
   }
 
+  // If we estimated with a reduced amount, restore the original transaction data
+  // while preserving the gas estimates we just calculated
+  if (needsReducedAmountEstimation) {
+    return {
+      ...tx,
+      data: baseTransaction.data,
+    }
+  }
+
   return tx
 }
 
 export async function tryEstimateTransactions(
   baseTransactions: TransactionRequest[],
   feeCurrency: TokenBalance,
-  useAppTransport: boolean = false
+  useAppTransport: boolean = false,
+  spendToken?: TokenBalance,
+  spendTokenAmount?: BigNumber,
+  isGasSubsidized: boolean = false
 ) {
   const transactions: TransactionRequest[] = []
 
@@ -251,6 +346,9 @@ export async function tryEstimateTransactions(
         maxFeePerGas,
         maxPriorityFeePerGas,
         baseFeePerGas,
+        spendToken,
+        spendTokenAmount,
+        isGasSubsidized,
       })
       if (!tx) {
         return null
@@ -342,15 +440,22 @@ export async function prepareTransactions({
       // No balance, try next fee currency
       continue
     }
+
+    const spendAmountDecimal = spendTokenAmount.shiftedBy(-(spendToken?.decimals ?? 0))
+
     const estimatedTransactions = await tryEstimateTransactions(
       baseTransactions,
       feeCurrency,
+      isGasSubsidized,
+      spendToken,
+      spendTokenAmount,
       isGasSubsidized
     )
     if (!estimatedTransactions) {
       // Not enough balance to pay for gas, try next fee currency
       continue
     }
+
     const feeDecimals = getFeeDecimals(estimatedTransactions, feeCurrency)
     const maxGasFee = getMaxGasFee(estimatedTransactions)
     const maxGasFeeInDecimal = maxGasFee.shiftedBy(-feeDecimals)
@@ -361,7 +466,6 @@ export async function prepareTransactions({
       // Not enough balance to pay for gas, try next fee currency
       continue
     }
-    const spendAmountDecimal = spendTokenAmount.shiftedBy(-(spendToken?.decimals ?? 0))
     if (
       spendToken &&
       spendToken.tokenId === feeCurrency.tokenId &&
