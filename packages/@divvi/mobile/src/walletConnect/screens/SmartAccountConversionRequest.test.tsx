@@ -98,27 +98,8 @@ describe('SmartAccountConversionRequest', () => {
     },
   }
 
-  const sendTransactionRequest = {
-    ...sendCallsRequest,
-    params: {
-      ...sendCallsRequest.params,
-      request: {
-        ...sendCallsRequest.params.request,
-        method: 'eth_sendTransaction',
-        params: [
-          {
-            to: mockAccount2,
-            data: '0x1234567890abcdef',
-            value: '0x00',
-          },
-        ],
-      },
-    },
-  }
-
   const supportedChains = ['eip155:44787']
   const sendCallsMethod = SupportedActions.wallet_sendCalls as const
-  const sendTransactionMethod = SupportedActions.eth_sendTransaction as const
   const feeCurrenciesSymbols = ['CELO']
 
   const preparedTransactionSuccess: PreparedTransactionResult<SerializableTransactionRequest[]> = {
@@ -319,74 +300,6 @@ describe('SmartAccountConversionRequest', () => {
       expect(store.getActions()).toEqual([
         denyRequestV2(atomicRequiredRequest, getSdkError('USER_REJECTED')),
       ])
-    })
-  })
-
-  describe('eth_sendTransaction', () => {
-    const store = createMockStore({
-      walletConnect: {
-        sessions: [v2Session],
-      },
-    })
-
-    beforeEach(() => {
-      store.clearActions()
-    })
-
-    it('renders correctly for transaction method', () => {
-      const { getByText, getByTestId } = render(
-        <Provider store={store}>
-          <SmartAccountConversionRequest
-            {...baseProps}
-            method={sendTransactionMethod}
-            request={sendTransactionRequest}
-            atomicRequired={false}
-          />
-        </Provider>
-      )
-
-      expect(getByText('walletConnectRequest.smartAccountConversion.title')).toBeTruthy()
-      expect(
-        getByText(
-          'walletConnectRequest.smartAccountConversion.descriptionOptional, {"dappName":"WalletConnect Example"}'
-        )
-      ).toBeTruthy()
-      expect(
-        within(getByTestId('WalletConnectRequest/ActionRequestPayload/Value')).getByText(
-          JSON.stringify(preparedTransactionSuccess.data)
-        )
-      ).toBeTruthy()
-    })
-
-    it('navigates to Action screen with correct method when continue without converting is pressed', () => {
-      const { getByText } = render(
-        <Provider store={store}>
-          <SmartAccountConversionRequest
-            {...baseProps}
-            method={sendTransactionMethod}
-            request={sendTransactionRequest}
-            atomicRequired={false}
-          />
-        </Provider>
-      )
-
-      fireEvent.press(
-        getByText('walletConnectRequest.smartAccountConversion.continueWithoutConverting')
-      )
-
-      expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
-        type: WalletConnectRequestType.Action,
-        method: sendTransactionMethod,
-        request: sendTransactionRequest,
-        supportedChains,
-        version: 2,
-        hasInsufficientGasFunds: false,
-        feeCurrenciesSymbols,
-        preparedRequest: {
-          ...preparedTransactionSuccess,
-          data: preparedTransactionSuccess.data[0],
-        },
-      })
     })
   })
 
