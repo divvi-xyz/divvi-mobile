@@ -19,6 +19,7 @@ import positionsReducer from 'src/positions/slice'
 import priceHistoryReducer from 'src/priceHistory/slice'
 import { recipientsReducer as recipients } from 'src/recipients/reducer'
 import { sendReducer as send } from 'src/send/reducers'
+import sendCallsReducer from 'src/sendCalls/slice'
 import swapReducer from 'src/swap/slice'
 import tokenReducer from 'src/tokens/slice'
 import transactionsReducer from 'src/transactions/slice'
@@ -52,4 +53,5 @@ export const reducersList = {
   jumpstart: jumpstartReducer,
   points: pointsReducer,
   earn: earnReducer,
+  sendCalls: sendCallsReducer,
 } as const
