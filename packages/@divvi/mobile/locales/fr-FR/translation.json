@@ -1197,6 +1197,10 @@
       "title": "Échec de la préparation de la transaction",
       "description": "Une erreur s'est produite lors de la préparation de la transaction.\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "Exécution non atomique",
+      "description": "Les transactions seront exécutées séquentiellement sans aucune garantie d'atomicité/contiguïté."
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "Chaîne non prise en charge",
