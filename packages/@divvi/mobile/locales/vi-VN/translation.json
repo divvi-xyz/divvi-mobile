@@ -1169,6 +1169,9 @@
     "sendTransaction": "{{dappName}} muốn gửi giao dịch.",
     "sendDappTransaction": "{{dappName}} muốn gửi giao dịch trên mạng {{networkName}}.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} muốn gửi giao dịch trên mạng không được hỗ trợ.",
+    "sendCallsTitle": "Send transactions",
+    "sendCalls": "{{dappName}} would like to send {{transactionsCount}} transactions on the {{networkName}} network.",
+    "sendCallsUnknownNetwork": "{{dappName}} would like to send {{transactionsCount}} transactions on an unsupported network.",
     "decryptPayloadTitle": "Giải mã bằng ví",
     "decryptPayload": "{{dappName}} muốn giải mã tải trọng dữ liệu.",
     "computeSharedSecret": "{{dappName}} muốn tạo bí mật.",
@@ -1191,6 +1194,10 @@
     "failedToPrepareTransaction": {
       "title": "Đã không chuẩn bị được giao dịch",
       "description": "Đã xảy ra lỗi khi chuẩn bị giao dịch. Hãy xem lỗi căn nguyên để biết thêm chi tiết.\n\n\"{{errorMessage}}\""
+    },
+    "nonAtomicExecution": {
+      "title": "Non-atomic execution",
+      "description": "Transactions will be executed sequentially without any atomicity/contiguity guarantees."
     },
     "session": {
       "failUnsupportedNamespace": {

@@ -1171,6 +1171,9 @@
     "sendTransaction": "{{dappName}} souhaite envoyer une transaction.",
     "sendDappTransaction": "{{dappName}} souhaite envoyer une transaction sur le réseau {{networkName}} .",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} souhaite envoyer une transaction sur un réseau non pris en charge.",
+    "sendCallsTitle": "Envoyer des transactions",
+    "sendCalls": "{{dappName}} souhaite envoyer des transactions {{transactionsCount}} sur le réseau {{networkName}} .",
+    "sendCallsUnknownNetwork": "{{dappName}} souhaite envoyer des transactions {{transactionsCount}} sur un réseau non pris en charge.",
     "decryptPayloadTitle": "Déchiffrer avec le portefeuille",
     "decryptPayload": "{{dappName}} demande à déchiffrer une charge utile de données.",
     "computeSharedSecret": "{{dappName}} demande à générer des secrets.",
@@ -1193,6 +1196,10 @@
     "failedToPrepareTransaction": {
       "title": "Échec de la préparation de la transaction",
       "description": "Une erreur s'est produite lors de la préparation de la transaction.\n\n\"{{errorMessage}}\""
+    },
+    "nonAtomicExecution": {
+      "title": "Exécution non atomique",
+      "description": "Les transactions seront exécutées séquentiellement sans aucune garantie d'atomicité/contiguïté."
     },
     "session": {
       "failUnsupportedNamespace": {

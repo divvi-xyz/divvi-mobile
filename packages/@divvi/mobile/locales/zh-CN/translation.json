@@ -1169,6 +1169,9 @@
     "sendTransaction": "{{dappName}} 希望发送一笔交易。",
     "sendDappTransaction": "{{dappName}} 希望在 {{networkName}} 网络上发送一笔交易。",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} 希望在不受支持的网络上发送一笔交易。",
+    "sendCallsTitle": "发送交易",
+    "sendCalls": "{{dappName}} 希望在 {{networkName}} 网络上发送 {{transactionsCount}} 交易。",
+    "sendCallsUnknownNetwork": "{{dappName}} 希望在不支持的网络上发送 {{transactionsCount}} 交易。",
     "decryptPayloadTitle": "用钱包解密",
     "decryptPayload": "{{dappName}} 想要解密数据有效负载。",
     "computeSharedSecret": "{{dappName}} 想要生成密钥。",
@@ -1191,6 +1194,10 @@
     "failedToPrepareTransaction": {
       "title": "准备交易失败",
       "description": "准备交易时发生错误。详情请查看基本错误。\n\n\"{{errorMessage}}\""
+    },
+    "nonAtomicExecution": {
+      "title": "非原子执行",
+      "description": "事务将按顺序执行，不保证原子性/连续性。"
     },
     "session": {
       "failUnsupportedNamespace": {
