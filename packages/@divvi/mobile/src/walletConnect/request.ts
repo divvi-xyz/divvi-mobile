@@ -211,7 +211,7 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
   }
 }
 
-async function fetchTransactionReceipts(
+export async function fetchTransactionReceipts(
   network: Network,
   transactionHashes: Hex[]
 ): Promise<PromiseSettledResult<TransactionReceipt>[]> {
