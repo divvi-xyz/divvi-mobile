@@ -617,6 +617,40 @@ describe(handleRequest, () => {
         .run()
     })
 
+    it('returns complete failure when all receipts are reverted', async () => {
+      const receiptReverted2 = { ...receiptReverted, transactionHash: '0xreverted2' }
+
+      const mockReceipts = [
+        { status: 'fulfilled', value: receiptReverted },
+        { status: 'fulfilled', value: receiptReverted2 },
+      ]
+
+      const getCallsStatusRequestCompleteFailure = createMockActionableRequest({
+        method: SupportedActions.wallet_getCallsStatus,
+        params: [batchId],
+        chainId: chainId,
+        id: batchId,
+        batch: {
+          transactionHashes: ['0xreverted', '0xreverted2'],
+          atomic: false,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        },
+      })
+
+      await expectSaga(handleRequest, getCallsStatusRequestCompleteFailure)
+        .withState(mockState)
+        .provide([
+          [matchers.call.fn(fetchTransactionReceipts), mockReceipts],
+          [matchers.call.fn(getWalletCapabilitiesByWalletConnectChainId), mockCapabilities],
+        ])
+        .returns({
+          ...baseResult,
+          status: 500,
+          receipts: [receiptReverted, receiptReverted2],
+        })
+        .run()
+    })
+
     it('throws when receipt fetch rejects with unexpected error', async () => {
       const mockError = new Error('something went wrong')
       const mockReceipts = [
