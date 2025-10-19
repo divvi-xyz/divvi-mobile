@@ -134,6 +134,10 @@ export const rpcError = {
     code: 5700,
     message: 'Unsupported non-optional capability',
   },
+  DUPLICATE_ID: {
+    code: 5720,
+    message: 'Duplicate ID',
+  },
   ATOMICITY_NOT_SUPPORTED: {
     code: 5760,
     message: 'Atomicity not supported',

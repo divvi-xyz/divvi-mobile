@@ -18,6 +18,7 @@ import { ActiveDapp } from 'src/dapps/types'
 import i18n from 'src/i18n'
 import { isBottomSheetVisible, navigate, navigateBack } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+import { selectBatch } from 'src/sendCalls/selectors'
 import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
 import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
@@ -645,6 +646,16 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
 
   if (method === SupportedActions.wallet_sendCalls) {
     const walletAddress = yield* call(getWalletAddress)
+
+    // check for duplicate id
+    const id = request.params.request.params[0].id
+    if (id) {
+      const batch = yield* select(selectBatch, id, Date.now())
+      if (batch) {
+        yield* put(denyRequest(request, rpcError.DUPLICATE_ID))
+        return
+      }
+    }
 
     // check support for atomic execution
     const atomic = yield* call(

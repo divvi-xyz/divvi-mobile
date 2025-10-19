@@ -1636,6 +1636,50 @@ describe('wallet_sendCalls', () => {
       atomic: false,
     })
   })
+
+  it('denies request when ID is already known', async () => {
+    const duplicateId = '0xduplicate123'
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: duplicateId,
+              calls: [{ to: '0xTEST', data: '0x' }],
+              capabilities: {},
+              atomicRequired: false,
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({
+      sendCalls: {
+        batchById: {
+          // an existing batch that has the same ID
+          [duplicateId]: {
+            transactionHashes: ['0xhash1' as const, '0xhash2' as const],
+            atomic: false,
+            expiresAt: Date.now() + 1000,
+          },
+        },
+      },
+    }).getState()
+
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+      ])
+      .put(denyRequest(request, rpcError.DUPLICATE_ID))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
 })
 
 describe('handlePendingState', () => {
