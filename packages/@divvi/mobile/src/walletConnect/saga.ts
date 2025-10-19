@@ -704,6 +704,8 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       yield* put(denyRequest(request, rpcError.UNKNOWN_BUNDLE_ID))
       return
     }
+
+    yield* put(acceptRequest({ method, request, id, batch }))
     return
   }
 

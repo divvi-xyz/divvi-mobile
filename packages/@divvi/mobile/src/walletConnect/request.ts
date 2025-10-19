@@ -1,5 +1,4 @@
 import { BATCH_STATUS_TTL } from 'src/sendCalls/constants'
-import { selectBatch } from 'src/sendCalls/selectors'
 import { addBatch } from 'src/sendCalls/slice'
 import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
 import { SentrySpan } from 'src/sentry/SentrySpans'
@@ -20,7 +19,7 @@ import networkConfig, {
   walletConnectChainIdToNetwork,
 } from 'src/web3/networkConfig'
 import { getWalletAddress, unlockAccount } from 'src/web3/saga'
-import { call, put, select } from 'typed-redux-saga'
+import { call, put } from 'typed-redux-saga'
 import {
   Address,
   bytesToHex,
@@ -161,15 +160,10 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       }
     }
     case SupportedActions.wallet_getCallsStatus: {
-      const [id] = params
-      const batch = yield* select(selectBatch, id)
-
-      if (!batch) {
-        // Should never happen, as we already checked for the batch id in the saga
-        throw new Error('unknown batch id')
-      }
-
-      const { transactionHashes, atomic } = batch
+      const {
+        id,
+        batch: { transactionHashes, atomic },
+      } = actionableRequest
 
       const network = walletConnectChainIdToNetwork[chainId]
       const receiptRequests = yield* call(fetchTransactionReceipts, network, transactionHashes)

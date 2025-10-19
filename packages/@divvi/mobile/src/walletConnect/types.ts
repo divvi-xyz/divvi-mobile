@@ -1,4 +1,5 @@
 import { WalletKitTypes } from '@reown/walletkit'
+import { SendCallsBatch } from 'src/sendCalls/slice'
 import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
 import { SupportedActions } from 'src/walletConnect/constants'
 import { CapabilitiesSchema, WalletGetCallsStatusReturnType, WalletSendCallsReturnType } from 'viem'
@@ -21,9 +22,7 @@ export type Capabilities = Pick<
   'atomic' | 'paymasterService'
 >
 
-type NonInteractiveMethod =
-  | SupportedActions.wallet_getCapabilities
-  | SupportedActions.wallet_getCallsStatus
+type NonInteractiveMethod = SupportedActions.wallet_getCapabilities
 
 export type MessageMethod =
   | SupportedActions.eth_sign
@@ -63,6 +62,7 @@ export function isTransactionMethod(method: string): method is TransactionMethod
 export function isSendCallsMethod(method: string): method is SendCallsMethod {
   return method === SupportedActions.wallet_sendCalls
 }
+
 interface RequestBase {
   request: WalletKitTypes.EventArguments['session_request']
 }
@@ -90,11 +90,18 @@ export interface SendCallsRequest extends RequestBase {
   preparedRequest: PreparedTransactionResult<SerializableTransactionRequest[]>
 }
 
+export interface GetCallsStatusRequest extends RequestBase {
+  method: SupportedActions.wallet_getCallsStatus
+  id: string
+  batch: SendCallsBatch
+}
+
 export type ActionableRequest =
   | NonInteractiveRequest
   | MessageRequest
   | TransactionRequest
   | SendCallsRequest
+  | GetCallsStatusRequest
 
 export type PreparedTransactionResult<T> =
   | { success: true; data: T }
