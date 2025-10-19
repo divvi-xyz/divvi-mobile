@@ -1175,6 +1175,9 @@
     "sendTransaction": "{{dappName}} запрашивает отправку транзакции.",
     "sendDappTransaction": "{{dappName}} запрашивает отправку транзакции в {{networkName}}.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} запрашивает отправку транзакции в неподдерживаемом сеть.",
+    "sendCallsTitle": "Отправляйте транзакции",
+    "sendCalls": "{{dappName}} хотел бы отправлять транзакции {{transactionsCount}} в сети {{networkName}} .",
+    "sendCallsUnknownNetwork": "{{dappName}} хотел бы отправить транзакции {{transactionsCount}} по неподдерживаемой сети.",
     "decryptPayloadTitle": "Расшифровка с помощью кошелька",
     "decryptPayload": "{{dappName}} требуется расшифровать полезные данные.",
     "computeSharedSecret": "{{dappName}} требуется создать секреты.",
@@ -1197,6 +1200,10 @@
     "failedToPrepareTransaction": {
       "title": "Не удалось подготовить транзакцию",
       "description": "Произошла ошибка при подготовке транзакции. Смотрите основную ошибку для получения более подробной информации.\n\n\"{{errorMessage}}\""
+    },
+    "nonAtomicExecution": {
+      "title": "Неатомарное выполнение",
+      "description": "Транзакции будут выполняться последовательно без каких-либо гарантий атомарности/континуальности."
     },
     "session": {
       "failUnsupportedNamespace": {
