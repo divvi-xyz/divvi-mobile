@@ -1175,6 +1175,9 @@
     "sendTransaction": "{{dappName}} chce wysłać transakcję.",
     "sendDappTransaction": "{{dappName}} chce wysłać transakcję w sieci {{networkName}}.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} chce wysłać transakcję w nieobsługiwanej sieci.",
+    "sendCallsTitle": "Wyślij transakcje",
+    "sendCalls": "{{dappName}} chcesz wysyłać transakcje {{transactionsCount}} w sieci {{networkName}} .",
+    "sendCallsUnknownNetwork": "{{dappName}} chcesz wysłać transakcje {{transactionsCount}} w nieobsługiwanej sieci.",
     "decryptPayloadTitle": "Odszyfruj za pomocą portfela",
     "decryptPayload": "{{dappName}} chce odszyfrować ładunek danych.",
     "computeSharedSecret": "{{dappName}} chce wygenerować tajemnice.",
@@ -1197,6 +1200,10 @@
     "failedToPrepareTransaction": {
       "title": "Nie udało się przygotować transakcji",
       "description": "Wystąpił błąd podczas przygotowywania transakcji. Sprawdź błąd, aby uzyskać więcej informacji.\n\n„{{errorMessage}}”"
+    },
+    "nonAtomicExecution": {
+      "title": "Wykonanie nieatomowe",
+      "description": "Transakcje będą wykonywane sekwencyjnie bez żadnych gwarancji atomowości/ciągłości."
     },
     "session": {
       "failUnsupportedNamespace": {
