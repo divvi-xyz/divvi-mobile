@@ -1175,6 +1175,9 @@
     "sendTransaction": "{{dappName}} бажає надіслати транзакцію.",
     "sendDappTransaction": "{{dappName}} бажає надіслати транзакцію в мережі {{networkName}}.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} бажає надіслати транзакцію в мережі, що не підтримується.",
+    "sendCallsTitle": "Надсилати транзакції",
+    "sendCalls": "{{dappName}} хоче надсилати {{transactionsCount}} транзакції в мережі {{networkName}} .",
+    "sendCallsUnknownNetwork": "{{dappName}} хоче надсилати транзакції {{transactionsCount}} через непідтримувану мережу.",
     "decryptPayloadTitle": "Розшифрувати, використовуючи гаманець",
     "decryptPayload": "{{dappName}} потрібно розшифрувати корисний вміст даних.",
     "computeSharedSecret": "{{dappName}} потрібно згенерувати секретні коди.",
@@ -1197,6 +1200,10 @@
     "failedToPrepareTransaction": {
       "title": "Не вдалося підготувати транзакцію",
       "description": "Під час підготовки транзакції сталася помилка. Докладнішу інформацію дивіться в описі про помилку.\n\n\"{{errorMessage}}\""
+    },
+    "nonAtomicExecution": {
+      "title": "Неатомне виконання",
+      "description": "Транзакції будуть виконуватися послідовно без будь-яких гарантій атомарності/неперервності."
     },
     "session": {
       "failUnsupportedNamespace": {
