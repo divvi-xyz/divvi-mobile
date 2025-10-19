@@ -1,7 +1,7 @@
 import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { BATCH_STATUS_TTL } from 'src/sendCalls/constants'
-import { addBatch } from 'src/sendCalls/slice'
+import { SendCallsBatch, addBatch } from 'src/sendCalls/slice'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import { NetworkId } from 'src/transactions/types'
@@ -60,6 +60,8 @@ const createMockActionableRequest = ({
   params,
   chainId,
   preparedRequest,
+  id,
+  batch,
 }: {
   method: SupportedActions
   params: any[]
@@ -67,6 +69,8 @@ const createMockActionableRequest = ({
   preparedRequest?:
     | PreparedTransactionResult<SerializableTransactionRequest>
     | PreparedTransactionResult<SerializableTransactionRequest[]>
+  id?: string
+  batch?: SendCallsBatch
 }) =>
   ({
     method,
@@ -82,6 +86,8 @@ const createMockActionableRequest = ({
       },
     },
     preparedRequest,
+    ...(id && { id }),
+    ...(batch && { batch }),
   }) as ActionableRequest
 
 const txParams = {
@@ -500,18 +506,14 @@ describe(handleRequest, () => {
       },
     }
 
-    const getCallsStatusRequest = createMockActionableRequest({
-      method: SupportedActions.wallet_getCallsStatus,
-      params: [batchId],
-      chainId: chainId,
-    })
-
     const mockCapabilities = {
       [chainId]: {
         atomic: { status: 'unsupported' },
         paymasterService: { supported: false },
       },
     }
+
+    const mockState = createMockStore({}).getState()
 
     it('returns pending status when any receipt is missing', async () => {
       const mockReceipts = [
@@ -522,20 +524,20 @@ describe(handleRequest, () => {
         },
       ]
 
-      await expectSaga(handleRequest, getCallsStatusRequest)
-        .withState(
-          createMockStore({
-            sendCalls: {
-              batchById: {
-                [batchId]: {
-                  transactionHashes: ['0xhash', '0xhash2'],
-                  atomic: false,
-                  expiresAt: Date.now() + BATCH_STATUS_TTL,
-                },
-              },
-            },
-          }).getState()
-        )
+      const getCallsStatusRequestPending = createMockActionableRequest({
+        method: SupportedActions.wallet_getCallsStatus,
+        params: [batchId],
+        chainId: chainId,
+        id: batchId,
+        batch: {
+          transactionHashes: ['0xhash', '0xhash2'],
+          atomic: false,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        },
+      })
+
+      await expectSaga(handleRequest, getCallsStatusRequestPending)
+        .withState(mockState)
         .provide([
           [matchers.call.fn(fetchTransactionReceipts), mockReceipts],
           [matchers.call.fn(getWalletCapabilitiesByWalletConnectChainId), mockCapabilities],
@@ -556,20 +558,20 @@ describe(handleRequest, () => {
         { status: 'fulfilled', value: receiptSuccess2 },
       ]
 
-      await expectSaga(handleRequest, getCallsStatusRequest)
-        .withState(
-          createMockStore({
-            sendCalls: {
-              batchById: {
-                [batchId]: {
-                  transactionHashes: ['0xhash', '0xhash2'],
-                  atomic: true,
-                  expiresAt: Date.now() + BATCH_STATUS_TTL,
-                },
-              },
-            },
-          }).getState()
-        )
+      const getCallsStatusRequestSuccess = createMockActionableRequest({
+        method: SupportedActions.wallet_getCallsStatus,
+        params: [batchId],
+        chainId: chainId,
+        id: batchId,
+        batch: {
+          transactionHashes: ['0xhash', '0xhash2'],
+          atomic: true,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        },
+      })
+
+      await expectSaga(handleRequest, getCallsStatusRequestSuccess)
+        .withState(mockState)
         .provide([
           [matchers.call.fn(fetchTransactionReceipts), mockReceipts],
           [matchers.call.fn(getWalletCapabilitiesByWalletConnectChainId), mockCapabilities],
@@ -589,20 +591,20 @@ describe(handleRequest, () => {
         { status: 'fulfilled', value: receiptReverted },
       ]
 
-      await expectSaga(handleRequest, getCallsStatusRequest)
-        .withState(
-          createMockStore({
-            sendCalls: {
-              batchById: {
-                [batchId]: {
-                  transactionHashes: ['0xhash', '0xreverted'],
-                  atomic: false,
-                  expiresAt: Date.now() + BATCH_STATUS_TTL,
-                },
-              },
-            },
-          }).getState()
-        )
+      const getCallsStatusRequestPartial = createMockActionableRequest({
+        method: SupportedActions.wallet_getCallsStatus,
+        params: [batchId],
+        chainId: chainId,
+        id: batchId,
+        batch: {
+          transactionHashes: ['0xhash', '0xreverted'],
+          atomic: false,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        },
+      })
+
+      await expectSaga(handleRequest, getCallsStatusRequestPartial)
+        .withState(mockState)
         .provide([
           [matchers.call.fn(fetchTransactionReceipts), mockReceipts],
           [matchers.call.fn(getWalletCapabilitiesByWalletConnectChainId), mockCapabilities],
@@ -622,21 +624,21 @@ describe(handleRequest, () => {
         { status: 'rejected', reason: mockError },
       ]
 
+      const getCallsStatusRequestError = createMockActionableRequest({
+        method: SupportedActions.wallet_getCallsStatus,
+        params: [batchId],
+        chainId: chainId,
+        id: batchId,
+        batch: {
+          transactionHashes: ['0xhash', '0xhash2'],
+          atomic: false,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        },
+      })
+
       await expect(
-        expectSaga(handleRequest, getCallsStatusRequest)
-          .withState(
-            createMockStore({
-              sendCalls: {
-                batchById: {
-                  [batchId]: {
-                    transactionHashes: ['0xhash', '0xhash2'],
-                    atomic: false,
-                    expiresAt: Date.now() + BATCH_STATUS_TTL,
-                  },
-                },
-              },
-            }).getState()
-          )
+        expectSaga(handleRequest, getCallsStatusRequestError)
+          .withState(mockState)
           .provide([
             [matchers.call.fn(fetchTransactionReceipts), mockReceipts],
             [matchers.call.fn(getWalletCapabilitiesByWalletConnectChainId), mockCapabilities],
