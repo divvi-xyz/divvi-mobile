@@ -19,6 +19,7 @@ import i18n from 'src/i18n'
 import { isBottomSheetVisible, navigate, navigateBack } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { selectBatch } from 'src/sendCalls/selectors'
+import { pruneExpiredBatches as pruneExpiredSendCallsBatches } from 'src/sendCalls/slice'
 import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
 import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
@@ -952,6 +953,8 @@ function* handleAcceptRequest({ actionableRequest }: AcceptRequest) {
 
     AppAnalytics.track(WalletConnectEvents.wc_request_accept_success, defaultTrackedProperties)
     yield* call(showWalletConnectionSuccessMessage, activeSession.peer.metadata.name)
+
+    yield* put(pruneExpiredSendCallsBatches({ now: Date.now() }))
   } catch (err) {
     const e = ensureError(err)
     Logger.debug(TAG + '@acceptRequest', e.message)
