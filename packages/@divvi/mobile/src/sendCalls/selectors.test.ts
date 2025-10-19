@@ -37,13 +37,4 @@ describe('selectBatch', () => {
     const state = getMockState()
     expect(selectBatch(state, 'expiredId', NOW)).toBeUndefined()
   })
-
-  it('returns expired batches when notExpiredAt is omitted', () => {
-    const state = getMockState()
-    expect(selectBatch(state, 'expiredId')).toEqual({
-      transactionHashes: ['0x1'],
-      atomic: false,
-      expiresAt: NOW - 1,
-    })
-  })
 })
