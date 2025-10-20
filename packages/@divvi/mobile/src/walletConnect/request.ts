@@ -1,3 +1,5 @@
+import { BATCH_STATUS_TTL } from 'src/sendCalls/constants'
+import { addBatch } from 'src/sendCalls/slice'
 import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
 import { SentrySpan } from 'src/sentry/SentrySpans'
 import { Network } from 'src/transactions/types'
@@ -16,8 +18,8 @@ import networkConfig, {
   walletConnectChainIdToNetwork,
 } from 'src/web3/networkConfig'
 import { getWalletAddress, unlockAccount } from 'src/web3/saga'
-import { call } from 'typed-redux-saga'
-import { Address, bytesToHex, SignMessageParameters } from 'viem'
+import { call, put } from 'typed-redux-saga'
+import { Address, bytesToHex, Hex, SignMessageParameters } from 'viem'
 
 const TAG = 'WalletConnect/request'
 
@@ -119,18 +121,29 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
         throw new Error(actionableRequest.preparedRequest.errorMessage)
       }
 
+      const transactionHashes: Hex[] = []
       for (const tx of actionableRequest.preparedRequest.data) {
         try {
-          yield* call(
+          const hash = yield* call(
             [wallet, 'sendTransaction'],
             // TODO: fix types
             tx as any
           )
+          transactionHashes.push(hash)
         } catch (e) {
           Logger.warn(TAG + '@handleRequest', 'Failed to send transaction, aborting batch', e)
           break
         }
       }
+
+      yield* put(
+        addBatch({
+          id,
+          transactionHashes,
+          atomic: false,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        })
+      )
 
       return {
         id,
