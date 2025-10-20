@@ -13,4 +13,4 @@ type PreparedTransactionsResult =
   | PreparedTransactionsNotEnoughBalanceForGas
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:70](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L70)
+Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:69](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L69)
