@@ -1171,6 +1171,9 @@
     "sendTransaction": "{{dappName}} bir işlemi göndermek istiyor.",
     "sendDappTransaction": "{{dappName}} {{networkName}} ağındaki bir işlemi göndermek istiyor.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} desteklenmeyen ağdaki bir işlemi göndermek istiyor.",
+    "sendCallsTitle": "İşlemleri gönder",
+    "sendCalls": "{{dappName}} {{networkName}} ağında {{transactionsCount}} işlemleri göndermek istiyor.",
+    "sendCallsUnknownNetwork": "{{dappName}} desteklenmeyen bir ağ üzerinden {{transactionsCount}} işlemlerini göndermek istiyor.",
     "decryptPayloadTitle": "Cüzdan ile şifre çözme",
     "decryptPayload": "{{dappName}} bir veri yükünün şifresini çözmek istiyor.",
     "computeSharedSecret": "{{dappName}} gizli kelimeler oluşturmak istiyor.",
@@ -1193,6 +1196,10 @@
     "failedToPrepareTransaction": {
       "title": "İşlem hazırlanamadı",
       "description": "İşlem hazırlanırken bir hata oluştu. Daha fazla ayrıntı için altta yatan hataya bakın.\n\n\"{{errorMessage}}\""
+    },
+    "nonAtomicExecution": {
+      "title": "Atomik olmayan yürütme",
+      "description": "İşlemler, herhangi bir atomiklik/bütünlük garantisi olmaksızın sırayla gerçekleştirilecektir."
     },
     "session": {
       "failUnsupportedNamespace": {
