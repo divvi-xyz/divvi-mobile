@@ -514,6 +514,24 @@ describe('ActionRequest with WalletConnect V2', () => {
         request: {
           ...signMessageRequest.params.request,
           method: 'wallet_sendCalls',
+          params: [
+            {
+              calls: [
+                {
+                  to: mockAccount2,
+                  data: '0x',
+                  value: '0x0',
+                },
+                {
+                  to: mockAccount2,
+                  data: '0x',
+                  value: '0x0',
+                },
+              ],
+              capabilities: {},
+              atomicRequired: false,
+            },
+          ],
         },
       },
     }
