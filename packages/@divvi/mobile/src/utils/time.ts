@@ -76,23 +76,24 @@ export function formattedDuration(interval: Duration) {
   const years = interval.years ?? 0
   const months = interval.months ?? 0
   const days = interval.days ?? 0
-  let tParams
 
   if (years === 0 && months === 0) {
     if (days === 0) {
-      tParams = { context: 'lessThanADay' }
-    } else {
-      tParams = { context: 'day', count: days }
+      return i18n.t('duration', { context: 'lessThanADay' })
     }
-  } else if (years === 0) {
-    tParams = { context: 'month', count: months }
-  } else {
-    if (months === 0) {
-      tParams = { context: 'year', count: years }
-    } else {
-      tParams = { context: 'yearMonth', count: years, count2: months }
-    }
+    return i18n.t('duration', { context: 'day', count: days })
   }
 
-  return i18n.t('duration', tParams)
+  const monthText = i18n.t('duration', { context: 'month', count: months })
+  const yearText = i18n.t('duration', { context: 'year', count: years })
+
+  if (years === 0) {
+    return monthText
+  }
+
+  if (months === 0) {
+    return yearText
+  }
+
+  return `${yearText}, ${monthText}`
 }
