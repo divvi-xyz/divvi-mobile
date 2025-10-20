@@ -90,7 +90,7 @@ export interface SendCallsRequest extends RequestBase {
   preparedRequest: PreparedTransactionResult<SerializableTransactionRequest[]>
 }
 
-export interface GetCallsStatusRequest extends RequestBase {
+interface GetCallsStatusRequest extends RequestBase {
   method: SupportedActions.wallet_getCallsStatus
   id: string
   batch: SendCallsBatch
