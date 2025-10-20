@@ -962,6 +962,133 @@ describe('prepareTransactions module', () => {
       })
       expect(estimateTransactionOutput).toEqual(null)
     })
+    it('estimates with reduced amount for gas-token ERC20 transfers and restores original amount', async () => {
+      const originalTransferData =
+        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex // 1000
+      const baseTransaction: TransactionRequest = {
+        from: '0x123' as Address,
+        to: mockSpendToken.address as Address,
+        data: originalTransferData,
+      }
+
+      // Mock estimateGas to capture what data is passed
+      let capturedData: Hex | undefined
+      mocked(estimateGas).mockImplementation(async (_client, tx: any) => {
+        capturedData = tx.data
+        return BigInt(21000)
+      })
+
+      const result = await tryEstimateTransaction({
+        client: mockPublicClient,
+        baseTransaction,
+        maxFeePerGas: BigInt(100),
+        maxPriorityFeePerGas: BigInt(2),
+        baseFeePerGas: BigInt(50),
+        feeCurrencySymbol: mockSpendToken.symbol,
+        feeCurrencyAddress: mockSpendToken.address as Address,
+        spendToken: mockSpendToken,
+        spendTokenAmount: new BigNumber(1000),
+        isGasSubsidized: false,
+      })
+
+      // The estimateGas should have been called with reduced amount (1)
+      expect(capturedData).toContain(
+        '0000000000000000000000000000000000000000000000000000000000000001'
+      ) // 1 in hex
+
+      // But the returned transaction should have the original data
+      expect(result).toBeDefined()
+      expect(result?.data).toBe(originalTransferData)
+      expect(result?.gas).toBe(BigInt(21000))
+    })
+    it('does not modify amount for gas-token transfers when gas is subsidized', async () => {
+      const originalTransferData =
+        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex // 1000
+      const baseTransaction: TransactionRequest = {
+        from: '0x123' as Address,
+        to: mockSpendToken.address as Address,
+        data: originalTransferData,
+      }
+
+      let capturedData: Hex | undefined
+      mocked(estimateGas).mockImplementation(async (_client, tx: any) => {
+        capturedData = tx.data
+        return BigInt(21000)
+      })
+
+      await tryEstimateTransaction({
+        client: mockPublicClient,
+        baseTransaction,
+        maxFeePerGas: BigInt(100),
+        maxPriorityFeePerGas: BigInt(2),
+        baseFeePerGas: BigInt(50),
+        feeCurrencySymbol: mockSpendToken.symbol,
+        feeCurrencyAddress: mockSpendToken.address as Address,
+        spendToken: mockSpendToken,
+        spendTokenAmount: new BigNumber(1000),
+        isGasSubsidized: true, // Gas is subsidized
+      })
+
+      // Should NOT reduce the amount when gas is subsidized
+      expect(capturedData).toBe(originalTransferData)
+    })
+    it('does not modify amount for non-gas token transfers', async () => {
+      const originalTransferData =
+        '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex
+      const baseTransaction: TransactionRequest = {
+        from: '0x123' as Address,
+        to: mockSpendToken.address as Address,
+        data: originalTransferData,
+      }
+
+      let capturedData: Hex | undefined
+      mocked(estimateGas).mockImplementation(async (_client, tx: any) => {
+        capturedData = tx.data
+        return BigInt(21000)
+      })
+
+      await tryEstimateTransaction({
+        client: mockPublicClient,
+        baseTransaction,
+        maxFeePerGas: BigInt(100),
+        maxPriorityFeePerGas: BigInt(2),
+        baseFeePerGas: BigInt(50),
+        feeCurrencySymbol: 'DIFFERENT',
+        feeCurrencyAddress: '0xdifferent' as Address,
+        spendToken: mockSpendToken,
+        spendTokenAmount: new BigNumber(1000),
+        isGasSubsidized: false,
+      })
+
+      // Should NOT reduce the amount when fee currency is different
+      expect(capturedData).toBe(originalTransferData)
+    })
+    it('does not modify amount for non-ERC20 transactions', async () => {
+      const baseTransaction: TransactionRequest = {
+        from: '0x123' as Address,
+        to: mockSpendToken.address as Address,
+        value: BigInt(1000),
+      }
+
+      mocked(estimateGas).mockResolvedValue(BigInt(21000))
+
+      const result = await tryEstimateTransaction({
+        client: mockPublicClient,
+        baseTransaction,
+        maxFeePerGas: BigInt(100),
+        maxPriorityFeePerGas: BigInt(2),
+        baseFeePerGas: BigInt(50),
+        feeCurrencySymbol: mockSpendToken.symbol,
+        feeCurrencyAddress: mockSpendToken.address as Address,
+        spendToken: mockSpendToken,
+        spendTokenAmount: new BigNumber(1000),
+        isGasSubsidized: false,
+      })
+
+      // Should not modify non-ERC20 transactions
+      expect(result?.value).toBe(BigInt(1000))
+      expect(result?.data).toBeUndefined()
+    })
   })
   describe('tryEstimateTransactions', () => {
     it('returns null if estimateGas throws error due to insufficient funds', async () => {
