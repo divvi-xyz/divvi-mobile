@@ -962,7 +962,7 @@ describe('prepareTransactions module', () => {
       })
       expect(estimateTransactionOutput).toEqual(null)
     })
-    it('estimates with reduced amount for same-token ERC20 transfers and restores original amount', async () => {
+    it('estimates with reduced amount for gas-token ERC20 transfers and restores original amount', async () => {
       const originalTransferData =
         '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex // 1000
       const baseTransaction: TransactionRequest = {
@@ -991,17 +991,17 @@ describe('prepareTransactions module', () => {
         isGasSubsidized: false,
       })
 
-      // The estimateGas should have been called with reduced amount (600 = 1000 * 0.6)
+      // The estimateGas should have been called with reduced amount (1)
       expect(capturedData).toContain(
-        '0000000000000000000000000000000000000000000000000000000000000258'
-      ) // 600 in hex
+        '0000000000000000000000000000000000000000000000000000000000000001'
+      ) // 1 in hex
 
       // But the returned transaction should have the original data
       expect(result).toBeDefined()
       expect(result?.data).toBe(originalTransferData)
       expect(result?.gas).toBe(BigInt(21000))
     })
-    it('does not modify amount for same-token transfers when gas is subsidized', async () => {
+    it('does not modify amount for gas-token transfers when gas is subsidized', async () => {
       const originalTransferData =
         '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex // 1000
       const baseTransaction: TransactionRequest = {
@@ -1032,7 +1032,7 @@ describe('prepareTransactions module', () => {
       // Should NOT reduce the amount when gas is subsidized
       expect(capturedData).toBe(originalTransferData)
     })
-    it('does not modify amount for different token transfers', async () => {
+    it('does not modify amount for non-gas token transfers', async () => {
       const originalTransferData =
         '0xa9059cbb0000000000000000000000000000742d35cc6634c0532925a3b844bc9e7595f000000000000000000000000000000000000000000000000000000000000003e8' as Hex
       const baseTransaction: TransactionRequest = {

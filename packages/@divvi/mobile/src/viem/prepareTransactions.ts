@@ -37,7 +37,6 @@ const ERC20_TRANSFER_SELECTOR = '0xa9059cbb' as const
 const SELECTOR_LENGTH = 10 // '0x' + 8 hex chars (function selector)
 const ADDRESS_HEX_LENGTH = 64 // 32 bytes in hex
 const AMOUNT_HEX_LENGTH = 64 // 32 bytes in hex
-const GAS_ESTIMATION_AMOUNT_REDUCTION = 0.6 // Use 60% of amount for gas estimation
 
 // Supported transaction types
 export type TransactionRequest = (TransactionRequestCIP64 | TransactionRequestEIP1559) & {
@@ -217,12 +216,10 @@ export async function tryEstimateTransaction({
 
   let txToEstimate = baseTransaction
   if (needsReducedAmountEstimation && baseTransaction.data) {
-    // Estimate with a reduced amount to ensure gas estimation succeeds while leaving
+    // Estimate with the minimum amount (1) to ensure gas estimation succeeds while leaving
     // sufficient balance to cover both the transfer and gas costs
     // This is safe because the amount does not affect gas usage for ERC20 transfers
-    const reducedAmount = spendTokenAmount!
-      .times(GAS_ESTIMATION_AMOUNT_REDUCTION)
-      .integerValue(BigNumber.ROUND_DOWN)
+    const reducedAmount = new BigNumber(1)
 
     try {
       txToEstimate = {
@@ -441,8 +438,6 @@ export async function prepareTransactions({
       continue
     }
 
-    const spendAmountDecimal = spendTokenAmount.shiftedBy(-(spendToken?.decimals ?? 0))
-
     const estimatedTransactions = await tryEstimateTransactions(
       baseTransactions,
       feeCurrency,
@@ -461,6 +456,7 @@ export async function prepareTransactions({
     const maxGasFeeInDecimal = maxGasFee.shiftedBy(-feeDecimals)
     const estimatedGasFee = getEstimatedGasFee(estimatedTransactions)
     const estimatedGasFeeInDecimal = estimatedGasFee?.shiftedBy(-feeDecimals)
+    const spendAmountDecimal = spendTokenAmount.shiftedBy(-(spendToken?.decimals ?? 0))
     gasFees.push({ feeCurrency, maxGasFeeInDecimal, estimatedGasFeeInDecimal })
     if (maxGasFeeInDecimal.isGreaterThan(feeCurrency.balance) && !isGasSubsidized) {
       // Not enough balance to pay for gas, try next fee currency
