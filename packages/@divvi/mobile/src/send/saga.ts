@@ -97,11 +97,10 @@ export function* sendPaymentSaga({
       [createStandbyTransaction]
     )
 
-    // After sending the transaction, navigate back to the previous screen
+    // After sending the transaction, navigate back to the previous screen if not fromExternal
     // This ensures that the user can't submit the same transaction again accidentally
-    if (fromExternal) {
-      navigateBack()
-    } else {
+    // But since it is internal, they will still see the error banner if the transaction fails
+    if (!fromExternal) {
       navigateInitialTab()
     }
 
@@ -161,6 +160,13 @@ export function* sendPaymentSaga({
       AppAnalytics.track(CeloExchangeEvents.celo_withdraw_completed, {
         amount: amount.toString(),
       })
+    }
+
+    // If the transaction was initiated from an external source, navigate back to the previous screen
+    // This ensures that the user can't submit the same transaction again accidentally
+    // But since it is external, we need to wait until we get the receipt to know if it was successful or not
+    if (fromExternal) {
+      navigateBack()
     }
 
     yield* put(sendPaymentSuccess({ amount, tokenId }))
