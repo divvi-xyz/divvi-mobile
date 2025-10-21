@@ -66,7 +66,7 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
   const account = yield* call(getWalletAddress)
 
   // Unlock the account if the action requires user consent
-  if (!requiresUserConsent(method)) {
+  if (requiresUserConsent(method)) {
     yield* call(unlockAccount, account)
   }
 
