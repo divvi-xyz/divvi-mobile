@@ -22,7 +22,9 @@ export type Capabilities = Pick<
   'atomic' | 'paymasterService'
 >
 
-type NonInteractiveMethod = SupportedActions.wallet_getCapabilities
+type NonInteractiveMethod =
+  | SupportedActions.wallet_getCapabilities
+  | SupportedActions.wallet_getCallsStatus
 
 export type MessageMethod =
   | SupportedActions.eth_sign
@@ -67,8 +69,8 @@ interface RequestBase {
   request: WalletKitTypes.EventArguments['session_request']
 }
 
-interface NonInteractiveRequest extends RequestBase {
-  method: NonInteractiveMethod
+interface GetCapabilitiesRequest extends RequestBase {
+  method: SupportedActions.wallet_getCapabilities
 }
 
 export interface MessageRequest extends RequestBase {
@@ -97,7 +99,7 @@ interface GetCallsStatusRequest extends RequestBase {
 }
 
 export type ActionableRequest =
-  | NonInteractiveRequest
+  | GetCapabilitiesRequest
   | MessageRequest
   | TransactionRequest
   | SendCallsRequest
