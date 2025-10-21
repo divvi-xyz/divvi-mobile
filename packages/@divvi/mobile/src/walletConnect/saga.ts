@@ -18,6 +18,8 @@ import { ActiveDapp } from 'src/dapps/types'
 import i18n from 'src/i18n'
 import { isBottomSheetVisible, navigate, navigateBack } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+import { selectBatch } from 'src/sendCalls/selectors'
+import { pruneExpiredBatches as pruneExpiredSendCallsBatches } from 'src/sendCalls/slice'
 import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
 import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
@@ -355,13 +357,16 @@ function* showSessionRequest(session: WalletKitTypes.EventArguments['session_pro
 
   // Recommended method
   // https://docs.walletconnect.network/wallet-sdk/react-native/eip5792#wallet-response
-  const scopedProperties = getWalletCapabilitiesByWalletConnectChainId()
+  const scopedProperties = yield* call(
+    getWalletCapabilitiesByWalletConnectChainId,
+    address as Address
+  )
 
   // Legacy method for compatibility
   // https://github.com/WalletConnect/walletconnect-monorepo/blob/1e6d7793d0a30d2bf684cd3811ba120b4cdc0498/providers/universal-provider/src/providers/eip155.ts#L219-L223
   const sessionProperties = {
     capabilities: {
-      [getAddress(address)]: getWalletCapabilitiesByHexChainId(),
+      [getAddress(address)]: yield* call(getWalletCapabilitiesByHexChainId, address as Address),
     },
   } as any
 
@@ -501,18 +506,13 @@ function prepareNormalizedTransactions(
 function* prepareNormalizedTransactions(
   rawTxOrTxs: unknown[] | unknown,
   walletConnectChainId: string
-): SagaGenerator<
-  | {
-      hasInsufficientGasFunds: boolean
-      feeCurrenciesSymbols: string[]
-      result: PreparedTransactionResult<SerializableTransactionRequest>
-    }
-  | {
-      hasInsufficientGasFunds: boolean
-      feeCurrenciesSymbols: string[]
-      result: PreparedTransactionResult<SerializableTransactionRequest[]>
-    }
-> {
+): SagaGenerator<{
+  hasInsufficientGasFunds: boolean
+  feeCurrenciesSymbols: string[]
+  result:
+    | PreparedTransactionResult<SerializableTransactionRequest>
+    | PreparedTransactionResult<SerializableTransactionRequest[]>
+}> {
   const networkId = walletConnectChainIdToNetworkId[walletConnectChainId]
   const network = walletConnectChainIdToNetwork[walletConnectChainId]
   const feeCurrencies = yield* select((state) => feeCurrenciesSelector(state, networkId))
@@ -646,8 +646,24 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   }
 
   if (method === SupportedActions.wallet_sendCalls) {
+    const walletAddress = yield* call(getWalletAddress)
+
+    // check for duplicate id
+    const id = request.params.request.params[0].id
+    if (id) {
+      const batch = yield* select(selectBatch, id, Date.now())
+      if (batch) {
+        yield* put(denyRequest(request, rpcError.DUPLICATE_ID))
+        return
+      }
+    }
+
     // check support for atomic execution
-    const atomic = yield* call(getAtomicCapabilityByWalletConnectChainId, request.params.chainId)
+    const atomic = yield* call(
+      getAtomicCapabilityByWalletConnectChainId,
+      walletAddress as Address,
+      request.params.chainId
+    )
     if (request.params.request.params[0].atomicRequired && atomic === 'unsupported') {
       yield* put(denyRequest(request, rpcError.ATOMICITY_NOT_SUPPORTED))
       return
@@ -657,6 +673,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     const requestedCapabilities = request.params.request.params[0].capabilities ?? {}
     const requestedCapabilitiesSupported = yield* call(
       validateRequestedCapabilities,
+      walletAddress as Address,
       request.params.chainId,
       requestedCapabilities
     )
@@ -670,6 +687,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       const callCapabilities = requestCall.capabilities ?? {}
       const callCapabilitiesSupported = yield* call(
         validateRequestedCapabilities,
+        walletAddress as Address,
         request.params.chainId,
         callCapabilities
       )
@@ -683,6 +701,23 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       // TODO: suggest user to enable atomic operations
       // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
     }
+  }
+
+  if (method === SupportedActions.wallet_getCallsStatus) {
+    const [id] = request.params.request.params
+    if (!id) {
+      yield* put(denyRequest(request, rpcError.INVALID_PARAMS))
+      return
+    }
+
+    const batch = yield* select(selectBatch, id, Date.now())
+    if (!batch) {
+      yield* put(denyRequest(request, rpcError.UNKNOWN_BUNDLE_ID))
+      return
+    }
+
+    yield* put(acceptRequest({ method, request, id, batch }))
+    return
   }
 
   // If the action doesn't require user consent, accept it immediately
@@ -738,6 +773,13 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       result: preparedRequest,
     } = yield* prepareNormalizedTransactions(rawTxs, request.params.chainId)
 
+    const walletAddress = yield* call(getWalletAddress)
+    const atomic = yield* call(
+      getAtomicCapabilityByWalletConnectChainId,
+      walletAddress as Address,
+      request.params.chainId
+    )
+
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
       method,
@@ -747,6 +789,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       hasInsufficientGasFunds,
       feeCurrenciesSymbols,
       preparedRequest,
+      atomic: atomic === 'supported',
     })
   }
 }
@@ -920,6 +963,8 @@ function* handleAcceptRequest({ actionableRequest }: AcceptRequest) {
 
     AppAnalytics.track(WalletConnectEvents.wc_request_accept_success, defaultTrackedProperties)
     yield* call(showWalletConnectionSuccessMessage, activeSession.peer.metadata.name)
+
+    yield* put(pruneExpiredSendCallsBatches({ now: Date.now() }))
   } catch (err) {
     const e = ensureError(err)
     Logger.debug(TAG + '@acceptRequest', e.message)

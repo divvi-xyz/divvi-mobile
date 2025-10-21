@@ -143,7 +143,7 @@ describe('store state', () => {
       {
         "_persist": {
           "rehydrated": true,
-          "version": 252,
+          "version": 253,
         },
         "account": {
           "acceptedTerms": false,
@@ -332,6 +332,9 @@ describe('store state', () => {
           "lastUsedTokenId": undefined,
           "recentPayments": [],
           "recentRecipients": [],
+        },
+        "sendCalls": {
+          "batchById": {},
         },
         "swap": {
           "currentSwap": null,

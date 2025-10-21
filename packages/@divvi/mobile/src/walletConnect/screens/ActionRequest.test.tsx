@@ -506,6 +506,128 @@ describe('ActionRequest with WalletConnect V2', () => {
     })
   })
 
+  describe('wallet_sendCalls', () => {
+    const sendCallsRequest = {
+      ...signMessageRequest,
+      params: {
+        ...signMessageRequest.params,
+        request: {
+          ...signMessageRequest.params.request,
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              calls: [
+                {
+                  to: mockAccount2,
+                  data: '0x',
+                  value: '0x0',
+                },
+                {
+                  to: mockAccount2,
+                  data: '0x',
+                  value: '0x0',
+                },
+              ],
+              capabilities: {},
+              atomicRequired: false,
+            },
+          ],
+        },
+      },
+    }
+
+    const sendCallsMethod = SupportedActions.wallet_sendCalls as const
+
+    const singleTransaction = [preparedTransactionSuccess.data]
+
+    const manyTransactions = [
+      preparedTransactionSuccess.data,
+      {
+        ...preparedTransactionSuccess.data,
+        nonce: preparedTransactionSuccess.data.nonce + 1,
+      },
+    ]
+
+    const store = createMockStore({
+      walletConnect: {
+        sessions: [v2Session],
+      },
+    })
+
+    beforeEach(() => {
+      store.clearActions()
+    })
+
+    it('should show a warning for non-atomic SendCalls requests', () => {
+      const { getByText } = render(
+        <Provider store={store}>
+          <ActionRequest
+            version={2}
+            method={sendCallsMethod}
+            request={sendCallsRequest}
+            supportedChains={supportedChains}
+            atomic={false}
+            hasInsufficientGasFunds={false}
+            feeCurrenciesSymbols={feeCurrenciesSymbols}
+            preparedRequest={{
+              success: true,
+              data: manyTransactions,
+            }}
+          />
+        </Provider>
+      )
+
+      expect(getByText('walletConnectRequest.nonAtomicExecution.title')).toBeTruthy()
+      expect(getByText('walletConnectRequest.nonAtomicExecution.description')).toBeTruthy()
+    })
+
+    it('should not show a warning for non-atomic SendCalls requests with a single transaction', () => {
+      const { queryByText } = render(
+        <Provider store={store}>
+          <ActionRequest
+            version={2}
+            method={sendCallsMethod}
+            request={sendCallsRequest}
+            supportedChains={supportedChains}
+            atomic={false}
+            hasInsufficientGasFunds={false}
+            feeCurrenciesSymbols={feeCurrenciesSymbols}
+            preparedRequest={{
+              success: true,
+              data: singleTransaction,
+            }}
+          />
+        </Provider>
+      )
+
+      expect(queryByText('walletConnectRequest.nonAtomicExecution.title')).toBeFalsy()
+      expect(queryByText('walletConnectRequest.nonAtomicExecution.description')).toBeFalsy()
+    })
+
+    it('should not show a warning for atomic SendCalls requests', () => {
+      const { queryByText } = render(
+        <Provider store={store}>
+          <ActionRequest
+            version={2}
+            method={sendCallsMethod}
+            request={sendCallsRequest}
+            supportedChains={supportedChains}
+            atomic={true}
+            hasInsufficientGasFunds={false}
+            feeCurrenciesSymbols={feeCurrenciesSymbols}
+            preparedRequest={{
+              success: true,
+              data: manyTransactions,
+            }}
+          />
+        </Provider>
+      )
+
+      expect(queryByText('walletConnectRequest.nonAtomicExecution.title')).toBeFalsy()
+      expect(queryByText('walletConnectRequest.nonAtomicExecution.description')).toBeFalsy()
+    })
+  })
+
   describe('unsupported chain', () => {
     it.each([
       [

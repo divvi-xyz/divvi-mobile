@@ -1175,6 +1175,17 @@
     "sendTransaction": "{{dappName}} запрашивает отправку транзакции.",
     "sendDappTransaction": "{{dappName}} запрашивает отправку транзакции в {{networkName}}.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} запрашивает отправку транзакции в неподдерживаемом сеть.",
+    "sendCallsTitle_one": "Отправь транзакцию {{count}}",
+    "sendCallsTitle_few": "Отправляй транзакции на {{count}}",
+    "sendCallsTitle_many": "Отправляй транзакции на {{count}}",
+    "sendCallsTitle_other": "Отправляй транзакции на {{count}}",
+    "sendCalls_one": "{{dappName}} хотел бы отправить транзакцию {{count}} в сети {{networkName}} .",
+    "sendCalls_few": "{{dappName}} хотел бы отправлять транзакции {{count}} в сети {{networkName}} .",
+    "sendCalls_many": "{{dappName}} хотел бы отправлять транзакции {{count}} в сети {{networkName}} .",
+    "sendCalls_other": "{{dappName}} хотел бы отправлять транзакции {{count}} в сети {{networkName}} .",
+    "sendCallsUnknownNetwork_one": "{{dappName}} хочет отправить транзакцию {{count}} по неподдерживаемой сети.",
+    "sendCallsUnknownNetwork_few": "{{dappName}} хотел бы отправить транзакции {{count}} по неподдерживаемой сети.",
+    "sendCallsUnknownNetwork_other": "{{dappName}} хотел бы отправить транзакции {{count}} по неподдерживаемой сети.",
     "decryptPayloadTitle": "Расшифровка с помощью кошелька",
     "decryptPayload": "{{dappName}} требуется расшифровать полезные данные.",
     "computeSharedSecret": "{{dappName}} требуется создать секреты.",
@@ -1188,6 +1199,8 @@
       "title": "Неподдерживаемая сеть",
       "description": "{{dappName}} запрашивает это действие по цепочке, не поддерживаемой {{appName}}. Убедитесь, что Celo является активной цепочкой на стороне dapp.",
       "descriptionV1_74_one": "{{dappName}} запрашивает это действие по сеть, не поддерживаемой {{appName}}. Убедитесь, что {{supportedNetworkNames}} является активной сеть на стороне dapp.",
+      "descriptionV1_74_few": "{{dappName}} запрашивает это действие по сеть, не поддерживаемой {{appName}}. Убедитесь, что активной сеть на dapp является одна из следующих: {{supportedNetworkNames}}.",
+      "descriptionV1_74_many": "{{dappName}} запрашивает это действие по сеть, не поддерживаемой {{appName}}. Убедитесь, что активной сеть на dapp является одна из следующих: {{supportedNetworkNames}}.",
       "descriptionV1_74_other": "{{dappName}} запрашивает это действие по сеть, не поддерживаемой {{appName}}. Убедитесь, что активной сеть на dapp является одна из следующих: {{supportedNetworkNames}}."
     },
     "notEnoughBalanceForGas": {
@@ -1198,17 +1211,25 @@
       "title": "Не удалось подготовить транзакцию",
       "description": "Произошла ошибка при подготовке транзакции. Смотрите основную ошибку для получения более подробной информации.\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "Неатомарное выполнение",
+      "description": "Транзакции будут выполняться последовательно без каких-либо гарантий атомарности/континуальности."
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "Неподдерживаемая сеть",
         "description": "{{dappName}} предлагает подключиться с цепочкой, не поддерживаемой {{appName}}. Убедитесь, что на стороне dapp выбран Celo.",
         "descriptionV1_74_one": "{{dappName}} предлагает подключиться с сеть, не поддерживаемой {{appName}}. Убедитесь, что на стороне dapp выбран {{supportedNetworkNames}}.",
+        "descriptionV1_74_few": "{{dappName}} предлагает подключиться с сеть, не поддерживаемой {{appName}}. Убедитесь, что активной сеть на dapp является одна из следующих: {{supportedNetworkNames}}.",
+        "descriptionV1_74_many": "{{dappName}} предлагает подключиться с сеть, не поддерживаемой {{appName}}. Убедитесь, что активной сеть на dapp является одна из следующих: {{supportedNetworkNames}}.",
         "descriptionV1_74_other": "{{dappName}} предлагает подключиться с сеть, не поддерживаемой {{appName}}. Убедитесь, что активной сеть на dapp является одна из следующих: {{supportedNetworkNames}}."
       },
       "warnUnsupportedChains": {
         "title": "Неподдерживаемая сеть",
         "description": "{{dappName}} не указал Celo в качестве поддерживаемой цепочки. Некоторые функции могут работать не так, как ожидается.",
         "descriptionV1_74_one": "{{dappName}} не указал {{supportedNetworkNames}} в качестве поддерживаемой сеть. Некоторые функции могут работать не так, как ожидается.",
+        "descriptionV1_74_few": "{{dappName}} не указал ни одну из следующих поддерживаемых сети: {{supportedNetworkNames}}. Некоторые функции могут работать не так, как ожидалось.",
+        "descriptionV1_74_many": "{{dappName}} не указал ни одну из следующих поддерживаемых сети: {{supportedNetworkNames}}. Некоторые функции могут работать не так, как ожидалось.",
         "descriptionV1_74_other": "{{dappName}} не указал ни одну из следующих поддерживаемых сети: {{supportedNetworkNames}}. Некоторые функции могут работать не так, как ожидалось."
       },
       "warnSomeUnsupportedMethods": {
@@ -1556,7 +1577,10 @@
     "mobileMoney": "Мобильный банк",
     "airtime": "Доступное время",
     "minFee": "Мин. комиссия",
-    "numProviders": "Поставщики: {{count}}",
+    "numProviders_one": "{{count}} Провайдер",
+    "numProviders_few": "Поставщики: {{count}}",
+    "numProviders_many": "Поставщики: {{count}}",
+    "numProviders_other": "Поставщики: {{count}}",
     "fee": "Комиссия",
     "idRequired": "Требуется ID",
     "mobileCarrierRequirement": "Требуется {{carrier}}",
@@ -2118,6 +2142,8 @@
     "actionDescriptions": {
       "send": "Используйте любой адрес Celo, домен, номер телефона и т. д.",
       "sendV1_74_one": "Используйте любой адрес {{supportedNetworkNames}}, домен, номер телефона и т. д.",
+      "sendV1_74_few": "Используй любой адрес, домен, номер телефона в следующих сети: {{supportedNetworkNames}}.",
+      "sendV1_74_many": "Используй любой адрес, домен, номер телефона в следующих сети: {{supportedNetworkNames}}.",
       "sendV1_74_other": "Используй любой адрес, домен, номер телефона в следующих сети: {{supportedNetworkNames}}.",
       "swap": "Обменивайте свои токены, не выходя из кошелька",
       "add": "Покупайте токены у одного из наших проверенных провайдеров",
@@ -2882,10 +2908,16 @@
   },
   "duration_lessThanADay": "Менее дня",
   "duration_day_one": "1 день",
+  "duration_day_few": "{{count}} дн.",
+  "duration_day_many": "{{count}} дн.",
   "duration_day_other": "{{count}} дн.",
   "duration_month_one": "1 месяц",
+  "duration_month_few": "{{count}} мес.",
+  "duration_month_many": "{{count}} мес.",
   "duration_month_other": "{{count}} мес.",
   "duration_year_one": "1 год",
+  "duration_year_few": "{{count}} года/лет",
+  "duration_year_many": "{{count}} года/лет",
   "duration_year_other": "{{count}} года/лет",
   "duration_yearMonth_one": "1 год, 1 месяц",
   "duration_yearMonth_other": "{{count}} года/лет, {{count2}} мес.",

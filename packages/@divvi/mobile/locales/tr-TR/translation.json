@@ -1171,6 +1171,17 @@
     "sendTransaction": "{{dappName}} bir işlemi göndermek istiyor.",
     "sendDappTransaction": "{{dappName}} {{networkName}} ağındaki bir işlemi göndermek istiyor.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} desteklenmeyen ağdaki bir işlemi göndermek istiyor.",
+    "sendCallsTitle_one": "{{count}} işlemini gönder",
+    "sendCallsTitle_few": "{{count}} işlemlerini gönderin",
+    "sendCallsTitle_many": "{{count}} işlemlerini gönderin",
+    "sendCallsTitle_other": "{{count}} işlemlerini gönderin",
+    "sendCalls_one": "{{dappName}} {{networkName}} ağında {{count}} işlemi göndermek istiyor.",
+    "sendCalls_few": "{{dappName}} {{networkName}} ağında {{count}} işlemleri göndermek istiyor.",
+    "sendCalls_many": "{{dappName}} {{networkName}} ağında {{count}} işlemleri göndermek istiyor.",
+    "sendCalls_other": "{{dappName}} {{networkName}} ağında {{count}} işlemleri göndermek istiyor.",
+    "sendCallsUnknownNetwork_one": "{{dappName}} desteklenmeyen bir ağda {{count}} işlemi göndermek istiyor.",
+    "sendCallsUnknownNetwork_few": "{{dappName}} desteklenmeyen bir ağ üzerinden {{count}} işlemlerini göndermek istiyor.",
+    "sendCallsUnknownNetwork_other": "{{dappName}} desteklenmeyen bir ağ üzerinden {{count}} işlemlerini göndermek istiyor.",
     "decryptPayloadTitle": "Cüzdan ile şifre çözme",
     "decryptPayload": "{{dappName}} bir veri yükünün şifresini çözmek istiyor.",
     "computeSharedSecret": "{{dappName}} gizli kelimeler oluşturmak istiyor.",
@@ -1184,6 +1195,8 @@
       "title": "Desteklenmeyen zincir",
       "description": "{{dappName}} bu eylemi {{appName}} tarafından desteklenmeyen bir zincir üzerinde talep ediyor. Lütfen Celo'nun dapp tarafında aktif zincir olduğundan emin olun.",
       "descriptionV1_74_one": "{{dappName}} bu eylemi {{appName}} tarafından desteklenmeyen bir zincir üzerinde talep ediyor. Lütfen {{supportedNetworkNames}} ağının dapp tarafında aktif zincir olduğundan emin olun.",
+      "descriptionV1_74_few": "{{dappName}} bu eylemi {{appName}} tarafından desteklenmeyen bir zincir üzerinde talep ediyor. Lütfen dapp üzerindeki aktif zincirin şunlardan biri olduğundan emin olun: {{supportedNetworkNames}}.",
+      "descriptionV1_74_many": "{{dappName}} bu eylemi {{appName}} tarafından desteklenmeyen bir zincir üzerinde talep ediyor. Lütfen dapp üzerindeki aktif zincirin şunlardan biri olduğundan emin olun: {{supportedNetworkNames}}.",
       "descriptionV1_74_other": "{{dappName}} bu eylemi {{appName}} tarafından desteklenmeyen bir zincir üzerinde talep ediyor. Lütfen dapp üzerindeki aktif zincirin şunlardan biri olduğundan emin olun: {{supportedNetworkNames}}."
     },
     "notEnoughBalanceForGas": {
@@ -1194,17 +1207,25 @@
       "title": "İşlem hazırlanamadı",
       "description": "İşlem hazırlanırken bir hata oluştu. Daha fazla ayrıntı için altta yatan hataya bakın.\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "Atomik olmayan yürütme",
+      "description": "İşlemler, herhangi bir atomiklik/bütünlük garantisi olmaksızın sırayla gerçekleştirilecektir."
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "Desteklenmeyen zincir",
         "description": "{{dappName}}, {{appName}} tarafından desteklenmeyen bir zincirle bağlantı kurmak istiyor. Lütfen Celo'nun dapp tarafında seçili olduğundan emin olun.",
         "descriptionV1_74_one": "{{dappName}}, {{appName}} tarafından desteklenmeyen bir zincirle bağlantı kurmak istiyor. Lütfen {{supportedNetworkNames}} ağının dapp tarafında seçili olduğundan emin olun.",
+        "descriptionV1_74_few": "{{dappName}}, {{appName}} tarafından desteklenmeyen bir zincirle bağlantı kurmak istiyor. Lütfen dapp tarafında şunlardan birinin seçili olduğundan emin olun: {{supportedNetworkNames}}.",
+        "descriptionV1_74_many": "{{dappName}}, {{appName}} tarafından desteklenmeyen bir zincirle bağlantı kurmak istiyor. Lütfen dapp tarafında şunlardan birinin seçili olduğundan emin olun: {{supportedNetworkNames}}.",
         "descriptionV1_74_other": "{{dappName}}, {{appName}} tarafından desteklenmeyen bir zincirle bağlantı kurmak istiyor. Lütfen dapp tarafında şunlardan birinin seçili olduğundan emin olun: {{supportedNetworkNames}}."
       },
       "warnUnsupportedChains": {
         "title": "Desteklenmeyen zincir",
         "description": "{{dappName}} Celo'yu desteklenen bir zincir olarak belirtmedi. Bazı özellikler beklendiği gibi çalışmayabilir.",
         "descriptionV1_74_one": "{{dappName}} {{supportedNetworkNames}}'yu desteklenen bir zincir olarak belirtmedi. Bazı özellikler beklendiği gibi çalışmayabilir.",
+        "descriptionV1_74_few": "{{dappName}} aşağıdakilerden herhangi birini desteklenen bir zincir olarak belirtmemiştir: {{supportedNetworkNames}}. Bazı özellikler beklendiği gibi çalışmayabilir.",
+        "descriptionV1_74_many": "{{dappName}} aşağıdakilerden herhangi birini desteklenen bir zincir olarak belirtmemiştir: {{supportedNetworkNames}}. Bazı özellikler beklendiği gibi çalışmayabilir.",
         "descriptionV1_74_other": "{{dappName}} aşağıdakilerden herhangi birini desteklenen bir zincir olarak belirtmemiştir: {{supportedNetworkNames}}. Bazı özellikler beklendiği gibi çalışmayabilir."
       },
       "warnSomeUnsupportedMethods": {
@@ -1552,7 +1573,10 @@
     "mobileMoney": "Mobil Para",
     "airtime": "Airtime",
     "minFee": "Minimum Ücret",
-    "numProviders": "{{count}} Sağlayıcı",
+    "numProviders_one": "{{count}} Sağlayıcı",
+    "numProviders_few": "{{count}} Sağlayıcı",
+    "numProviders_many": "{{count}} Sağlayıcı",
+    "numProviders_other": "{{count}} Sağlayıcı",
     "fee": "Ücret",
     "idRequired": "Kimlik Gerekir",
     "mobileCarrierRequirement": "{{carrier}} Gerekli",
@@ -2114,6 +2138,8 @@
     "actionDescriptions": {
       "send": "Herhangi bir Celo adresi, alan adı, telefon numarası vb. kullanın.",
       "sendV1_74_one": "Bir {{supportedNetworkNames}} adresi, alan adı, telefon numarası vb. kullanın.",
+      "sendV1_74_few": "Şu ağlardaki bir adres, alan adı, telefon numarasını kullanın: {{supportedNetworkNames}}",
+      "sendV1_74_many": "Şu ağlardaki bir adres, alan adı, telefon numarasını kullanın: {{supportedNetworkNames}}",
       "sendV1_74_other": "Şu ağlardaki bir adres, alan adı, telefon numarasını kullanın: {{supportedNetworkNames}}",
       "swap": "Tokenlerinizi cüzdanınızdan çıkmadan swap edin",
       "add": "Güvenilir sağlayıcılarımızdan birini kullanarak token satın alın",
@@ -2878,10 +2904,16 @@
   },
   "duration_lessThanADay": "Bir günden az",
   "duration_day_one": "1 gün",
+  "duration_day_few": "{{count}} gün",
+  "duration_day_many": "{{count}} gün",
   "duration_day_other": "{{count}} gün",
   "duration_month_one": "1 ay",
+  "duration_month_few": "{{count}} ay",
+  "duration_month_many": "{{count}} ay",
   "duration_month_other": "{{count}} ay",
   "duration_year_one": "1 yıl",
+  "duration_year_few": "{{count}} yıl",
+  "duration_year_many": "{{count}} yıl",
   "duration_year_other": "{{count}} yıl",
   "duration_yearMonth_one": "1 yıl, 1 ay",
   "duration_yearMonth_other": "{{count}} yıl, {{count2}} ay",

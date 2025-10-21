@@ -1,7 +1,10 @@
+import { BATCH_STATUS_TTL, BatchStatus } from 'src/sendCalls/constants'
+import { addBatch } from 'src/sendCalls/slice'
 import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
 import { SentrySpan } from 'src/sentry/SentrySpans'
 import { Network } from 'src/transactions/types'
 import Logger from 'src/utils/Logger'
+import { publicClient } from 'src/viem'
 import { ViemWallet } from 'src/viem/getLockableWallet'
 import { getPreparedTransaction } from 'src/viem/preparedTransactionSerialization'
 import {
@@ -16,8 +19,16 @@ import networkConfig, {
   walletConnectChainIdToNetwork,
 } from 'src/web3/networkConfig'
 import { getWalletAddress, unlockAccount } from 'src/web3/saga'
-import { call } from 'typed-redux-saga'
-import { bytesToHex, Hex, SignMessageParameters } from 'viem'
+import { call, put } from 'typed-redux-saga'
+import {
+  Address,
+  bytesToHex,
+  Hex,
+  SignMessageParameters,
+  toHex,
+  TransactionReceipt,
+  TransactionReceiptNotFoundError,
+} from 'viem'
 
 const TAG = 'WalletConnect/request'
 
@@ -97,8 +108,97 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       return (yield* call([wallet, 'signMessage'], data)) as string
     }
     case SupportedActions.wallet_getCapabilities: {
-      const [_, hexNetworkIds] = params
-      return yield* call(getWalletCapabilitiesByHexChainId, hexNetworkIds)
+      const [address, hexNetworkIds] = params
+
+      if (address.toLowerCase() !== account.toLowerCase()) {
+        throw new Error('Unauthorized')
+      }
+
+      return yield* call(getWalletCapabilitiesByHexChainId, address, hexNetworkIds)
+    }
+    case SupportedActions.wallet_sendCalls: {
+      const id = params[0].id ?? bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
+      const supportedCapabilities = yield* call(
+        getWalletCapabilitiesByWalletConnectChainId,
+        account as Address
+      )
+
+      // TODO: handle atomic execution
+
+      // Fallback to sending transactions sequentially without any atomicity/contiguity guarantees
+      if (!actionableRequest.preparedRequest.success) {
+        throw new Error(actionableRequest.preparedRequest.errorMessage)
+      }
+
+      const transactionHashes: Hex[] = []
+      for (const tx of actionableRequest.preparedRequest.data) {
+        try {
+          const hash = yield* call(
+            [wallet, 'sendTransaction'],
+            // TODO: fix types
+            tx as any
+          )
+          transactionHashes.push(hash)
+        } catch (e) {
+          Logger.warn(TAG + '@handleRequest', 'Failed to send transaction, aborting batch', e)
+          break
+        }
+      }
+
+      yield* put(
+        addBatch({
+          id,
+          transactionHashes,
+          atomic: false,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        })
+      )
+
+      return {
+        id,
+        capabilities: supportedCapabilities[chainId],
+      }
+    }
+    case SupportedActions.wallet_getCallsStatus: {
+      const {
+        id,
+        batch: { transactionHashes, atomic },
+      } = actionableRequest
+
+      const network = walletConnectChainIdToNetwork[chainId]
+      const receiptRequests = yield* call(fetchTransactionReceipts, network, transactionHashes)
+      const receipts: (TransactionReceipt | null)[] = []
+      for (const r of receiptRequests) {
+        if (r.status === 'fulfilled') {
+          receipts.push(r.value)
+        } else if (r.reason instanceof TransactionReceiptNotFoundError) {
+          receipts.push(null) // transaction is pending
+        } else {
+          throw r.reason
+        }
+      }
+
+      const status = (() => {
+        if (receipts.some((r) => r === null)) return BatchStatus.Pending
+        if (receipts.every((r) => r?.status === 'success')) return BatchStatus.Success
+        if (receipts.every((r) => r?.status === 'reverted')) return BatchStatus.Failure
+        return BatchStatus.PartialFailure
+      })()
+
+      const supportedCapabilities = yield* call(
+        getWalletCapabilitiesByWalletConnectChainId,
+        account as Address
+      )
+
+      return {
+        version: '2.0.0',
+        id,
+        chainId: toHex(networkConfig.viemChain[network].id),
+        status,
+        atomic,
+        receipts: receipts.filter(Boolean) as TransactionReceipt[],
+        capabilities: supportedCapabilities[chainId],
+      }
     }
     case SupportedActions.wallet_sendCalls: {
       const id = params[0].id ?? bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
@@ -140,4 +240,13 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
     default:
       throw new Error('unsupported RPC method')
   }
+}
+
+export async function fetchTransactionReceipts(
+  network: Network,
+  transactionHashes: Hex[]
+): Promise<PromiseSettledResult<TransactionReceipt>[]> {
+  return Promise.allSettled(
+    transactionHashes.map((hash) => publicClient[network].getTransactionReceipt({ hash }))
+  )
 }

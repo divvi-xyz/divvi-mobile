@@ -15,6 +15,7 @@ import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import { Network, NetworkId } from 'src/transactions/types'
 import { publicClient } from 'src/viem'
+import { getLockableViemSmartWallet } from 'src/viem/getLockableWallet'
 import { prepareTransactions } from 'src/viem/prepareTransactions'
 import {
   Actions,
@@ -50,6 +51,10 @@ jest.mock('src/statsig')
 jest.mock('src/web3/utils', () => ({
   ...jest.requireActual('src/web3/utils'),
   getSupportedNetworkIds: jest.fn(),
+}))
+jest.mock('src/viem/getLockableWallet', () => ({
+  ...jest.requireActual('src/viem/getLockableWallet'),
+  getLockableViemSmartWallet: jest.fn(),
 }))
 
 function createSessionProposal(
@@ -133,11 +138,20 @@ function createSession(proposerMetadata: CoreTypes.Metadata): SessionTypes.Struc
 beforeEach(() => {
   jest.clearAllMocks()
   jest.mocked(getSupportedNetworkIds).mockReturnValue([NetworkId['celo-alfajores']])
+  jest.mocked(getLockableViemSmartWallet).mockResolvedValue({
+    account: {
+      isDeployed: jest.fn().mockResolvedValue(true),
+    },
+  } as any)
   jest.mocked(getFeatureGate).mockImplementation((featureGate) => {
-    if (featureGate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2) {
-      return false
+    switch (featureGate) {
+      case StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2:
+        return false
+      case StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES:
+        return false
+      default:
+        throw new Error(`Unexpected feature gate: ${featureGate}`)
     }
-    throw new Error(`Unexpected feature gate: ${featureGate}`)
   })
 })
 
@@ -283,6 +297,25 @@ describe('showSessionRequest', () => {
     name: 'someName',
   })
 
+  beforeEach(() => {
+    jest.clearAllMocks()
+    jest.mocked(getSupportedNetworkIds).mockReturnValue([NetworkId['celo-alfajores']])
+    jest.mocked(getLockableViemSmartWallet).mockResolvedValue({
+      account: {
+        isDeployed: jest.fn().mockResolvedValue(true),
+      },
+    } as any)
+    jest.mocked(getFeatureGate).mockImplementation((gate) => {
+      if (gate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2) {
+        return false
+      }
+      if (gate === StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES) {
+        return true
+      }
+      return false
+    })
+  })
+
   it('navigates to the screen to approve the session', async () => {
     const state = createMockStore({}).getState()
     await expectSaga(_showSessionRequest, sessionProposal)
@@ -369,7 +402,7 @@ describe('showSessionRequest', () => {
       scopedProperties: {
         'eip155:44787': {
           atomic: {
-            status: 'unsupported',
+            status: 'supported',
           },
           paymasterService: {
             supported: false,
@@ -381,7 +414,7 @@ describe('showSessionRequest', () => {
           '0x0000000000000000000000000000000000007e57': {
             '0xaef3': {
               atomic: {
-                status: 'unsupported',
+                status: 'supported',
               },
               paymasterService: {
                 supported: false,
@@ -489,6 +522,57 @@ describe('showSessionRequest', () => {
       version: 2,
       sessionProperties: expect.anything(),
       scopedProperties: expect.anything(),
+    })
+  })
+
+  it('falls back to default capabilities when feature gate is disabled', async () => {
+    jest.mocked(getFeatureGate).mockImplementation((gate) => {
+      if (gate === StatsigFeatureGates.DISABLE_WALLET_CONNECT_V2) {
+        return false
+      }
+      if (gate === StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES) {
+        return false
+      }
+      return false
+    })
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showSessionRequest, sessionProposal)
+      .withState(state)
+      .provide([[select(activeDappSelector), null]])
+      .run()
+
+    expect(navigate).toHaveBeenCalledTimes(1)
+    expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Session,
+      pendingSession: sessionProposal,
+      namespacesToApprove: expect.anything(),
+      supportedChains: expect.anything(),
+      version: expect.anything(),
+      scopedProperties: {
+        'eip155:44787': {
+          atomic: {
+            status: 'unsupported',
+          },
+          paymasterService: {
+            supported: false,
+          },
+        },
+      },
+      sessionProperties: {
+        capabilities: {
+          '0x0000000000000000000000000000000000007e57': {
+            '0xaef3': {
+              atomic: {
+                status: 'unsupported',
+              },
+              paymasterService: {
+                supported: false,
+              },
+            },
+          },
+        },
+      },
     })
   })
 })
@@ -864,6 +948,90 @@ describe('showActionRequest', () => {
       .provide([[select(walletAddressSelector), mockAccount]])
       .put(denyRequest(req, { code: -32602, message: 'Invalid params' }))
       .run()
+  })
+
+  it('denies wallet_getCallsStatus when id param is missing', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCallsStatus',
+          params: [],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .put(denyRequest(req, rpcError.INVALID_PARAMS))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('denies wallet_getCallsStatus when batch id is unknown', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCallsStatus',
+          params: ['0xabc'],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .put(denyRequest(req, rpcError.UNKNOWN_BUNDLE_ID))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('accepts wallet_getCallsStatus when batch id exists and is valid', async () => {
+    const batchId = '0x123'
+    const mockBatch = {
+      transactionHashes: ['0x1' as const, '0x2' as const],
+      atomic: false,
+      expiresAt: Date.now() + 5000,
+    }
+
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCallsStatus',
+          params: [batchId],
+        },
+      },
+    }
+
+    const state = createMockStore({
+      sendCalls: {
+        batchById: {
+          [batchId]: mockBatch,
+        },
+      },
+    }).getState()
+
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .put(
+        acceptRequest({
+          method: SupportedActions.wallet_getCallsStatus,
+          request: req,
+          id: batchId,
+          batch: mockBatch,
+        })
+      )
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
   })
 
   it('throws an error when client is missing', () => {
@@ -1355,6 +1523,7 @@ describe('wallet_sendCalls', () => {
         success: true,
         data: mockPreparedTransactions.transactions,
       },
+      atomic: false,
     })
   })
 
@@ -1459,6 +1628,7 @@ describe('wallet_sendCalls', () => {
         success: true,
         data: mockPreparedTransactions.transactions,
       },
+      atomic: false,
     })
   })
 
@@ -1547,7 +1717,52 @@ describe('wallet_sendCalls', () => {
         success: true,
         data: mockPreparedTransactions.transactions,
       },
+      atomic: false,
     })
+  })
+
+  it('denies request when ID is already known', async () => {
+    const duplicateId = '0xduplicate123'
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: duplicateId,
+              calls: [{ to: '0xTEST', data: '0x' }],
+              capabilities: {},
+              atomicRequired: false,
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({
+      sendCalls: {
+        batchById: {
+          // an existing batch that has the same ID
+          [duplicateId]: {
+            transactionHashes: ['0xhash1' as const, '0xhash2' as const],
+            atomic: false,
+            expiresAt: Date.now() + 1000,
+          },
+        },
+      },
+    }).getState()
+
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+      ])
+      .put(denyRequest(request, rpcError.DUPLICATE_ID))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
   })
 })
 
@@ -1556,6 +1771,12 @@ describe('handlePendingState', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(getFeatureGate).mockImplementation((featureGate) => {
+      if (featureGate === StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES) {
+        return false
+      }
+      throw new Error(`Unexpected feature gate: ${featureGate}`)
+    })
     mockClient = {
       approveSession: jest.fn(),
       getActiveSessions: jest.fn(() => {

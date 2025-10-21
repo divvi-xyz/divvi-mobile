@@ -1169,6 +1169,17 @@
     "sendTransaction": "{{dappName}} 希望发送一笔交易。",
     "sendDappTransaction": "{{dappName}} 希望在 {{networkName}} 网络上发送一笔交易。",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} 希望在不受支持的网络上发送一笔交易。",
+    "sendCallsTitle_one": "发送 {{count}} 交易",
+    "sendCallsTitle_few": "发送 {{count}} 交易",
+    "sendCallsTitle_many": "发送 {{count}} 交易",
+    "sendCallsTitle_other": "发送 {{count}} 交易",
+    "sendCalls_one": "{{dappName}} 希望在 {{networkName}} 网络上发送 {{count}} 交易。",
+    "sendCalls_few": "{{dappName}} 希望在 {{networkName}} 网络上发送 {{count}} 交易。",
+    "sendCalls_many": "{{dappName}} 希望在 {{networkName}} 网络上发送 {{count}} 交易。",
+    "sendCalls_other": "{{dappName}} 希望在 {{networkName}} 网络上发送 {{count}} 交易。",
+    "sendCallsUnknownNetwork_one": "{{dappName}} 希望在不支持的网络上发送 {{count}} 交易。",
+    "sendCallsUnknownNetwork_few": "{{dappName}} 希望在不支持的网络上发送 {{count}} 交易。",
+    "sendCallsUnknownNetwork_other": "{{dappName}} 希望在不支持的网络上发送 {{count}} 交易。",
     "decryptPayloadTitle": "用钱包解密",
     "decryptPayload": "{{dappName}} 想要解密数据有效负载。",
     "computeSharedSecret": "{{dappName}} 想要生成密钥。",
@@ -1182,6 +1193,8 @@
       "title": "不受支持的区块链网络",
       "description": "{{dappName}} 请求在 {{appName}} 不受支持的区块链网络上执行此操作。请确保 Celo 属于 dapp 上的活跃区块链。",
       "descriptionV1_74_one": "{{dappName}} 请求在 {{appName}} 不受支持的区块链网络上执行此操作。请确保 {{supportedNetworkNames}} 属于 dapp 上的活跃区块链。",
+      "descriptionV1_74_few": "{{dappName}} 请求在 {{appName}} 不受支持的区块链网络上执行此操作。请确保 dapp 上的活动链为以下之一： {{supportedNetworkNames}}.",
+      "descriptionV1_74_many": "{{dappName}} 请求在 {{appName}} 不受支持的区块链网络上执行此操作。请确保 dapp 上的活动链为以下之一： {{supportedNetworkNames}}.",
       "descriptionV1_74_other": "{{dappName}} 请求在 {{appName}} 不受支持的区块链网络上执行此操作。请确保 dapp 上的活动链为以下之一： {{supportedNetworkNames}}."
     },
     "notEnoughBalanceForGas": {
@@ -1192,17 +1205,25 @@
       "title": "准备交易失败",
       "description": "准备交易时发生错误。详情请查看基本错误。\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "非原子执行",
+      "description": "事务将按顺序执行，不保证原子性/连续性。"
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "不受支持的区块链网络",
         "description": "{{dappName}} 想要连接一个不受 {{appName}} 支持的区块链网络。请确保在 dapp 端选择了 Celo。",
         "descriptionV1_74_one": "{{dappName}} 想要连接一个不受 {{appName}} 支持的区块链网络。请确保在 dapp 端选择了 {{supportedNetworkNames}}。",
+        "descriptionV1_74_few": "{{dappName}} 想要连接一个不受 {{appName}} 支持的区块链网络。请确保在 dapp 端选择了以下之一： {{supportedNetworkNames}}。",
+        "descriptionV1_74_many": "{{dappName}} 想要连接一个不受 {{appName}} 支持的区块链网络。请确保在 dapp 端选择了以下之一： {{supportedNetworkNames}}。",
         "descriptionV1_74_other": "{{dappName}} 想要连接一个不受 {{appName}} 支持的区块链网络。请确保在 dapp 端选择了以下之一： {{supportedNetworkNames}}。"
       },
       "warnUnsupportedChains": {
         "title": "不受支持的区块链网络",
         "description": "{{dappName}} 没有将 Celo 指定为受支持的区块链网络。某些功能可能无法按预期运行。",
         "descriptionV1_74_one": "{{dappName}} 没有将 {{supportedNetworkNames}} 指定为受支持的区块链网络。某些功能可能无法按预期运行。",
+        "descriptionV1_74_few": "{{dappName}} 未指定以下任何链为支持链： {{supportedNetworkNames}}。某些功能可能无法按预期运行。",
+        "descriptionV1_74_many": "{{dappName}} 未指定以下任何链为支持链： {{supportedNetworkNames}}。某些功能可能无法按预期运行。",
         "descriptionV1_74_other": "{{dappName}} 未指定以下任何链为支持链： {{supportedNetworkNames}}。某些功能可能无法按预期运行。"
       },
       "warnSomeUnsupportedMethods": {
@@ -1550,7 +1571,10 @@
     "mobileMoney": "手机钱包",
     "airtime": "通话时间",
     "minFee": "最小费用",
-    "numProviders": "{{count}} 个提供商",
+    "numProviders_one": "{{count}} 提供商",
+    "numProviders_few": "{{count}} 个提供商",
+    "numProviders_many": "{{count}} 个提供商",
+    "numProviders_other": "{{count}} 个提供商",
     "fee": "费用",
     "idRequired": "必须提供 ID",
     "mobileCarrierRequirement": "必须提供 {{carrier}}",
@@ -2112,6 +2136,8 @@
     "actionDescriptions": {
       "send": "使用任意 Celo 地址、域、电话号码等。",
       "sendV1_74_one": "使用任意 {{supportedNetworkNames}} 地址、域、电话号码等。",
+      "sendV1_74_few": "在以下网络中使用任何地址、域名和电话号码： {{supportedNetworkNames}}",
+      "sendV1_74_many": "在以下网络中使用任何地址、域名和电话号码： {{supportedNetworkNames}}",
       "sendV1_74_other": "在以下网络中使用任何地址、域名和电话号码： {{supportedNetworkNames}}",
       "swap": "无需离开钱包即可交换代币",
       "add": "使用我们值得信赖的供应商之一购买代币",
@@ -2876,10 +2902,16 @@
   },
   "duration_lessThanADay": "少于 1 天",
   "duration_day_one": "1 天",
+  "duration_day_few": "{{count}} 天",
+  "duration_day_many": "{{count}} 天",
   "duration_day_other": "{{count}} 天",
   "duration_month_one": "1 个月",
+  "duration_month_few": "{{count}} 个月",
+  "duration_month_many": "{{count}} 个月",
   "duration_month_other": "{{count}} 个月",
   "duration_year_one": "1 年",
+  "duration_year_few": "{{count}} 年",
+  "duration_year_many": "{{count}} 年",
   "duration_year_other": "{{count}} 年",
   "duration_yearMonth_one": "1 年 1 个月",
   "duration_yearMonth_other": "{{count}} 年，{{count2}} 个月",

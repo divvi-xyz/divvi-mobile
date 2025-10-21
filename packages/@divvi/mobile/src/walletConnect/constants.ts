@@ -11,6 +11,7 @@ export enum SupportedActions {
   personal_sign = 'personal_sign',
   wallet_getCapabilities = 'wallet_getCapabilities',
   wallet_sendCalls = 'wallet_sendCalls',
+  wallet_getCallsStatus = 'wallet_getCallsStatus',
 }
 
 type InteractiveActions =
@@ -81,9 +82,9 @@ export function getDisplayTextFromAction(
     },
     [SupportedActions.wallet_sendCalls]: {
       description: networkName
-        ? t('walletConnectRequest.sendCalls', { dappName, networkName, transactionsCount })
-        : t('walletConnectRequest.sendCallsUnknownNetwork', { dappName, transactionsCount }),
-      title: t('walletConnectRequest.sendCallsTitle'),
+        ? t('walletConnectRequest.sendCalls', { dappName, networkName, count: transactionsCount })
+        : t('walletConnectRequest.sendCallsUnknownNetwork', { dappName, count: transactionsCount }),
+      title: t('walletConnectRequest.sendCallsTitle', { count: transactionsCount }),
       action: t('allow'),
     },
   }
@@ -133,6 +134,14 @@ export const rpcError = {
   UNSUPPORTED_NON_OPTIONAL_CAPABILITY: {
     code: 5700,
     message: 'Unsupported non-optional capability',
+  },
+  DUPLICATE_ID: {
+    code: 5720,
+    message: 'Duplicate ID',
+  },
+  UNKNOWN_BUNDLE_ID: {
+    code: 5730,
+    message: 'Unknown bundle id',
   },
   ATOMICITY_NOT_SUPPORTED: {
     code: 5760,
