@@ -950,6 +950,90 @@ describe('showActionRequest', () => {
       .run()
   })
 
+  it('denies wallet_getCallsStatus when id param is missing', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCallsStatus',
+          params: [],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .put(denyRequest(req, rpcError.INVALID_PARAMS))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('denies wallet_getCallsStatus when batch id is unknown', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCallsStatus',
+          params: ['0xabc'],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .put(denyRequest(req, rpcError.UNKNOWN_BUNDLE_ID))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('accepts wallet_getCallsStatus when batch id exists and is valid', async () => {
+    const batchId = '0x123'
+    const mockBatch = {
+      transactionHashes: ['0x1' as const, '0x2' as const],
+      atomic: false,
+      expiresAt: Date.now() + 5000,
+    }
+
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCallsStatus',
+          params: [batchId],
+        },
+      },
+    }
+
+    const state = createMockStore({
+      sendCalls: {
+        batchById: {
+          [batchId]: mockBatch,
+        },
+      },
+    }).getState()
+
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .put(
+        acceptRequest({
+          method: SupportedActions.wallet_getCallsStatus,
+          request: req,
+          id: batchId,
+          batch: mockBatch,
+        })
+      )
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
   it('throws an error when client is missing', () => {
     _setClientForTesting(null)
 

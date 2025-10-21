@@ -1,6 +1,7 @@
 import { expectSaga } from 'redux-saga-test-plan'
+import * as matchers from 'redux-saga-test-plan/matchers'
 import { BATCH_STATUS_TTL } from 'src/sendCalls/constants'
-import { addBatch } from 'src/sendCalls/slice'
+import { SendCallsBatch, addBatch } from 'src/sendCalls/slice'
 import { getFeatureGate } from 'src/statsig'
 import { StatsigFeatureGates } from 'src/statsig/types'
 import { NetworkId } from 'src/transactions/types'
@@ -9,8 +10,9 @@ import {
   SerializableTransactionRequest,
   getPreparedTransaction,
 } from 'src/viem/preparedTransactionSerialization'
+import { getWalletCapabilitiesByWalletConnectChainId } from 'src/walletConnect/capabilities'
 import { SupportedActions } from 'src/walletConnect/constants'
-import { handleRequest } from 'src/walletConnect/request'
+import { fetchTransactionReceipts, handleRequest } from 'src/walletConnect/request'
 import { ActionableRequest, PreparedTransactionResult } from 'src/walletConnect/types'
 import { getViemWallet } from 'src/web3/contracts'
 import { unlockAccount } from 'src/web3/saga'
@@ -24,6 +26,8 @@ import {
   mockCusdTokenId,
   mockTypedData,
 } from 'test/values'
+import type { TransactionReceipt } from 'viem'
+import { Hex, TransactionReceiptNotFoundError } from 'viem'
 import { celoAlfajores, sepolia as ethereumSepolia } from 'viem/chains'
 
 jest.mock('src/web3/networkConfig', () => {
@@ -56,6 +60,8 @@ const createMockActionableRequest = ({
   params,
   chainId,
   preparedRequest,
+  id,
+  batch,
 }: {
   method: SupportedActions
   params: any[]
@@ -63,6 +69,8 @@ const createMockActionableRequest = ({
   preparedRequest?:
     | PreparedTransactionResult<SerializableTransactionRequest>
     | PreparedTransactionResult<SerializableTransactionRequest[]>
+  id?: string
+  batch?: SendCallsBatch
 }) =>
   ({
     method,
@@ -78,6 +86,8 @@ const createMockActionableRequest = ({
       },
     },
     preparedRequest,
+    ...(id && { id }),
+    ...(batch && { batch }),
   }) as ActionableRequest
 
 const txParams = {
@@ -455,6 +465,220 @@ describe(handleRequest, () => {
         .run()
 
       expect(viemWallet.sendTransaction).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  describe('wallet_getCallsStatus', () => {
+    const receiptSuccess: TransactionReceipt = {
+      blockHash: '0xblock',
+      blockNumber: BigInt(1),
+      contractAddress: null,
+      cumulativeGasUsed: BigInt(1),
+      effectiveGasPrice: BigInt(1),
+      from: '0x0000000000000000000000000000000000000001',
+      gasUsed: BigInt(1),
+      logs: [],
+      logsBloom: '0x0' as Hex,
+      status: 'success',
+      to: '0x0000000000000000000000000000000000000002',
+      transactionHash: '0xhash',
+      transactionIndex: 0,
+      type: '2',
+    }
+
+    const receiptReverted: TransactionReceipt = {
+      ...receiptSuccess,
+      transactionHash: '0xreverted',
+      status: 'reverted',
+    }
+
+    const chainId = 'eip155:11155111'
+    const batchId = '0xabc'
+
+    const baseResult = {
+      version: '2.0.0',
+      id: batchId,
+      chainId: '0xaa36a7',
+      atomic: false,
+      capabilities: {
+        atomic: { status: 'unsupported' },
+        paymasterService: { supported: false },
+      },
+    }
+
+    const mockCapabilities = {
+      [chainId]: {
+        atomic: { status: 'unsupported' },
+        paymasterService: { supported: false },
+      },
+    }
+
+    const mockState = createMockStore({}).getState()
+
+    it('returns pending status when any receipt is missing', async () => {
+      const mockReceipts = [
+        { status: 'fulfilled', value: receiptSuccess },
+        {
+          status: 'rejected',
+          reason: new TransactionReceiptNotFoundError({ hash: '0xhash2' }),
+        },
+      ]
+
+      const getCallsStatusRequestPending = createMockActionableRequest({
+        method: SupportedActions.wallet_getCallsStatus,
+        params: [batchId],
+        chainId: chainId,
+        id: batchId,
+        batch: {
+          transactionHashes: ['0xhash', '0xhash2'],
+          atomic: false,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        },
+      })
+
+      await expectSaga(handleRequest, getCallsStatusRequestPending)
+        .withState(mockState)
+        .provide([
+          [matchers.call.fn(fetchTransactionReceipts), mockReceipts],
+          [matchers.call.fn(getWalletCapabilitiesByWalletConnectChainId), mockCapabilities],
+        ])
+        .returns({
+          ...baseResult,
+          status: 100,
+          receipts: [receiptSuccess],
+        })
+        .run()
+    })
+
+    it('returns success status when all receipts succeeded', async () => {
+      const receiptSuccess2 = { ...receiptSuccess, transactionHash: '0xhash2' }
+
+      const mockReceipts = [
+        { status: 'fulfilled', value: receiptSuccess },
+        { status: 'fulfilled', value: receiptSuccess2 },
+      ]
+
+      const getCallsStatusRequestSuccess = createMockActionableRequest({
+        method: SupportedActions.wallet_getCallsStatus,
+        params: [batchId],
+        chainId: chainId,
+        id: batchId,
+        batch: {
+          transactionHashes: ['0xhash', '0xhash2'],
+          atomic: true,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        },
+      })
+
+      await expectSaga(handleRequest, getCallsStatusRequestSuccess)
+        .withState(mockState)
+        .provide([
+          [matchers.call.fn(fetchTransactionReceipts), mockReceipts],
+          [matchers.call.fn(getWalletCapabilitiesByWalletConnectChainId), mockCapabilities],
+        ])
+        .returns({
+          ...baseResult,
+          atomic: true,
+          status: 200,
+          receipts: [receiptSuccess, receiptSuccess2],
+        })
+        .run()
+    })
+
+    it('returns partial failure when receipts include both success and reverted', async () => {
+      const mockReceipts = [
+        { status: 'fulfilled', value: receiptSuccess },
+        { status: 'fulfilled', value: receiptReverted },
+      ]
+
+      const getCallsStatusRequestPartial = createMockActionableRequest({
+        method: SupportedActions.wallet_getCallsStatus,
+        params: [batchId],
+        chainId: chainId,
+        id: batchId,
+        batch: {
+          transactionHashes: ['0xhash', '0xreverted'],
+          atomic: false,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        },
+      })
+
+      await expectSaga(handleRequest, getCallsStatusRequestPartial)
+        .withState(mockState)
+        .provide([
+          [matchers.call.fn(fetchTransactionReceipts), mockReceipts],
+          [matchers.call.fn(getWalletCapabilitiesByWalletConnectChainId), mockCapabilities],
+        ])
+        .returns({
+          ...baseResult,
+          status: 600,
+          receipts: [receiptSuccess, receiptReverted],
+        })
+        .run()
+    })
+
+    it('returns complete failure when all receipts are reverted', async () => {
+      const receiptReverted2 = { ...receiptReverted, transactionHash: '0xreverted2' }
+
+      const mockReceipts = [
+        { status: 'fulfilled', value: receiptReverted },
+        { status: 'fulfilled', value: receiptReverted2 },
+      ]
+
+      const getCallsStatusRequestCompleteFailure = createMockActionableRequest({
+        method: SupportedActions.wallet_getCallsStatus,
+        params: [batchId],
+        chainId: chainId,
+        id: batchId,
+        batch: {
+          transactionHashes: ['0xreverted', '0xreverted2'],
+          atomic: false,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        },
+      })
+
+      await expectSaga(handleRequest, getCallsStatusRequestCompleteFailure)
+        .withState(mockState)
+        .provide([
+          [matchers.call.fn(fetchTransactionReceipts), mockReceipts],
+          [matchers.call.fn(getWalletCapabilitiesByWalletConnectChainId), mockCapabilities],
+        ])
+        .returns({
+          ...baseResult,
+          status: 500,
+          receipts: [receiptReverted, receiptReverted2],
+        })
+        .run()
+    })
+
+    it('throws when receipt fetch rejects with unexpected error', async () => {
+      const mockError = new Error('something went wrong')
+      const mockReceipts = [
+        { status: 'fulfilled', value: receiptSuccess },
+        { status: 'rejected', reason: mockError },
+      ]
+
+      const getCallsStatusRequestError = createMockActionableRequest({
+        method: SupportedActions.wallet_getCallsStatus,
+        params: [batchId],
+        chainId: chainId,
+        id: batchId,
+        batch: {
+          transactionHashes: ['0xhash', '0xhash2'],
+          atomic: false,
+          expiresAt: Date.now() + BATCH_STATUS_TTL,
+        },
+      })
+
+      await expect(
+        expectSaga(handleRequest, getCallsStatusRequestError)
+          .withState(mockState)
+          .provide([
+            [matchers.call.fn(fetchTransactionReceipts), mockReceipts],
+            [matchers.call.fn(getWalletCapabilitiesByWalletConnectChainId), mockCapabilities],
+          ])
+          .run()
+      ).rejects.toThrow(mockError)
     })
   })
 })
