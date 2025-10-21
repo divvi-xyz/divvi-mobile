@@ -19,6 +19,7 @@ import i18n from 'src/i18n'
 import { isBottomSheetVisible, navigate, navigateBack } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import { selectBatch } from 'src/sendCalls/selectors'
+import { pruneExpiredBatches as pruneExpiredSendCallsBatches } from 'src/sendCalls/slice'
 import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
 import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
@@ -702,6 +703,23 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     }
   }
 
+  if (method === SupportedActions.wallet_getCallsStatus) {
+    const [id] = request.params.request.params
+    if (!id) {
+      yield* put(denyRequest(request, rpcError.INVALID_PARAMS))
+      return
+    }
+
+    const batch = yield* select(selectBatch, id, Date.now())
+    if (!batch) {
+      yield* put(denyRequest(request, rpcError.UNKNOWN_BUNDLE_ID))
+      return
+    }
+
+    yield* put(acceptRequest({ method, request, id, batch }))
+    return
+  }
+
   // If the action doesn't require user consent, accept it immediately
   if (isNonInteractiveMethod(method)) {
     yield* put(acceptRequest({ method, request }))
@@ -945,6 +963,8 @@ function* handleAcceptRequest({ actionableRequest }: AcceptRequest) {
 
     AppAnalytics.track(WalletConnectEvents.wc_request_accept_success, defaultTrackedProperties)
     yield* call(showWalletConnectionSuccessMessage, activeSession.peer.metadata.name)
+
+    yield* put(pruneExpiredSendCallsBatches({ now: Date.now() }))
   } catch (err) {
     const e = ensureError(err)
     Logger.debug(TAG + '@acceptRequest', e.message)
