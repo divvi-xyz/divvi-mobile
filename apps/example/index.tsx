@@ -1,9 +1,14 @@
-import { createApp } from '@divvi/mobile'
-import { registerRootComponent } from 'expo'
-import Constants from 'expo-constants'
-import React from 'react'
-import CustomScreen from './screens/CustomScreen'
-import PlaygroundScreen from './screens/PlaygroundScreen'
+// Import required polyfills first
+import '@ethersproject/shims';
+import 'fast-text-encoding';
+import 'react-native-get-random-values';
+
+import { createApp } from '@divvi/mobile';
+import { registerRootComponent } from 'expo';
+import Constants from 'expo-constants';
+import React from 'react';
+import CustomScreen from './screens/CustomScreen';
+import PlaygroundScreen from './screens/PlaygroundScreen';
 
 const expoConfig = Constants.expoConfig
 if (!expoConfig) {

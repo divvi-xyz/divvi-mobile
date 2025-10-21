@@ -1,6 +1,10 @@
+import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { PrivyProvider } from '@privy-io/expo'
+import { PrivyElements } from '@privy-io/expo/ui'
 import * as Sentry from '@sentry/react-native'
 import BigNumber from 'bignumber.js'
+import { useFonts } from 'expo-font'
 import 'intl-pluralrules'
 import * as React from 'react'
 import { LogBox, Platform, StatusBar } from 'react-native'
@@ -90,7 +94,8 @@ export class App extends React.Component<Props> {
 
   render() {
     return (
-      <SafeAreaProvider>
+      <SafeAreaProvider>  
+        <PrivyProvider appId={''} clientId=''>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
             <Auth0Provider domain={AUTH0_DOMAIN} clientId={AUTH0_CLIENT_ID}>
@@ -109,6 +114,8 @@ export class App extends React.Component<Props> {
                   <GestureHandlerRootView style={{ flex: 1 }}>
                     <BottomSheetModalProvider>
                       <NavigatorWrapper />
+                      <PrivyElements /> 
+
                     </BottomSheetModalProvider>
                   </GestureHandlerRootView>
                 </ErrorBoundary>
@@ -116,9 +123,19 @@ export class App extends React.Component<Props> {
             </Auth0Provider>
           </PersistGate>
         </Provider>
+        </PrivyProvider>
       </SafeAreaProvider>
     )
   }
 }
 
-export default Sentry.wrap(App)
+function AppWithFonts(props: Props) {
+  useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+  })
+  return <App {...props} />
+}
+
+export default Sentry.wrap(AppWithFonts)

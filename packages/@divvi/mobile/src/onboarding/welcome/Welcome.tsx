@@ -17,6 +17,7 @@ import { navigate, navigateInitialTab } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import LanguageButton from 'src/onboarding/LanguageButton'
 import { firstOnboardingScreen } from 'src/onboarding/steps'
+import PrivyLoginButton from 'src/onboarding/welcome/PrivyLoginButton'
 import { useDispatch, useSelector } from 'src/redux/hooks'
 import { getDynamicConfigParams, patchUpdateStatsigUser } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
@@ -108,9 +109,10 @@ export default function Welcome() {
           </TouchableWithoutFeedback>
         </View>
         <View style={{ ...styles.buttonView, marginBottom: Math.max(0, 40 - insets.bottom) }}>
+          <PrivyLoginButton />  
           <Button
             onPress={onPressCreateAccount}
-            text={t('welcome.createNewWallet')}
+            text={'hello'}
             size={BtnSizes.FULL}
             type={BtnTypes.PRIMARY}
             style={styles.createAccountButton}
