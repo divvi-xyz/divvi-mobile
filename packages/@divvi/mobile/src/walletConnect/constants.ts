@@ -135,6 +135,10 @@ export const rpcError = {
     code: 5700,
     message: 'Unsupported non-optional capability',
   },
+  DUPLICATE_ID: {
+    code: 5720,
+    message: 'Duplicate ID',
+  },
   UNKNOWN_BUNDLE_ID: {
     code: 5730,
     message: 'Unknown bundle id',

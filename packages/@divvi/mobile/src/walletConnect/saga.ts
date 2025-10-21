@@ -648,6 +648,16 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   if (method === SupportedActions.wallet_sendCalls) {
     const walletAddress = yield* call(getWalletAddress)
 
+    // check for duplicate id
+    const id = request.params.request.params[0].id
+    if (id) {
+      const batch = yield* select(selectBatch, id, Date.now())
+      if (batch) {
+        yield* put(denyRequest(request, rpcError.DUPLICATE_ID))
+        return
+      }
+    }
+
     // check support for atomic execution
     const atomic = yield* call(
       getAtomicCapabilityByWalletConnectChainId,
