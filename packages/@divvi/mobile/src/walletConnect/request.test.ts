@@ -403,7 +403,14 @@ describe(handleRequest, () => {
 
       const expectedResult = {
         id: '0xabc',
-        capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+        capabilities: {
+          atomic: { status: 'unsupported' },
+          paymasterService: { supported: false },
+          caip345: {
+            caip2: 'eip155:11155111',
+            transactionHashes: ['0xaaa', '0xbbb'],
+          },
+        },
       }
 
       await expectSaga(handleRequest, sendCallsRequest)
@@ -447,7 +454,14 @@ describe(handleRequest, () => {
 
       const expectedResult = {
         id: '0xabc',
-        capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+        capabilities: {
+          atomic: { status: 'unsupported' },
+          paymasterService: { supported: false },
+          caip345: {
+            caip2: 'eip155:11155111',
+            transactionHashes: ['0x1234'],
+          },
+        },
       }
 
       await expectSaga(handleRequest, sendCallsRequest)
@@ -679,98 +693,6 @@ describe(handleRequest, () => {
           ])
           .run()
       ).rejects.toThrow(mockError)
-    })
-  })
-
-  describe('wallet_sendCalls', () => {
-    const preparedRequest = {
-      success: true as const,
-      data: [serializableSendTransactionRequest, serializableSendTransactionRequest],
-    }
-
-    const sendCallsRequest = createMockActionableRequest({
-      method: SupportedActions.wallet_sendCalls,
-      params: [
-        {
-          id: '0xabc',
-          calls: [
-            { to: '0xTEST', data: '0x' },
-            { to: '0xTEST', data: '0x' },
-          ],
-        },
-      ],
-      chainId: 'eip155:11155111',
-      preparedRequest,
-    })
-
-    it('supports sequential execution and returns capabilities for supported network', async () => {
-      viemWallet.sendTransaction = jest
-        .fn()
-        .mockResolvedValueOnce('0x1234')
-        .mockResolvedValueOnce('0x5678')
-
-      const expectedResult = {
-        id: '0xabc',
-        capabilities: {
-          atomic: { status: 'unsupported' },
-          paymasterService: { supported: false },
-          caip345: {
-            caip2: 'eip155:11155111',
-            transactionHashes: ['0x1234', '0x5678'],
-          },
-        },
-      }
-
-      await expectSaga(handleRequest, sendCallsRequest)
-        .withState(state)
-        .call(unlockAccount, '0xwallet')
-        .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
-        .call([viemWallet, 'sendTransaction'], serializableSendTransactionRequest)
-        .returns(expectedResult)
-        .run()
-    })
-
-    it('aborts sequential execution if one transaction fails', async () => {
-      viemWallet.sendTransaction = jest
-        .fn()
-        .mockResolvedValueOnce('0x1234')
-        .mockRejectedValueOnce(new Error('error'))
-
-      const sendCallsRequest = createMockActionableRequest({
-        method: SupportedActions.wallet_sendCalls,
-        params: [
-          {
-            id: '0xabc',
-            calls: [
-              { to: '0xTEST', data: '0x' },
-              { to: '0xTEST', data: '0x' },
-              { to: '0xTEST', data: '0x' },
-            ],
-          },
-        ],
-        chainId: 'eip155:11155111',
-        preparedRequest,
-      })
-
-      const expectedResult = {
-        id: '0xabc',
-        capabilities: {
-          atomic: { status: 'unsupported' },
-          paymasterService: { supported: false },
-          caip345: {
-            caip2: 'eip155:11155111',
-            transactionHashes: ['0x1234'],
-          },
-        },
-      }
-
-      await expectSaga(handleRequest, sendCallsRequest)
-        .withState(state)
-        .call(unlockAccount, '0xwallet')
-        .returns(expectedResult)
-        .run()
-
-      expect(viemWallet.sendTransaction).toHaveBeenCalledTimes(2)
     })
   })
 })

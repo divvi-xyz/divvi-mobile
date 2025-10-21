@@ -156,7 +156,13 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
 
       return {
         id,
-        capabilities: supportedCapabilities[chainId],
+        capabilities: {
+          ...supportedCapabilities[chainId],
+          caip345: {
+            caip2: chainId,
+            transactionHashes,
+          },
+        },
       }
     }
     case SupportedActions.wallet_getCallsStatus: {
@@ -198,43 +204,6 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
         atomic,
         receipts: receipts.filter(Boolean) as TransactionReceipt[],
         capabilities: supportedCapabilities[chainId],
-      }
-    }
-    case SupportedActions.wallet_sendCalls: {
-      const id = params[0].id ?? bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
-      const supportedCapabilities = yield* call(getWalletCapabilitiesByWalletConnectChainId)
-
-      // TODO: handle atomic execution
-
-      // Fallback to sending transactions sequentially without any atomicity/contiguity guarantees
-      if (!actionableRequest.preparedRequest.success) {
-        throw new Error(actionableRequest.preparedRequest.errorMessage)
-      }
-
-      const transactionHashes: Hex[] = []
-      for (const tx of actionableRequest.preparedRequest.data) {
-        try {
-          const hash = yield* call(
-            [wallet, 'sendTransaction'],
-            // TODO: fix types
-            tx as any
-          )
-          transactionHashes.push(hash)
-        } catch (e) {
-          Logger.warn(TAG + '@handleRequest', 'Failed to send transaction, aborting batch', e)
-          break
-        }
-      }
-
-      return {
-        id,
-        capabilities: {
-          ...supportedCapabilities[chainId],
-          caip345: {
-            caip2: chainId,
-            transactionHashes,
-          },
-        },
       }
     }
     default:
