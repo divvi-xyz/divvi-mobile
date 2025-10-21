@@ -1,4 +1,4 @@
-import { BATCH_STATUS_TTL } from 'src/sendCalls/constants'
+import { BATCH_STATUS_TTL, BatchStatus } from 'src/sendCalls/constants'
 import { addBatch } from 'src/sendCalls/slice'
 import { SentrySpanHub } from 'src/sentry/SentrySpanHub'
 import { SentrySpan } from 'src/sentry/SentrySpans'
@@ -179,10 +179,10 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
       }
 
       const status = (() => {
-        if (receipts.some((r) => r === null)) return 100 // pending
-        if (receipts.every((r) => r?.status === 'success')) return 200 // success
-        if (receipts.every((r) => r?.status === 'reverted')) return 500 // complete failure
-        return 600 // partial failure
+        if (receipts.some((r) => r === null)) return BatchStatus.Pending
+        if (receipts.every((r) => r?.status === 'success')) return BatchStatus.Success
+        if (receipts.every((r) => r?.status === 'reverted')) return BatchStatus.Failure
+        return BatchStatus.PartialFailure
       })()
 
       const supportedCapabilities = yield* call(
