@@ -950,6 +950,90 @@ describe('showActionRequest', () => {
       .run()
   })
 
+  it('denies wallet_getCallsStatus when id param is missing', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCallsStatus',
+          params: [],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .put(denyRequest(req, rpcError.INVALID_PARAMS))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('denies wallet_getCallsStatus when batch id is unknown', async () => {
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCallsStatus',
+          params: ['0xabc'],
+        },
+      },
+    }
+
+    const state = createMockStore({}).getState()
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .put(denyRequest(req, rpcError.UNKNOWN_BUNDLE_ID))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('accepts wallet_getCallsStatus when batch id exists and is valid', async () => {
+    const batchId = '0x123'
+    const mockBatch = {
+      transactionHashes: ['0x1' as const, '0x2' as const],
+      atomic: false,
+      expiresAt: Date.now() + 5000,
+    }
+
+    const req: WalletKitTypes.EventArguments['session_request'] = {
+      ...actionRequest,
+      params: {
+        ...actionRequest.params,
+        request: {
+          method: 'wallet_getCallsStatus',
+          params: [batchId],
+        },
+      },
+    }
+
+    const state = createMockStore({
+      sendCalls: {
+        batchById: {
+          [batchId]: mockBatch,
+        },
+      },
+    }).getState()
+
+    await expectSaga(_showActionRequest, req)
+      .withState(state)
+      .put(
+        acceptRequest({
+          method: SupportedActions.wallet_getCallsStatus,
+          request: req,
+          id: batchId,
+          batch: mockBatch,
+        })
+      )
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
   it('throws an error when client is missing', () => {
     _setClientForTesting(null)
 
@@ -1635,6 +1719,50 @@ describe('wallet_sendCalls', () => {
       },
       atomic: false,
     })
+  })
+
+  it('denies request when ID is already known', async () => {
+    const duplicateId = '0xduplicate123'
+    const request = createSendCallsRequest({
+      params: {
+        request: {
+          method: 'wallet_sendCalls',
+          params: [
+            {
+              id: duplicateId,
+              calls: [{ to: '0xTEST', data: '0x' }],
+              capabilities: {},
+              atomicRequired: false,
+            },
+          ],
+        },
+        chainId: 'eip155:44787',
+      },
+    })
+
+    const state = createMockStore({
+      sendCalls: {
+        batchById: {
+          // an existing batch that has the same ID
+          [duplicateId]: {
+            transactionHashes: ['0xhash1' as const, '0xhash2' as const],
+            atomic: false,
+            expiresAt: Date.now() + 1000,
+          },
+        },
+      },
+    }).getState()
+
+    await expectSaga(_showActionRequest, request)
+      .withState(state)
+      .provide([
+        [select(walletAddressSelector), mockAccount],
+        [select(demoModeEnabledSelector), false],
+      ])
+      .put(denyRequest(request, rpcError.DUPLICATE_ID))
+      .run()
+
+    expect(navigate).not.toHaveBeenCalled()
   })
 })
 
