@@ -131,7 +131,7 @@ export function useResolvedRecipients(searchQuery: string): Recipient[] {
         return
       }
 
-      const ensResolutions = await processEnsResolutionToNameResolutions(
+      const ensResolutions = await processEnsResolution(
         debouncedSearchQuery,
         setResolutions
       )
@@ -237,7 +237,7 @@ function updateAvatarWhenLoaded(
 /**
  * Processes ENS resolution for a search query and returns NameResolution format
  */
-async function processEnsResolutionToNameResolutions(
+async function processEnsResolution(
   searchQuery: string,
   setResolutions: (updater: (prev: NameResolution[]) => NameResolution[]) => void
 ): Promise<NameResolution[]> {
