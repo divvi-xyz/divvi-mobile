@@ -300,10 +300,11 @@ export function mergeRecipients({
   resolvedRecipients: Recipient[]
   uniqueSearchRecipient?: Recipient
 }): Recipient[] {
-  const allRecipients: Recipient[] = []
-  allRecipients.push(...resolvedRecipients)
-  allRecipients.push(...recentRecipients)
-  allRecipients.push(...contactRecipients)
+  const allRecipients: Recipient[] = [
+    ...resolvedRecipients,
+    ...recentRecipients,
+    ...contactRecipients,
+  ]
 
   const mergedRecipients: Recipient[] = []
   for (const potentialRecipient of allRecipients) {
