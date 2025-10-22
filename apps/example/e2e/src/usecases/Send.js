@@ -137,7 +137,6 @@ export default Send = () => {
     })
   })
 
-  
   describe('When multi-token send flow to recent recipient', () => {
     beforeAll(async () => {
       await launchApp()
