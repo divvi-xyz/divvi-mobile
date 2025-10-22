@@ -131,10 +131,7 @@ export function useResolvedRecipients(searchQuery: string): Recipient[] {
         return
       }
 
-      const ensResolutions = await processEnsResolution(
-        debouncedSearchQuery,
-        setResolutions
-      )
+      const ensResolutions = await processEnsResolution(debouncedSearchQuery, setResolutions)
       setResolutions(ensResolutions)
     }
 
@@ -165,9 +162,7 @@ export function useSendRecipients() {
   }
 }
 
-async function resolveEnsAddress(
-  ensName: string
-): Promise<Address | null> {
+async function resolveEnsAddress(ensName: string): Promise<Address | null> {
   try {
     const publicClient = getPublicClient({ networkId: 'ethereum-mainnet' })
     const normalizedName = normalize(ensName)
