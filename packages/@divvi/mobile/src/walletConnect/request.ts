@@ -160,7 +160,13 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
 
       return {
         id,
-        capabilities: supportedCapabilities[chainId],
+        capabilities: {
+          ...supportedCapabilities[chainId],
+          caip345: {
+            caip2: chainId,
+            transactionHashes,
+          },
+        },
       }
     }
     case SupportedActions.wallet_getCallsStatus: {

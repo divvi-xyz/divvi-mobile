@@ -403,7 +403,14 @@ describe(handleRequest, () => {
 
       const expectedResult = {
         id: '0xabc',
-        capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+        capabilities: {
+          atomic: { status: 'unsupported' },
+          paymasterService: { supported: false },
+          caip345: {
+            caip2: 'eip155:11155111',
+            transactionHashes: ['0xaaa', '0xbbb'],
+          },
+        },
       }
 
       await expectSaga(handleRequest, sendCallsRequest)
@@ -447,7 +454,14 @@ describe(handleRequest, () => {
 
       const expectedResult = {
         id: '0xabc',
-        capabilities: { atomic: { status: 'unsupported' }, paymasterService: { supported: false } },
+        capabilities: {
+          atomic: { status: 'unsupported' },
+          paymasterService: { supported: false },
+          caip345: {
+            caip2: 'eip155:11155111',
+            transactionHashes: ['0x1234'],
+          },
+        },
       }
 
       await expectSaga(handleRequest, sendCallsRequest)
