@@ -328,33 +328,33 @@ describe('useMapResolutionsToRecipients', () => {
       recipientType: RecipientType.Address,
     })
   })
-  it('returns recipient for nom-based resolution', () => {
+  it('returns recipient for ENS-based resolution', () => {
     const mockResolutions = [
       {
-        kind: ResolutionKind.Nom,
+        kind: ResolutionKind.Ens,
         address: mockAccount,
-        name: 'Nom Handle',
+        name: 'Ens Handle',
       },
     ]
     const result = renderHook('some query', mockResolutions)
     expect(result.mock.calls[0][0][0]).toEqual({
       address: mockAccount.toLowerCase(),
-      name: 'nomSpaceRecipient, {"name":"Nom Handle"}',
-      recipientType: RecipientType.Nomspace,
+      name: 'ensRecipient, {"name":"Ens Handle"}',
+      recipientType: RecipientType.Ens,
     })
   })
-  it('returns recipient for nom-based resolution with missing name', () => {
+  it('returns recipient for ENS-based resolution with missing name', () => {
     const mockResolutions = [
       {
-        kind: ResolutionKind.Nom,
+        kind: ResolutionKind.Ens,
         address: mockAccount,
       },
     ]
     const result = renderHook('some query', mockResolutions)
     expect(result.mock.calls[0][0][0]).toEqual({
       address: mockAccount.toLowerCase(),
-      name: 'nomSpaceRecipient, {"name":"some query"}',
-      recipientType: RecipientType.Nomspace,
+      name: 'ensRecipient, {"name":"some query"}',
+      recipientType: RecipientType.Ens,
     })
   })
 })
