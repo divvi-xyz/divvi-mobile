@@ -131,11 +131,18 @@ export function useResolvedRecipients(searchQuery: string): Recipient[] {
         return
       }
 
-      const ensResolutions = await processEnsResolutionToNameResolutions(debouncedSearchQuery)
+      const ensResolutions = await processEnsResolutionToNameResolutions(
+        debouncedSearchQuery,
+        setResolutions
+      )
       setResolutions(ensResolutions)
     }
 
     void processSearchQuery()
+
+    return () => {
+      debounceSearchQuery.cancel()
+    }
   }, [debouncedSearchQuery, defaultCountryCode])
 
   return useMapResolutionsToRecipients(debouncedSearchQuery, resolutions)
@@ -158,24 +165,13 @@ export function useSendRecipients() {
   }
 }
 
-async function resolveEnsInfo(
+async function resolveEnsAddress(
   ensName: string
-): Promise<{ address: Address; avatar: string | null } | null> {
+): Promise<Address | null> {
   try {
     const publicClient = getPublicClient({ networkId: 'ethereum-mainnet' })
     const normalizedName = normalize(ensName)
-
-    const [address, avatar] = await Promise.all([
-      publicClient.getEnsAddress({ name: normalizedName }),
-      publicClient.getEnsAvatar({ name: normalizedName }),
-    ])
-
-    // Only return if we got a valid address
-    if (!address) {
-      return null
-    }
-
-    return { address, avatar }
+    return await publicClient.getEnsAddress({ name: normalizedName })
   } catch (error) {
     Logger.error(TAG, 'ENS resolution failed', error)
     return null
@@ -184,22 +180,66 @@ async function resolveEnsInfo(
 
 function checkIsValidEnsName(name: string): boolean {
   try {
-    // Min ENS name length is 3 characters
     if (name.length < 3) return false
     // Will throw if the name is not a valid ENS name
     normalize(name.trim())
     return true
-  } catch {
+  } catch (error) {
     Logger.error('checkIsValidEnsName', 'Invalid ENS name', name)
     return false
   }
 }
 
 /**
+ * Fetches avatar for an ENS name asynchronously
+ */
+async function fetchEnsAvatar(ensName: string): Promise<string | null> {
+  try {
+    const publicClient = getPublicClient({ networkId: 'ethereum-mainnet' })
+    const normalizedName = normalize(ensName)
+
+    const avatarPromise = publicClient.getEnsAvatar({ name: normalizedName })
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Avatar timeout')), 3_000)
+    )
+
+    const avatar = await Promise.race([avatarPromise, timeoutPromise])
+    return avatar
+  } catch (error) {
+    return null
+  }
+}
+
+/**
+ * Updates avatar for an ENS name when it loads asynchronously
+ */
+function updateAvatarWhenLoaded(
+  ensQuery: string,
+  setResolutions: (updater: (prev: NameResolution[]) => NameResolution[]) => void
+) {
+  fetchEnsAvatar(ensQuery)
+    .then((avatar) => {
+      if (avatar) {
+        setResolutions((prev) =>
+          prev.map((resolution) =>
+            resolution.kind === ResolutionKind.Ens && resolution.name === ensQuery
+              ? { ...resolution, thumbnailPath: avatar }
+              : resolution
+          )
+        )
+      }
+    })
+    .catch((error) => {
+      Logger.debug(TAG, 'Avatar fetch failed for', ensQuery, ':', error)
+    })
+}
+
+/**
  * Processes ENS resolution for a search query and returns NameResolution format
  */
 async function processEnsResolutionToNameResolutions(
-  searchQuery: string
+  searchQuery: string,
+  setResolutions: (updater: (prev: NameResolution[]) => NameResolution[]) => void
 ): Promise<NameResolution[]> {
   const config = getAppConfig()
   if (!config.experimental?.alchemyKeys?.ALCHEMY_ETHEREUM_API_KEY) {
@@ -215,14 +255,17 @@ async function processEnsResolutionToNameResolutions(
   }
 
   try {
-    const ensInfo = await resolveEnsInfo(ensQuery)
-    if (ensInfo?.address) {
+    const ensAddress = await resolveEnsAddress(ensQuery)
+
+    if (ensAddress) {
+      // Fetch avatar asynchronously and update when it loads
+      updateAvatarWhenLoaded(ensQuery, setResolutions)
+
       return [
         {
           kind: ResolutionKind.Ens,
-          address: ensInfo.address,
+          address: ensAddress,
           name: ensQuery,
-          thumbnailPath: ensInfo.avatar ?? undefined,
         },
       ]
     }
@@ -326,7 +369,7 @@ export function useMapResolutionsToRecipients(
           address: lowerCaseAddress,
           name: t('ensRecipient', { name: resolution.name ?? searchQuery }),
           recipientType: RecipientType.Ens,
-          thumbnailPath: resolution.thumbnailPath ?? undefined,
+          thumbnailPath: resolution.thumbnailPath,
         }
       default:
         return getRecipientFromAddress(lowerCaseAddress, recipientInfo)
