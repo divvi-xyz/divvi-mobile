@@ -80,7 +80,6 @@ import {
 } from 'src/walletConnect/selectors'
 import {
   isMessageMethod,
-  isNonInteractiveMethod,
   isSendCallsMethod,
   isTransactionMethod,
   PreparedTransactionResult,
@@ -720,8 +719,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
-  // If the action doesn't require user consent, accept it immediately
-  if (isNonInteractiveMethod(method)) {
+  if (method === SupportedActions.wallet_getCapabilities) {
     yield* put(acceptRequest({ method, request }))
     return
   }
