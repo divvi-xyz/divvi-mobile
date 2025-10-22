@@ -286,7 +286,7 @@ async function processEnsResolution(
  *  - Contact recipients
  *  - Unique recipient, if present and no other recipients exist
  *
- * If there are any duplicated recipients (by phone number or address), they are dedpulicated,
+ * If there are any duplicated recipients (by phone number or address), they are deduplicated,
  * picking the recipient to show based on the precedence listed above.
  */
 export function mergeRecipients({
