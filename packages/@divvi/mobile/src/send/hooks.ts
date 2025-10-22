@@ -1,9 +1,10 @@
 import { debounce, throttle } from 'lodash'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useAsync } from 'react-async-hook'
 import { useTranslation } from 'react-i18next'
 import { defaultCountryCodeSelector } from 'src/account/selectors'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
+import { getAppConfig } from 'src/appConfig'
+import { getPublicClient } from 'src/public'
 import {
   Recipient,
   RecipientType,
@@ -12,15 +13,17 @@ import {
   sortRecipients,
 } from 'src/recipients/recipient'
 import { phoneRecipientCacheSelector, recipientInfoSelector } from 'src/recipients/reducer'
-import { resolveId } from 'src/recipients/resolve-id'
 import { useSelector } from 'src/redux/hooks'
 import { isValidAddress } from 'src/utils/address'
+import Logger from 'src/utils/Logger'
 import { parsePhoneNumber } from 'src/utils/phoneNumbers'
+import { Address } from 'viem'
+import { normalize } from 'viem/ens'
 
 // Ref: https://github.com/valora-inc/resolve-kit/blob/f84005ea0b522fb6ae40e10ab53d07cf8ef823ef/src/types.ts#L3
 export enum ResolutionKind {
   Address = 'address',
-  Nom = 'nom',
+  Ens = 'ens',
 }
 
 // Ref: https://github.com/valora-inc/resolve-kit/blob/f84005ea0b522fb6ae40e10ab53d07cf8ef823ef/src/types.ts#L8
@@ -33,6 +36,8 @@ export interface NameResolution {
 
 const TYPING_DEBOUNCE_MILLSECONDS = 300
 const SEARCH_THROTTLE_TIME = 100
+
+const TAG = 'send/hooks'
 
 /**
  * Returns a single ordered list of all recipients to show in search results,
@@ -97,12 +102,13 @@ export function useMergedSearchRecipients(onSearch: (searchQuery: string) => voi
 }
 
 /**
- * Fetches recipients based off the search query by fetching from the resolveId
- * endpoint. The search query is debounced before making a network request in order
- * to prevent excessive network calls.
+ * Fetches recipients based off the search query which is debounced to prevent excessive network calls
  */
 export function useResolvedRecipients(searchQuery: string): Recipient[] {
+  const [resolutions, setResolutions] = useState<NameResolution[]>([])
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery)
+  const defaultCountryCode = useSelector(defaultCountryCodeSelector)
+
   const debounceSearchQuery = useCallback(
     debounce((query: string) => {
       setDebouncedSearchQuery(query)
@@ -110,20 +116,29 @@ export function useResolvedRecipients(searchQuery: string): Recipient[] {
     []
   )
 
-  const defaultCountryCode = useSelector(defaultCountryCodeSelector)
+  useEffect(() => {
+    debounceSearchQuery(searchQuery)
+  }, [searchQuery, debounceSearchQuery])
 
   useEffect(() => {
-    const parsedPhoneNumber = parsePhoneNumber(searchQuery, defaultCountryCode ?? undefined)
+    const processSearchQuery = async () => {
+      const parsedPhoneNumber = parsePhoneNumber(
+        debouncedSearchQuery,
+        defaultCountryCode ?? undefined
+      )
+      if (parsedPhoneNumber) {
+        setResolutions([])
+        return
+      }
 
-    if (parsedPhoneNumber) {
-      debounceSearchQuery(parsedPhoneNumber.e164Number)
-    } else {
-      debounceSearchQuery(searchQuery)
+      const ensResolutions = await processEnsResolutionToNameResolutions(debouncedSearchQuery)
+      setResolutions(ensResolutions)
     }
-  }, [searchQuery, defaultCountryCode])
-  const { result: resolveAddressResult } = useAsync(resolveId, [debouncedSearchQuery])
-  const resolutions = resolveAddressResult?.resolutions ?? []
-  return useMapResolutionsToRecipients(searchQuery, resolutions as NameResolution[])
+
+    void processSearchQuery()
+  }, [debouncedSearchQuery, defaultCountryCode])
+
+  return useMapResolutionsToRecipients(debouncedSearchQuery, resolutions)
 }
 
 /**
@@ -140,6 +155,81 @@ export function useSendRecipients() {
   return {
     contactRecipients,
     recentRecipients,
+  }
+}
+
+async function resolveEnsInfo(
+  ensName: string
+): Promise<{ address: Address; avatar: string | null } | null> {
+  try {
+    const publicClient = getPublicClient({ networkId: 'ethereum-mainnet' })
+    const normalizedName = normalize(ensName)
+
+    const [address, avatar] = await Promise.all([
+      publicClient.getEnsAddress({ name: normalizedName }),
+      publicClient.getEnsAvatar({ name: normalizedName }),
+    ])
+
+    // Only return if we got a valid address
+    if (!address) {
+      return null
+    }
+
+    return { address, avatar }
+  } catch (error) {
+    Logger.error(TAG, 'ENS resolution failed', error)
+    return null
+  }
+}
+
+function checkIsValidEnsName(name: string): boolean {
+  try {
+    // Min ENS name length is 3 characters
+    if (name.length < 3) return false
+    // Will throw if the name is not a valid ENS name
+    normalize(name.trim())
+    return true
+  } catch {
+    Logger.error('checkIsValidEnsName', 'Invalid ENS name', name)
+    return false
+  }
+}
+
+/**
+ * Processes ENS resolution for a search query and returns NameResolution format
+ */
+async function processEnsResolutionToNameResolutions(
+  searchQuery: string
+): Promise<NameResolution[]> {
+  const config = getAppConfig()
+  if (!config.experimental?.alchemyKeys?.ALCHEMY_ETHEREUM_API_KEY) {
+    Logger.warn(TAG, 'ALCHEMY_ETHEREUM_API_KEY not found, skipping ENS resolution')
+    return []
+  }
+
+  // We want to check if the query is a valid ENS prior to the user typing the .eth suffix
+  const ensQuery = searchQuery.includes('.eth') ? searchQuery : `${searchQuery}.eth`
+
+  if (!checkIsValidEnsName(ensQuery)) {
+    return []
+  }
+
+  try {
+    const ensInfo = await resolveEnsInfo(ensQuery)
+    if (ensInfo?.address) {
+      return [
+        {
+          kind: ResolutionKind.Ens,
+          address: ensInfo.address,
+          name: ensQuery,
+          thumbnailPath: ensInfo.avatar ?? undefined,
+        },
+      ]
+    }
+    return []
+  } catch (error) {
+    Logger.error(TAG, 'ENS resolution failed', error)
+    return []
   }
 }
 
@@ -217,7 +307,7 @@ export function useUniqueSearchRecipient(searchQuery: string): Recipient | undef
 }
 
 /**
- * Maps resolution data from the resolveId endpoint to a list of recipients.
+ * Maps resolution data to a list of recipients.
  */
 export function useMapResolutionsToRecipients(
   searchQuery: string,
@@ -231,11 +321,12 @@ export function useMapResolutionsToRecipients(
     switch (resolution.kind) {
       case ResolutionKind.Address:
         return getRecipientFromAddress(lowerCaseAddress, recipientInfo)
-      case ResolutionKind.Nom:
+      case ResolutionKind.Ens:
         return {
           address: lowerCaseAddress,
-          name: t('nomSpaceRecipient', { name: resolution.name ?? searchQuery }),
-          recipientType: RecipientType.Nomspace,
+          name: t('ensRecipient', { name: resolution.name ?? searchQuery }),
+          recipientType: RecipientType.Ens,
+          thumbnailPath: resolution.thumbnailPath ?? undefined,
         }
       default:
         return getRecipientFromAddress(lowerCaseAddress, recipientInfo)

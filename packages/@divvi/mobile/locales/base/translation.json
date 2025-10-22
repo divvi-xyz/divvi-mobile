@@ -1554,6 +1554,7 @@
   "supercharge": "Supercharge",
   "others": "Others",
   "nomSpaceRecipient": "Nomspace: {{name}}",
+  "ensRecipient": "ENS: {{name}}",
   "lastDay": "Last 24 hrs",
   "noMoreTransactions": "There are no more transactions",
   "selectProviderScreen": {
