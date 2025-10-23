@@ -18,6 +18,8 @@ import { ActiveDapp } from 'src/dapps/types'
 import i18n from 'src/i18n'
 import { isBottomSheetVisible, navigate, navigateBack } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
+import { selectBatch } from 'src/sendCalls/selectors'
+import { pruneExpiredBatches as pruneExpiredSendCallsBatches } from 'src/sendCalls/slice'
 import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
 import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
@@ -78,7 +80,6 @@ import {
 } from 'src/walletConnect/selectors'
 import {
   isMessageMethod,
-  isNonInteractiveMethod,
   isSendCallsMethod,
   isTransactionMethod,
   PreparedTransactionResult,
@@ -646,6 +647,16 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   if (method === SupportedActions.wallet_sendCalls) {
     const walletAddress = yield* call(getWalletAddress)
 
+    // check for duplicate id
+    const id = request.params.request.params[0].id
+    if (id) {
+      const batch = yield* select(selectBatch, id, Date.now())
+      if (batch) {
+        yield* put(denyRequest(request, rpcError.DUPLICATE_ID))
+        return
+      }
+    }
+
     // check support for atomic execution
     const atomic = yield* call(
       getAtomicCapabilityByWalletConnectChainId,
@@ -691,8 +702,24 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     }
   }
 
-  // If the action doesn't require user consent, accept it immediately
-  if (isNonInteractiveMethod(method)) {
+  if (method === SupportedActions.wallet_getCallsStatus) {
+    const [id] = request.params.request.params
+    if (!id) {
+      yield* put(denyRequest(request, rpcError.INVALID_PARAMS))
+      return
+    }
+
+    const batch = yield* select(selectBatch, id, Date.now())
+    if (!batch) {
+      yield* put(denyRequest(request, rpcError.UNKNOWN_BUNDLE_ID))
+      return
+    }
+
+    yield* put(acceptRequest({ method, request, id, batch }))
+    return
+  }
+
+  if (method === SupportedActions.wallet_getCapabilities) {
     yield* put(acceptRequest({ method, request }))
     return
   }
@@ -934,6 +961,8 @@ function* handleAcceptRequest({ actionableRequest }: AcceptRequest) {
 
     AppAnalytics.track(WalletConnectEvents.wc_request_accept_success, defaultTrackedProperties)
     yield* call(showWalletConnectionSuccessMessage, activeSession.peer.metadata.name)
+
+    yield* put(pruneExpiredSendCallsBatches({ now: Date.now() }))
   } catch (err) {
     const e = ensureError(err)
     Logger.debug(TAG + '@acceptRequest', e.message)

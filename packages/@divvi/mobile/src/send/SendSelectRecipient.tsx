@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 import { getFontScaleSync } from 'react-native-device-info'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import Share, { ShareSingleOptions, Social } from 'react-native-share'
 import { isAddressFormat } from 'src/account/utils'
 import AppAnalytics from 'src/analytics/AppAnalytics'
 import { SendEvents } from 'src/analytics/Events'
@@ -40,6 +41,7 @@ import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
 import variables from 'src/styles/variables'
+import Logger from 'src/utils/Logger'
 
 type Props = NativeStackScreenProps<StackParamList, Screens.SendSelectRecipient>
 
@@ -154,19 +156,24 @@ const getStartedStyles = StyleSheet.create({
 function SendOrInviteButton({
   recipient,
   recipientVerificationStatus,
+  shareUrl,
   onPress,
 }: {
   recipient: Recipient | null
   recipientVerificationStatus: RecipientVerificationStatus
+  shareUrl: string | null
   onPress: (shouldInviteRecipient: boolean) => void
 }) {
   const { t } = useTranslation()
-  const inviteFriendsEnabled = getAppConfig().experimental?.inviteFriends
 
   const sendOrInviteButtonDisabled =
-    !!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN
+    (!!recipient && recipientVerificationStatus === RecipientVerificationStatus.UNKNOWN) ||
+    // If the phone number is present and unverified and no share URL is found, disable the send/invite button
+    (recipient?.recipientType === RecipientType.PhoneNumber &&
+      recipientVerificationStatus === RecipientVerificationStatus.UNVERIFIED &&
+      !shareUrl)
+
   const shouldInviteRecipient =
-    !!inviteFriendsEnabled &&
     !sendOrInviteButtonDisabled &&
     recipient?.recipientType === RecipientType.PhoneNumber &&
     recipientVerificationStatus === RecipientVerificationStatus.UNVERIFIED
@@ -195,6 +202,7 @@ function SendSelectRecipient({ route }: Props) {
   const dispatch = useDispatch()
   const secureSendPhoneNumberMapping = useSelector(secureSendPhoneNumberMappingSelector)
   const e164NumberToAddress = useSelector(e164NumberToAddressSelector)
+  const shareUrl = getAppConfig().experimental?.inviteFriends?.shareUrl ?? null
 
   const forceTokenId = route.params?.forceTokenId
   const defaultTokenIdOverride = route.params?.defaultTokenIdOverride
@@ -296,10 +304,32 @@ function SendSelectRecipient({ route }: Props) {
     })
   }
 
-  const onPressSend = () => {
-    if (!recipient) {
+  const onPressSendOrInvite = async (shouldInviteRecipient: boolean) => {
+    if (!recipient) return
+
+    // Invites
+    if (shouldInviteRecipient) {
+      if (!shareUrl) {
+        Logger.warn('SendSelectRecipient', 'No share URL found for invite with SMS')
+        return
+      }
+
+      const shareOptions: ShareSingleOptions = {
+        social: Social.Sms,
+        recipient: recipient.e164PhoneNumber,
+        message: t('inviteWithSMS.shareMessage', { shareUrl }),
+      }
+
+      await Share.shareSingle(shareOptions)
+
+      AppAnalytics.track(SendEvents.send_select_recipient_invite_press, {
+        recipientType: recipient.recipientType,
+      })
+
       return
     }
+
+    // Sends
     AppAnalytics.track(SendEvents.send_select_recipient_send_press, {
       recipientType: recipient.recipientType,
     })
@@ -403,7 +433,8 @@ function SendSelectRecipient({ route }: Props) {
         <SendOrInviteButton
           recipient={recipient}
           recipientVerificationStatus={recipientVerificationStatus}
-          onPress={onPressSend}
+          onPress={onPressSendOrInvite}
+          shareUrl={shareUrl}
         />
       )}
     </SafeAreaView>

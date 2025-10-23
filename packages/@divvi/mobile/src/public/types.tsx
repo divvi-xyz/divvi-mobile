@@ -234,7 +234,9 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     bidali?: {
       url: string
     }
-    inviteFriends?: boolean
+    inviteFriends?: {
+      shareUrl?: string
+    }
     notificationCenter?: boolean
     zendeskConfig?: {
       apiKey: string

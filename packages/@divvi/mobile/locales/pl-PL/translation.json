@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Zaproś przez WhatsApp",
-  "inviteWithSMS": "Zaproś przez SMS",
   "whySendFees": "Opłata ta pokrywa koszty związane z podłączeniem numeru telefonu przez nowego użytkownika",
   "whyReceiveFees": "Wysłaliśmy Ci pewną ilość kryptowaluty, aby potwierdzić Twoje konto",
   "inviteSent": "Zaproszenie wysłane",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Zaproś znajomych i zdobądź do 12 cUSD",
     "body": "Gdy połączą swój numer i dodadzą środki do {{appName}}, otrzymacie po 0,50 cUSD."
+  },
+  "inviteWithSMS": {
+    "title": "Zaproś przez SMS",
+    "shareMessage": "Zarejestruj się w portfelu {{appName}} . Używam go do powiększania moich oszczędności w USD i kryptowalutach, a możesz go skonfigurować w kilka sekund, podając tylko numer telefonu: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Zaproś znajomego",
@@ -1175,9 +1178,17 @@
     "sendTransaction": "{{dappName}} chce wysłać transakcję.",
     "sendDappTransaction": "{{dappName}} chce wysłać transakcję w sieci {{networkName}}.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} chce wysłać transakcję w nieobsługiwanej sieci.",
-    "sendCallsTitle": "Wyślij transakcje",
-    "sendCalls": "{{dappName}} chcesz wysyłać transakcje {{transactionsCount}} w sieci {{networkName}} .",
-    "sendCallsUnknownNetwork": "{{dappName}} chcesz wysłać transakcje {{transactionsCount}} w nieobsługiwanej sieci.",
+    "sendCallsTitle_one": "Wyślij transakcję {{count}}",
+    "sendCallsTitle_few": "Wysyłaj transakcje {{count}}",
+    "sendCallsTitle_many": "Wysyłaj transakcje {{count}}",
+    "sendCallsTitle_other": "Wysyłaj transakcje {{count}}",
+    "sendCalls_one": "{{dappName}} chcesz wysłać transakcję {{count}} w sieci {{networkName}} .",
+    "sendCalls_few": "{{dappName}} chcesz wysyłać transakcje {{count}} w sieci {{networkName}} .",
+    "sendCalls_many": "{{dappName}} chcesz wysyłać transakcje {{count}} w sieci {{networkName}} .",
+    "sendCalls_other": "{{dappName}} chcesz wysyłać transakcje {{count}} w sieci {{networkName}} .",
+    "sendCallsUnknownNetwork_one": "{{dappName}} chcesz wysłać transakcję {{count}} w nieobsługiwanej sieci.",
+    "sendCallsUnknownNetwork_few": "{{dappName}} chcesz wysłać transakcje {{count}} w nieobsługiwanej sieci.",
+    "sendCallsUnknownNetwork_other": "{{dappName}} chcesz wysłać transakcje {{count}} w nieobsługiwanej sieci.",
     "decryptPayloadTitle": "Odszyfruj za pomocą portfela",
     "decryptPayload": "{{dappName}} chce odszyfrować ładunek danych.",
     "computeSharedSecret": "{{dappName}} chce wygenerować tajemnice.",
@@ -1191,6 +1202,8 @@
       "title": "Nieobsługiwany łańcuch",
       "description": "{{dappName}} żąda tej akcji w łańcuchu nieobsługiwanym przez {{appName}}. Upewnij się, że Celo jest aktywnym łańcuchem po stronie dapp.",
       "descriptionV1_74_one": "{{dappName}} żąda tej akcji w łańcuchu nieobsługiwanym przez {{appName}}. Upewnij się, że {{supportedNetworkNames}} jest aktywnym łańcuchem po stronie dapp.",
+      "descriptionV1_74_few": "{{dappName}} żąda tej akcji w łańcuchu nieobsługiwanym przez {{appName}}. Upewnij się, że aktywny łańcuch w aplikacji jest jednym z poniższych: {{supportedNetworkNames}}.",
+      "descriptionV1_74_many": "{{dappName}} żąda tej akcji w łańcuchu nieobsługiwanym przez {{appName}}. Upewnij się, że aktywny łańcuch w aplikacji jest jednym z poniższych: {{supportedNetworkNames}}.",
       "descriptionV1_74_other": "{{dappName}} żąda tej akcji w łańcuchu nieobsługiwanym przez {{appName}}. Upewnij się, że aktywny łańcuch w aplikacji jest jednym z poniższych: {{supportedNetworkNames}}."
     },
     "notEnoughBalanceForGas": {
@@ -1210,12 +1223,16 @@
         "title": "Nieobsługiwany łańcuch",
         "description": "{{dappName}} chce połączyć się z łańcuchem nieobsługiwanym przez {{appName}}. Upewnij się, że po stronie dapp wybrano Celo.",
         "descriptionV1_74_one": "{{dappName}} chce połączyć się z łańcuchem nieobsługiwanym przez {{appName}}. Upewnij się, że po stronie dapp wybrano {{supportedNetworkNames}}.",
+        "descriptionV1_74_few": "{{dappName}} chce połączyć się z łańcuchem nieobsługiwanym przez {{appName}}. Upewnij się, że aktywny łańcuch w aplikacji jest jednym z poniższych: {{supportedNetworkNames}}.",
+        "descriptionV1_74_many": "{{dappName}} chce połączyć się z łańcuchem nieobsługiwanym przez {{appName}}. Upewnij się, że aktywny łańcuch w aplikacji jest jednym z poniższych: {{supportedNetworkNames}}.",
         "descriptionV1_74_other": "{{dappName}} chce połączyć się z łańcuchem nieobsługiwanym przez {{appName}}. Upewnij się, że aktywny łańcuch w aplikacji jest jednym z poniższych: {{supportedNetworkNames}}."
       },
       "warnUnsupportedChains": {
         "title": "Nieobsługiwany łańcuch",
         "description": "Aplikacja {{dappName}} nie określiła Celo jako obsługiwanego łańcucha. Niektóre funkcje mogą nie działać zgodnie z oczekiwaniami.",
         "descriptionV1_74_one": "Aplikacja {{dappName}} nie określiła {{supportedNetworkNames}} jako obsługiwanego łańcucha. Niektóre funkcje mogą nie działać zgodnie z oczekiwaniami.",
+        "descriptionV1_74_few": "Aplikacja {{dappName}} nie zidentyfikowała żadnego z poniższych łańcuchów bloków jako obsługiwanych: {{supportedNetworkNames}}. Niektóre funkcje mogą nie działać zgodnie z oczekiwaniami.",
+        "descriptionV1_74_many": "Aplikacja {{dappName}} nie zidentyfikowała żadnego z poniższych łańcuchów bloków jako obsługiwanych: {{supportedNetworkNames}}. Niektóre funkcje mogą nie działać zgodnie z oczekiwaniami.",
         "descriptionV1_74_other": "Aplikacja {{dappName}} nie zidentyfikowała żadnego z poniższych łańcuchów bloków jako obsługiwanych: {{supportedNetworkNames}}. Niektóre funkcje mogą nie działać zgodnie z oczekiwaniami."
       },
       "warnSomeUnsupportedMethods": {
@@ -1563,7 +1580,10 @@
     "mobileMoney": "Pieniądze mobilne",
     "airtime": "Airtime",
     "minFee": "Opłata minimalna",
-    "numProviders": "Liczba dostawców: {{count}}",
+    "numProviders_one": "{{count}} Dostawca",
+    "numProviders_few": "Liczba dostawców: {{count}}",
+    "numProviders_many": "Liczba dostawców: {{count}}",
+    "numProviders_other": "Liczba dostawców: {{count}}",
     "fee": "Opłata",
     "idRequired": "Wymagane ID",
     "mobileCarrierRequirement": "{{carrier}} Wymagany",
@@ -2125,6 +2145,8 @@
     "actionDescriptions": {
       "send": "Użyj dowolnego adresu Celo, domeny, numeru telefonu itp.",
       "sendV1_74_one": "Użyj dowolnego adresu {{supportedNetworkNames}}, domeny, numeru telefonu itp.",
+      "sendV1_74_few": "Użyj dowolnego adresu, domeny, numeru telefonu w następujących sieciach: {{supportedNetworkNames}}",
+      "sendV1_74_many": "Użyj dowolnego adresu, domeny, numeru telefonu w następujących sieciach: {{supportedNetworkNames}}",
       "sendV1_74_other": "Użyj dowolnego adresu, domeny, numeru telefonu w następujących sieciach: {{supportedNetworkNames}}",
       "swap": "Wymień tokeny bez opuszczania portfela",
       "add": "Kup tokeny, korzystając z usług jednego z naszych zaufanych dostawców",
@@ -2889,10 +2911,16 @@
   },
   "duration_lessThanADay": "Mniej niż jeden dzień",
   "duration_day_one": "1 dzień",
+  "duration_day_few": "Liczba dni: {{count}}",
+  "duration_day_many": "Liczba dni: {{count}}",
   "duration_day_other": "Liczba dni: {{count}}",
   "duration_month_one": "1 miesiąc",
+  "duration_month_few": "Liczba miesięcy: {{count}}",
+  "duration_month_many": "Liczba miesięcy: {{count}}",
   "duration_month_other": "Liczba miesięcy: {{count}}",
   "duration_year_one": "1 rok",
+  "duration_year_few": "Liczba lat: {{count}}",
+  "duration_year_many": "Liczba lat: {{count}}",
   "duration_year_other": "Liczba lat: {{count}}",
   "duration_yearMonth_one": "1 rok, 1 miesiąc",
   "duration_yearMonth_other": "Liczba lat: {{count}}, liczba miesięcy: {{count2}}",

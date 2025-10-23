@@ -2062,4 +2062,8 @@ export const migrations = {
     jumpstart: _.pick(state.jumpstart, 'reclaimStatus'),
     app: _.omit(state.app, 'inviterAddress'),
   }),
+  253: (state: any) => ({
+    ...state,
+    sendCalls: { batchById: {} },
+  }),
 }
