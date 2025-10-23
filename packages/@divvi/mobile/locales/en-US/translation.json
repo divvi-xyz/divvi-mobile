@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Invite with WhatsApp",
-  "inviteWithSMS": "Invite with SMS",
   "whySendFees": "This fee covers costs for the new user to connect their phone number",
   "whyReceiveFees": "You were sent some crypto to confirm your account",
   "inviteSent": "Invite Sent",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Invite friends and get up to 12 cUSD",
     "body": "Once they connect their number and add funds to {{appName}}, you’ll both receive 0.50 cUSD."
+  },
+  "inviteWithSMS": {
+    "title": "Invite with SMS",
+    "shareMessage": "Hey! Sign up to {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Invite a Friend",

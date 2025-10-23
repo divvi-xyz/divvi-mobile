@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Mời bằng WhatsApp",
-  "inviteWithSMS": "Mời bằng SMS",
   "whySendFees": "Phí này bao gồm chi phí để người dùng mới kết nối số điện thoại của họ",
   "whyReceiveFees": "Bạn được gửi tiền điện tử để xác nhận tài khoản",
   "inviteSent": "Đã gửi lời mời",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Giới thiệu bạn bè và nhận USDT",
     "body": "Khi họ kết nối số điện thoại, cả hai bạn sẽ nhận được 1 USDT mỗi người."
+  },
+  "inviteWithSMS": {
+    "title": "Mời bằng SMS",
+    "shareMessage": "Hey! Sign up to {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Mời bạn bè",

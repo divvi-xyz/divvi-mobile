@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Mit WhatsApp einladen",
-  "inviteWithSMS": "Per SMS einladen",
   "whySendFees": "Diese Gebühr deckt die Kosten für den neuen Benutzer, um seine Telefonnummer zu verbinden",
   "whyReceiveFees": "Dir wurde Krypto zur Bestätigung deines Kontos geschickt.",
   "inviteSent": "Einladung gesendet",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Lade deine Freunde ein und erhalte bis zu 12 cUSD",
     "body": "Sobald sie ihre Nummer verknüpfen und Guthaben zu {{appName}} hinzufügen, erhaltet ihr beide 0,50 cUSD."
+  },
+  "inviteWithSMS": {
+    "title": "Per SMS einladen",
+    "shareMessage": "Hey! Melde dich bei {{appName}} wallet an. Ich nutze sie, um meine Ersparnisse in USD und Krypto zu vermehren, und du kannst sie in Sekundenschnelle mit nur einer Telefonnummer einrichten: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Einen Freund einladen",

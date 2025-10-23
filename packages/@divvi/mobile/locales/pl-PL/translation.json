@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Zaproś przez WhatsApp",
-  "inviteWithSMS": "Zaproś przez SMS",
   "whySendFees": "Opłata ta pokrywa koszty związane z podłączeniem numeru telefonu przez nowego użytkownika",
   "whyReceiveFees": "Wysłaliśmy Ci pewną ilość kryptowaluty, aby potwierdzić Twoje konto",
   "inviteSent": "Zaproszenie wysłane",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Zaproś znajomych i zdobądź do 12 cUSD",
     "body": "Gdy połączą swój numer i dodadzą środki do {{appName}}, otrzymacie po 0,50 cUSD."
+  },
+  "inviteWithSMS": {
+    "title": "Zaproś przez SMS",
+    "shareMessage": "Zarejestruj się w portfelu {{appName}} . Używam go do powiększania moich oszczędności w USD i kryptowalutach, a możesz go skonfigurować w kilka sekund, podając tylko numer telefonu: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Zaproś znajomego",
