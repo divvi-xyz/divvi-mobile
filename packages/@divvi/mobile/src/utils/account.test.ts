@@ -146,6 +146,37 @@ describe('AccountUtils', () => {
         expect({ derivation0, derivation1, password }).toEqual(expectedPrivateKeys[i])
       }
     })
+
+    it('should always generate 64-character private keys (properly padded)', async () => {
+      // Test that all generated private keys are exactly 64 characters (32 bytes)
+      // This is critical for ensuring keys with leading zeros are properly padded
+      const testMnemonics = [
+        'language quiz proud sample canoe trend topic upper coil rack choice engage noodle panda mutual grab shallow thrive forget trophy pull pool mask height',
+        'law canoe elegant tuna core tired flag scissors shy expand drum often output result exotic busy smooth dumb world obtain nominee easily conduct increase',
+        'second inside foot legend direct bridge human diesel exotic regular silent trigger multiply prosper involve bulb swarm oppose police forest tooth ankle hungry diesel',
+      ]
+
+      for (const mnemonic of testMnemonics) {
+        const keys = await generateKeys(mnemonic)
+        expect(keys.privateKey).toHaveLength(64)
+        expect(keys.privateKey).toMatch(/^[0-9a-f]{64}$/)
+      }
+    })
+
+    it('should properly pad private keys with leading zeros (regression test)', async () => {
+      // Regression test for bug where private keys with leading zeros were not padded
+      // This would result in 63-character keys that failed viem validation
+      // The private key for derivation1 below starts with "07" which would have been
+      // unpadded to "7..." (63 chars) without the size parameter in bytesToHex
+      const mnemonic =
+        'second inside foot legend direct bridge human diesel exotic regular silent trigger multiply prosper involve bulb swarm oppose police forest tooth ankle hungry diesel'
+      const keys = await generateKeys(mnemonic, undefined, 0, 1)
+
+      // Verify the key is properly padded to 64 characters
+      expect(keys.privateKey).toHaveLength(64)
+      // Verify it starts with the leading zero
+      expect(keys.privateKey).toBe('074e6edfc31f8ccfd93427d204da5ada15124a25fde119b7f65b54ff283b6207')
+    })
   })
 
   describe('.normalizeMnemonic()', () => {

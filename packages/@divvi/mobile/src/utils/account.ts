@@ -485,7 +485,7 @@ function generateKeysFromSeed(
     // As we are generating the node from a seed, the node will always have a private key and this would never happened
     throw new Error('utils-accounts@generateKeys: invalid node to derivate')
   }
-  const privateKeyHex = bytesToHex(newNode.privateKey)
+  const privateKeyHex = bytesToHex(newNode.privateKey, { size: 32 })
   const privateKey = privateKeyHex.slice(2)
   const publicKey = bytesToHex(newNode.publicKey!).slice(2)
 
