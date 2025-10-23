@@ -85,9 +85,9 @@ const App = createApp({
   //   divviId: '',
   // },
 
-  // Special cases to cover experimental features with e2e tests
-  ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
-    experimental: {
+  experimental: {
+    // Special cases to cover experimental features with e2e tests
+    ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
       bidali: {
         url: 'https://commerce.bidali.com',
       },
@@ -97,8 +97,8 @@ const App = createApp({
         apiKey: 'dummyApiKey',
         projectName: 'divviapp',
       },
-    },
-  }),
+    }),
+  },
 })
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

@@ -112,7 +112,7 @@ export default function Welcome() {
           <PrivyLoginButton />  
           <Button
             onPress={onPressCreateAccount}
-            text={'hello'}
+            text={t('welcome.createAccount')}
             size={BtnSizes.FULL}
             type={BtnTypes.PRIMARY}
             style={styles.createAccountButton}

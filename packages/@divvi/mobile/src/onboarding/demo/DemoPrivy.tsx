@@ -1,8 +1,9 @@
 import { usePrivy } from '@privy-io/expo'
 import { useSmartWallets } from '@privy-io/expo/smart-wallets'
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { ActivityIndicator, Alert, Clipboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import Button, { BtnSizes, BtnTypes } from 'src/components/Button'
+import { PRIVY_ENABLED } from 'src/config'
 import { navigate } from 'src/navigator/NavigationService'
 import { Screens } from 'src/navigator/Screens'
 import colors from 'src/styles/colors'
@@ -22,7 +23,7 @@ import { base } from 'viem/chains'
 // USDC contract address on Base mainnet
 const USDC_ADDRESS = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913'
 
-export default function DemoPrivy() {
+function DemoPrivyInner() {
   const { isReady, user, logout } = usePrivy()
   const { client: smartWalletClient } = useSmartWallets()
 
@@ -34,7 +35,6 @@ export default function DemoPrivy() {
 
   // Get the smart wallet from linked accounts
   const smartWallet = user?.linked_accounts?.find((account) => account.type === 'smart_wallet')
-  console.log('smartWallet', smartWallet)
 
   // Handle unauthenticated state - redirect to login
   useEffect(() => {
@@ -187,6 +187,13 @@ export default function DemoPrivy() {
     }
   }
 
+  const copyAddressToClipboard = () => {
+    if (activeWallet?.address) {
+      Clipboard.setString(activeWallet.address)
+      Alert.alert('Copied!', 'Smart wallet address copied to clipboard')
+    }
+  }
+
   // Do nothing while the PrivyProvider initializes with updated user state
   if (!isReady) {
     return null
@@ -212,37 +219,32 @@ export default function DemoPrivy() {
     )
   }
 
-  // At this point, we know user and smartWallet are not null due to hasActiveSession check
-  const activeUser = user!
+  // At this point, we know smartWallet is not null due to hasActiveSession check
   const activeWallet = smartWallet!
 
   return (
     <ScrollView style={styles.container} testID="DemoPrivy">
-      {/* User Info Section */}
+      {/* Getting Started Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Privy Account</Text>
-        <View style={styles.infoCard}>
-          <Text style={styles.label}>User ID:</Text>
-          <Text style={styles.value}>{activeUser.id || 'N/A'}</Text>
+        <Text style={styles.sectionTitle}>Getting Started</Text>
+        <View style={styles.instructionsCard}>
+          <Text style={styles.instructionsText}>
+            To test the Privy smart wallet, send some ETH and USDC on Base to your smart wallet address below:
+          </Text>
+          <TouchableOpacity
+            style={styles.addressCopyContainer}
+            onPress={copyAddressToClipboard}
+            testID="DemoPrivy/CopyAddress"
+          >
+            <Text style={styles.addressValue}>{activeWallet.address}</Text>
+            <Text style={styles.copyHint}>Tap to copy</Text>
+          </TouchableOpacity>
+          <Text style={styles.instructionsText}>
+            You'll need:
+          </Text>
+          <Text style={styles.bulletPoint}>• A small amount of ETH for gas fees</Text>
+          <Text style={styles.bulletPoint}>• Some USDC to test transfers</Text>
         </View>
-
-        <View style={styles.infoCard}>
-          <Text style={styles.label}>Smart Wallet Address:</Text>
-          <Text style={styles.addressValue}>{activeWallet.address}</Text>
-          <Text style={styles.helperText}>Chain: Base (8453)</Text>
-        </View>
-
-        {activeUser.linked_accounts && activeUser.linked_accounts.length > 0 ? (
-          <View style={styles.infoCard}>
-            <Text style={styles.label}>Linked Accounts:</Text>
-            <Text style={styles.value}>{activeUser.linked_accounts.length} account(s)</Text>
-            {activeUser.linked_accounts.map((account, index) => (
-              <Text key={index} style={styles.label}>
-                • {account.type}
-              </Text>
-            ))}
-          </View>
-        ) : null}
       </View>
 
       {/* Balance Section */}
@@ -366,20 +368,42 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.Smallest8,
     color: colors.contentPrimary,
   },
+  instructionsCard: {
+    backgroundColor: colors.backgroundSecondary,
+    padding: Spacing.Regular16,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: colors.buttonPrimaryBackground as string,
+  },
+  instructionsText: {
+    ...typeScale.bodyMedium,
+    color: colors.contentPrimary,
+    marginBottom: Spacing.Smallest8,
+    lineHeight: 20,
+  },
+  bulletPoint: {
+    ...typeScale.bodyMedium,
+    color: colors.contentPrimary,
+    marginLeft: Spacing.Smallest8,
+    marginBottom: 4,
+  },
+  addressCopyContainer: {
+    backgroundColor: colors.backgroundPrimary,
+    padding: Spacing.Regular16,
+    borderRadius: 8,
+    marginVertical: Spacing.Smallest8,
+  },
+  copyHint: {
+    ...typeScale.labelSmall,
+    color: colors.buttonPrimaryBackground as string,
+    marginTop: Spacing.Smallest8,
+    textAlign: 'center',
+  },
   infoCard: {
     backgroundColor: colors.backgroundSecondary,
     padding: Spacing.Regular16,
     borderRadius: 8,
     marginBottom: Spacing.Smallest8,
-  },
-  label: {
-    ...typeScale.labelSmall,
-    color: colors.contentSecondary,
-    marginBottom: 4,
-  },
-  value: {
-    ...typeScale.bodyMedium,
-    color: colors.contentPrimary,
   },
   addressValue: {
     ...typeScale.labelSmall,
@@ -450,3 +474,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 })
+
+export default function DemoPrivy() {
+  useEffect(() => {
+    // If Privy is not enabled, redirect to welcome screen
+    if (!PRIVY_ENABLED) {
+      navigate(Screens.Welcome)
+    }
+  }, [])
+
+  if (!PRIVY_ENABLED) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.loadingText}>Privy is not enabled. Redirecting...</Text>
+      </View>
+    )
+  }
+
+  return <DemoPrivyInner />
+}

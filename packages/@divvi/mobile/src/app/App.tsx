@@ -20,7 +20,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import AppInitGate from 'src/app/AppInitGate';
 import ErrorBoundary from 'src/app/ErrorBoundary';
 import { getAppConfig } from 'src/appConfig';
-import { AUTH0_CLIENT_ID, AUTH0_DOMAIN, isE2EEnv, SENTRY_ENABLED } from 'src/config';
+import { AUTH0_CLIENT_ID, AUTH0_DOMAIN, isE2EEnv, PRIVY_APP_ID, PRIVY_CLIENT_ID, PRIVY_ENABLED, SENTRY_ENABLED } from 'src/config';
 import i18n from 'src/i18n';
 import NavigatorWrapper from 'src/navigator/NavigatorWrapper';
 import { persistor, store } from 'src/redux/store';
@@ -96,39 +96,46 @@ export class App extends React.Component<Props> {
   }
 
   render() {
-    return (
-      <SafeAreaProvider>  
-        <PrivyProvider appId={'cmginhl4s001ilb0csc6ij6zb'} clientId='client-WY6RbAeHvft7DFaXrNqsDwhXUQA6ikuf2gk1X7NJv7R5E' supportedChains={[base]}>
-          <SmartWalletsProvider>
-        <Provider store={store}>
-          <PersistGate persistor={persistor}>
-            <Auth0Provider domain={AUTH0_DOMAIN} clientId={AUTH0_CLIENT_ID}>
-              <AppInitGate
-                appStartedMillis={this.props.appStartedMillis}
-                reactLoadTime={this.reactLoadTime}
-              >
-                <StatusBar
-                  // On Android a gray gradient is present when set to transparent
-                  backgroundColor={this.isAndroid ? this.backgroundColor : 'transparent'}
-                  barStyle={this.isDarkTheme ? 'light-content' : 'dark-content'}
-                  // On Android this causes content be shifted outside of the safe area
-                  translucent={!this.isAndroid}
-                />
-                <ErrorBoundary>
-                  <GestureHandlerRootView style={{ flex: 1 }}>
-                    <BottomSheetModalProvider>
-                      <NavigatorWrapper />
-                      <PrivyElements /> 
+    const appContent = (
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <Auth0Provider domain={AUTH0_DOMAIN} clientId={AUTH0_CLIENT_ID}>
+            <AppInitGate
+              appStartedMillis={this.props.appStartedMillis}
+              reactLoadTime={this.reactLoadTime}
+            >
+              <StatusBar
+                // On Android a gray gradient is present when set to transparent
+                backgroundColor={this.isAndroid ? this.backgroundColor : 'transparent'}
+                barStyle={this.isDarkTheme ? 'light-content' : 'dark-content'}
+                // On Android this causes content be shifted outside of the safe area
+                translucent={!this.isAndroid}
+              />
+              <ErrorBoundary>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                  <BottomSheetModalProvider>
+                    <NavigatorWrapper />
+                    {PRIVY_ENABLED && <PrivyElements />}
+                  </BottomSheetModalProvider>
+                </GestureHandlerRootView>
+              </ErrorBoundary>
+            </AppInitGate>
+          </Auth0Provider>
+        </PersistGate>
+      </Provider>
+    )
 
-                    </BottomSheetModalProvider>
-                  </GestureHandlerRootView>
-                </ErrorBoundary>
-              </AppInitGate>
-            </Auth0Provider>
-          </PersistGate>
-        </Provider>
-        </SmartWalletsProvider>
-        </PrivyProvider>
+    return (
+      <SafeAreaProvider>
+        {PRIVY_ENABLED && PRIVY_APP_ID && PRIVY_CLIENT_ID ? (
+          <PrivyProvider appId={PRIVY_APP_ID} clientId={PRIVY_CLIENT_ID} supportedChains={[base]}>
+            <SmartWalletsProvider>
+              {appContent}
+            </SmartWalletsProvider>
+          </PrivyProvider>
+        ) : (
+          appContent
+        )}
       </SafeAreaProvider>
     )
   }

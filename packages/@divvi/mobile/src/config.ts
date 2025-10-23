@@ -216,3 +216,8 @@ export const ENABLED_QUICK_ACTIONS = (
 export const FETCH_FIATCONNECT_QUOTES = true
 
 export const WALLETCONNECT_UNIVERSAL_LINK = 'https://valoraapp.com/wc'
+
+// Privy configuration
+export const PRIVY_ENABLED = !!experimentalConfig.privy
+export const PRIVY_APP_ID = experimentalConfig.privy?.appId
+export const PRIVY_CLIENT_ID = experimentalConfig.privy?.clientId
