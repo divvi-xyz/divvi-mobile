@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:266](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L266)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:270](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L270)
 
 #### divviId
 
@@ -181,6 +181,24 @@ crowdinDistributionHash: string
 
 ```ts
 optional phoneNumberVerification: boolean;
+```
+
+#### privy?
+
+```ts
+optional privy: object;
+```
+
+##### privy.appId
+
+```ts
+appId: string
+```
+
+##### privy.clientId
+
+```ts
+clientId: string
 ```
 
 #### recaptcha?
