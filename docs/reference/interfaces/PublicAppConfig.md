@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:266](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L266)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:268](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L268)
 
 #### divviId
 
@@ -138,7 +138,13 @@ optional hideCashInTokenFilters: boolean;
 #### inviteFriends?
 
 ```ts
-optional inviteFriends: boolean;
+optional inviteFriends: object;
+```
+
+##### inviteFriends.shareUrl?
+
+```ts
+optional shareUrl: string;
 ```
 
 #### notificationCenter?

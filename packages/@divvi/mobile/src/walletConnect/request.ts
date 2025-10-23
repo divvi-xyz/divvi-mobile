@@ -11,8 +11,12 @@ import {
   getWalletCapabilitiesByHexChainId,
   getWalletCapabilitiesByWalletConnectChainId,
 } from 'src/walletConnect/capabilities'
-import { chainAgnosticActions, SupportedActions } from 'src/walletConnect/constants'
-import { ActionableRequest, isNonInteractiveMethod } from 'src/walletConnect/types'
+import {
+  chainAgnosticActions,
+  requiresUserConsent,
+  SupportedActions,
+} from 'src/walletConnect/constants'
+import { ActionableRequest } from 'src/walletConnect/types'
 import { getViemWallet } from 'src/web3/contracts'
 import networkConfig, {
   networkIdToNetwork,
@@ -62,7 +66,7 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
   const account = yield* call(getWalletAddress)
 
   // Unlock the account if the action requires user consent
-  if (!isNonInteractiveMethod(method)) {
+  if (requiresUserConsent(method)) {
     yield* call(unlockAccount, account)
   }
 
@@ -156,7 +160,13 @@ export const handleRequest = function* (actionableRequest: ActionableRequest) {
 
       return {
         id,
-        capabilities: supportedCapabilities[chainId],
+        capabilities: {
+          ...supportedCapabilities[chainId],
+          caip345: {
+            caip2: chainId,
+            transactionHashes,
+          },
+        },
       }
     }
     case SupportedActions.wallet_getCallsStatus: {

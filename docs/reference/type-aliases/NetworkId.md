@@ -16,4 +16,4 @@ type NetworkId =
   | 'base-mainnet'
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:272](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L272)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:274](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L274)
