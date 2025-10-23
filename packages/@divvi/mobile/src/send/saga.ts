@@ -22,7 +22,7 @@ import { safely } from 'src/utils/safely'
 import { publicClient } from 'src/viem'
 import { sendPreparedTransactions } from 'src/viem/saga'
 import { networkIdToNetwork } from 'src/web3/networkConfig'
-import { call, delay, put, spawn, take, takeEvery, takeLeading } from 'typed-redux-saga'
+import { call, put, spawn, take, takeEvery, takeLeading } from 'typed-redux-saga'
 
 export const TAG = 'send/saga'
 
@@ -104,43 +104,11 @@ export function* sendPaymentSaga({
       navigateInitialTab()
     }
 
-    // Retry logic for fetching receipt as nodes may not be immediately updated
-    let receipt
-    let attempt = 0
-    const MAX_ATTEMPTS = 5
-    while (attempt < MAX_ATTEMPTS) {
-      try {
-        Logger.debug(`${TAG}/sendPaymentSaga`, `Fetching receipt attempt ${attempt + 1}`, hash)
-        receipt = yield* call(
-          [publicClient[networkIdToNetwork[tokenInfo.networkId]], 'waitForTransactionReceipt'],
-          { hash }
-        )
-        Logger.debug(`${TAG}/sendPaymentSaga`, 'Got send transaction receipt', receipt)
-        break // Exit on success
-      } catch (error) {
-        attempt += 1
-        if (attempt >= MAX_ATTEMPTS) {
-          Logger.error(
-            `${TAG}/sendPaymentSaga`,
-            `Failed to fetch receipt after ${MAX_ATTEMPTS} attempts`,
-            error
-          )
-          throw error
-        }
-        const backoff = Math.min(2 ** attempt * 1000, 10000) // Exponential backoff, capped at 10s
-        Logger.info(
-          `${TAG}/sendPaymentSaga`,
-          `Retrying receipt fetch in ${backoff}ms (attempt ${attempt}/${MAX_ATTEMPTS})`
-        )
-        yield* delay(backoff)
-      }
-    }
-
-    if (!receipt) {
-      // This should never happen as we throw after max attempts, but TypeScript needs this
-      throw new Error('Failed to fetch transaction receipt')
-    }
-
+    const receipt = yield* call(
+      [publicClient[networkIdToNetwork[tokenInfo.networkId]], 'waitForTransactionReceipt'],
+      { hash }
+    )
+    Logger.debug(`${TAG}/sendPaymentSaga`, 'Got send transaction receipt', receipt)
     if (receipt.status === 'reverted') {
       throw new Error(`Send transaction reverted: ${hash}`)
     }
