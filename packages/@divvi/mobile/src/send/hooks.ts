@@ -1,6 +1,5 @@
 import { debounce, throttle } from 'lodash'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { defaultCountryCodeSelector } from 'src/account/selectors'
 import { phoneNumberVerifiedSelector } from 'src/app/selectors'
 import { getAppConfig } from 'src/appConfig'
@@ -353,7 +352,6 @@ export function useMapResolutionsToRecipients(
   resolutions: NameResolution[]
 ): Recipient[] {
   const recipientInfo = useSelector(recipientInfoSelector)
-  const { t } = useTranslation()
 
   const resolvedRecipients = resolutions.map((resolution) => {
     const lowerCaseAddress = resolution.address.toLowerCase()
@@ -363,7 +361,7 @@ export function useMapResolutionsToRecipients(
       case ResolutionKind.Ens:
         return {
           address: lowerCaseAddress,
-          name: t('ensRecipient', { name: resolution.name ?? searchQuery }),
+          name: resolution.name,
           recipientType: RecipientType.Ens,
           thumbnailPath: resolution.thumbnailPath,
         }

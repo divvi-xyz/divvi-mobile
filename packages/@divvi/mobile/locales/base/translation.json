@@ -1557,7 +1557,6 @@
   "supercharge": "Supercharge",
   "others": "Others",
   "nomSpaceRecipient": "Nomspace: {{name}}",
-  "ensRecipient": "ENS: {{name}}",
   "lastDay": "Last 24 hrs",
   "noMoreTransactions": "There are no more transactions",
   "selectProviderScreen": {
@@ -2173,6 +2172,7 @@
     "searchText": "Search by name, phone, wallet...",
     "searchInputLabel": "To",
     "searchInputPlaceholder": "Wallet Address or Phone Number",
+    "searchInputPlaceholderEns": "Wallet Address, Phone Number or ENS",
     "paste": "Paste from clipboard",
     "title": "Select a recipient",
     "contactsTitle": "Select a contact",
