@@ -1,8 +1,3 @@
-// Import required polyfills first
-import '@ethersproject/shims';
-import 'fast-text-encoding';
-import 'react-native-get-random-values';
-
 import { createApp } from '@divvi/mobile';
 import { registerRootComponent } from 'expo';
 import Constants from 'expo-constants';
@@ -86,6 +81,10 @@ const App = createApp({
   // },
 
   experimental: {
+    privy: {
+      appId: 'cmginhl4s001ilb0csc6ij6zb',
+      clientId: 'client-WY6RbAeHvft7DFaXrNqsDwhXUQA6ikuf2gk1X7NJv7R5E',
+    },
     // Special cases to cover experimental features with e2e tests
     ...(process.env.EXPO_PUBLIC_DIVVI_E2E === 'true' && {
       bidali: {
