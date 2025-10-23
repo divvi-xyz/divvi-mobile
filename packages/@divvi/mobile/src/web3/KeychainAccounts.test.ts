@@ -4,6 +4,8 @@ import { normalizeAddress } from 'src/utils/address'
 import {
   KeychainAccounts,
   clearStoredAccounts,
+  encryptPrivateKey,
+  getStoredPrivateKey,
   listStoredAccounts,
 } from 'src/web3/KeychainAccounts'
 import * as mockedKeychain from 'test/mockedKeychain'
@@ -239,5 +241,86 @@ describe('KeychainAccounts', () => {
         await accounts.updatePassphrase(mockAddressInUpperCase, 'password', 'new-password')
       ).toBe(true)
     })
+  })
+})
+
+describe(getStoredPrivateKey, () => {
+  const mockAccount = {
+    address: '0x74c3b45eF45D7b02fcbF6afB0F8e9C003159DE0B',
+    createdAt: new Date('2023-10-11T00:41:52.000Z'),
+  }
+
+  beforeEach(() => {
+    mockedKeychain.clearAllItems()
+  })
+
+  it('pads a 63-character private key to 64 characters', async () => {
+    // This simulates a private key with a leading zero that was stored as 63 chars
+    const unpaddedPrivateKey = 'caa40f3d93ff6736a0e1dc4d156c49e8e6f0938c696526e435c5db37531c9f'
+    const encryptedKey = await encryptPrivateKey(unpaddedPrivateKey, 'password')
+
+    mockedKeychain.setItems({
+      [`account--${mockAccount.createdAt.toISOString()}--${normalizeAddress(mockAccount.address)}`]:
+        {
+          password: encryptedKey,
+        },
+    })
+
+    const result = await getStoredPrivateKey(mockAccount, 'password')
+
+    // Should be padded to 64 chars and have 0x prefix (66 total)
+    expect(result).toBe('0x00caa40f3d93ff6736a0e1dc4d156c49e8e6f0938c696526e435c5db37531c9f')
+    expect(result?.length).toBe(66) // 0x + 64 chars
+  })
+
+  it('handles a private key already stored with 0x prefix (63 chars after prefix)', async () => {
+    const unpaddedPrivateKey = '0xcaa40f3d93ff6736a0e1dc4d156c49e8e6f0938c696526e435c5db37531c9f'
+    const encryptedKey = await encryptPrivateKey(unpaddedPrivateKey, 'password')
+
+    mockedKeychain.setItems({
+      [`account--${mockAccount.createdAt.toISOString()}--${normalizeAddress(mockAccount.address)}`]:
+        {
+          password: encryptedKey,
+        },
+    })
+
+    const result = await getStoredPrivateKey(mockAccount, 'password')
+
+    expect(result).toBe('0x00caa40f3d93ff6736a0e1dc4d156c49e8e6f0938c696526e435c5db37531c9f')
+    expect(result?.length).toBe(66)
+  })
+
+  it('does not modify a correctly formatted 64-character private key', async () => {
+    const properPrivateKey = '1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+    const encryptedKey = await encryptPrivateKey(properPrivateKey, 'password')
+
+    mockedKeychain.setItems({
+      [`account--${mockAccount.createdAt.toISOString()}--${normalizeAddress(mockAccount.address)}`]:
+        {
+          password: encryptedKey,
+        },
+    })
+
+    const result = await getStoredPrivateKey(mockAccount, 'password')
+
+    expect(result).toBe('0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef')
+    expect(result?.length).toBe(66)
+  })
+
+  it('does not modify a correctly formatted private key with 0x prefix', async () => {
+    const properPrivateKey = '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+    const encryptedKey = await encryptPrivateKey(properPrivateKey, 'password')
+
+    mockedKeychain.setItems({
+      [`account--${mockAccount.createdAt.toISOString()}--${normalizeAddress(mockAccount.address)}`]:
+        {
+          password: encryptedKey,
+        },
+    })
+
+    const result = await getStoredPrivateKey(mockAccount, 'password')
+
+    expect(result).toBe('0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef')
+    expect(result?.length).toBe(66)
   })
 })
