@@ -97,6 +97,13 @@ export function* sendPaymentSaga({
       [createStandbyTransaction]
     )
 
+    // After sending the transaction, navigate to the initial tab if not fromExternal
+    // This ensures that the user can't submit the same transaction again accidentally
+    // But since it is internal, they will still see the error banner if the transaction fails
+    if (!fromExternal) {
+      navigateInitialTab()
+    }
+
     const receipt = yield* call(
       [publicClient[networkIdToNetwork[tokenInfo.networkId]], 'waitForTransactionReceipt'],
       { hash }
@@ -123,10 +130,11 @@ export function* sendPaymentSaga({
       })
     }
 
+    // If the transaction was initiated from an external source, navigate back to the previous screen
+    // Since it is external, we need to wait until we get the receipt to know if it was successful or not
+    // Since once we navigate away they will not see the error banner if the transaction fails
     if (fromExternal) {
       navigateBack()
-    } else {
-      navigateInitialTab()
     }
 
     yield* put(sendPaymentSuccess({ amount, tokenId }))
