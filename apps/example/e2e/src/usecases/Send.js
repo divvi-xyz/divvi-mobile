@@ -123,7 +123,7 @@ export default Send = () => {
     })
 
     // Only one configuration can be tested at once; this test covers the invite flow when no share URL is present.
-    it('Then should be able not be able to invite via SMS without share url', async () => {
+    it('Then should not be able to invite via SMS without share url', async () => {
       await waitForElementById('HomeAction-Send', { timeout: 30_000, tap: true })
       await waitForElementById('SendSelectRecipientSearchInput', {
         timeout: 30_000,
