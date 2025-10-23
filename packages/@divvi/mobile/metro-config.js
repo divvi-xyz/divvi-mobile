@@ -58,6 +58,19 @@ function getDefaultConfig(...args) {
       }
       return ctx.resolveRequest(ctx, moduleName, platform)
     }
+    if (moduleName.startsWith('@privy-io/') || moduleName.startsWith('permissionless')) {
+      const ctx = {
+        ...context,
+        unstable_enablePackageExports: true,
+      }
+      return ctx.resolveRequest(ctx, moduleName, platform)
+    }
+
+    if (moduleName.endsWith('.js') && context.originModulePath.includes('node_modules/ox/')) {
+      const newModuleName = moduleName.replace(/\.js$/, '')
+      return context.resolveRequest(context, newModuleName, platform)
+    }
+
     return context.resolveRequest(context, moduleName, platform)
   }
 

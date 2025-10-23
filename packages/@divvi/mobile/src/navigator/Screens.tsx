@@ -15,6 +15,7 @@ export enum Screens {
   DappsScreen = 'DappsScreen',
   DebugImages = 'DebugImages',
   DemoModeAuthBlock = 'DemoModeAuthBlock',
+  DemoPrivy = 'DemoPrivy',
   EarnInfoScreen = 'EarnInfoScreen',
   EarnEnterAmount = 'EarnEnterAmount',
   EarnDepositConfirmationScreen = 'EarnDepositConfirmationScreen',

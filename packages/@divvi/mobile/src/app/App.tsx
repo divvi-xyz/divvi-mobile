@@ -1,28 +1,31 @@
-import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter'
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
-import { PrivyProvider } from '@privy-io/expo'
-import { PrivyElements } from '@privy-io/expo/ui'
-import * as Sentry from '@sentry/react-native'
-import BigNumber from 'bignumber.js'
-import { useFonts } from 'expo-font'
-import 'intl-pluralrules'
-import * as React from 'react'
-import { LogBox, Platform, StatusBar } from 'react-native'
-import { Auth0Provider } from 'react-native-auth0'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { getNumberFormatSettings } from 'react-native-localize'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { enableFreeze, enableScreens } from 'react-native-screens'
-import { Provider } from 'react-redux'
-import { PersistGate } from 'redux-persist/integration/react'
-import AppInitGate from 'src/app/AppInitGate'
-import ErrorBoundary from 'src/app/ErrorBoundary'
-import { getAppConfig } from 'src/appConfig'
-import { AUTH0_CLIENT_ID, AUTH0_DOMAIN, isE2EEnv, SENTRY_ENABLED } from 'src/config'
-import i18n from 'src/i18n'
-import NavigatorWrapper from 'src/navigator/NavigatorWrapper'
-import { persistor, store } from 'src/redux/store'
-import Logger from 'src/utils/Logger'
+import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { PrivyProvider } from '@privy-io/expo';
+import { SmartWalletsProvider } from '@privy-io/expo/smart-wallets';
+import { PrivyElements } from '@privy-io/expo/ui';
+
+import * as Sentry from '@sentry/react-native';
+import BigNumber from 'bignumber.js';
+import { useFonts } from 'expo-font';
+import 'intl-pluralrules';
+import * as React from 'react';
+import { LogBox, Platform, StatusBar } from 'react-native';
+import { Auth0Provider } from 'react-native-auth0';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { getNumberFormatSettings } from 'react-native-localize';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { enableFreeze, enableScreens } from 'react-native-screens';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import AppInitGate from 'src/app/AppInitGate';
+import ErrorBoundary from 'src/app/ErrorBoundary';
+import { getAppConfig } from 'src/appConfig';
+import { AUTH0_CLIENT_ID, AUTH0_DOMAIN, isE2EEnv, SENTRY_ENABLED } from 'src/config';
+import i18n from 'src/i18n';
+import NavigatorWrapper from 'src/navigator/NavigatorWrapper';
+import { persistor, store } from 'src/redux/store';
+import Logger from 'src/utils/Logger';
+import { base } from 'viem/chains';
 
 Logger.overrideConsoleLogs()
 // No need to await this, errors are handled internally
@@ -95,7 +98,8 @@ export class App extends React.Component<Props> {
   render() {
     return (
       <SafeAreaProvider>  
-        <PrivyProvider appId={''} clientId=''>
+        <PrivyProvider appId={'cmginhl4s001ilb0csc6ij6zb'} clientId='client-WY6RbAeHvft7DFaXrNqsDwhXUQA6ikuf2gk1X7NJv7R5E' supportedChains={[base]}>
+          <SmartWalletsProvider>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
             <Auth0Provider domain={AUTH0_DOMAIN} clientId={AUTH0_CLIENT_ID}>
@@ -123,6 +127,7 @@ export class App extends React.Component<Props> {
             </Auth0Provider>
           </PersistGate>
         </Provider>
+        </SmartWalletsProvider>
         </PrivyProvider>
       </SafeAreaProvider>
     )

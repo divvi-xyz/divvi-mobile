@@ -59,6 +59,7 @@
     "expo-splash-screen": "~0.30.10",
     "fast-text-encoding": "^1.0.6",
     "lottie-react-native": "^5.1.6",
+    "permissionless": "^0.2.57",
     "react": "19.0.0",
     "react-native": "0.79.6",
     "react-native-adjust": "^4.38.1",
@@ -85,7 +86,8 @@
     "react-native-share": "^11.1.0",
     "react-native-simple-toast": "^3.3.2",
     "react-native-svg": "^15.7.1",
-    "react-native-video": "^6.16.1"
+    "react-native-video": "^6.16.1",
+    "viem": "^2.38.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

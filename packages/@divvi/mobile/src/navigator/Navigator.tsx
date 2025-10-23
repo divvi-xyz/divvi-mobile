@@ -94,6 +94,7 @@ import ProtectWallet from 'src/onboarding/registration/ProtectWallet'
 import RegulatoryTerms from 'src/onboarding/registration/RegulatoryTerms'
 import SelectCountry from 'src/onboarding/registration/SelectCountry'
 import OnboardingSuccessScreen from 'src/onboarding/success/OnboardingSuccessScreen'
+import DemoPrivy from 'src/onboarding/demo/DemoPrivy'
 import Welcome from 'src/onboarding/welcome/Welcome'
 import PincodeEnter from 'src/pincode/PincodeEnter'
 import PincodeSet from 'src/pincode/PincodeSet'
@@ -190,6 +191,11 @@ const nuxScreens = (Navigator: typeof Stack) => (
       name={Screens.Welcome}
       component={Welcome}
       options={Welcome.navigationOptions}
+    />
+    <Navigator.Screen
+      name={Screens.DemoPrivy}
+      component={DemoPrivy}
+      options={headerWithBackButton}
     />
     <Navigator.Screen
       name={Screens.ProtectWallet}
