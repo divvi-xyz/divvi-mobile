@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "WhatsApp ile davet et",
-  "inviteWithSMS": "SMS ile davet et",
   "whySendFees": "Bu işlem ücreti, yeni kullanıcının telefon numarasını bağlama masraflarını kapsar",
   "whyReceiveFees": "Hesabınızı onaylamak için size bir miktar kripto gönderildi",
   "inviteSent": "Davet gönderildi",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Arkadaşlarınızı davet edin ve 12 cUSD'ye kadar kazanın",
     "body": "Numaralarını bağladıklarında ve {{appName}} uygulamasına fon eklediklerinde her ikiniz de 0,50 cUSD alacaksınız."
+  },
+  "inviteWithSMS": {
+    "title": "SMS ile davet et",
+    "shareMessage": "Hey! {{appName}} cüzdanına kaydolun. Birikimlerimi USD ve kripto olarak artırmak için kullanıyorum ve siz de sadece bir telefon numarasıyla saniyeler içinde kurabilirsiniz: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Arkadaşını davet et",

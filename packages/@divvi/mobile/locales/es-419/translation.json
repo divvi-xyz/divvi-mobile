@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Invitar por WhatsApp",
-  "inviteWithSMS": "Invitar por SMS",
   "whySendFees": "Esta tarifa cubre los costos de conexión del número de teléfono del nuevo usuario",
   "whyReceiveFees": "Te enviaron cripto para confirmar tu cuenta.",
   "inviteSent": "Invitación enviada",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Invita a amigos y consigue hasta 12 cUSD",
     "body": "Una vez que conecten su número y agreguen fondos a {{appName}}, ambos recibirán 0,50 cUSD."
+  },
+  "inviteWithSMS": {
+    "title": "Invitar por SMS",
+    "shareMessage": "Hola, regístrate en la cartera {{appName}} . Yo la utilizo para hacer crecer mis ahorros en USD y criptomonedas, y tú puedes configurarla en segundos con sólo un número de teléfono: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Invita a un amigo",

@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Convidar com o WhatsApp",
-  "inviteWithSMS": "Convidar com SMS",
   "whySendFees": "Essa taxa cobre os custos de confirmação do número de celular do usuário",
   "whyReceiveFees": "Você recebeu cripto para confirmar sua conta",
   "inviteSent": "Convite enviado",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Indique um amigo e ganhe USDT",
     "body": "Depois que a pessoa conectar seu número à {{appName}}, vocês dois receberão 1 USDT."
+  },
+  "inviteWithSMS": {
+    "title": "Convidar com SMS",
+    "shareMessage": "Ei, inscreva-se na carteira {{appName}} . Eu a uso para aumentar minhas economias em dólares e criptomoedas, e você pode configurá-la em segundos com apenas um número de telefone: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Convide um amigo",

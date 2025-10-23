@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "通过 WhatsApp 邀请",
-  "inviteWithSMS": "通过短信邀请",
   "whySendFees": "此费用包括新用户关联其手机号码的费用",
   "whyReceiveFees": "有人发送了一些加密货币来确认您的账户",
   "inviteSent": "邀请已发送",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "邀请朋友，最多可获得 12 cUSD",
     "body": "他们连接了自己的号码并将资金添加到 {{appName}} 后，你们都将收到 0.50 cUSD。"
+  },
+  "inviteWithSMS": {
+    "title": "通过短信邀请",
+    "shareMessage": "嘿！注册 {{appName}} 钱包。我用它来增加我的美元和加密货币储蓄，你只需一个电话号码就可以在几秒钟内设置好： {{shareUrl}}。"
   },
   "inviteWithUrl": {
     "title": "邀请朋友",
