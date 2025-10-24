@@ -1,8 +1,7 @@
-import { fireEvent, render, waitFor } from '@testing-library/react-native'
-import React, { useState } from 'react'
-import { View } from 'react-native'
+import { render, renderHook, waitFor } from '@testing-library/react-native'
+import React from 'react'
 import { Provider } from 'react-redux'
-import TextInput from 'src/components/TextInput'
+import { getAppConfig } from 'src/appConfig'
 import { RecipientType } from 'src/recipients/recipient'
 import { resolveId } from 'src/recipients/resolve-id'
 import {
@@ -29,6 +28,48 @@ import {
 } from 'test/values'
 
 jest.mock('src/recipients/resolve-id')
+jest.mock('viem/ens', () => ({
+  normalize: jest.fn((name: string) => {
+    // Mock normalize to return the name as-is for testing
+    return name.toLowerCase()
+  }),
+}))
+
+// Mock getPublicClient for ENS resolution
+jest.mock('src/public', () => ({
+  getPublicClient: jest.fn(() => ({
+    getEnsAddress: jest.fn().mockResolvedValue('0xd8da6bf26964af9d7eed9e03e53415d37aa96045'),
+  })),
+}))
+
+// Mock getAppConfig to provide the fake API key for ENS resolution
+jest.mocked(getAppConfig).mockReturnValue({
+  displayName: 'Test App',
+  deepLinkUrlScheme: 'testapp',
+  registryName: 'test',
+  experimental: {
+    alchemyKeys: {
+      ALCHEMY_ETHEREUM_API_KEY: 'test-key',
+    },
+  },
+})
+
+jest.mock('src/utils/phoneNumbers', () => ({
+  parsePhoneNumber: jest.fn((phoneNumber: string) => {
+    if (phoneNumber === '+15555555555') {
+      return {
+        e164Number: '+15555555555',
+      }
+    }
+    if (phoneNumber === '7255555555') {
+      return {
+        e164Number: '+17255555555',
+        displayNumber: '(725) 555-5555',
+      }
+    }
+    return null
+  }),
+}))
 
 const getStore = (phoneNumberVerified: boolean = true) =>
   createMockStore({
@@ -52,7 +93,7 @@ describe('useResolvedRecipients', () => {
     jest.mocked(resolveId).mockImplementation(async (id) => {
       return {
         resolutions:
-          id === '5555555555'
+          id === '+15555555555' // E164 format that parsePhoneNumber will produce
             ? [
                 {
                   kind: ResolutionKind.Address,
@@ -64,49 +105,34 @@ describe('useResolvedRecipients', () => {
     })
   })
 
-  async function renderHook() {
-    const result = jest.fn()
-
-    function TestComponent() {
-      const [searchQuery, setSearchQuery] = useState('')
-      const recipients = useResolvedRecipients(searchQuery)
-      if (recipients.length) {
-        result(recipients)
-      }
-      return (
-        <View testID={recipients.length ? 'complete' : 'loading'}>
-          <TextInput testID="searchInput" onChangeText={setSearchQuery} value={searchQuery} />
-        </View>
-      )
-    }
-
-    return {
-      ...render(
-        <Provider store={getStore()}>
-          <TestComponent />
-        </Provider>
+  it('resolves ENS names', async () => {
+    const { result } = renderHook(() => useResolvedRecipients('vitalik.eth'), {
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <Provider store={getStore(true)}>{children}</Provider>
       ),
-      result,
-    }
-  }
-
-  it('resolves and maps recipient', async () => {
-    const { result, getByTestId } = await renderHook()
-
-    expect(getByTestId('loading')).toBeTruthy()
-
-    fireEvent.changeText(getByTestId('searchInput'), '55555555')
-    fireEvent.changeText(getByTestId('searchInput'), '555555555')
-    fireEvent.changeText(getByTestId('searchInput'), '5555555555')
+    })
 
     await waitFor(() => {
-      expect(getByTestId('complete')).toBeTruthy()
+      expect(result.current).toHaveLength(1)
+      expect(result.current[0]).toEqual({
+        address: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
+        name: 'vitalik.eth',
+        recipientType: RecipientType.Ens,
+        thumbnailPath: undefined,
+      })
     })
-    expect(resolveId).toHaveBeenCalledTimes(2)
-    expect(resolveId).toHaveBeenCalledWith('')
-    expect(resolveId).toHaveBeenCalledWith('5555555555')
-    expect(result).toHaveBeenCalledWith([
-      {
+  })
+
+  it('resolves phone numbers', async () => {
+    const { result } = renderHook(() => useResolvedRecipients('+15555555555'), {
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <Provider store={getStore(true)}>{children}</Provider>
+      ),
+    })
+
+    await waitFor(() => {
+      expect(result.current).toHaveLength(1)
+      expect(result.current[0]).toEqual({
         address: mockAccount.toLowerCase(),
         name: 'John Doe',
         thumbnailPath: undefined,
@@ -114,8 +140,8 @@ describe('useResolvedRecipients', () => {
         e164PhoneNumber: '+14155550000',
         displayNumber: '14155550000',
         recipientType: RecipientType.Address,
-      },
-    ])
+      })
+    })
   })
 })
 
@@ -328,6 +354,7 @@ describe('useMapResolutionsToRecipients', () => {
       recipientType: RecipientType.Address,
     })
   })
+
   it('returns recipient for ENS-based resolution', () => {
     const mockResolutions = [
       {
