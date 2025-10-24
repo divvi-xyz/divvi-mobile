@@ -42,11 +42,6 @@ const TAG = 'send/hooks'
 /**
  * Returns a single ordered list of all recipients to show in search results,
  * as well as the search query state variable itself and its setter.
- *
- * onSearch is a callback function which will be called with the search query
- * just before it's updated.
- *
- * This hook is tested via the SendSelectRecipient.test.tsx file.
  */
 export function useMergedSearchRecipients(onSearch: (searchQuery: string) => void) {
   const [searchQuery, setSearchQuery] = useState('')
@@ -384,7 +379,6 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 /**
  * Hook that resolves phone numbers to wallet addresses via the resolveId API.
- * Automatically handles phone number parsing and country code detection.
  *
  * @param searchQuery - The phone number to resolve (e.g., "+1234567890")
  * @returns Array of name resolutions containing wallet addresses
@@ -422,7 +416,7 @@ function usePhoneRecipients(searchQuery: string): NameResolution[] {
 
 /**
  * Hook that resolves ENS names to wallet addresses via client-side resolution.
- * Uses Alchemy API for ENS resolution with proper error handling.
+ * Uses Viem and Alchemy for ENS resolution
  *
  * @param searchQuery - The ENS name to resolve (e.g., "vitalik.eth")
  * @returns Array of name resolutions containing wallet addresses
