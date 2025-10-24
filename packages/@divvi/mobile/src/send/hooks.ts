@@ -230,8 +230,10 @@ async function processEnsResolution(
     return []
   }
 
-  // We want to check if the query is a valid ENS prior to the user typing the .eth suffix
-  const ensQuery = searchQuery.includes('.eth') ? searchQuery : `${searchQuery}.eth`
+  // Normalize ENS query: convert to lowercase, trim whitespace, and ensure .eth suffix
+  const ensQuery = searchQuery.toLowerCase().trim().endsWith('.eth')
+    ? searchQuery.toLowerCase().trim()
+    : `${searchQuery.toLowerCase().trim()}.eth`
 
   if (!checkIsValidEnsName(ensQuery)) {
     return []
