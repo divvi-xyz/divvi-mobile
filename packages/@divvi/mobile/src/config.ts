@@ -19,14 +19,6 @@ export interface ExpectedLaunchArgs {
 
 const appConfig = getAppConfig()
 const experimentalConfig = appConfig.experimental ?? {}
-const keyOrUndefined = (file: any, secretsKey: any, attribute: any) => {
-  if (secretsKey in file) {
-    if (attribute in file[secretsKey]) {
-      return file[secretsKey][attribute]
-    }
-  }
-  return undefined
-}
 
 const configOrThrow = (key: string) => {
   const value = Config[key]
