@@ -69,7 +69,7 @@ export interface NetworkConfig {
   }
   celoTokenAddress: Address
   celoGasPriceMinimumAddress: Address
-  alchemyRpcUrl: Record<Exclude<Network, Network.Celo>, string>
+  alchemyRpcUrl: Record<Network, string>
   cusdTokenId: string
   celoTokenId: string
   spendTokenIds: string[]
@@ -86,6 +86,9 @@ export interface NetworkConfig {
   getCicoQuotesUrl: string
   getCeloNewsFeedUrl: string
 }
+
+const ALCHEMY_CELO_RPC_URL_STAGING = 'https://celo-alfajores.g.alchemy.com/v2/'
+const ALCHEMY_CELO_RPC_URL_MAINNET = 'https://celo-mainnet.g.alchemy.com/v2/'
 
 const ALCHEMY_ETHEREUM_RPC_URL_STAGING = 'https://eth-sepolia.g.alchemy.com/v2/'
 const ALCHEMY_ETHEREUM_RPC_URL_MAINNET = 'https://eth-mainnet.g.alchemy.com/v2/'
@@ -352,6 +355,7 @@ const networkConfigs: { [testnet: string]: NetworkConfig } = {
     celoTokenAddress: CELO_TOKEN_ADDRESS_STAGING,
     celoGasPriceMinimumAddress: CELO_GAS_PRICE_MINIMUM_ADDRESS_STAGING,
     alchemyRpcUrl: {
+      [Network.Celo]: ALCHEMY_CELO_RPC_URL_STAGING,
       [Network.Ethereum]: ALCHEMY_ETHEREUM_RPC_URL_STAGING,
       [Network.Arbitrum]: ALCHEMY_ARBITRUM_RPC_URL_STAGING,
       [Network.Optimism]: ALCHEMY_OPTIMISM_RPC_URL_STAGING,
@@ -438,6 +442,7 @@ const networkConfigs: { [testnet: string]: NetworkConfig } = {
     celoTokenAddress: CELO_TOKEN_ADDRESS_MAINNET,
     celoGasPriceMinimumAddress: CELO_GAS_PRICE_MINIMUM_ADDRESS_MAINNET,
     alchemyRpcUrl: {
+      [Network.Celo]: ALCHEMY_CELO_RPC_URL_MAINNET,
       [Network.Ethereum]: ALCHEMY_ETHEREUM_RPC_URL_MAINNET,
       [Network.Arbitrum]: ALCHEMY_ARBITRUM_RPC_URL_MAINNET,
       [Network.Optimism]: ALCHEMY_OPTIMISM_RPC_URL_MAINNET,

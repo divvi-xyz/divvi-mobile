@@ -40,7 +40,7 @@ Defined in: [packages/@divvi/mobile/src/public/types.tsx:26](https://github.com/
 optional divviProtocol: object;
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:268](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L268)
+Defined in: [packages/@divvi/mobile/src/public/types.tsx:266](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L266)
 
 #### divviId
 
@@ -75,10 +75,10 @@ optional activity: object;
 optional hideActionsCarousel: boolean;
 ```
 
-#### alchemyKeys?
+#### alchemyApiKey?
 
 ```ts
-optional alchemyKeys: Record<string, string>;
+optional alchemyApiKey: string;
 ```
 
 #### bidali?
