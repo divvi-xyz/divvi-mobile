@@ -1,2 +1,7 @@
-// We can just use the actual node crypto module here
-module.exports = jest.requireActual('crypto')
+// Mock the install function that sets up global polyfills
+const install = jest.fn()
+
+module.exports = {
+  ...jest.requireActual('crypto'),
+  install,
+}

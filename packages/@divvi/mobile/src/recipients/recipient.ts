@@ -42,8 +42,8 @@ export type AddressRecipient = Recipient & {
 export enum RecipientType {
   Address = 'Address',
   PhoneNumber = 'PhoneNumber',
-  Nomspace = 'Nomspace',
   Merchant = 'Merchant',
+  Ens = 'ENS',
 }
 
 export function recipientHasNumber(recipient: Recipient): recipient is MobileRecipient {

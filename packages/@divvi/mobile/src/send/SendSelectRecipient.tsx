@@ -48,6 +48,7 @@ type Props = NativeStackScreenProps<StackParamList, Screens.SendSelectRecipient>
 function GetStartedSection() {
   const { t } = useTranslation()
   const phoneNumberVerificationEnabled = getAppConfig().experimental?.phoneNumberVerification
+  const ensSupported = !!getAppConfig().experimental?.alchemyKeys?.ALCHEMY_ETHEREUM_API_KEY
 
   const renderOption = ({
     optionNum,
@@ -81,22 +82,34 @@ function GetStartedSection() {
     )
   }
 
-  const options = [
+  const getStartedOptions = [
     {
-      optionNum: '1',
+      id: 'address',
+      condition: () => true, // Always show
       title: t('sendSelectRecipient.getStarted.options.one.title'),
       subtitle: t('sendSelectRecipient.getStarted.options.one.subtitle'),
     },
-    ...(phoneNumberVerificationEnabled
-      ? [
-          {
-            optionNum: '2',
-            title: t('sendSelectRecipient.getStarted.options.two.title'),
-            subtitle: t('sendSelectRecipient.getStarted.options.two.subtitle'),
-          },
-        ]
-      : []),
+    {
+      id: 'phone',
+      condition: () => phoneNumberVerificationEnabled,
+      title: t('sendSelectRecipient.getStarted.options.two.title'),
+      subtitle: t('sendSelectRecipient.getStarted.options.two.subtitle'),
+    },
+    {
+      id: 'ens',
+      condition: () => ensSupported,
+      title: t('sendSelectRecipient.getStarted.options.three.title'),
+      subtitle: t('sendSelectRecipient.getStarted.options.three.subtitle'),
+    },
   ]
+
+  const options = getStartedOptions
+    .filter((option) => option.condition())
+    .map((option, index) => ({
+      optionNum: (index + 1).toString(),
+      title: option.title,
+      subtitle: option.subtitle,
+    }))
 
   return (
     <View style={getStartedStyles.container} testID={'SelectRecipient/GetStarted'}>
