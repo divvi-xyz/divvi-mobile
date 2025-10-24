@@ -42,7 +42,7 @@ const TAG = 'send/hooks'
 /**
  * Returns a single ordered list of all recipients to show in search results,
  * as well as the search query state variable itself and its setter.
- * 
+ *
  * onSearch is a callback function which will be called with the search query
  * just before it's updated.
  *
@@ -105,7 +105,7 @@ export function useMergedSearchRecipients(onSearch: (searchQuery: string) => voi
  * Fetches recipients based off the search query by fetching from the resolveId
  * endpoint. The search query is debounced before making a network request in order
  * to prevent excessive network calls.
- * 
+ *
  * @param searchQuery - The search query (phone number or ENS name)
  * @returns Array of resolved recipients with addresses and metadata
  */
