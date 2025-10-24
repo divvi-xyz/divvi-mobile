@@ -12,6 +12,7 @@ import {
   sortRecipients,
 } from 'src/recipients/recipient'
 import { phoneRecipientCacheSelector, recipientInfoSelector } from 'src/recipients/reducer'
+import { resolveId } from 'src/recipients/resolve-id'
 import { useSelector } from 'src/redux/hooks'
 import { isValidAddress } from 'src/utils/address'
 import Logger from 'src/utils/Logger'
@@ -101,7 +102,8 @@ export function useMergedSearchRecipients(onSearch: (searchQuery: string) => voi
 }
 
 /**
- * Fetches recipients based off the search query which is debounced to prevent excessive network calls
+ * Fetches recipients based off the search query which is debounced to prevent excessive network calls.
+ * Handles both phone numbers (via resolveId) and ENS names (client-side resolution).
  */
 export function useResolvedRecipients(searchQuery: string): Recipient[] {
   const [resolutions, setResolutions] = useState<NameResolution[]>([])
@@ -125,11 +127,20 @@ export function useResolvedRecipients(searchQuery: string): Recipient[] {
         debouncedSearchQuery,
         defaultCountryCode ?? undefined
       )
+
       if (parsedPhoneNumber) {
-        setResolutions([])
+        // Handle phone numbers via resolveId (server-side resolution)
+        try {
+          const resolveResult = await resolveId(parsedPhoneNumber.e164Number)
+          setResolutions(resolveResult?.resolutions ?? [])
+        } catch (error) {
+          Logger.error(TAG, 'Phone number resolution failed', error)
+          setResolutions([])
+        }
         return
       }
 
+      // Handle ENS queries (client-side resolution)
       const ensResolutions = await processEnsResolution(debouncedSearchQuery, setResolutions)
       setResolutions(ensResolutions)
     }
