@@ -102,57 +102,35 @@ export function useMergedSearchRecipients(onSearch: (searchQuery: string) => voi
 }
 
 /**
- * Fetches recipients based off the search query which is debounced to prevent excessive network calls.
- * Handles both phone numbers (via resolveId) and ENS names (client-side resolution).
+ * Main hook that resolves search queries to recipient addresses.
+ * Automatically detects whether the query is a phone number or ENS name and routes accordingly.
+ * Uses debouncing to prevent excessive API calls during typing.
+ *
+ * @param searchQuery - The search query (phone number or ENS name)
+ * @returns Array of resolved recipients with addresses and metadata
  */
 export function useResolvedRecipients(searchQuery: string): Recipient[] {
-  const [resolutions, setResolutions] = useState<NameResolution[]>([])
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery)
+  const debouncedQuery = useDebouncedValue(searchQuery, TYPING_DEBOUNCE_MILLSECONDS)
   const defaultCountryCode = useSelector(defaultCountryCodeSelector)
 
-  const debounceSearchQuery = useCallback(
-    debounce((query: string) => {
-      setDebouncedSearchQuery(query)
-    }, TYPING_DEBOUNCE_MILLSECONDS),
-    []
-  )
+  // Detect if it's a phone number or ENS-type query
+  const isPhoneNumber = useMemo(() => {
+    return !!parsePhoneNumber(debouncedQuery, defaultCountryCode ?? undefined)
+  }, [debouncedQuery, defaultCountryCode])
 
-  useEffect(() => {
-    debounceSearchQuery(searchQuery)
-  }, [searchQuery, debounceSearchQuery])
+  const phoneResolutions = usePhoneRecipients(isPhoneNumber ? debouncedQuery : '')
+  const ensResolutions = useEnsRecipients(!isPhoneNumber ? debouncedQuery : '')
 
-  useEffect(() => {
-    const processSearchQuery = async () => {
-      const parsedPhoneNumber = parsePhoneNumber(
-        debouncedSearchQuery,
-        defaultCountryCode ?? undefined
-      )
+  const activeResolutions = isPhoneNumber ? phoneResolutions : ensResolutions
 
-      if (parsedPhoneNumber) {
-        // Handle phone numbers via resolveId (server-side resolution)
-        try {
-          const resolveResult = await resolveId(parsedPhoneNumber.e164Number)
-          setResolutions(resolveResult?.resolutions ?? [])
-        } catch (error) {
-          Logger.error(TAG, 'Phone number resolution failed', error)
-          setResolutions([])
-        }
-        return
-      }
+  const mappedRecipients = useMapResolutionsToRecipients(debouncedQuery, activeResolutions)
 
-      // Handle ENS queries (client-side resolution)
-      const ensResolutions = await processEnsResolution(debouncedSearchQuery, setResolutions)
-      setResolutions(ensResolutions)
-    }
+  // Return empty array for empty queries
+  if (!debouncedQuery?.trim()) {
+    return []
+  }
 
-    void processSearchQuery()
-
-    return () => {
-      debounceSearchQuery.cancel()
-    }
-  }, [debouncedSearchQuery, defaultCountryCode])
-
-  return useMapResolutionsToRecipients(debouncedSearchQuery, resolutions)
+  return mappedRecipients
 }
 
 /**
@@ -382,4 +360,93 @@ export function useMapResolutionsToRecipients(
   })
 
   return resolvedRecipients.filter((recipient) => !!recipient)
+}
+
+/**
+ * Generic hook that debounces a value to prevent excessive updates.
+ * Useful for search inputs, API calls, or any value that changes frequently.
+ *
+ * @param value - The value to debounce
+ * @param delayMs - The delay in milliseconds before updating the debounced value
+ * @returns The debounced value
+ */
+function useDebouncedValue<T>(value: T, delayMs: number): T {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+
+  useEffect(() => {
+    const handler = debounce(() => setDebouncedValue(value), delayMs)
+    handler()
+    return () => handler.cancel()
+  }, [value, delayMs])
+
+  return debouncedValue
+}
+
+/**
+ * Hook that resolves phone numbers to wallet addresses via the resolveId API.
+ * Automatically handles phone number parsing and country code detection.
+ *
+ * @param searchQuery - The phone number to resolve (e.g., "+1234567890")
+ * @returns Array of name resolutions containing wallet addresses
+ */
+function usePhoneRecipients(searchQuery: string): NameResolution[] {
+  const [resolutions, setResolutions] = useState<NameResolution[]>([])
+  const defaultCountryCode = useSelector(defaultCountryCodeSelector)
+
+  const fetchPhoneResolution = useCallback(async () => {
+    const parsed = parsePhoneNumber(searchQuery, defaultCountryCode ?? undefined)
+    if (!parsed) {
+      setResolutions([])
+      return
+    }
+
+    try {
+      const result = await resolveId(parsed.e164Number)
+      setResolutions(result?.resolutions ?? [])
+    } catch (error) {
+      Logger.error(TAG, 'Phone number resolution failed', error)
+      setResolutions([])
+    }
+  }, [searchQuery, defaultCountryCode])
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      void fetchPhoneResolution()
+    } else {
+      setResolutions([])
+    }
+  }, [searchQuery, fetchPhoneResolution])
+
+  return resolutions
+}
+
+/**
+ * Hook that resolves ENS names to wallet addresses via client-side resolution.
+ * Uses Alchemy API for ENS resolution with proper error handling.
+ *
+ * @param searchQuery - The ENS name to resolve (e.g., "vitalik.eth")
+ * @returns Array of name resolutions containing wallet addresses
+ */
+function useEnsRecipients(searchQuery: string): NameResolution[] {
+  const [resolutions, setResolutions] = useState<NameResolution[]>([])
+
+  const resolveEns = useCallback(async () => {
+    try {
+      const result = await processEnsResolution(searchQuery, setResolutions)
+      setResolutions(result)
+    } catch (error) {
+      Logger.error(TAG, 'ENS resolution failed', error)
+      setResolutions([])
+    }
+  }, [searchQuery])
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      void resolveEns()
+    } else {
+      setResolutions([])
+    }
+  }, [searchQuery, resolveEns])
+
+  return resolutions
 }
