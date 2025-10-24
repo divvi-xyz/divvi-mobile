@@ -100,31 +100,7 @@ export const WEB3AUTH_CLIENT_ID =
     : 'BH-yuQkutyRCHMwcTQu_zSpkbG5fGeJEoc45DeoW4krzESwLD6qhQXRCuTSrFU_-qbvIvLcZhUJv9G5xmoFip8M'
 
 // SECRETS
-export const ALCHEMY_ETHEREUM_API_KEY = keyOrUndefined(
-  experimentalConfig,
-  'alchemyKeys',
-  'ALCHEMY_ETHEREUM_API_KEY'
-)
-export const ALCHEMY_ARBITRUM_API_KEY = keyOrUndefined(
-  experimentalConfig,
-  'alchemyKeys',
-  'ALCHEMY_ARBITRUM_API_KEY'
-)
-export const ALCHEMY_OPTIMISM_API_KEY = keyOrUndefined(
-  experimentalConfig,
-  'alchemyKeys',
-  'ALCHEMY_OPTIMISM_API_KEY'
-)
-export const ALCHEMY_POLYGON_POS_API_KEY = keyOrUndefined(
-  experimentalConfig,
-  'alchemyKeys',
-  'ALCHEMY_POLYGON_POS_API_KEY'
-)
-export const ALCHEMY_BASE_API_KEY = keyOrUndefined(
-  experimentalConfig,
-  'alchemyKeys',
-  'ALCHEMY_BASE_API_KEY'
-)
+export const ALCHEMY_API_KEY = experimentalConfig.alchemyApiKey
 
 export const STATSIG_API_KEY = appConfig.features?.statsig?.apiKey
 export const STATSIG_ENABLED = !isE2EEnv && !!STATSIG_API_KEY
