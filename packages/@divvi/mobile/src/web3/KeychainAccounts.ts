@@ -96,7 +96,10 @@ export async function getStoredPrivateKey(
   // so all accounts created or imported after that change will have the private key stored without the 0x prefix
   // Later on we reverted the code with the bug and it caused signing issues for these accounts.
   // Here we make sure that we always return the private key with the 0x prefix
-  return normalizeAddressWith0x(privateKey)
+  // Additionally, pad the private key to 64 characters to handle keys with leading zeros
+  // that may have been stored as 63 characters (or fewer)
+  const paddedKey = privateKey.replace(/^0x/, '').padStart(64, '0')
+  return normalizeAddressWith0x(paddedKey)
 }
 
 /**
