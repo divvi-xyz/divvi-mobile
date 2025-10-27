@@ -225,8 +225,8 @@ async function processEnsResolution(
   setResolutions: (updater: (prev: NameResolution[]) => NameResolution[]) => void
 ): Promise<NameResolution[]> {
   const config = getAppConfig()
-  if (!config.experimental?.alchemyKeys?.ALCHEMY_ETHEREUM_API_KEY) {
-    Logger.warn(TAG, 'ALCHEMY_ETHEREUM_API_KEY not found, skipping ENS resolution')
+  if (!config.experimental?.alchemyApiKey) {
+    Logger.warn(TAG, 'alchemyApiKey not found, skipping ENS resolution')
     return []
   }
 

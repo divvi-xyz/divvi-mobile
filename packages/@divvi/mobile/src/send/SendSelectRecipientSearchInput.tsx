@@ -17,7 +17,7 @@ export function SendSelectRecipientSearchInput({
   onChangeText,
 }: SendSelectRecipientSearchInputProps) {
   const { t } = useTranslation()
-  const ensSupported = !!getAppConfig().experimental?.alchemyKeys?.ALCHEMY_ETHEREUM_API_KEY
+  const ensSupported = !!getAppConfig().experimental?.alchemyApiKey
   // Font scaling is causing issues on Android
   const allowFontScaling = Platform.OS === 'ios'
   return (

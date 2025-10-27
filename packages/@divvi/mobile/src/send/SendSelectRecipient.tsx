@@ -48,7 +48,7 @@ type Props = NativeStackScreenProps<StackParamList, Screens.SendSelectRecipient>
 function GetStartedSection() {
   const { t } = useTranslation()
   const phoneNumberVerificationEnabled = getAppConfig().experimental?.phoneNumberVerification
-  const ensSupported = !!getAppConfig().experimental?.alchemyKeys?.ALCHEMY_ETHEREUM_API_KEY
+  const ensSupported = !!getAppConfig().experimental?.alchemyApiKey
 
   const renderOption = ({
     optionNum,
