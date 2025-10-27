@@ -6,48 +6,78 @@ import { PublicClient, Transport, createPublicClient, http } from 'viem'
 export const INTERNAL_RPC_SUPPORTED_NETWORKS = [Network.Arbitrum] as const
 
 export const viemTransports: Record<Network, Transport> = {
-  [Network.Celo]: http(networkConfig.alchemyRpcUrl[Network.Celo], {
-    fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${ALCHEMY_API_KEY}`,
-      },
-    },
-  }),
-  [Network.Ethereum]: http(networkConfig.alchemyRpcUrl[Network.Ethereum], {
-    fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${ALCHEMY_API_KEY}`,
-      },
-    },
-  }),
-  [Network.Arbitrum]: http(networkConfig.alchemyRpcUrl[Network.Arbitrum], {
-    fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${ALCHEMY_API_KEY}`,
-      },
-    },
-  }),
-  [Network.Optimism]: http(networkConfig.alchemyRpcUrl[Network.Optimism], {
-    fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${ALCHEMY_API_KEY}`,
-      },
-    },
-  }),
-  [Network.PolygonPoS]: http(networkConfig.alchemyRpcUrl[Network.PolygonPoS], {
-    fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${ALCHEMY_API_KEY}`,
-      },
-    },
-  }),
-  [Network.Base]: http(networkConfig.alchemyRpcUrl[Network.Base], {
-    fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${ALCHEMY_API_KEY}`,
-      },
-    },
-  }),
+  [Network.Celo]: http(
+    ALCHEMY_API_KEY ? networkConfig.alchemyRpcUrl[Network.Celo] : undefined,
+    ALCHEMY_API_KEY
+      ? {
+          fetchOptions: {
+            headers: {
+              Authorization: `Bearer ${ALCHEMY_API_KEY}`,
+            },
+          },
+        }
+      : {}
+  ),
+  [Network.Ethereum]: http(
+    ALCHEMY_API_KEY ? networkConfig.alchemyRpcUrl[Network.Ethereum] : undefined,
+    ALCHEMY_API_KEY
+      ? {
+          fetchOptions: {
+            headers: {
+              Authorization: `Bearer ${ALCHEMY_API_KEY}`,
+            },
+          },
+        }
+      : {}
+  ),
+  [Network.Arbitrum]: http(
+    ALCHEMY_API_KEY ? networkConfig.alchemyRpcUrl[Network.Arbitrum] : undefined,
+    ALCHEMY_API_KEY
+      ? {
+          fetchOptions: {
+            headers: {
+              Authorization: `Bearer ${ALCHEMY_API_KEY}`,
+            },
+          },
+        }
+      : {}
+  ),
+  [Network.Optimism]: http(
+    ALCHEMY_API_KEY ? networkConfig.alchemyRpcUrl[Network.Optimism] : undefined,
+    ALCHEMY_API_KEY
+      ? {
+          fetchOptions: {
+            headers: {
+              Authorization: `Bearer ${ALCHEMY_API_KEY}`,
+            },
+          },
+        }
+      : {}
+  ),
+  [Network.PolygonPoS]: http(
+    ALCHEMY_API_KEY ? networkConfig.alchemyRpcUrl[Network.PolygonPoS] : undefined,
+    ALCHEMY_API_KEY
+      ? {
+          fetchOptions: {
+            headers: {
+              Authorization: `Bearer ${ALCHEMY_API_KEY}`,
+            },
+          },
+        }
+      : {}
+  ),
+  [Network.Base]: http(
+    ALCHEMY_API_KEY ? networkConfig.alchemyRpcUrl[Network.Base] : undefined,
+    ALCHEMY_API_KEY
+      ? {
+          fetchOptions: {
+            headers: {
+              Authorization: `Bearer ${ALCHEMY_API_KEY}`,
+            },
+          },
+        }
+      : {}
+  ),
 }
 
 export const appViemTransports = {
