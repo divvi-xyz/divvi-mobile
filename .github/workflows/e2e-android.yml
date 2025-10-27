@@ -41,6 +41,7 @@ jobs:
             E2E_WALLET_SINGLE_VERIFIED_MNEMONIC:projects/1027349420744/secrets/E2E_WALLET_SINGLE_VERIFIED_MNEMONIC
             E2E_WALLET_MULTIPLE_VERIFIED_MNEMONIC:projects/1027349420744/secrets/E2E_WALLET_MULTIPLE_VERIFIED_MNEMONIC
             E2E_WALLET_12_WORDS_MNEMONIC:projects/1027349420744/secrets/E2E_WALLET_12_WORDS_MNEMONIC
+            E2E_ALCHEMY_API_KEY:projects/1027349420744/secrets/E2E_ALCHEMY_API_KEY
       - uses: actions/checkout@v4
       - name: Set env
         run: |
@@ -142,6 +143,7 @@ jobs:
           E2E_WALLET_SINGLE_VERIFIED_MNEMONIC: ${{ steps.google-secrets.outputs.E2E_WALLET_SINGLE_VERIFIED_MNEMONIC }}
           E2E_WALLET_MULTIPLE_VERIFIED_MNEMONIC: ${{ steps.google-secrets.outputs.E2E_WALLET_MULTIPLE_VERIFIED_MNEMONIC }}
           E2E_WALLET_12_WORDS_MNEMONIC: ${{ steps.google-secrets.outputs.E2E_WALLET_12_WORDS_MNEMONIC }}
+          ALCHEMY_API_KEY: ${{ steps.google-secrets.outputs.E2E_ALCHEMY_API_KEY }}
       # Disabled for now, as the reports are sent to the wrong build
       # See https://github.com/mikepenz/action-junit-report/issues/40
       # - name: Publish Android JUnit Report
