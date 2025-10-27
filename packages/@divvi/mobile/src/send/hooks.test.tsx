@@ -48,9 +48,7 @@ jest.mocked(getAppConfig).mockReturnValue({
   deepLinkUrlScheme: 'testapp',
   registryName: 'test',
   experimental: {
-    alchemyKeys: {
-      ALCHEMY_ETHEREUM_API_KEY: 'test-key',
-    },
+    alchemyApiKey: 'test-key',
   },
 })
 
