@@ -52,7 +52,8 @@ jobs:
             # Note: we adjust the env a bit so it doesn't abort early with
             # "This run was triggered by a pull request and therefore a new version won't be published."
             # We're in dry run anyway.
-            GITHUB_REF="$GITHUB_HEAD_REF" yarn release --dry-run --no-ci --branches "$GITHUB_HEAD_REF"
+            # Also skip npm plugin in dry-run to avoid OIDC token requirement
+            GITHUB_REF="$GITHUB_HEAD_REF" yarn release --dry-run --no-ci --branches "$GITHUB_HEAD_REF" --plugins @semantic-release/commit-analyzer,@semantic-release/release-notes-generator,@semantic-release/github
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
