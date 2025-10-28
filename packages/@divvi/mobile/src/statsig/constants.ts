@@ -36,6 +36,7 @@ export const FeatureGates = {
   [StatsigFeatureGates.SHOW_DIVVI_SLICES_BOTTOM_SHEET]: false,
   [StatsigFeatureGates.RECAPTCHA_ENABLED]: false,
   [StatsigFeatureGates.USE_SMART_ACCOUNT_CAPABILITIES]: false,
+  [StatsigFeatureGates.INJECTED_ETHEREUM_PROVIDER]: false,
 } satisfies { [key in StatsigFeatureGates]: boolean }
 
 export const ExperimentConfigs = {

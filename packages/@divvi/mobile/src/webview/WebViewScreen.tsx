@@ -32,9 +32,9 @@ import { Screens } from 'src/navigator/Screens'
 import { TopBarTextButton } from 'src/navigator/TopBarButton'
 import { StackParamList } from 'src/navigator/types'
 import { useDispatch, useSelector } from 'src/redux/hooks'
-import { getDynamicConfigParams } from 'src/statsig'
+import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
-import { StatsigDynamicConfigs } from 'src/statsig/types'
+import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
 import colors from 'src/styles/colors'
 import { iconHitslop } from 'src/styles/variables'
 import Logger from 'src/utils/Logger'
@@ -58,6 +58,10 @@ function WebViewScreen({ route, navigation }: Props) {
   const disabledMediaPlaybackRequiresUserActionOrigins = getDynamicConfigParams(
     DynamicConfigs[StatsigDynamicConfigs.DAPP_WEBVIEW_CONFIG]
   ).disabledMediaPlaybackRequiresUserActionOrigins
+
+  const ethereumProviderInjectionEnabled = getFeatureGate(
+    StatsigFeatureGates.INJECTED_ETHEREUM_PROVIDER
+  )
 
   const webViewRef = useRef<WebViewRef>(null!)
   const { injectedJavaScript, handleMessage } = useEthereumProvider(webViewRef)
@@ -226,8 +230,10 @@ function WebViewScreen({ route, navigation }: Props) {
           }}
           mediaPlaybackRequiresUserAction={mediaPlaybackRequiresUserAction}
           testID={activeDapp ? `WebViewScreen/${activeDapp.name}` : 'RNWebView'}
-          injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
-          onMessage={handleMessage}
+          injectedJavaScriptBeforeContentLoaded={
+            ethereumProviderInjectionEnabled ? injectedJavaScript : undefined
+          }
+          onMessage={ethereumProviderInjectionEnabled ? handleMessage : undefined}
         />
         <KeyboardSpacer />
       </KeyboardAvoidingView>
