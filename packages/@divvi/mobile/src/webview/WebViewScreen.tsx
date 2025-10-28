@@ -21,6 +21,7 @@ import WebView, { WebViewRef } from 'src/components/WebView'
 import { DEEP_LINK_URL_SCHEME } from 'src/config'
 import { activeDappSelector } from 'src/dapps/selectors'
 import { dappSessionEnded } from 'src/dapps/slice'
+import { useEthereumProvider } from 'src/ethereumProvider/useEthereumProvider'
 import BackChevron from 'src/icons/BackChevron'
 import ForwardChevron from 'src/icons/ForwardChevron'
 import Refresh from 'src/icons/Refresh'
@@ -58,7 +59,8 @@ function WebViewScreen({ route, navigation }: Props) {
     DynamicConfigs[StatsigDynamicConfigs.DAPP_WEBVIEW_CONFIG]
   ).disabledMediaPlaybackRequiresUserActionOrigins
 
-  const webViewRef = useRef<WebViewRef>(null)
+  const webViewRef = useRef<WebViewRef>(null!)
+  const { injectedJavaScript, handleMessage } = useEthereumProvider(webViewRef)
   const [canGoBack, setCanGoBack] = useState(false)
   const [canGoForward, setCanGoForward] = useState(false)
   const [showingBottomSheet, setShowingBottomSheet] = useState(false)
@@ -224,6 +226,8 @@ function WebViewScreen({ route, navigation }: Props) {
           }}
           mediaPlaybackRequiresUserAction={mediaPlaybackRequiresUserAction}
           testID={activeDapp ? `WebViewScreen/${activeDapp.name}` : 'RNWebView'}
+          injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
+          onMessage={handleMessage}
         />
         <KeyboardSpacer />
       </KeyboardAvoidingView>

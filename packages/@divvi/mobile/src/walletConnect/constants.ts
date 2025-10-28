@@ -134,9 +134,21 @@ export const rpcError = {
     code: -32602,
     message: 'Invalid params',
   },
+  INTERNAL_ERROR: {
+    code: -32603,
+    message: 'Internal error',
+  },
   UNAUTHORIZED: {
     code: 4100,
     message: 'Unauthorized',
+  },
+  UNSUPPORTED_METHOD: {
+    code: 4200,
+    message: 'Unsupported method',
+  },
+  DISCONNECTED: {
+    code: 4900,
+    message: 'Disconnected',
   },
   UNSUPPORTED_NON_OPTIONAL_CAPABILITY: {
     code: 5700,
