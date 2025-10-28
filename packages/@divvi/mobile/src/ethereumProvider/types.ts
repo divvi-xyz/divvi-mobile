@@ -1,6 +1,6 @@
-export type EthereumProviderEvent = 'connect' | 'disconnect'
+type EthereumProviderEvent = 'connect' | 'disconnect'
 
-export interface EthereumProviderError {
+interface EthereumProviderError {
   code: number
   message: string
   data?: unknown
@@ -18,7 +18,7 @@ export interface EthereumProviderResponse {
   error?: EthereumProviderError
 }
 
-export interface ProviderEventMessage {
+interface ProviderEventMessage {
   event: EthereumProviderEvent
   data?: unknown
 }
