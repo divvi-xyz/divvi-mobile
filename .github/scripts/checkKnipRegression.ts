@@ -56,7 +56,10 @@ if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
   // checkout pr base. More info here: https://github.com/actions/checkout/tree/v3?tab=readme-ov-file#checkout-v3
   $.exec('git checkout HEAD^')
 
-  const baseKnipOutput = stripAnsi($.exec('yarn knip --no-gitignore').stdout.trim())
+  // This ignores engine so it won't fail if the base branch is using a different node version
+  const baseKnipOutput = stripAnsi(
+    $.exec('yarn --ignore-engines knip --no-gitignore').stdout.trim()
+  )
   const baseKnipResults = parseKnipOutput(baseKnipOutput)
 
   if (compareKnipResults(baseKnipResults, branchKnipResults)) {

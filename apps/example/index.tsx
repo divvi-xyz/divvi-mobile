@@ -92,6 +92,7 @@ const App = createApp({
         apiKey: 'dummyApiKey',
         projectName: 'divviapp',
       },
+      alchemyApiKey: process.env.ALCHEMY_API_KEY,
     },
   }),
 })
