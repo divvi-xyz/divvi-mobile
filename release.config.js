@@ -1,3 +1,6 @@
+/**
+ * @type {import('semantic-release').GlobalConfig}
+ */
 module.exports = {
   branches: [
     'stable',
@@ -8,7 +11,6 @@ module.exports = {
     },
   ],
   preset: 'conventionalcommits',
-  // Skipping github comments and labels as it is not currently working correctly, see https://github.com/anolilab/semantic-release/issues/7
   plugins: [
     '@semantic-release/commit-analyzer',
     '@semantic-release/release-notes-generator',
@@ -16,6 +18,8 @@ module.exports = {
     ...(process.env.SKIP_NPM_PLUGIN ? [] : ['@semantic-release/npm']),
     [
       '@semantic-release/github',
+      // Skipping github comments and labels as it is not currently working correctly,
+      // see https://github.com/anolilab/semantic-release/issues/7
       {
         successComment: false,
         releasedLabels: false,
