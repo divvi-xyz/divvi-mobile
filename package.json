@@ -123,29 +123,5 @@
     "deps": {
       "bump": "inherit"
     }
-  },
-  "release": {
-    "branches": [
-      "stable",
-      {
-        "name": "main",
-        "prerelease": "alpha",
-        "channel": "alpha"
-      }
-    ],
-    "preset": "conventionalcommits",
-    "//plugins": "Skipping github comments and labels as it is not currently working correctly, see https://github.com/anolilab/semantic-release/issues/7",
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/npm",
-      [
-        "@semantic-release/github",
-        {
-          "successComment": false,
-          "releasedLabels": false
-        }
-      ]
-    ]
   }
 }
