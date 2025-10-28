@@ -128,22 +128,10 @@ export function getInjectedProviderScript({
           }
         },
 
-        isConnected: function() {
-          return _isConnected;
-        },
-
         // Internal methods for React Native communication
         _handleResponse: handleResponse,
         _handleEvent: handleEvent,
       };
-
-      // chainId getter prop
-      Object.defineProperty(window.ethereum, 'chainId', {
-        get: function() {
-          return _chainId;
-        },
-        enumerable: true,
-      });
     })();
     true; // Required for injection to work
   `
