@@ -37,7 +37,7 @@ describe('useEthereumProvider', () => {
 
       result.current.handleMessage(event)
 
-      expect(handleProviderRequest).toHaveBeenCalledWith(webViewRef, mockRequest)
+      expect(handleProviderRequest).toHaveBeenCalledWith(webViewRef, mockRequest, true)
     })
 
     it('ignores non-request messages', () => {

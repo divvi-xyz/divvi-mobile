@@ -17,10 +17,20 @@ function sendResponseToWebView(
 
 export function handleProviderRequest(
   webViewRef: React.RefObject<WebViewRef>,
-  request: EthereumProviderRequest
+  request: EthereumProviderRequest,
+  isNetworkConnected: boolean
 ): void {
   const { id, method: _ } = request
   try {
+    if (!isNetworkConnected) {
+      const response: EthereumProviderResponse = {
+        id,
+        error: rpcError.DISCONNECTED,
+      }
+      sendResponseToWebView(webViewRef, response)
+      return
+    }
+
     // TODO: Implement actual methods
     const response: EthereumProviderResponse = {
       id,

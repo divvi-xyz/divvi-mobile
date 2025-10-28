@@ -32,13 +32,13 @@ export function useEthereumProvider(webViewRef: React.RefObject<WebViewRef>) {
         const message: ProviderMessage = JSON.parse(event.nativeEvent.data)
 
         if (message.type === 'request') {
-          handleProviderRequest(webViewRef, message.data)
+          handleProviderRequest(webViewRef, message.data, isNetworkConnected)
         }
       } catch (error) {
         Logger.error(TAG, 'Error parsing provider message', error)
       }
     },
-    [webViewRef]
+    [webViewRef, isNetworkConnected]
   )
 
   // Handle online/offline transitions
