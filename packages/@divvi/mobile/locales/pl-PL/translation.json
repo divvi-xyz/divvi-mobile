@@ -2174,6 +2174,7 @@
     "searchText": "Szukaj według nazwy, telefonu, portfela…",
     "searchInputLabel": "Do",
     "searchInputPlaceholder": "Adres portfela lub numer telefonu",
+    "searchInputPlaceholderEns": "Adres portfela, numer telefonu lub ENS",
     "paste": "Wklej ze schowka",
     "title": "Wybierz odbiorcę",
     "contactsTitle": "Wybierz kontakt",
