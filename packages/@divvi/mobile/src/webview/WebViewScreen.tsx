@@ -21,6 +21,7 @@ import WebView, { WebViewRef } from 'src/components/WebView'
 import { DEEP_LINK_URL_SCHEME } from 'src/config'
 import { activeDappSelector } from 'src/dapps/selectors'
 import { dappSessionEnded } from 'src/dapps/slice'
+import { useEthereumProvider } from 'src/ethereumProvider/useEthereumProvider'
 import BackChevron from 'src/icons/BackChevron'
 import ForwardChevron from 'src/icons/ForwardChevron'
 import Refresh from 'src/icons/Refresh'
@@ -31,9 +32,9 @@ import { Screens } from 'src/navigator/Screens'
 import { TopBarTextButton } from 'src/navigator/TopBarButton'
 import { StackParamList } from 'src/navigator/types'
 import { useDispatch, useSelector } from 'src/redux/hooks'
-import { getDynamicConfigParams } from 'src/statsig'
+import { getDynamicConfigParams, getFeatureGate } from 'src/statsig'
 import { DynamicConfigs } from 'src/statsig/constants'
-import { StatsigDynamicConfigs } from 'src/statsig/types'
+import { StatsigDynamicConfigs, StatsigFeatureGates } from 'src/statsig/types'
 import colors from 'src/styles/colors'
 import { iconHitslop } from 'src/styles/variables'
 import Logger from 'src/utils/Logger'
@@ -58,7 +59,12 @@ function WebViewScreen({ route, navigation }: Props) {
     DynamicConfigs[StatsigDynamicConfigs.DAPP_WEBVIEW_CONFIG]
   ).disabledMediaPlaybackRequiresUserActionOrigins
 
-  const webViewRef = useRef<WebViewRef>(null)
+  const ethereumProviderInjectionEnabled = getFeatureGate(
+    StatsigFeatureGates.INJECTED_ETHEREUM_PROVIDER
+  )
+
+  const webViewRef = useRef<WebViewRef>(null!)
+  const { injectedJavaScript, handleMessage } = useEthereumProvider(webViewRef)
   const [canGoBack, setCanGoBack] = useState(false)
   const [canGoForward, setCanGoForward] = useState(false)
   const [showingBottomSheet, setShowingBottomSheet] = useState(false)
@@ -224,6 +230,10 @@ function WebViewScreen({ route, navigation }: Props) {
           }}
           mediaPlaybackRequiresUserAction={mediaPlaybackRequiresUserAction}
           testID={activeDapp ? `WebViewScreen/${activeDapp.name}` : 'RNWebView'}
+          injectedJavaScriptBeforeContentLoaded={
+            ethereumProviderInjectionEnabled ? injectedJavaScript : undefined
+          }
+          onMessage={ethereumProviderInjectionEnabled ? handleMessage : undefined}
         />
         <KeyboardSpacer />
       </KeyboardAvoidingView>
