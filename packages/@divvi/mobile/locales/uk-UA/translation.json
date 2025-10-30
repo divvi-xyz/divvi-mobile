@@ -2174,6 +2174,7 @@
     "searchText": "Пошук за іменем, телефоном, гаманцем...",
     "searchInputLabel": "До",
     "searchInputPlaceholder": "Адреса гаманця або номер телефону",
+    "searchInputPlaceholderEns": "Адреса гаманця, номер телефону або ENS",
     "paste": "Копіювати з буфера обміну",
     "title": "Вибрати отримувача",
     "contactsTitle": "Вибрати контакт",
