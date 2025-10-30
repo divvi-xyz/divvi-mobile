@@ -2174,6 +2174,7 @@
     "searchText": "Поиск по имени, телефону, кошельку...",
     "searchInputLabel": "К",
     "searchInputPlaceholder": "Адрес кошелька или номер телефона",
+    "searchInputPlaceholderEns": "Адрес кошелька, номер телефона или ENS",
     "paste": "Вставить из буфера обмена",
     "title": "Выберите получателя",
     "contactsTitle": "Выберите контакт",
