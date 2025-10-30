@@ -110,7 +110,7 @@ export function useMergedSearchRecipients(onSearch: (searchQuery: string) => voi
  */
 export function useResolvedRecipients(searchQuery: string): Recipient[] {
   const debouncedQuery = useDebouncedValue(searchQuery, TYPING_DEBOUNCE_MILLSECONDS)
-  
+
   const phoneResolutions = usePhoneRecipients(debouncedQuery)
   const ensResolutions = useEnsRecipients(debouncedQuery)
 
