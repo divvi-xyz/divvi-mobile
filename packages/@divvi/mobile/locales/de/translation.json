@@ -2170,6 +2170,7 @@
     "searchText": "Suche nach Name, Telefon, Wallet ...",
     "searchInputLabel": "Zu",
     "searchInputPlaceholder": "Wallet-Adresse oder Telefonnummer",
+    "searchInputPlaceholderEns": "Wallet-Adresse, Telefonnummer oder ENS",
     "paste": "Aus Zwischenablage einfügen",
     "title": "Einen Empfänger auswählen",
     "contactsTitle": "Kontakt wählen",
