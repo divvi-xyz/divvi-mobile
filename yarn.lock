@@ -68,7 +68,7 @@
     "@jridgewell/gen-mapping" "^0.3.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@anolilab/multi-semantic-release@^3.0.0.alpha.3":
+"@anolilab/multi-semantic-release@^3.0.0-alpha.3":
   version "3.0.0-alpha.3"
   resolved "https://registry.yarnpkg.com/@anolilab/multi-semantic-release/-/multi-semantic-release-3.0.0-alpha.3.tgz#f9280972dac92387318d1240ec695e21350ef746"
   integrity sha512-7NygV04ubmxqxg7/jaLLBPQPOQEx8KC8718GH6jyywfv6dmEsZ+7VlG8C9n/81bWkNf7i0ClLCQwHWxonMiDpw==
