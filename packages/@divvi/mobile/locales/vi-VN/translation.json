@@ -2168,6 +2168,7 @@
     "searchText": "Tìm kiếm theo tên, số điện thoại, ví...",
     "searchInputLabel": "Đến",
     "searchInputPlaceholder": "Địa chỉ ví hoặc số điện thoại",
+    "searchInputPlaceholderEns": "Wallet Address, Phone Number, or ENS",
     "paste": "Dán từ bảng nhớ tạm",
     "title": "Chọn người nhận",
     "contactsTitle": "Chọn một liên hệ",
