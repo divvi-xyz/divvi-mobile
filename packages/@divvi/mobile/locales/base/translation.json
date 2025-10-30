@@ -2172,6 +2172,7 @@
     "searchText": "Search by name, phone, wallet...",
     "searchInputLabel": "To",
     "searchInputPlaceholder": "Wallet Address or Phone Number",
+    "searchInputPlaceholderEns": "Wallet Address, Phone Number, or ENS",
     "paste": "Paste from clipboard",
     "title": "Select a recipient",
     "contactsTitle": "Select a contact",
