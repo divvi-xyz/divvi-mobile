@@ -15,7 +15,7 @@ import WalletIcon from 'src/icons/navigator/Wallet'
 import PhoneIcon from 'src/icons/Phone'
 import UserIcon from 'src/icons/User'
 import { LocalCurrencySymbol } from 'src/localCurrency/consts'
-import { type Recipient } from 'src/recipients/recipient'
+import { getDisplayDetail, type Recipient } from 'src/recipients/recipient'
 import colors, { type ColorValue } from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
 import { Spacing } from 'src/styles/styles'
@@ -123,7 +123,7 @@ export function ReviewSummaryItemContact({
   const contact = useMemo(() => {
     const phone = recipient.displayNumber || recipient.e164PhoneNumber
     if (recipient.name) {
-      return { title: recipient.name, subtitle: phone, icon: UserIcon }
+      return { title: recipient.name, subtitle: getDisplayDetail(recipient), icon: UserIcon }
     }
 
     if (phone) {
