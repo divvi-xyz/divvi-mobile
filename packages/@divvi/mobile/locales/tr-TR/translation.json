@@ -2170,6 +2170,7 @@
     "searchText": "İsme, telefona, cüzdana göre arama yapın...",
     "searchInputLabel": "Şu Token’a",
     "searchInputPlaceholder": "Cüzdan Adresi veya Telefon Numarası",
+    "searchInputPlaceholderEns": "Cüzdan Adresi, Telefon Numarası veya ENS",
     "paste": "Panodan yapıştır",
     "title": "Bir alıcı seçin",
     "contactsTitle": "Bir kişi seçin",
