@@ -102,27 +102,19 @@ export function useMergedSearchRecipients(onSearch: (searchQuery: string) => voi
 }
 
 /**
- * Fetches recipients based off the search query by fetching from the resolveId
- * endpoint. The search query is debounced before making a network request in order
- * to prevent excessive network calls.
+ * Fetches recipients based off the search query by fetching from the resolveId endpoint or Viem.
+ * The search query is debounced before making a network request in order to prevent excessive calls.
  *
  * @param searchQuery - The search query (phone number or ENS name)
  * @returns Array of resolved recipients with addresses and metadata
  */
 export function useResolvedRecipients(searchQuery: string): Recipient[] {
   const debouncedQuery = useDebouncedValue(searchQuery, TYPING_DEBOUNCE_MILLSECONDS)
-  const defaultCountryCode = useSelector(defaultCountryCodeSelector)
+  
+  const phoneResolutions = usePhoneRecipients(debouncedQuery)
+  const ensResolutions = useEnsRecipients(debouncedQuery)
 
-  // Detect if it's a phone number or ENS-type query
-  const isPhoneNumber = useMemo(() => {
-    return !!parsePhoneNumber(debouncedQuery, defaultCountryCode ?? undefined)
-  }, [debouncedQuery, defaultCountryCode])
-
-  const phoneResolutions = usePhoneRecipients(isPhoneNumber ? debouncedQuery : '')
-  const ensResolutions = useEnsRecipients(!isPhoneNumber ? debouncedQuery : '')
-
-  const activeResolutions = isPhoneNumber ? phoneResolutions : ensResolutions
-
+  const activeResolutions = phoneResolutions.length ? phoneResolutions : ensResolutions
   const mappedRecipients = useMapResolutionsToRecipients(debouncedQuery, activeResolutions)
 
   // Return empty array for empty queries
