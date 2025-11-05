@@ -7,7 +7,10 @@ import { LogBox, Platform, StatusBar } from 'react-native'
 import { Auth0Provider } from 'react-native-auth0'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { getNumberFormatSettings } from 'react-native-localize'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+import {
+  initialWindowMetrics,
+  SafeAreaProvider
+} from 'react-native-safe-area-context'
 import { enableFreeze, enableScreens } from 'react-native-screens'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -90,7 +93,7 @@ export class App extends React.Component<Props> {
 
   render() {
     return (
-      <SafeAreaProvider>
+      <SafeAreaProvider style={this.isAndroid && { marginBottom: initialWindowMetrics?.insets.bottom ?? 0 }}>        
         <Provider store={store}>
           <PersistGate persistor={persistor}>
             <Auth0Provider domain={AUTH0_DOMAIN} clientId={AUTH0_CLIENT_ID}>
@@ -99,11 +102,9 @@ export class App extends React.Component<Props> {
                 reactLoadTime={this.reactLoadTime}
               >
                 <StatusBar
-                  // On Android a gray gradient is present when set to transparent
-                  backgroundColor={this.isAndroid ? this.backgroundColor : 'transparent'}
+                  backgroundColor="transparent"
                   barStyle={this.isDarkTheme ? 'light-content' : 'dark-content'}
-                  // On Android this causes content be shifted outside of the safe area
-                  translucent={!this.isAndroid}
+                  translucent
                 />
                 <ErrorBoundary>
                   <GestureHandlerRootView style={{ flex: 1 }}>
