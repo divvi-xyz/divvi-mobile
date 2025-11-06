@@ -218,6 +218,7 @@ describe('SmartAccountConversionRequest', () => {
 
       expect(navigate).toHaveBeenCalledWith(Screens.WalletConnectRequest, {
         type: WalletConnectRequestType.Action,
+        atomic: false,
         method: sendCallsMethod,
         request: sendCallsRequest,
         supportedChains,
