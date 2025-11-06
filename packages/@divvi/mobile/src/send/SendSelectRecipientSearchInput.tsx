@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, StyleSheet, Text, View } from 'react-native'
+import { getAppConfig } from 'src/appConfig'
 import TextInput from 'src/components/TextInput'
 import colors from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
@@ -16,6 +17,7 @@ export function SendSelectRecipientSearchInput({
   onChangeText,
 }: SendSelectRecipientSearchInputProps) {
   const { t } = useTranslation()
+  const ensSupported = !!getAppConfig().experimental?.alchemyApiKey
   // Font scaling is causing issues on Android
   const allowFontScaling = Platform.OS === 'ios'
   return (
@@ -28,7 +30,11 @@ export function SendSelectRecipientSearchInput({
         {t('sendSelectRecipient.searchInputLabel')}
       </Text>
       <TextInput
-        placeholder={t('sendSelectRecipient.searchInputPlaceholder') ?? undefined}
+        placeholder={
+          ensSupported
+            ? t('sendSelectRecipient.searchInputPlaceholderEns')
+            : (t('sendSelectRecipient.searchInputPlaceholder') ?? undefined)
+        }
         value={input}
         onChangeText={onChangeText}
         inputStyle={styles.input}

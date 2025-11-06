@@ -210,9 +210,7 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
       iosSiteKey?: string
       androidSiteKey?: string
     }
-    // can copy/paste old alchemy key/secret pairs here
-    // will be replaced by the networks field
-    alchemyKeys?: Record<string, string>
+    alchemyApiKey?: string
     onboarding?: {
       enableBiometry?: boolean
       protectWallet?: boolean
@@ -234,7 +232,9 @@ export interface PublicAppConfig<tabScreenConfigs extends TabScreenConfig[] = Ta
     bidali?: {
       url: string
     }
-    inviteFriends?: boolean
+    inviteFriends?: {
+      shareUrl?: string
+    }
     notificationCenter?: boolean
     zendeskConfig?: {
       apiKey: string

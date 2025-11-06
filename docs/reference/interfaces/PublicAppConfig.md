@@ -75,10 +75,10 @@ optional activity: object;
 optional hideActionsCarousel: boolean;
 ```
 
-#### alchemyKeys?
+#### alchemyApiKey?
 
 ```ts
-optional alchemyKeys: Record<string, string>;
+optional alchemyApiKey: string;
 ```
 
 #### bidali?
@@ -138,7 +138,13 @@ optional hideCashInTokenFilters: boolean;
 #### inviteFriends?
 
 ```ts
-optional inviteFriends: boolean;
+optional inviteFriends: object;
+```
+
+##### inviteFriends.shareUrl?
+
+```ts
+optional shareUrl: string;
 ```
 
 #### notificationCenter?

@@ -117,6 +117,26 @@ export default Send = () => {
     })
   })
 
+  describe('When multi-token send flow to invite', () => {
+    beforeAll(async () => {
+      await launchApp()
+    })
+
+    // Only one configuration can be tested at once; this test covers the invite flow when no share URL is present.
+    it('Then should not be able to invite via SMS without share url', async () => {
+      await waitForElementById('HomeAction-Send', { timeout: 30_000, tap: true })
+      await waitForElementById('SendSelectRecipientSearchInput', {
+        timeout: 30_000,
+        tap: true,
+      })
+      await element(by.id('SendSelectRecipientSearchInput')).replaceText('3605551234') // Fake phone cannot be verified
+      await element(by.id('SendSelectRecipientSearchInput')).tapReturnKey()
+      await element(by.text('(360) 555-1234')).tap()
+      await expect(element(by.text('Invite'))).not.toBeVisible()
+      await expect(element(by.text('Continue'))).toBeVisible()
+    })
+  })
+
   describe('When multi-token send flow to recent recipient', () => {
     beforeAll(async () => {
       await launchApp()

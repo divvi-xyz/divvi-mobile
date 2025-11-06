@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Inviter avec WhatsApp",
-  "inviteWithSMS": "Inviter par SMS",
   "whySendFees": "Ces frais couvrent les coûts permettant au nouvel utilisateur de connecter son numéro de téléphone",
   "whyReceiveFees": "Vous avez reçu des cryptomonnaies pour confirmer votre compte",
   "inviteSent": "Invitation envoyée",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Invitez des amis et obtenez jusqu'à 12 cUSD",
     "body": "Une fois que votre contact aura relié son numéro et ajouté des fonds à {{appName}}, vous recevrez tous les deux 0,50 cUSD."
+  },
+  "inviteWithSMS": {
+    "title": "Inviter par SMS",
+    "shareMessage": "Hé ! Inscris-toi à {{appName}} wallet. Je l'utilise pour faire fructifier mes économies en USD et en crypto, et tu peux le configurer en quelques secondes avec un simple numéro de téléphone : {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Inviter un ami",
@@ -1171,6 +1174,17 @@
     "sendTransaction": "{{dappName}} souhaite envoyer une transaction.",
     "sendDappTransaction": "{{dappName}} souhaite envoyer une transaction sur le réseau {{networkName}} .",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} souhaite envoyer une transaction sur un réseau non pris en charge.",
+    "sendCallsTitle_one": "Envoie la transaction {{count}}",
+    "sendCallsTitle_few": "Envoie les transactions {{count}}",
+    "sendCallsTitle_many": "Envoie les transactions {{count}}",
+    "sendCallsTitle_other": "Envoie les transactions {{count}}",
+    "sendCalls_one": "{{dappName}} souhaite envoyer la transaction {{count}} sur le réseau {{networkName}} .",
+    "sendCalls_few": "{{dappName}} souhaite envoyer des transactions {{count}} sur le réseau {{networkName}} .",
+    "sendCalls_many": "{{dappName}} souhaite envoyer des transactions {{count}} sur le réseau {{networkName}} .",
+    "sendCalls_other": "{{dappName}} souhaite envoyer des transactions {{count}} sur le réseau {{networkName}} .",
+    "sendCallsUnknownNetwork_one": "{{dappName}} souhaite envoyer la transaction {{count}} sur un réseau non pris en charge.",
+    "sendCallsUnknownNetwork_few": "{{dappName}} souhaite envoyer des transactions {{count}} sur un réseau non pris en charge.",
+    "sendCallsUnknownNetwork_other": "{{dappName}} souhaite envoyer des transactions {{count}} sur un réseau non pris en charge.",
     "decryptPayloadTitle": "Déchiffrer avec le portefeuille",
     "decryptPayload": "{{dappName}} demande à déchiffrer une charge utile de données.",
     "computeSharedSecret": "{{dappName}} demande à générer des secrets.",
@@ -1184,6 +1198,8 @@
       "title": "Chaîne non prise en charge",
       "description": "{{dappName}} demande cette action sur une chaîne non prise en charge par {{appName}}. Veuillez vous assurer que Celo est la chaîne active du côté de la dapp.",
       "descriptionV1_74_one": "{{dappName}} demande cette action sur une chaîne non prise en charge par {{appName}}. Veuillez vous assurer que {{supportedNetworkNames}} est la chaîne active du côté de la dapp.",
+      "descriptionV1_74_few": "{{dappName}} demande cette action sur une chaîne non prise en charge par {{appName}}. Veuillez vous assurer que la chaîne active sur le dapp est l'une des suivantes : {{supportedNetworkNames}}.",
+      "descriptionV1_74_many": "{{dappName}} demande cette action sur une chaîne non prise en charge par {{appName}}. Veuillez vous assurer que la chaîne active sur le dapp est l'une des suivantes : {{supportedNetworkNames}}.",
       "descriptionV1_74_other": "{{dappName}} demande cette action sur une chaîne non prise en charge par {{appName}}. Veuillez vous assurer que la chaîne active sur le dapp est l'une des suivantes : {{supportedNetworkNames}}."
     },
     "notEnoughBalanceForGas": {
@@ -1194,17 +1210,25 @@
       "title": "Échec de la préparation de la transaction",
       "description": "Une erreur s'est produite lors de la préparation de la transaction.\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "Exécution non atomique",
+      "description": "Les transactions seront exécutées séquentiellement sans aucune garantie d'atomicité/contiguïté."
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "Chaîne non prise en charge",
         "description": "{{dappName}} aimerait se connecter avec une chaîne qui n'est pas prise en charge par {{appName}}. Assurez-vous que Celo est bien sélectionné du côté de la dapp.",
         "descriptionV1_74_one": "{{dappName}} souhaite se connecter avec une chaîne qui n'est pas prise en charge par {{appName}}. Assurez-vous que {{supportedNetworkNames}} est bien sélectionné du côté de la dapp.",
+        "descriptionV1_74_few": "{{dappName}} souhaite se connecter avec une chaîne qui n'est pas prise en charge par {{appName}}. Assurez-vous que la chaîne active sur le dapp est l'une des suivantes : {{supportedNetworkNames}}.",
+        "descriptionV1_74_many": "{{dappName}} souhaite se connecter avec une chaîne qui n'est pas prise en charge par {{appName}}. Assurez-vous que la chaîne active sur le dapp est l'une des suivantes : {{supportedNetworkNames}}.",
         "descriptionV1_74_other": "{{dappName}} souhaite se connecter avec une chaîne qui n'est pas prise en charge par {{appName}}. Assurez-vous que la chaîne active sur le dapp est l'une des suivantes : {{supportedNetworkNames}}."
       },
       "warnUnsupportedChains": {
         "title": "Chaîne non prise en charge",
         "description": "{{dappName}} n'a pas indiqué que Celo était une chaîne prise en charge. Certaines fonctionnalités peuvent ne pas fonctionner comme prévu.",
         "descriptionV1_74_one": "{{dappName}} n'a pas indiqué que {{supportedNetworkNames}} était une chaîne prise en charge. Certaines fonctionnalités peuvent ne pas fonctionner comme prévu.",
+        "descriptionV1_74_few": "{{dappName}} n'a pas indiqué qu'aucune des chaînes suivantes étant prises en charge : {{supportedNetworkNames}}. Certaines fonctionnalités peuvent ne pas fonctionner comme prévu.",
+        "descriptionV1_74_many": "{{dappName}} n'a pas indiqué qu'aucune des chaînes suivantes étant prises en charge : {{supportedNetworkNames}}. Certaines fonctionnalités peuvent ne pas fonctionner comme prévu.",
         "descriptionV1_74_other": "{{dappName}} n'a pas indiqué qu'aucune des chaînes suivantes étant prises en charge : {{supportedNetworkNames}}. Certaines fonctionnalités peuvent ne pas fonctionner comme prévu."
       },
       "warnSomeUnsupportedMethods": {
@@ -1552,7 +1576,10 @@
     "mobileMoney": "Mobile Money",
     "airtime": "Airtime",
     "minFee": "Frais min",
-    "numProviders": "{{count}} prestataires",
+    "numProviders_one": "{{count}} Fournisseur",
+    "numProviders_few": "{{count}} prestataires",
+    "numProviders_many": "{{count}} prestataires",
+    "numProviders_other": "{{count}} prestataires",
     "fee": "Frais",
     "idRequired": "ID requis",
     "mobileCarrierRequirement": "{{carrier}} obligatoire",
@@ -2114,6 +2141,8 @@
     "actionDescriptions": {
       "send": "Utilisez n'importe quelle adresse Celo, domaine, numéro de téléphone, etc.",
       "sendV1_74_one": "Utilisez n'importe quelle adresse ou domaine {{supportedNetworkNames}}, numéro de téléphone, etc.",
+      "sendV1_74_few": "Utilisez n'importe quelle adresse, domaine ou numéro de téléphone sur les réseaux suivants : {{supportedNetworkNames}}",
+      "sendV1_74_many": "Utilisez n'importe quelle adresse, domaine ou numéro de téléphone sur les réseaux suivants : {{supportedNetworkNames}}",
       "sendV1_74_other": "Utilisez n'importe quelle adresse, domaine ou numéro de téléphone sur les réseaux suivants : {{supportedNetworkNames}}",
       "swap": "Échangez vos jetons sans quitter votre portefeuille",
       "add": "Achetez des jetons en passant par l'un de nos fournisseurs de confiance",
@@ -2141,6 +2170,7 @@
     "searchText": "Recherchez par nom, téléphone, portefeuille...",
     "searchInputLabel": "À",
     "searchInputPlaceholder": "Adresse du portefeuille ou numéro de téléphone",
+    "searchInputPlaceholderEns": "Adresse du portefeuille, numéro de téléphone ou ENS",
     "paste": "Coller depuis le presse-papiers",
     "title": "Sélectionnez un destinataire",
     "contactsTitle": "Sélectionnez un contact",
@@ -2878,10 +2908,16 @@
   },
   "duration_lessThanADay": "Moins d'un jour",
   "duration_day_one": "1 jour",
+  "duration_day_few": "{{count}} jours",
+  "duration_day_many": "{{count}} jours",
   "duration_day_other": "{{count}} jours",
   "duration_month_one": "1 mois",
+  "duration_month_few": "{{count}} mois",
+  "duration_month_many": "{{count}} mois",
   "duration_month_other": "{{count}} mois",
   "duration_year_one": "1 an",
+  "duration_year_few": "{{count}} ans",
+  "duration_year_many": "{{count}} ans",
   "duration_year_other": "{{count}} ans",
   "duration_yearMonth_one": "1 an, 1 mois",
   "duration_yearMonth_other": "{{count}} ans, {{count2}} mois",

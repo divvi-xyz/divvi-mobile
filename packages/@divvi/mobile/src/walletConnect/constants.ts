@@ -11,16 +11,20 @@ export enum SupportedActions {
   personal_sign = 'personal_sign',
   wallet_getCapabilities = 'wallet_getCapabilities',
   wallet_sendCalls = 'wallet_sendCalls',
+  wallet_getCallsStatus = 'wallet_getCallsStatus',
 }
 
-type InteractiveActions =
-  | SupportedActions.eth_signTransaction
-  | SupportedActions.eth_sendTransaction
-  | SupportedActions.eth_signTypedData
-  | SupportedActions.eth_signTypedData_v4
-  | SupportedActions.eth_sign
-  | SupportedActions.personal_sign
-  | SupportedActions.wallet_sendCalls
+const INTERACTIVE_ACTIONS = [
+  SupportedActions.eth_signTransaction,
+  SupportedActions.eth_sendTransaction,
+  SupportedActions.eth_signTypedData,
+  SupportedActions.eth_signTypedData_v4,
+  SupportedActions.eth_sign,
+  SupportedActions.personal_sign,
+  SupportedActions.wallet_sendCalls,
+] as const
+
+type InteractiveActions = (typeof INTERACTIVE_ACTIONS)[number]
 
 export enum SupportedEvents {
   accountsChanged = 'accountsChanged',
@@ -33,6 +37,10 @@ export function isSupportedAction(action: string) {
 
 export function isSupportedEvent(event: string) {
   return Object.values(SupportedEvents).includes(event as SupportedEvents)
+}
+
+export function requiresUserConsent(action: string) {
+  return INTERACTIVE_ACTIONS.includes(action as InteractiveActions)
 }
 
 export function getDisplayTextFromAction(
@@ -81,9 +89,9 @@ export function getDisplayTextFromAction(
     },
     [SupportedActions.wallet_sendCalls]: {
       description: networkName
-        ? t('walletConnectRequest.sendCalls', { dappName, networkName, transactionsCount })
-        : t('walletConnectRequest.sendCallsUnknownNetwork', { dappName, transactionsCount }),
-      title: t('walletConnectRequest.sendCallsTitle'),
+        ? t('walletConnectRequest.sendCalls', { dappName, networkName, count: transactionsCount })
+        : t('walletConnectRequest.sendCallsUnknownNetwork', { dappName, count: transactionsCount }),
+      title: t('walletConnectRequest.sendCallsTitle', { count: transactionsCount }),
       action: t('allow'),
     },
   }
@@ -133,6 +141,14 @@ export const rpcError = {
   UNSUPPORTED_NON_OPTIONAL_CAPABILITY: {
     code: 5700,
     message: 'Unsupported non-optional capability',
+  },
+  DUPLICATE_ID: {
+    code: 5720,
+    message: 'Duplicate ID',
+  },
+  UNKNOWN_BUNDLE_ID: {
+    code: 5730,
+    message: 'Unknown bundle id',
   },
   ATOMICITY_NOT_SUPPORTED: {
     code: 5760,

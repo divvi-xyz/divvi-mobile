@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Invitar por WhatsApp",
-  "inviteWithSMS": "Invitar por SMS",
   "whySendFees": "Esta tarifa cubre los costos de conexión del número de teléfono del nuevo usuario",
   "whyReceiveFees": "Te enviaron cripto para confirmar tu cuenta.",
   "inviteSent": "Invitación enviada",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Invita a amigos y consigue hasta 12 cUSD",
     "body": "Una vez que conecten su número y agreguen fondos a {{appName}}, ambos recibirán 0,50 cUSD."
+  },
+  "inviteWithSMS": {
+    "title": "Invitar por SMS",
+    "shareMessage": "Hola, regístrate en la cartera {{appName}} . Yo la utilizo para hacer crecer mis ahorros en USD y criptomonedas, y tú puedes configurarla en segundos con sólo un número de teléfono: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Invita a un amigo",
@@ -1171,6 +1174,17 @@
     "sendTransaction": "{{dappName}} desea enviar una transacción.",
     "sendDappTransaction": "{{dappName}} desea enviar una transacción en la red {{networkName}}.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} desea enviar una transacción en una red no soportada.",
+    "sendCallsTitle_one": "Envía la transacción a {{count}}",
+    "sendCallsTitle_few": "Envía transacciones a {{count}}",
+    "sendCallsTitle_many": "Envía transacciones a {{count}}",
+    "sendCallsTitle_other": "Envía transacciones a {{count}}",
+    "sendCalls_one": "{{dappName}} desea enviar la transacción {{count}} en la red {{networkName}} .",
+    "sendCalls_few": "{{dappName}} desea enviar transacciones a {{count}} en la red {{networkName}} .",
+    "sendCalls_many": "{{dappName}} desea enviar transacciones a {{count}} en la red {{networkName}} .",
+    "sendCalls_other": "{{dappName}} desea enviar transacciones a {{count}} en la red {{networkName}} .",
+    "sendCallsUnknownNetwork_one": "{{dappName}} desea enviar la transacción {{count}} en una red no soportada.",
+    "sendCallsUnknownNetwork_few": "{{dappName}} quieres enviar transacciones a {{count}} en una red no compatible.",
+    "sendCallsUnknownNetwork_other": "{{dappName}} quieres enviar transacciones a {{count}} en una red no compatible.",
     "decryptPayloadTitle": "Descifrar con wallet",
     "decryptPayload": "{{dappName}} desea desencriptar una carga de datos.",
     "computeSharedSecret": "{{dappName}} desea generar secretos.",
@@ -1184,6 +1198,8 @@
       "title": "Cadena incompatible",
       "description": "{{dappName}} desea realizar esta acción en una cadena incompatible con {{appName}}. Asegúrate de que la dapp esté usando Celo.",
       "descriptionV1_74_one": "{{dappName}} desea realizar esta acción en una cadena incompatible con {{appName}}. Asegúrate de que la dapp esté usando {{supportedNetworkNames}}.",
+      "descriptionV1_74_few": "{{dappName}} desea realizar esta acción en una cadena incompatible con {{appName}}. Asegúrate de que la cadena activa en la dapp sea una de las siguientes: {{supportedNetworkNames}}.",
+      "descriptionV1_74_many": "{{dappName}} desea realizar esta acción en una cadena incompatible con {{appName}}. Asegúrate de que la cadena activa en la dapp sea una de las siguientes: {{supportedNetworkNames}}.",
       "descriptionV1_74_other": "{{dappName}} desea realizar esta acción en una cadena incompatible con {{appName}}. Asegúrate de que la cadena activa en la dapp sea una de las siguientes: {{supportedNetworkNames}}."
     },
     "notEnoughBalanceForGas": {
@@ -1194,17 +1210,25 @@
       "title": "Error al preparar la transacción",
       "description": "Ocurrió un error al preparar la transacción. Consulta el error subyacente para más detalles.\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "Ejecución no atómica",
+      "description": "Las transacciones se ejecutarán secuencialmente sin ninguna garantía de atomicidad/contigüidad."
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "Cadena incompatible",
         "description": "{{dappName}} desea conectarse con una cadena incompatible con {{appName}}. Asegúrate de que la dapp esté usando Celo.",
         "descriptionV1_74_one": "{{dappName}} desea conectarse con una cadena incompatible con {{appName}}. Asegúrate de que la dapp esté usando {{supportedNetworkNames}}.",
+        "descriptionV1_74_few": "{{dappName}} desea conectarse con una cadena incompatible con {{appName}}. Asegúrate de que la cadena activa en la dapp es una de las siguientes: {{supportedNetworkNames}}.",
+        "descriptionV1_74_many": "{{dappName}} desea conectarse con una cadena incompatible con {{appName}}. Asegúrate de que la cadena activa en la dapp es una de las siguientes: {{supportedNetworkNames}}.",
         "descriptionV1_74_other": "{{dappName}} desea conectarse con una cadena incompatible con {{appName}}. Asegúrate de que la cadena activa en la dapp es una de las siguientes: {{supportedNetworkNames}}."
       },
       "warnUnsupportedChains": {
         "title": "Cadena incompatible",
         "description": "{{dappName}} no cuenta a Celo entre sus cadenas compatibles. Es posible que algunas funciones no estén disponibles.",
         "descriptionV1_74_one": "{{dappName}} no cuenta a {{supportedNetworkNames}} entre sus cadenas compatibles. Es posible que algunas funciones no estén disponibles.",
+        "descriptionV1_74_few": "{{dappName}} no especificó ninguna de las siguientes como cadenas compatibles: {{supportedNetworkNames}}. Es posible que algunas funciones no estén disponibles.",
+        "descriptionV1_74_many": "{{dappName}} no especificó ninguna de las siguientes como cadenas compatibles: {{supportedNetworkNames}}. Es posible que algunas funciones no estén disponibles.",
         "descriptionV1_74_other": "{{dappName}} no especificó ninguna de las siguientes como cadenas compatibles: {{supportedNetworkNames}}. Es posible que algunas funciones no estén disponibles."
       },
       "warnSomeUnsupportedMethods": {
@@ -1552,7 +1576,10 @@
     "mobileMoney": "Dinero digital",
     "airtime": "Datos móviles",
     "minFee": "Tarifa mínima",
-    "numProviders": "{{count}} proveedores",
+    "numProviders_one": "{{count}} Proveedor",
+    "numProviders_few": "{{count}} proveedores",
+    "numProviders_many": "{{count}} proveedores",
+    "numProviders_other": "{{count}} proveedores",
     "fee": "Tarifas",
     "idRequired": "Requiere identificación",
     "mobileCarrierRequirement": "Requiere {{carrier}}",
@@ -2114,6 +2141,8 @@
     "actionDescriptions": {
       "send": "Utiliza cualquier dominio, número de teléfono, dirección Celo, etc.",
       "sendV1_74_one": "Utiliza cualquier dirección o dominio {{supportedNetworkNames}} , un número de teléfono, etc.",
+      "sendV1_74_few": "Utiliza cualquier dirección, dominio o número de teléfono en las siguientes redes: {{supportedNetworkNames}}",
+      "sendV1_74_many": "Utiliza cualquier dirección, dominio o número de teléfono en las siguientes redes: {{supportedNetworkNames}}",
       "sendV1_74_other": "Utiliza cualquier dirección, dominio o número de teléfono en las siguientes redes: {{supportedNetworkNames}}",
       "swap": "Intercambia tokens sin salir de tu wallet",
       "add": "Compra tokens a uno de nuestros proveedores de confianza",
@@ -2141,6 +2170,7 @@
     "searchText": "Busca por nombre, teléfono, wallet...",
     "searchInputLabel": "Para",
     "searchInputPlaceholder": "Dirección o número de teléfono de la wallet",
+    "searchInputPlaceholderEns": "Dirección de la cartera, número de teléfono o ENS",
     "paste": "Pegar desde el portapapeles",
     "title": "Selecciona un destinatario",
     "contactsTitle": "Selecciona un contacto",
@@ -2878,10 +2908,16 @@
   },
   "duration_lessThanADay": "menos de un día",
   "duration_day_one": "1 día",
+  "duration_day_few": "{{count}} días",
+  "duration_day_many": "{{count}} días",
   "duration_day_other": "{{count}} días",
   "duration_month_one": "1 mes",
+  "duration_month_few": "{{count}} meses",
+  "duration_month_many": "{{count}} meses",
   "duration_month_other": "{{count}} meses",
   "duration_year_one": "1 año",
+  "duration_year_few": "{{count}} años",
+  "duration_year_many": "{{count}} años",
   "duration_year_other": "{{count}} años",
   "duration_yearMonth_one": "1 año, 1 mes",
   "duration_yearMonth_other": "{{count}} años, {{count2}} meses",

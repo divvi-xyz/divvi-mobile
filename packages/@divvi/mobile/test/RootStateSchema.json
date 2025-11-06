@@ -3361,11 +3361,15 @@
         "RecipientType": {
             "enum": [
                 "Address",
+                "ENS",
                 "Merchant",
-                "Nomspace",
                 "PhoneNumber"
             ],
             "type": "string"
+        },
+        "Record<string,SendCallsBatch>": {
+            "additionalProperties": false,
+            "type": "object"
         },
         "Record<string,[string,...string[]]>": {
             "additionalProperties": false,
@@ -5375,6 +5379,18 @@
             ],
             "type": "object"
         },
+        "State_26": {
+            "additionalProperties": false,
+            "properties": {
+                "batchById": {
+                    "$ref": "#/definitions/Record<string,SendCallsBatch>"
+                }
+            },
+            "required": [
+                "batchById"
+            ],
+            "type": "object"
+        },
         "State_3": {
             "anyOf": [
                 {
@@ -6632,6 +6648,9 @@
         "send": {
             "$ref": "#/definitions/State_4"
         },
+        "sendCalls": {
+            "$ref": "#/definitions/State_26"
+        },
         "swap": {
             "$ref": "#/definitions/State_18"
         },
@@ -6671,6 +6690,7 @@
         "priceHistory",
         "recipients",
         "send",
+        "sendCalls",
         "swap",
         "tokens",
         "transactions",

@@ -1,53 +1,28 @@
-import {
-  ALCHEMY_ARBITRUM_API_KEY,
-  ALCHEMY_BASE_API_KEY,
-  ALCHEMY_ETHEREUM_API_KEY,
-  ALCHEMY_OPTIMISM_API_KEY,
-  ALCHEMY_POLYGON_POS_API_KEY,
-} from 'src/config'
+import { ALCHEMY_API_KEY } from 'src/config'
 import { Network } from 'src/transactions/types'
 import networkConfig from 'src/web3/networkConfig'
 import { PublicClient, Transport, createPublicClient, http } from 'viem'
 
 export const INTERNAL_RPC_SUPPORTED_NETWORKS = [Network.Arbitrum] as const
 
+const alchemyOptions = ALCHEMY_API_KEY
+  ? {
+      fetchOptions: {
+        headers: { Authorization: `Bearer ${ALCHEMY_API_KEY}` },
+      },
+    }
+  : undefined
+
+const makeTransport = (network: Network) =>
+  http(ALCHEMY_API_KEY ? networkConfig.alchemyRpcUrl[network] : undefined, alchemyOptions)
+
 export const viemTransports: Record<Network, Transport> = {
-  [Network.Celo]: http(),
-  [Network.Ethereum]: http(networkConfig.alchemyRpcUrl[Network.Ethereum], {
-    fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${ALCHEMY_ETHEREUM_API_KEY}`,
-      },
-    },
-  }),
-  [Network.Arbitrum]: http(networkConfig.alchemyRpcUrl[Network.Arbitrum], {
-    fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${ALCHEMY_ARBITRUM_API_KEY}`,
-      },
-    },
-  }),
-  [Network.Optimism]: http(networkConfig.alchemyRpcUrl[Network.Optimism], {
-    fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${ALCHEMY_OPTIMISM_API_KEY}`,
-      },
-    },
-  }),
-  [Network.PolygonPoS]: http(networkConfig.alchemyRpcUrl[Network.PolygonPoS], {
-    fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${ALCHEMY_POLYGON_POS_API_KEY}`,
-      },
-    },
-  }),
-  [Network.Base]: http(networkConfig.alchemyRpcUrl[Network.Base], {
-    fetchOptions: {
-      headers: {
-        Authorization: `Bearer ${ALCHEMY_BASE_API_KEY}`,
-      },
-    },
-  }),
+  [Network.Celo]: makeTransport(Network.Celo),
+  [Network.Ethereum]: makeTransport(Network.Ethereum),
+  [Network.Arbitrum]: makeTransport(Network.Arbitrum),
+  [Network.Optimism]: makeTransport(Network.Optimism),
+  [Network.PolygonPoS]: makeTransport(Network.PolygonPoS),
+  [Network.Base]: makeTransport(Network.Base),
 }
 
 export const appViemTransports = {

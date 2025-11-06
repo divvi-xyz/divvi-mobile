@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Mit WhatsApp einladen",
-  "inviteWithSMS": "Per SMS einladen",
   "whySendFees": "Diese Gebühr deckt die Kosten für den neuen Benutzer, um seine Telefonnummer zu verbinden",
   "whyReceiveFees": "Dir wurde Krypto zur Bestätigung deines Kontos geschickt.",
   "inviteSent": "Einladung gesendet",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Lade deine Freunde ein und erhalte bis zu 12 cUSD",
     "body": "Sobald sie ihre Nummer verknüpfen und Guthaben zu {{appName}} hinzufügen, erhaltet ihr beide 0,50 cUSD."
+  },
+  "inviteWithSMS": {
+    "title": "Per SMS einladen",
+    "shareMessage": "Hey! Melde dich bei {{appName}} wallet an. Ich nutze sie, um meine Ersparnisse in USD und Krypto zu vermehren, und du kannst sie in Sekundenschnelle mit nur einer Telefonnummer einrichten: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Einen Freund einladen",
@@ -1171,6 +1174,17 @@
     "sendTransaction": "{{dappName}} möchte eine Transaktion senden.",
     "sendDappTransaction": "{{dappName}} möchte eine Transaktion im Netzwerk {{networkName}} senden.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} möchte eine Transaktion in einem nicht unterstützten Netzwerk senden.",
+    "sendCallsTitle_one": "Senden {{count}} Transaktion",
+    "sendCallsTitle_few": "{{count}} Transaktionen senden",
+    "sendCallsTitle_many": "{{count}} Transaktionen senden",
+    "sendCallsTitle_other": "{{count}} Transaktionen senden",
+    "sendCalls_one": "{{dappName}} möchte eine {{count}} Transaktion über das {{networkName}} Netzwerk senden.",
+    "sendCalls_few": "{{dappName}} möchte {{count}} Transaktionen über das {{networkName}} Netzwerk senden.",
+    "sendCalls_many": "{{dappName}} möchte {{count}} Transaktionen über das {{networkName}} Netzwerk senden.",
+    "sendCalls_other": "{{dappName}} möchte {{count}} Transaktionen über das {{networkName}} Netzwerk senden.",
+    "sendCallsUnknownNetwork_one": "{{dappName}} eine {{count}} Transaktion über ein nicht unterstütztes Netzwerk senden möchte.",
+    "sendCallsUnknownNetwork_few": "{{dappName}} {{count}} Transaktionen über ein nicht unterstütztes Netzwerk senden möchte.",
+    "sendCallsUnknownNetwork_other": "{{dappName}} {{count}} Transaktionen über ein nicht unterstütztes Netzwerk senden möchte.",
     "decryptPayloadTitle": "Mit Wallet entschlüsseln",
     "decryptPayload": "{{dappName}} möchte sich eine Daten-Nutzlast entschlüsseln.",
     "computeSharedSecret": "{{dappName}} möchte sich Geheimnisse erzeugen.",
@@ -1184,6 +1198,8 @@
       "title": "Nicht unterstützte Kette",
       "description": "{{dappName}} fordert diese Aktion auf einer Kette an, die nicht von {{appName}} unterstützt wird. Bitte stelle sicher, dass Celo die aktive Kette auf der Dapp-Seite ist.",
       "descriptionV1_74_one": "{{dappName}} fordert diese Aktion auf einer Kette an, die nicht von {{appName}} unterstützt wird. Bitte stelle sicher, dass {{supportedNetworkNames}} die aktive Kette auf der Dapp-Seite ist.",
+      "descriptionV1_74_few": "{{dappName}} fordert diese Aktion auf einer Kette an, die nicht von {{appName}} unterstützt wird. \nBitte vergewissere dich, dass die aktive Kette auf der Dapp eine der folgenden ist: {{supportedNetworkNames}}.",
+      "descriptionV1_74_many": "{{dappName}} fordert diese Aktion auf einer Kette an, die nicht von {{appName}} unterstützt wird. \nBitte vergewissere dich, dass die aktive Kette auf der Dapp eine der folgenden ist: {{supportedNetworkNames}}.",
       "descriptionV1_74_other": "{{dappName}} fordert diese Aktion auf einer Kette an, die nicht von {{appName}} unterstützt wird. \nBitte vergewissere dich, dass die aktive Kette auf der Dapp eine der folgenden ist: {{supportedNetworkNames}}."
     },
     "notEnoughBalanceForGas": {
@@ -1194,17 +1210,25 @@
       "title": "Transaktion konnte nicht vorbereitet werden",
       "description": "Bei der Vorbereitung der Transaktion ist ein Fehler aufgetreten. Siehe den zugrunde liegenden Fehler für weitere Details.\n\n„{{errorMessage}}“"
     },
+    "nonAtomicExecution": {
+      "title": "Nicht-atomare Ausführung",
+      "description": "Die Transaktionen werden sequentiell ausgeführt, ohne dass Atomarität/Kontinuität garantiert wird."
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "Nicht unterstützte Kette",
         "description": "{{dappName}} möchte sich mit einer Kette verbinden, die nicht von {{appName}} unterstützt wird. Bitte stelle sicher, dass Celo auf der Dapp-Seite ausgewählt ist.",
         "descriptionV1_74_one": "{{dappName}} möchte sich mit einer Kette verbinden, die nicht von {{appName}} unterstützt wird. Bitte stelle sicher, dass {{supportedNetworkNames}} auf der Dapp-Seite ausgewählt ist.",
+        "descriptionV1_74_few": "{{dappName}} möchte sich mit einer Kette verbinden, die nicht von {{appName}} unterstützt wird. Bitte stelle sicher, dass eine der folgenden Optionen auf der Dapp-Seite ausgewählt ist: {{supportedNetworkNames}}.",
+        "descriptionV1_74_many": "{{dappName}} möchte sich mit einer Kette verbinden, die nicht von {{appName}} unterstützt wird. Bitte stelle sicher, dass eine der folgenden Optionen auf der Dapp-Seite ausgewählt ist: {{supportedNetworkNames}}.",
         "descriptionV1_74_other": "{{dappName}} möchte sich mit einer Kette verbinden, die nicht von {{appName}} unterstützt wird. Bitte stelle sicher, dass eine der folgenden Optionen auf der Dapp-Seite ausgewählt ist: {{supportedNetworkNames}}."
       },
       "warnUnsupportedChains": {
         "title": "Nicht unterstützte Kette",
         "description": "{{dappName}} hat Celo nicht als unterstützte Kette angegeben. Einige Features funktionieren möglicherweise nicht wie erwartet.",
         "descriptionV1_74_one": "{{dappName}} hat {{supportedNetworkNames}} nicht als unterstützte Kette angegeben. Einige Features funktionieren möglicherweise nicht wie erwartet.",
+        "descriptionV1_74_few": "{{dappName}} hat keine der folgenden Ketten als unterstützte Kette angegeben: {{supportedNetworkNames}}. Einige Features funktionieren möglicherweise nicht wie erwartet.",
+        "descriptionV1_74_many": "{{dappName}} hat keine der folgenden Ketten als unterstützte Kette angegeben: {{supportedNetworkNames}}. Einige Features funktionieren möglicherweise nicht wie erwartet.",
         "descriptionV1_74_other": "{{dappName}} hat keine der folgenden Ketten als unterstützte Kette angegeben: {{supportedNetworkNames}}. Einige Features funktionieren möglicherweise nicht wie erwartet."
       },
       "warnSomeUnsupportedMethods": {
@@ -1552,7 +1576,10 @@
     "mobileMoney": "Mobiles Geld",
     "airtime": "Airtime",
     "minFee": "Mindestgebühr",
-    "numProviders": "{{count}} Anbieter",
+    "numProviders_one": "{{count}} Anbieter",
+    "numProviders_few": "{{count}} Anbieter",
+    "numProviders_many": "{{count}} Anbieter",
+    "numProviders_other": "{{count}} Anbieter",
     "fee": "Gebühr",
     "idRequired": "ID erforderlich",
     "mobileCarrierRequirement": "{{carrier}} erforderlich",
@@ -2114,6 +2141,8 @@
     "actionDescriptions": {
       "send": "Verwende eine beliebige Celo-Adresse, -Domain, -Telefonnummer usw.",
       "sendV1_74_one": "Verwende eine beliebige {{supportedNetworkNames}}-Adresse, -Domain, Telefonnummer usw.",
+      "sendV1_74_few": "Verwende eine beliebige Adresse, Domain oder Telefonnummer in den folgenden Netzwerken: {{supportedNetworkNames}}",
+      "sendV1_74_many": "Verwende eine beliebige Adresse, Domain oder Telefonnummer in den folgenden Netzwerken: {{supportedNetworkNames}}",
       "sendV1_74_other": "Verwende eine beliebige Adresse, Domain oder Telefonnummer in den folgenden Netzwerken: {{supportedNetworkNames}}",
       "swap": "Tausche deine Token, ohne deine Wallet zu verlassen.",
       "add": "Kaufe Token über einen unserer vertrauenswürdigen Anbieter.",
@@ -2141,6 +2170,7 @@
     "searchText": "Suche nach Name, Telefon, Wallet ...",
     "searchInputLabel": "Zu",
     "searchInputPlaceholder": "Wallet-Adresse oder Telefonnummer",
+    "searchInputPlaceholderEns": "Wallet-Adresse, Telefonnummer oder ENS",
     "paste": "Aus Zwischenablage einfügen",
     "title": "Einen Empfänger auswählen",
     "contactsTitle": "Kontakt wählen",
@@ -2878,10 +2908,16 @@
   },
   "duration_lessThanADay": "Weniger als ein Tag",
   "duration_day_one": "1 Tag",
+  "duration_day_few": "{{count}} Tage",
+  "duration_day_many": "{{count}} Tage",
   "duration_day_other": "{{count}} Tage",
   "duration_month_one": "1 Monat",
+  "duration_month_few": "{{count}} Monate",
+  "duration_month_many": "{{count}} Monate",
   "duration_month_other": "{{count}} Monate",
   "duration_year_one": "1 Jahr",
+  "duration_year_few": "{{count}} Jahre",
+  "duration_year_many": "{{count}} Jahre",
   "duration_year_other": "{{count}} Jahre",
   "duration_yearMonth_one": "1 Jahr, 1 Monat",
   "duration_yearMonth_other": "{{count}} Jahre, {{count2}} Monate",

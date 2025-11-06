@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Запросити у WhatsApp",
-  "inviteWithSMS": "Запросити з SMS",
   "whySendFees": "Ця комісія охоплює витрати за нового користувача для під’єднання номера телефону",
   "whyReceiveFees": "Вам відправлено деякі криптовалюти, щоб підтвердити ваш обліковий запис",
   "inviteSent": "Запрошення надіслано",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Запрошуйте друзів і отримуйте до 12 cUSD",
     "body": "Щойно вони під’єднають свій номер і покладуть кошти у {{appName}}, кожен із вас отримає по 0,50 cUSD."
+  },
+  "inviteWithSMS": {
+    "title": "Запросити з SMS",
+    "shareMessage": "Привіт! Підписуйся на гаманець {{appName}} . Я використовую його для примноження своїх заощаджень у доларах та криптовалюті, а ви можете створити його за лічені секунди, маючи лише номер телефону: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Запросити друга",
@@ -1175,6 +1178,17 @@
     "sendTransaction": "{{dappName}} бажає надіслати транзакцію.",
     "sendDappTransaction": "{{dappName}} бажає надіслати транзакцію в мережі {{networkName}}.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} бажає надіслати транзакцію в мережі, що не підтримується.",
+    "sendCallsTitle_one": "Надішліть транзакцію на {{count}}",
+    "sendCallsTitle_few": "Надсилайте транзакції на {{count}}",
+    "sendCallsTitle_many": "Надсилайте транзакції на {{count}}",
+    "sendCallsTitle_other": "Надсилайте транзакції на {{count}}",
+    "sendCalls_one": "{{dappName}} хоче відправити {{count}} транзакцію в мережі {{networkName}} .",
+    "sendCalls_few": "{{dappName}} хоче надсилати {{count}} транзакції в мережі {{networkName}} .",
+    "sendCalls_many": "{{dappName}} хоче надсилати {{count}} транзакції в мережі {{networkName}} .",
+    "sendCalls_other": "{{dappName}} хоче надсилати {{count}} транзакції в мережі {{networkName}} .",
+    "sendCallsUnknownNetwork_one": "{{dappName}} хоче надіслати {{count}} транзакцію через непідтримувану мережу.",
+    "sendCallsUnknownNetwork_few": "{{dappName}} хоче надсилати транзакції {{count}} через непідтримувану мережу.",
+    "sendCallsUnknownNetwork_other": "{{dappName}} хоче надсилати транзакції {{count}} через непідтримувану мережу.",
     "decryptPayloadTitle": "Розшифрувати, використовуючи гаманець",
     "decryptPayload": "{{dappName}} потрібно розшифрувати корисний вміст даних.",
     "computeSharedSecret": "{{dappName}} потрібно згенерувати секретні коди.",
@@ -1188,6 +1202,8 @@
       "title": "Непідтримуваний ланцюжок",
       "description": "{{dappName}} надсилає запит щодо цієї дії на ланцюжок, який не підтримується застосунком {{appName}}. Переконайтеся, що Celo є активним ланцюжком на боці Dapp.",
       "descriptionV1_74_one": "{{dappName}} надсилає запит щодо цієї дії на ланцюжок, який не підтримується застосунком {{appName}}. Переконайтеся, що {{supportedNetworkNames}} є активним ланцюжком на боці Dapp.",
+      "descriptionV1_74_few": "{{dappName}} надсилає запит щодо цієї дії на ланцюжок, який не підтримується застосунком {{appName}}. Будь ласка, переконайтеся, що активний ланцюжок на dapp є одним з наступних: {{supportedNetworkNames}}.",
+      "descriptionV1_74_many": "{{dappName}} надсилає запит щодо цієї дії на ланцюжок, який не підтримується застосунком {{appName}}. Будь ласка, переконайтеся, що активний ланцюжок на dapp є одним з наступних: {{supportedNetworkNames}}.",
       "descriptionV1_74_other": "{{dappName}} надсилає запит щодо цієї дії на ланцюжок, який не підтримується застосунком {{appName}}. Будь ласка, переконайтеся, що активний ланцюжок на dapp є одним з наступних: {{supportedNetworkNames}}."
     },
     "notEnoughBalanceForGas": {
@@ -1198,17 +1214,25 @@
       "title": "Не вдалося підготувати транзакцію",
       "description": "Під час підготовки транзакції сталася помилка. Докладнішу інформацію дивіться в описі про помилку.\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "Неатомне виконання",
+      "description": "Транзакції будуть виконуватися послідовно без будь-яких гарантій атомарності/неперервності."
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "Непідтримуваний ланцюжок",
         "description": "{{dappName}} намагається під’єднатися до ланцюжка, який не підтримується {{appName}}. Переконайтеся, що з боку застосунку Dapp вибрано Celo.",
         "descriptionV1_74_one": "{{dappName}} намагається під’єднатися до ланцюжка, який не підтримується {{appName}}. Переконайтеся, що з боку застосунку Dapp вибрано {{supportedNetworkNames}}.",
+        "descriptionV1_74_few": "{{dappName}} намагається під’єднатися до ланцюжка, який не підтримується {{appName}}. Будь ласка, переконайтеся, що активний ланцюжок на dapp є одним з наступних: {{supportedNetworkNames}}.",
+        "descriptionV1_74_many": "{{dappName}} намагається під’єднатися до ланцюжка, який не підтримується {{appName}}. Будь ласка, переконайтеся, що активний ланцюжок на dapp є одним з наступних: {{supportedNetworkNames}}.",
         "descriptionV1_74_other": "{{dappName}} намагається під’єднатися до ланцюжка, який не підтримується {{appName}}. Будь ласка, переконайтеся, що активний ланцюжок на dapp є одним з наступних: {{supportedNetworkNames}}."
       },
       "warnUnsupportedChains": {
         "title": "Непідтримуваний ланцюжок",
         "description": "У {{dappName}} Celo не зазначено як підтримуваний ланцюжок. Деякі функції можуть працювати не так, як очікувалося.",
         "descriptionV1_74_one": "У {{dappName}} {{supportedNetworkNames}} не зазначено як підтримуваний ланцюжок. Деякі функції можуть працювати не так, як очікувалося.",
+        "descriptionV1_74_few": "{{dappName}} не вказали жодного з наступних ланцюжків як підтримувані: {{supportedNetworkNames}}. Деякі функції можуть працювати не так, як очікувалося.",
+        "descriptionV1_74_many": "{{dappName}} не вказали жодного з наступних ланцюжків як підтримувані: {{supportedNetworkNames}}. Деякі функції можуть працювати не так, як очікувалося.",
         "descriptionV1_74_other": "{{dappName}} не вказали жодного з наступних ланцюжків як підтримувані: {{supportedNetworkNames}}. Деякі функції можуть працювати не так, як очікувалося."
       },
       "warnSomeUnsupportedMethods": {
@@ -1556,7 +1580,10 @@
     "mobileMoney": "Мобільні гроші",
     "airtime": "Airtime",
     "minFee": "Мінімальна комісія",
-    "numProviders": "{{count}} Провайдери",
+    "numProviders_one": "{{count}} Провайдер",
+    "numProviders_few": "{{count}} Провайдери",
+    "numProviders_many": "{{count}} Провайдери",
+    "numProviders_other": "{{count}} Провайдери",
     "fee": "Комісія",
     "idRequired": "Потрібен ідентифікатор",
     "mobileCarrierRequirement": "Потрібно: {{carrier}}",
@@ -2118,6 +2145,8 @@
     "actionDescriptions": {
       "send": "Використайте будь-яку адресу, домен, номер телефону із Celo тощо.",
       "sendV1_74_one": "Використайте будь-яку адресу, домен, номер телефону із {{supportedNetworkNames}} тощо.",
+      "sendV1_74_few": "Використовуйте будь-яку адресу, домен, номер телефону в наступних мережах: {{supportedNetworkNames}}",
+      "sendV1_74_many": "Використовуйте будь-яку адресу, домен, номер телефону в наступних мережах: {{supportedNetworkNames}}",
       "sendV1_74_other": "Використовуйте будь-яку адресу, домен, номер телефону в наступних мережах: {{supportedNetworkNames}}",
       "swap": "Обміняйте свої токени, не виходячи з гаманця",
       "add": "Придбайте токени через одного з наших довірених постачальників",
@@ -2145,6 +2174,7 @@
     "searchText": "Пошук за іменем, телефоном, гаманцем...",
     "searchInputLabel": "До",
     "searchInputPlaceholder": "Адреса гаманця або номер телефону",
+    "searchInputPlaceholderEns": "Адреса гаманця, номер телефону або ENS",
     "paste": "Копіювати з буфера обміну",
     "title": "Вибрати отримувача",
     "contactsTitle": "Вибрати контакт",
@@ -2882,10 +2912,16 @@
   },
   "duration_lessThanADay": "Менше ніж один день",
   "duration_day_one": "1 день",
+  "duration_day_few": "{{count}} днів",
+  "duration_day_many": "{{count}} днів",
   "duration_day_other": "{{count}} днів",
   "duration_month_one": "1 місяць",
+  "duration_month_few": "{{count}} міс.",
+  "duration_month_many": "{{count}} міс.",
   "duration_month_other": "{{count}} міс.",
   "duration_year_one": "1 рік",
+  "duration_year_few": "{{count}} р.",
+  "duration_year_many": "{{count}} р.",
   "duration_year_other": "{{count}} р.",
   "duration_yearMonth_one": "1 рік, 1 місяць",
   "duration_yearMonth_other": "{{count}} р., {{count2}} міс.",

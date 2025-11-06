@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20.17.0"
+    "node": "22.21.0"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
   "workspaces": [
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@actions/github": "^5.1.1",
-    "@anolilab/multi-semantic-release": "^1.1.9",
+    "@anolilab/multi-semantic-release": "^3.0.0-alpha.3",
     "@jambit/eslint-plugin-typed-redux-saga": "^0.4.0",
     "@types/shelljs": "^0.8.11",
     "@types/yargs": "^17.0.32",
@@ -43,7 +43,7 @@
     "patch-package": "^8.0.0",
     "prettier": "3.3.3",
     "prettier-plugin-java": "^2.6.4",
-    "semantic-release": "^24.2.1",
+    "semantic-release": "^25.0.1",
     "shelljs": "^0.8.5",
     "strip-ansi": "^6.0.0",
     "typedoc": "^0.27.9",
@@ -123,29 +123,5 @@
     "deps": {
       "bump": "inherit"
     }
-  },
-  "release": {
-    "branches": [
-      "stable",
-      {
-        "name": "main",
-        "prerelease": "alpha",
-        "channel": "alpha"
-      }
-    ],
-    "preset": "conventionalcommits",
-    "//plugins": "Skipping github comments and labels as it is not currently working correctly, see https://github.com/anolilab/semantic-release/issues/7",
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/npm",
-      [
-        "@semantic-release/github",
-        {
-          "successComment": false,
-          "releasedLabels": false
-        }
-      ]
-    ]
   }
 }

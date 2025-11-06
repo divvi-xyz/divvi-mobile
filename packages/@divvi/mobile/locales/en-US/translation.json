@@ -691,7 +691,6 @@
     }
   ],
   "inviteWithWhatsapp": "Invite with WhatsApp",
-  "inviteWithSMS": "Invite with SMS",
   "whySendFees": "This fee covers costs for the new user to connect their phone number",
   "whyReceiveFees": "You were sent some crypto to confirm your account",
   "inviteSent": "Invite Sent",
@@ -710,6 +709,10 @@
   "inviteRewardsBannerCUSD": {
     "title": "Invite friends and get up to 12 cUSD",
     "body": "Once they connect their number and add funds to {{appName}}, you’ll both receive 0.50 cUSD."
+  },
+  "inviteWithSMS": {
+    "title": "Invite with SMS",
+    "shareMessage": "Hey! Sign up to {{appName}} wallet. I use it to grow my savings in USD and crypto, and you can set it up in seconds with just a phone number: {{shareUrl}}."
   },
   "inviteWithUrl": {
     "title": "Invite a Friend",
@@ -1171,6 +1174,17 @@
     "sendTransaction": "{{dappName}} would like to send a transaction.",
     "sendDappTransaction": "{{dappName}} would like to send a transaction on the {{networkName}} network.",
     "sendDappTransactionUnsupportedNetwork": "{{dappName}} would like to send a transaction on an unsupported network.",
+    "sendCallsTitle_one": "Send {{count}} transaction",
+    "sendCallsTitle_few": "Send {{count}} transactions",
+    "sendCallsTitle_many": "Send {{count}} transactions",
+    "sendCallsTitle_other": "Send {{count}} transactions",
+    "sendCalls_one": "{{dappName}} would like to send {{count}} transaction on the {{networkName}} network.",
+    "sendCalls_few": "{{dappName}} would like to send {{count}} transactions on the {{networkName}} network.",
+    "sendCalls_many": "{{dappName}} would like to send {{count}} transactions on the {{networkName}} network.",
+    "sendCalls_other": "{{dappName}} would like to send {{count}} transactions on the {{networkName}} network.",
+    "sendCallsUnknownNetwork_one": "{{dappName}} would like to send {{count}} transaction on an unsupported network.",
+    "sendCallsUnknownNetwork_few": "{{dappName}} would like to send {{count}} transactions on an unsupported network.",
+    "sendCallsUnknownNetwork_other": "{{dappName}} would like to send {{count}} transactions on an unsupported network.",
     "decryptPayloadTitle": "Decrypt with wallet",
     "decryptPayload": "{{dappName}} would like to decrypt a data payload.",
     "computeSharedSecret": "{{dappName}} would like to generate secrets.",
@@ -1184,6 +1198,8 @@
       "title": "Unsupported chain",
       "description": "{{dappName}} is requesting this action on a chain not supported by {{appName}}. Please make sure Celo is the active chain on the dapp side.",
       "descriptionV1_74_one": "{{dappName}} is requesting this action on a chain not supported by {{appName}}. Please make sure {{supportedNetworkNames}} is the active chain on the dapp side.",
+      "descriptionV1_74_few": "{{dappName}} is requesting this action on a chain not supported by {{appName}}. Please make sure the active chain on the dapp is one of the following: {{supportedNetworkNames}}.",
+      "descriptionV1_74_many": "{{dappName}} is requesting this action on a chain not supported by {{appName}}. Please make sure the active chain on the dapp is one of the following: {{supportedNetworkNames}}.",
       "descriptionV1_74_other": "{{dappName}} is requesting this action on a chain not supported by {{appName}}. Please make sure the active chain on the dapp is one of the following: {{supportedNetworkNames}}."
     },
     "notEnoughBalanceForGas": {
@@ -1194,17 +1210,25 @@
       "title": "Failed to prepare transaction",
       "description": "An error occurred while preparing the transaction. See the underlying error for more details.\n\n\"{{errorMessage}}\""
     },
+    "nonAtomicExecution": {
+      "title": "Non-atomic execution",
+      "description": "Transactions will be executed sequentially without any atomicity/contiguity guarantees."
+    },
     "session": {
       "failUnsupportedNamespace": {
         "title": "Unsupported chain",
         "description": "{{dappName}} would like to connect with a chain not supported by {{appName}}. Please make sure Celo is selected on the dapp side.",
         "descriptionV1_74_one": "{{dappName}} would like to connect with a chain not supported by {{appName}}. Please make sure {{supportedNetworkNames}} is selected on the dapp side.",
+        "descriptionV1_74_few": "{{dappName}} would like to connect with a chain not supported by {{appName}}. Please make sure one of the following is selected on the dapp side: {{supportedNetworkNames}}.",
+        "descriptionV1_74_many": "{{dappName}} would like to connect with a chain not supported by {{appName}}. Please make sure one of the following is selected on the dapp side: {{supportedNetworkNames}}.",
         "descriptionV1_74_other": "{{dappName}} would like to connect with a chain not supported by {{appName}}. Please make sure one of the following is selected on the dapp side: {{supportedNetworkNames}}."
       },
       "warnUnsupportedChains": {
         "title": "Unsupported chain",
         "description": "{{dappName}} did not specify Celo as a supported chain. Some features may not work as expected.",
         "descriptionV1_74_one": "{{dappName}} did not specify {{supportedNetworkNames}} as a supported chain. Some features may not work as expected.",
+        "descriptionV1_74_few": "{{dappName}} did not specify any of the following as supported chains: {{supportedNetworkNames}}. Some features may not work as expected.",
+        "descriptionV1_74_many": "{{dappName}} did not specify any of the following as supported chains: {{supportedNetworkNames}}. Some features may not work as expected.",
         "descriptionV1_74_other": "{{dappName}} did not specify any of the following as supported chains: {{supportedNetworkNames}}. Some features may not work as expected."
       },
       "warnSomeUnsupportedMethods": {
@@ -1552,7 +1576,10 @@
     "mobileMoney": "Mobile Money",
     "airtime": "Airtime",
     "minFee": "Min Fee",
-    "numProviders": "{{count}} Providers",
+    "numProviders_one": "{{count}} Provider",
+    "numProviders_few": "{{count}} Providers",
+    "numProviders_many": "{{count}} Providers",
+    "numProviders_other": "{{count}} Providers",
     "fee": "Fee",
     "idRequired": "ID Required",
     "mobileCarrierRequirement": "{{carrier}} Required",
@@ -2114,6 +2141,8 @@
     "actionDescriptions": {
       "send": "Use any Celo address, domain, phone number, etc.",
       "sendV1_74_one": "Use any {{supportedNetworkNames}} address, domain, phone number, etc.",
+      "sendV1_74_few": "Use any address, domain, phone number on the following networks: {{supportedNetworkNames}}",
+      "sendV1_74_many": "Use any address, domain, phone number on the following networks: {{supportedNetworkNames}}",
       "sendV1_74_other": "Use any address, domain, phone number on the following networks: {{supportedNetworkNames}}",
       "swap": "Swap your tokens without leaving your wallet",
       "add": "Buy tokens using one of our trusted providers",
@@ -2141,6 +2170,7 @@
     "searchText": "Search by name, phone, wallet...",
     "searchInputLabel": "To",
     "searchInputPlaceholder": "Wallet Address or Phone Number",
+    "searchInputPlaceholderEns": "Wallet Address, Phone Number, or ENS",
     "paste": "Paste from clipboard",
     "title": "Select a recipient",
     "contactsTitle": "Select a contact",
@@ -2878,10 +2908,16 @@
   },
   "duration_lessThanADay": "Less than a day",
   "duration_day_one": "1 day",
+  "duration_day_few": "{{count}} days",
+  "duration_day_many": "{{count}} days",
   "duration_day_other": "{{count}} days",
   "duration_month_one": "1 month",
+  "duration_month_few": "{{count}} months",
+  "duration_month_many": "{{count}} months",
   "duration_month_other": "{{count}} months",
   "duration_year_one": "1 year",
+  "duration_year_few": "{{count}} years",
+  "duration_year_many": "{{count}} years",
   "duration_year_other": "{{count}} years",
   "duration_yearMonth_one": "1 year, 1 month",
   "duration_yearMonth_other": "{{count}} years, {{count2}} months",

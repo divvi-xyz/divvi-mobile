@@ -1,7 +1,8 @@
 import { WalletKitTypes } from '@reown/walletkit'
+import { SendCallsBatch } from 'src/sendCalls/slice'
 import { SerializableTransactionRequest } from 'src/viem/preparedTransactionSerialization'
 import { SupportedActions } from 'src/walletConnect/constants'
-import { CapabilitiesSchema } from 'viem'
+import { CapabilitiesSchema, WalletGetCallsStatusReturnType, WalletSendCallsReturnType } from 'viem'
 
 export enum WalletConnectRequestType {
   Loading,
@@ -11,14 +12,16 @@ export enum WalletConnectRequestType {
   SmartAccountConversion,
 }
 
-export type WalletConnectRequestResult = string | Record<string, Capabilities>
+export type WalletConnectRequestResult =
+  | string
+  | Record<string, Capabilities>
+  | WalletSendCallsReturnType
+  | WalletGetCallsStatusReturnType
 
 export type Capabilities = Pick<
   CapabilitiesSchema['getCapabilities']['ReturnType'],
   'atomic' | 'paymasterService'
 >
-
-type NonInteractiveMethod = SupportedActions.wallet_getCapabilities
 
 export type MessageMethod =
   | SupportedActions.eth_sign
@@ -31,10 +34,6 @@ export type TransactionMethod =
   | SupportedActions.eth_signTransaction
 
 export type SendCallsMethod = SupportedActions.wallet_sendCalls
-
-export function isNonInteractiveMethod(method: string): method is NonInteractiveMethod {
-  return method === SupportedActions.wallet_getCapabilities
-}
 
 export function isMessageMethod(method: string): method is MessageMethod {
   return (
@@ -55,12 +54,13 @@ export function isTransactionMethod(method: string): method is TransactionMethod
 export function isSendCallsMethod(method: string): method is SendCallsMethod {
   return method === SupportedActions.wallet_sendCalls
 }
+
 interface RequestBase {
   request: WalletKitTypes.EventArguments['session_request']
 }
 
-interface NonInteractiveRequest extends RequestBase {
-  method: NonInteractiveMethod
+interface GetCapabilitiesRequest extends RequestBase {
+  method: SupportedActions.wallet_getCapabilities
 }
 
 export interface MessageRequest extends RequestBase {
@@ -90,12 +90,19 @@ export interface SmartAccountConversionRequest extends RequestBase {
   preparedRequest: PreparedTransactionResult<SerializableTransactionRequest[]>
 }
 
+interface GetCallsStatusRequest extends RequestBase {
+  method: SupportedActions.wallet_getCallsStatus
+  id: string
+  batch: SendCallsBatch
+}
+
 export type ActionableRequest =
-  | NonInteractiveRequest
+  | GetCapabilitiesRequest
   | MessageRequest
   | TransactionRequest
   | SendCallsRequest
   | SmartAccountConversionRequest
+  | GetCallsStatusRequest
 
 export type PreparedTransactionResult<T> =
   | { success: true; data: T }
