@@ -61,6 +61,7 @@ function SmartAccountConversionRequestComponent(props: SmartAccountConversionReq
     } else {
       navigate(Screens.WalletConnectRequest, {
         type: WalletConnectRequestType.Action,
+        atomic: false,
         method: props.method,
         request: props.request,
         supportedChains: props.supportedChains,

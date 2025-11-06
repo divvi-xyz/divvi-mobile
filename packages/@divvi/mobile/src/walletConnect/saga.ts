@@ -646,7 +646,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   }
 
   // If the action doesn't require user consent, accept it immediately
-  if (isNonInteractiveMethod(method)) {
+  if (method === SupportedActions.wallet_getCapabilities) {
     yield* put(acceptRequest({ method, request }))
     return
   }
@@ -755,13 +755,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
-  // since there are some network requests needed to prepare the transactions,
-  // add a loading state
-  navigate(Screens.WalletConnectRequest, {
-    type: WalletConnectRequestType.Loading,
-    origin: WalletConnectPairingOrigin.Deeplink,
-  })
-
+  // Handle message signing requests
   if (isMessageMethod(method)) {
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
