@@ -20,6 +20,7 @@ import { Currency } from 'src/utils/currencies'
 import { type SerializablePreparedTransactionsPossible } from 'src/viem/preparedTransactionSerialization'
 import { ActionRequestProps } from 'src/walletConnect/screens/ActionRequest'
 import { SessionRequestProps } from 'src/walletConnect/screens/SessionRequest'
+import { SmartAccountConversionRequestProps } from 'src/walletConnect/screens/SmartAccountConversionRequest'
 import { WalletConnectRequestType } from 'src/walletConnect/types'
 
 // Typed nested navigator params
@@ -322,6 +323,9 @@ export type StackParamList = {
     | ({
         type: WalletConnectRequestType.Session
       } & SessionRequestProps)
+    | ({
+        type: WalletConnectRequestType.SmartAccountConversion
+      } & SmartAccountConversionRequestProps)
     | { type: WalletConnectRequestType.TimeOut }
   [Screens.WalletConnectSessions]: undefined
   [Screens.WalletSecurityPrimer]: undefined
