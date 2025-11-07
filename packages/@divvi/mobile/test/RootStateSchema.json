@@ -3361,8 +3361,8 @@
         "RecipientType": {
             "enum": [
                 "Address",
+                "ENS",
                 "Merchant",
-                "Nomspace",
                 "PhoneNumber"
             ],
             "type": "string"

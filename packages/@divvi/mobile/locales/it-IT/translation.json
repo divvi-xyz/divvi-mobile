@@ -2170,6 +2170,7 @@
     "searchText": "Cerca per nome, numero telefonico, portafoglio...",
     "searchInputLabel": "A",
     "searchInputPlaceholder": "Indirizzo o numero di telefono del wallet",
+    "searchInputPlaceholderEns": "Indirizzo, numero di telefono o ENS del portafoglio",
     "paste": "Incolla dagli Appunti",
     "title": "Seleziona un destinatario",
     "contactsTitle": "Seleziona un contatto",

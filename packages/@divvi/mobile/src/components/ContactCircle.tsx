@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { Image, StyleSheet, Text, View, ViewStyle } from 'react-native'
+import { SvgUri } from 'react-native-svg'
 import User from 'src/icons/User'
 import { Recipient } from 'src/recipients/recipient'
 import Colors, { ColorValue } from 'src/styles/colors'
 import { typeScale } from 'src/styles/fonts'
+import Logger from 'src/utils/Logger'
 
 interface Props {
   style?: ViewStyle
@@ -21,6 +23,16 @@ interface Props {
 
 const DEFAULT_ICON_SIZE = 40
 
+const isSvgUrl = (url: string): boolean => {
+  try {
+    const parsedUrl = new URL(url)
+    return parsedUrl.pathname.toLowerCase().endsWith('.svg')
+  } catch (error) {
+    Logger.error('isSvgUrl', 'Invalid SVG URL', url)
+    return false
+  }
+}
+
 function ContactCircle({
   size: iconSize = DEFAULT_ICON_SIZE,
   recipient,
@@ -32,6 +44,17 @@ function ContactCircle({
 }: Props) {
   const renderThumbnail = () => {
     if (recipient.thumbnailPath) {
+      if (isSvgUrl(recipient.thumbnailPath)) {
+        return (
+          <SvgUri
+            uri={recipient.thumbnailPath}
+            width={iconSize}
+            height={iconSize}
+            style={[styles.image, { borderRadius: iconSize / 2.0 }]}
+          />
+        )
+      }
+
       return (
         <Image
           source={{ uri: recipient.thumbnailPath }}

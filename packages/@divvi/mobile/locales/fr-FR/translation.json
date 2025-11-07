@@ -2170,6 +2170,7 @@
     "searchText": "Recherchez par nom, téléphone, portefeuille...",
     "searchInputLabel": "À",
     "searchInputPlaceholder": "Adresse du portefeuille ou numéro de téléphone",
+    "searchInputPlaceholderEns": "Adresse du portefeuille, numéro de téléphone ou ENS",
     "paste": "Coller depuis le presse-papiers",
     "title": "Sélectionnez un destinataire",
     "contactsTitle": "Sélectionnez un contact",

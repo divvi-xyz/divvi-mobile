@@ -42,8 +42,8 @@ export type AddressRecipient = Recipient & {
 export enum RecipientType {
   Address = 'Address',
   PhoneNumber = 'PhoneNumber',
-  Nomspace = 'Nomspace',
   Merchant = 'Merchant',
+  Ens = 'ENS',
 }
 
 export function recipientHasNumber(recipient: Recipient): recipient is MobileRecipient {
@@ -72,7 +72,7 @@ export function getDisplayDetail(recipient: Recipient) {
   if (recipientHasNumber(recipient)) {
     return recipient.displayNumber || recipient.e164PhoneNumber
   } else {
-    return recipient.address.substring(2, 17) + '...'
+    return recipient.address.substring(0, 15) + '...'
   }
 }
 

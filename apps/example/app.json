@@ -27,7 +27,7 @@
     "android": {
       // IMPORTANT: to avoid react-native-keychain issues when reinstalling the app
       "allowBackup": false,
-      "edgeToEdgeEnabled": false,
+      "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ff5050"

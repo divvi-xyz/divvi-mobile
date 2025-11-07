@@ -2168,6 +2168,7 @@
     "searchText": "ค้นหาด้วยชื่อ โทรศัพท์ กระเป๋าเงิน...",
     "searchInputLabel": "เป็น",
     "searchInputPlaceholder": "ที่อยู่กระเป๋าเงินหรือหมายเลขโทรศัพท์",
+    "searchInputPlaceholderEns": "Wallet Address, Phone Number, or ENS",
     "paste": "วางจากคลิปบอร์ด",
     "title": "เลือกผู้รับ",
     "contactsTitle": "เลือกผู้ติดต่อ",
