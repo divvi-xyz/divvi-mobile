@@ -1,4 +1,10 @@
+import Constants from 'expo-constants'
+import { APP_BUNDLE_ID, APP_NAME } from 'src/config'
+import { v4 as uuidv4 } from 'uuid'
 import { Hex } from 'viem'
+
+const UUID = uuidv4()
+const ICON_BASE64 = Constants.expoConfig?.extra?.divviAppIconBase64 as string | undefined
 
 export function getInjectedProviderScript({
   isConnected = false,
@@ -132,6 +138,28 @@ export function getInjectedProviderScript({
         _handleResponse: handleResponse,
         _handleEvent: handleEvent,
       };
+
+      // EIP-6963 Provider Discovery
+      function announceProvider() {
+        var info = {
+          uuid: ${JSON.stringify(UUID)},
+          name: ${JSON.stringify(APP_NAME)},
+          rdns: ${JSON.stringify(APP_BUNDLE_ID)},
+          icon: ${JSON.stringify(ICON_BASE64)},
+        };
+
+        window.dispatchEvent(
+          new CustomEvent('eip6963:announceProvider', {
+            detail: { info: info, provider: window.ethereum }
+          })
+        );
+      }
+
+      // Listen for dapp requests for providers
+      window.addEventListener('eip6963:requestProvider', announceProvider);
+
+      // Announce immediately (wallets & dapps may load in any order)
+      announceProvider();
     })();
     true; // Required for injection to work
   `
