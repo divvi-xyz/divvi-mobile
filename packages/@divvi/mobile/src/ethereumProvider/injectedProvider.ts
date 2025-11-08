@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Hex } from 'viem'
 
 const UUID = uuidv4()
-const ICON_BASE64 = Constants.expoConfig?.extra?.divviAppIconBase64 as string | undefined
+const ICON_BASE64 = Constants.expoConfig?.extra?.appIconBase64 as string | undefined
 
 export function getInjectedProviderScript({
   isConnected = false,
