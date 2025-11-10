@@ -148,6 +148,7 @@
     "date-fns": "^4.1.0",
     "dot-prop-immutable": "^2.1.1",
     "expo": "^53.0.22",
+    "expo-constants": "~17.1.7",
     "expo-image": "~2.4.0",
     "fast-levenshtein": "^3.0.0",
     "fp-ts": "2.16.9",
