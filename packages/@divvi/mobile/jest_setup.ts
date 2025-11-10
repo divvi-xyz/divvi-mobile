@@ -59,3 +59,16 @@ jest.mock('@react-native-firebase/messaging', () => jest.fn())
 
 // this mock defaults to granting all permissions
 jest.mock('react-native-permissions', () => require('react-native-permissions/mock'))
+
+jest.mock('expo-constants', () => {
+  return {
+    __esModule: true,
+    default: {
+      expoConfig: {
+        extra: {
+          appIconBase64: 'data:image/png;base64,test-icon',
+        },
+      },
+    },
+  }
+})
