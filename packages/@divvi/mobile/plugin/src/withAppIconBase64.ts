@@ -8,7 +8,7 @@ function addWarning(text: string) {
   WarningAggregator.addWarningIOS(property, text)
 }
 
-const _withAppIconBase64: ConfigPlugin = (config) => {
+const withAppIconBase64: ConfigPlugin = (config) => {
   const iconPath = config.icon
 
   if (!iconPath) {
@@ -39,10 +39,4 @@ const _withAppIconBase64: ConfigPlugin = (config) => {
   return config
 }
 
-const withAppIconBase64 = createRunOncePlugin(
-  _withAppIconBase64,
-  '@divvi/mobile/withAppIconBase64',
-  '0.0.1'
-)
-
-export { withAppIconBase64 }
+export default createRunOncePlugin(withAppIconBase64, '@divvi/mobile/withAppIconBase64')
