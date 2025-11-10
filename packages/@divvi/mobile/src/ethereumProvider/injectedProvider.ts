@@ -158,7 +158,7 @@ export function getInjectedProviderScript({
       // Listen for dapp requests for providers
       window.addEventListener('eip6963:requestProvider', announceProvider);
 
-      // Announce immediately (wallets & dapps may load in any order)
+      // Announce immediately
       announceProvider();
     })();
     true; // Required for injection to work
