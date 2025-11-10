@@ -1,24 +1,26 @@
-import { ConfigPlugin } from '@expo/config-plugins'
+import { ConfigPlugin, createRunOncePlugin, WarningAggregator } from '@expo/config-plugins'
 import fs from 'fs'
 import path from 'path'
 
-const withAppIconBase64: ConfigPlugin = (config) => {
+function addWarning(text: string) {
+  const property = 'appIconBase64'
+  WarningAggregator.addWarningAndroid(property, text)
+  WarningAggregator.addWarningIOS(property, text)
+}
+
+const _withAppIconBase64: ConfigPlugin = (config) => {
   const iconPath = config.icon
 
   if (!iconPath) {
-    console.warn(
-      '[withAppIconBase64] No icon defined in the Expo config. Skipping base64 embedding.'
-    )
+    addWarning('No icon defined in the Expo config. Skipping base64 embedding.')
     return config
   }
 
   const projectRoot = config._internal?.projectRoot
   const resolvedIconPath = path.resolve(projectRoot, iconPath)
 
-  console.log('resolvedIconPath', resolvedIconPath)
-
   if (!fs.existsSync(resolvedIconPath)) {
-    console.warn(`[withAppIconBase64] Could not find the icon file at "${resolvedIconPath}"`)
+    addWarning(`Could not find the icon file at "${resolvedIconPath}"`)
     return config
   }
 
@@ -31,10 +33,16 @@ const withAppIconBase64: ConfigPlugin = (config) => {
       appIconBase64: dataUrl,
     }
   } catch (error) {
-    console.warn(`[withAppIconBase64] Failed to read icon file at "${resolvedIconPath}":`, error)
+    addWarning(`Failed to read icon file at "${resolvedIconPath}": ${error}`)
   }
 
   return config
 }
+
+const withAppIconBase64 = createRunOncePlugin(
+  _withAppIconBase64,
+  '@divvi/mobile/withAppIconBase64',
+  '0.0.1'
+)
 
 export { withAppIconBase64 }
