@@ -3,19 +3,6 @@ import { getInjectedProviderScript } from './injectedProvider'
 
 const mockAppIconBase64 = 'data:image/png;base64,test-icon'
 
-jest.mock('expo-constants', () => {
-  return {
-    __esModule: true,
-    default: {
-      expoConfig: {
-        extra: {
-          appIconBase64: 'data:image/png;base64,test-icon',
-        },
-      },
-    },
-  }
-})
-
 describe('injectedProvider', () => {
   let mockWindow: any
   let originalWindow: any
