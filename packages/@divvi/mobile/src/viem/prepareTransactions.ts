@@ -121,7 +121,8 @@ function modifyERC20TransferAmount(originalData: Hex, newAmount: BigNumber): Hex
   }
 
   const expectedLength = SELECTOR_LENGTH + ADDRESS_HEX_LENGTH + AMOUNT_HEX_LENGTH
-  if (originalData.length !== expectedLength) {
+  // If the data is less than the expected length, it's invalid
+  if (originalData.length < expectedLength) {
     throw new Error(
       `Invalid ERC20 transfer data length: expected ${expectedLength}, got ${originalData.length}`
     )
@@ -132,7 +133,9 @@ function modifyERC20TransferAmount(originalData: Hex, newAmount: BigNumber): Hex
   // Encode the new amount as a 32-byte hex string
   const newAmountHex = newAmount.toString(16).padStart(AMOUNT_HEX_LENGTH, '0')
 
-  return (recipientPart + newAmountHex) as Hex
+  // Return the modified data, appending the original data after the expected
+  // length (for any suffix like the divvi suffix)
+  return (recipientPart + newAmountHex + originalData.slice(expectedLength)) as Hex
 }
 
 export function getFeeCurrencyAddress(feeCurrency: TokenBalance): Address | undefined {
