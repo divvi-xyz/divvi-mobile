@@ -583,6 +583,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
   }
 
   const demoModeEnabled = yield* select(demoModeEnabledSelector)
+  const supportedChains = yield* call(getSupportedChains)
   if (demoModeEnabled) {
     navigate(Screens.DemoModeAuthBlock)
     yield* put(denyRequest(request, getSdkError('USER_REJECTED')))
@@ -644,6 +645,12 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     }
   }
 
+  // If the action doesn't require user consent, accept it immediately
+  if (method === SupportedActions.wallet_getCapabilities) {
+    yield* put(acceptRequest({ method, request }))
+    return
+  }
+
   if (method === SupportedActions.wallet_sendCalls) {
     const walletAddress = yield* call(getWalletAddress)
 
@@ -696,9 +703,33 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       }
     }
 
+    // Navigate to loading state after capability checks pass
+    navigate(Screens.WalletConnectRequest, {
+      type: WalletConnectRequestType.Loading,
+      origin: WalletConnectPairingOrigin.Deeplink,
+    })
+
     if (atomic === 'ready') {
-      // TODO: suggest user to enable atomic operations
-      // NOTE: deny if atomicRequired is true, and user didn't enable atomic operations
+      // Show smart account conversion prompt
+      const rawTxs: unknown[] = request.params.request.params[0].calls
+      const {
+        hasInsufficientGasFunds,
+        feeCurrenciesSymbols,
+        result: preparedRequest,
+      } = yield* prepareNormalizedTransactions(rawTxs, request.params.chainId)
+
+      navigate(Screens.WalletConnectRequest, {
+        type: WalletConnectRequestType.SmartAccountConversion,
+        method,
+        request,
+        supportedChains,
+        version: 2,
+        atomicRequired: request.params.request.params[0].atomicRequired,
+        hasInsufficientGasFunds,
+        feeCurrenciesSymbols,
+        preparedRequest,
+      })
+      return
     }
   }
 
@@ -724,15 +755,7 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
     return
   }
 
-  // since there are some network requests needed to prepare the transactions,
-  // add a loading state
-  navigate(Screens.WalletConnectRequest, {
-    type: WalletConnectRequestType.Loading,
-    origin: WalletConnectPairingOrigin.Deeplink,
-  })
-
-  const supportedChains = yield* call(getSupportedChains)
-
+  // Handle message signing requests
   if (isMessageMethod(method)) {
     navigate(Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Action,
@@ -741,7 +764,18 @@ function* showActionRequest(request: WalletKitTypes.EventArguments['session_requ
       supportedChains,
       version: 2,
     })
+    return
   }
+
+  // Navigate to loading state for other interactive requests
+  navigate(Screens.WalletConnectRequest, {
+    type: WalletConnectRequestType.Loading,
+    origin: WalletConnectPairingOrigin.Deeplink,
+  })
+
+  // We have either:
+  // A transaction request
+  // A sendCalls request, and the user already has a smart account OR smart accounts are not enabled.
 
   if (isTransactionMethod(method)) {
     const rawTx: unknown = request.params.request.params[0]
