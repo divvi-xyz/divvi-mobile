@@ -2170,6 +2170,7 @@
     "searchText": "Pesquise por nome, telefone, carteira...",
     "searchInputLabel": "Para",
     "searchInputPlaceholder": "Endereço da carteira ou número de celular",
+    "searchInputPlaceholderEns": "Endereço da carteira, número de telefone ou ENS",
     "paste": "Colar da área de transferência",
     "title": "Selecione um destinatário",
     "contactsTitle": "Selecione um contato",
