@@ -11,9 +11,9 @@
   // Otherwise, we get a lot of noise in the output with viem types.
   "excludeExternals": true,
   "hideGenerator": true,
-  "out": "../../../docs/reference",
+  "out": "../../docs/reference",
   "gitRevision": "main",
-  "readme": "../../../docs/_reference.md",
+  "readme": "../../docs/_reference.md",
   "entryPoints": ["./src/public"],
   "githubPages": false,
   "plugin": ["typedoc-plugin-markdown", "typedoc-plugin-frontmatter"],

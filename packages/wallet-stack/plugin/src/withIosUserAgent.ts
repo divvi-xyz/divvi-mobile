@@ -24,7 +24,7 @@ function addUserAgentCode(src: string, appName: string): MergeResults {
   const braceRegex = /\s*\) -> Bool \{\s*$/m
 
   return mergeContents({
-    tag: '@divvi/mobile/app-delegate-user-agent-code',
+    tag: 'wallet-stack/app-delegate-user-agent-code',
     src,
     newSrc: getUserAgentCode(appName),
     anchor: braceRegex,

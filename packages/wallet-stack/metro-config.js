@@ -26,10 +26,10 @@ function getDefaultConfig(...args) {
   // TODO: remove this once we stop using absolute imports
   config.resolver.resolveRequest = (context, moduleName, platform) => {
     if (moduleName.startsWith('src/')) {
-      return context.resolveRequest(context, `@divvi/mobile/${moduleName}`, platform)
+      return context.resolveRequest(context, `wallet-stack/${moduleName}`, platform)
     }
     if (moduleName === 'locales') {
-      return context.resolveRequest(context, '@divvi/mobile/locales', platform)
+      return context.resolveRequest(context, 'wallet-stack/locales', platform)
     }
     return context.resolveRequest(context, moduleName, platform)
   }

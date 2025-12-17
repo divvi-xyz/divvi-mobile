@@ -6,7 +6,7 @@ import { withIosAppDelegateResetKeychain } from './withIosAppDelegateResetKeycha
 import { withIosUserAgent } from './withIosUserAgent'
 
 /**
- * A config plugin for configuring `@divvi/mobile`
+ * A config plugin for configuring `wallet-stack`
  */
 const withMobileApp: ConfigPlugin<{ appName?: string }> = (config, props = {}) => {
   return withPlugins(config, [

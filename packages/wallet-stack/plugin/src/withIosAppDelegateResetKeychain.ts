@@ -36,7 +36,7 @@ const METHOD_INVOCATION_BLOCK = `    AppDelegate.resetKeychainIfNecessary()`
 
 function addResetKeychainFunction(src: string) {
   return mergeContents({
-    tag: '@divvi/mobile/app-delegate-reset-keychain-function',
+    tag: 'wallet-stack/app-delegate-reset-keychain-function',
     src,
     newSrc: RESET_KEYCHAIN_FUNCTION,
     anchor: /public class AppDelegate: ExpoAppDelegate/,
@@ -50,7 +50,7 @@ function addCallResetKeychain(src: string) {
   const braceRegex = /\s*\) -> Bool \{\s*$/m
 
   return mergeContents({
-    tag: '@divvi/mobile/app-delegate-call-reset-keychain',
+    tag: 'wallet-stack/app-delegate-call-reset-keychain',
     src,
     newSrc: METHOD_INVOCATION_BLOCK,
     anchor: braceRegex,

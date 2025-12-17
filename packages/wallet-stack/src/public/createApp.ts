@@ -1,8 +1,8 @@
 // Note: We should be careful of what we import in this module, we don't want to load the entire runtime here
 // until createApp is called, since we set some globals here, which will be read by other runtime modules
-import '@divvi/mobile/src/missingGlobals'
 import Config from 'react-native-config'
 import DeviceInfo from 'react-native-device-info'
+import 'wallet-stack/src/missingGlobals'
 import { setAppConfig } from '../appConfig'
 import { ToggleableOnboardingFeatures } from '../onboarding/types'
 import { PublicAppConfig, TabScreenConfig } from './types'
