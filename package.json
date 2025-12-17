@@ -1,5 +1,5 @@
 {
-  "name": "wallet-stack",
+  "name": "@valora-inc/wallet-stack",
   "version": "1.0.0",
   "private": true,
   "engines": {
