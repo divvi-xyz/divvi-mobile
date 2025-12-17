@@ -6,7 +6,7 @@
 
 # Interface: PreparedTransactionsNeedDecreaseSpendAmountForGas
 
-Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:56
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:56](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L56)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:56
 decreasedSpendAmount: BigNumber
 ```
 
-Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:61
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:61](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L61)
 
 ---
 
@@ -26,7 +26,7 @@ Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:61
 estimatedGasFeeInDecimal: BigNumber
 ```
 
-Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:60
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:60](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L60)
 
 ---
 
@@ -36,7 +36,7 @@ Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:60
 feeCurrency: TokenBalance
 ```
 
-Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:58
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:58](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L58)
 
 ---
 
@@ -46,7 +46,7 @@ Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:58
 maxGasFeeInDecimal: BigNumber
 ```
 
-Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:59
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:59](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L59)
 
 ---
 
@@ -56,4 +56,4 @@ Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:59
 type: 'need-decrease-spend-amount-for-gas'
 ```
 
-Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:57
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:57](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L57)

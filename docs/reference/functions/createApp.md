@@ -10,7 +10,7 @@
 function createApp<tabScreenConfigs>(config): any
 ```
 
-Defined in: packages/wallet-stack/src/public/createApp.ts:37
+Defined in: [packages/wallet-stack/src/public/createApp.ts:37](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/createApp.ts#L37)
 
 ## Type Parameters
 

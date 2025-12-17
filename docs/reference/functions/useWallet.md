@@ -10,7 +10,7 @@
 function useWallet(): object
 ```
 
-Defined in: packages/wallet-stack/src/public/hooks/useWallet.ts:39
+Defined in: [packages/wallet-stack/src/public/hooks/useWallet.ts:39](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/hooks/useWallet.ts#L39)
 
 ## Returns
 

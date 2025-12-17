@@ -10,7 +10,7 @@
 function Button(props): Element
 ```
 
-Defined in: packages/wallet-stack/src/public/components/Button.tsx:57
+Defined in: [packages/wallet-stack/src/public/components/Button.tsx:57](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/components/Button.tsx#L57)
 
 ## Parameters
 

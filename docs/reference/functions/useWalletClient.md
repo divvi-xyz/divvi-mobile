@@ -10,7 +10,7 @@
 function useWalletClient(__namedParameters): object
 ```
 
-Defined in: packages/wallet-stack/src/public/hooks/useWalletClient.ts:8
+Defined in: [packages/wallet-stack/src/public/hooks/useWalletClient.ts:8](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/hooks/useWalletClient.ts#L8)
 
 ## Parameters
 

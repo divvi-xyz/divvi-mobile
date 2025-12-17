@@ -10,7 +10,7 @@
 function getFees(prepareTransactionsResult): object
 ```
 
-Defined in: packages/wallet-stack/src/public/getFees.ts:4
+Defined in: [packages/wallet-stack/src/public/getFees.ts:4](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/getFees.ts#L4)
 
 ## Parameters
 

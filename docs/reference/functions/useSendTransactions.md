@@ -10,7 +10,7 @@
 function useSendTransactions(): object
 ```
 
-Defined in: packages/wallet-stack/src/public/hooks/useSendTransactions.ts:5
+Defined in: [packages/wallet-stack/src/public/hooks/useSendTransactions.ts:5](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/hooks/useSendTransactions.ts#L5)
 
 ## Returns
 

@@ -6,7 +6,7 @@
 
 # Interface: PublicAppConfig\<tabScreenConfigs\>
 
-Defined in: packages/wallet-stack/src/public/types.tsx:24
+Defined in: [packages/wallet-stack/src/public/types.tsx:24](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L24)
 
 ## Type Parameters
 
@@ -20,7 +20,7 @@ Defined in: packages/wallet-stack/src/public/types.tsx:24
 deepLinkUrlScheme: string
 ```
 
-Defined in: packages/wallet-stack/src/public/types.tsx:27
+Defined in: [packages/wallet-stack/src/public/types.tsx:27](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L27)
 
 ---
 
@@ -30,7 +30,7 @@ Defined in: packages/wallet-stack/src/public/types.tsx:27
 displayName: string
 ```
 
-Defined in: packages/wallet-stack/src/public/types.tsx:26
+Defined in: [packages/wallet-stack/src/public/types.tsx:26](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L26)
 
 ---
 
@@ -40,7 +40,7 @@ Defined in: packages/wallet-stack/src/public/types.tsx:26
 optional divviProtocol: object;
 ```
 
-Defined in: packages/wallet-stack/src/public/types.tsx:266
+Defined in: [packages/wallet-stack/src/public/types.tsx:266](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L266)
 
 #### divviId
 
@@ -56,7 +56,7 @@ divviId: `0x${string}`
 optional experimental: object;
 ```
 
-Defined in: packages/wallet-stack/src/public/types.tsx:207
+Defined in: [packages/wallet-stack/src/public/types.tsx:207](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L207)
 
 Experimental features that may change or be removed in future versions.
 These features are not part of the stable configuration API and should be used with caution.
@@ -305,7 +305,7 @@ projectName: string
 optional features: object;
 ```
 
-Defined in: packages/wallet-stack/src/public/types.tsx:158
+Defined in: [packages/wallet-stack/src/public/types.tsx:158](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L158)
 
 #### cloudBackup?
 
@@ -369,7 +369,7 @@ projectId: string
 optional ios: object;
 ```
 
-Defined in: packages/wallet-stack/src/public/types.tsx:30
+Defined in: [packages/wallet-stack/src/public/types.tsx:30](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L30)
 
 #### appStoreId?
 
@@ -399,7 +399,7 @@ optional locales: Partial<{
 }>;
 ```
 
-Defined in: packages/wallet-stack/src/public/types.tsx:179
+Defined in: [packages/wallet-stack/src/public/types.tsx:179](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L179)
 
 Optional copies overwrite. This field should contain the same language keys as @interxyz/mobile.
 TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
@@ -412,7 +412,7 @@ TODO: Eventually, we want to make this fully type-safe (maybe with generics?)
 optional networks: object;
 ```
 
-Defined in: packages/wallet-stack/src/public/types.tsx:196
+Defined in: [packages/wallet-stack/src/public/types.tsx:196](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L196)
 
 #### enabledNetworkIds?
 
@@ -428,7 +428,7 @@ optional enabledNetworkIds: NetworkId[];
 registryName: string
 ```
 
-Defined in: packages/wallet-stack/src/public/types.tsx:25
+Defined in: [packages/wallet-stack/src/public/types.tsx:25](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L25)
 
 ---
 
@@ -438,7 +438,7 @@ Defined in: packages/wallet-stack/src/public/types.tsx:25
 optional screens: object;
 ```
 
-Defined in: packages/wallet-stack/src/public/types.tsx:141
+Defined in: [packages/wallet-stack/src/public/types.tsx:141](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L141)
 
 #### custom()?
 
@@ -515,7 +515,7 @@ optional screens: tabScreenConfigs;
 optional themes: object;
 ```
 
-Defined in: packages/wallet-stack/src/public/types.tsx:35
+Defined in: [packages/wallet-stack/src/public/types.tsx:35](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L35)
 
 #### default
 

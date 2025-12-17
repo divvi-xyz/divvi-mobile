@@ -10,7 +10,7 @@
 type TransactionRequest = object
 ```
 
-Defined in: packages/wallet-stack/src/public/prepareTransactions.ts:20
+Defined in: [packages/wallet-stack/src/public/prepareTransactions.ts:20](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/prepareTransactions.ts#L20)
 
 ## Type declaration
 
