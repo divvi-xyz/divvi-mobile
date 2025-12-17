@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / createApp
+[wallet-stack](../README.md) / createApp
 
 # Function: createApp()
 
@@ -10,7 +10,7 @@
 function createApp<tabScreenConfigs>(config): any
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/createApp.ts:37](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/createApp.ts#L37)
+Defined in: packages/wallet-stack/src/public/createApp.ts:37
 
 ## Type Parameters
 

@@ -5,7 +5,7 @@
     "name": "Wallet Stack Example",
     "slug": "wallet-stack",
     // Main scheme should be first (see usage in index.tsx)
-    // TODO: use a Wallet Stack scheme
+    // TODO: use a Divvi scheme
     "scheme": ["celo", "wc"],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,7 +16,7 @@
     "newArchEnabled": false,
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "xyz.wallet-stack.example",
+      "bundleIdentifier": "xyz.wallet.example",
       "infoPlist": {
         // TODO: add all reasons for all permissions
         "NSCameraUsageDescription": "[REASON]",
@@ -32,7 +32,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ff5050"
       },
-      "package": "xyz.wallet-stack.example",
+      "package": "xyz.wallet.example",
       "permissions": [
         // TODO: add all reasons for all permissions
         "android.permission.CAMERA",

@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / getWalletClient
+[wallet-stack](../README.md) / getWalletClient
 
 # Function: getWalletClient()
 
@@ -12,7 +12,7 @@ function getWalletClient(__namedParameters): Promise<{
 }>
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/getWalletClient.ts:12](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/getWalletClient.ts#L12)
+Defined in: packages/wallet-stack/src/public/getWalletClient.ts:12
 
 ## Parameters
 

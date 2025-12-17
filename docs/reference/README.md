@@ -2,7 +2,7 @@
 title: API reference
 ---
 
-**@divvi/mobile**
+**wallet-stack**
 
 ---
 

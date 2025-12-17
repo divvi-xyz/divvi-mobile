@@ -1,12 +1,12 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / PreparedTransactionsNeedDecreaseSpendAmountForGas
+[wallet-stack](../README.md) / PreparedTransactionsNeedDecreaseSpendAmountForGas
 
 # Interface: PreparedTransactionsNeedDecreaseSpendAmountForGas
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:56](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L56)
+Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:56
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:56](https://
 decreasedSpendAmount: BigNumber
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:61](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L61)
+Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:61
 
 ---
 
@@ -26,7 +26,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:61](https://
 estimatedGasFeeInDecimal: BigNumber
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:60](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L60)
+Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:60
 
 ---
 
@@ -36,7 +36,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:60](https://
 feeCurrency: TokenBalance
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:58](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L58)
+Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:58
 
 ---
 
@@ -46,7 +46,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:58](https://
 maxGasFeeInDecimal: BigNumber
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:59](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L59)
+Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:59
 
 ---
 
@@ -56,4 +56,4 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:59](https://
 type: 'need-decrease-spend-amount-for-gas'
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:57](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L57)
+Defined in: packages/wallet-stack/src/viem/prepareTransactions.ts:57

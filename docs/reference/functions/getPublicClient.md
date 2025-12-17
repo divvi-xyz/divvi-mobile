@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / getPublicClient
+[wallet-stack](../README.md) / getPublicClient
 
 # Function: getPublicClient()
 
@@ -10,7 +10,7 @@
 function getPublicClient(__namedParameters): object
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/getPublicClient.ts:10](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/getPublicClient.ts#L10)
+Defined in: packages/wallet-stack/src/public/getPublicClient.ts:10
 
 ## Parameters
 

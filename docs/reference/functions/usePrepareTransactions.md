@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / usePrepareTransactions
+[wallet-stack](../README.md) / usePrepareTransactions
 
 # Function: usePrepareTransactions()
 
@@ -10,7 +10,7 @@
 function usePrepareTransactions(): object
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/hooks/usePrepareTransactions.ts:5](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/hooks/usePrepareTransactions.ts#L5)
+Defined in: packages/wallet-stack/src/public/hooks/usePrepareTransactions.ts:5
 
 ## Returns
 

@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / useSendTransactions
+[wallet-stack](../README.md) / useSendTransactions
 
 # Function: useSendTransactions()
 
@@ -10,7 +10,7 @@
 function useSendTransactions(): object
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/hooks/useSendTransactions.ts:5](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/hooks/useSendTransactions.ts#L5)
+Defined in: packages/wallet-stack/src/public/hooks/useSendTransactions.ts:5
 
 ## Returns
 
