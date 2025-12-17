@@ -10,14 +10,14 @@ apps/*/android/
 apps/*/ios/
 
 # Ignore Crowdin generated files (often they are written with no final newline)
-packages/@divvi/mobile/locales/*/*.json
+packages/wallet-stack/locales/*/*.json
 # Except for the base lang which is maintained by hand
-!packages/@divvi/mobile/locales/base/*.json
-packages/@divvi/mobile/src/pincode/pin-blocklist-hibpv7-top-25k-with-keyboard-translations.json
+!packages/wallet-stack/locales/base/*.json
+packages/wallet-stack/src/pincode/pin-blocklist-hibpv7-top-25k-with-keyboard-translations.json
 vendor
 
 # Ignore generated RootState schema
-packages/@divvi/mobile/test/RootStateSchema.json
+packages/wallet-stack/test/RootStateSchema.json
 
 e2e/test-results/*
 # Ignore generated fastlane files
