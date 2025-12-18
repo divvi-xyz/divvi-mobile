@@ -3,6 +3,10 @@
 import { install } from 'react-native-quick-crypto'
 import 'react-native-url-polyfill/auto'
 
+/**
+ * @public - Avoid Knip from flagging this as unused since it's used in packages/wallet-stack/src/public/createApp.ts
+ * https://knip.dev/reference/jsdoc-tsdoc-tags#public
+ */
 export interface Global {
   URL: any
   self: any
