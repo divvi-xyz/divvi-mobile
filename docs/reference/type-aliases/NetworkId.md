@@ -16,4 +16,4 @@ type NetworkId =
   | 'base-mainnet'
 ```
 
-Defined in: [packages/wallet-stack/src/public/types.tsx:272](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L272)
+Defined in: [packages/wallet-stack/src/public/types.tsx:272](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L272)

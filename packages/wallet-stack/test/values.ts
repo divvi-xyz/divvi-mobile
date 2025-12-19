@@ -402,7 +402,7 @@ export const mockRecipientInfo: RecipientInfo = {
 }
 
 export const mockTokenBalances: Record<string, StoredTokenBalance> = {
-  // NOTE: important to keep 'symbol' fields in this object matching their counterparts from here: https://github.com/valora-inc/address-metadata/blob/main/src/data/mainnet/tokens-info.json ,
+  // NOTE: important to keep 'symbol' fields in this object matching their counterparts from here: https://github.com/valora-xyz/address-metadata/blob/main/src/data/mainnet/tokens-info.json ,
   //  particularly for CICO currencies
   [mockPoofTokenId]: {
     priceUsd: '0.1',
@@ -460,7 +460,7 @@ export const mockTokenBalances: Record<string, StoredTokenBalance> = {
     address: mockCeloAddress,
     tokenId: mockCeloTokenId,
     networkId: NetworkId['celo-alfajores'],
-    symbol: 'CELO', // NOT cGLD, see https://github.com/valora-inc/address-metadata/blob/c84ef7056fa066ef86f9b4eb295ae248f363f67a/src/data/mainnet/tokens-info.json#L173
+    symbol: 'CELO', // NOT cGLD, see https://github.com/valora-xyz/address-metadata/blob/c84ef7056fa066ef86f9b4eb295ae248f363f67a/src/data/mainnet/tokens-info.json#L173
     imageUrl: 'https://example.com/address-metadata/main/assets/tokens/CELO.png',
     name: 'Celo native asset',
     decimals: 18,
@@ -1639,7 +1639,7 @@ export const mockRewardsPositions: Position[] = [
     displayProps: {
       title: 'USDC',
       description: 'Supplied (APY: 4.45%)',
-      imageUrl: 'https://raw.githubusercontent.com/valora-inc/dapp-list/main/assets/aave.png',
+      imageUrl: 'https://raw.githubusercontent.com/valora-xyz/dapp-list/main/assets/aave.png',
     },
     dataProps: {
       manageUrl: 'https://app.aave.com/?marketName=proto_arbitrum_v3',
@@ -1693,7 +1693,7 @@ export const mockRewardsPositions: Position[] = [
     displayProps: {
       title: 'USDC supply incentives',
       description: 'Rewards for supplying',
-      imageUrl: 'https://raw.githubusercontent.com/valora-inc/dapp-list/main/assets/aave.png',
+      imageUrl: 'https://raw.githubusercontent.com/valora-xyz/dapp-list/main/assets/aave.png',
     },
     tokens: [
       {
@@ -1701,11 +1701,11 @@ export const mockRewardsPositions: Position[] = [
         symbol: 'ARB',
         decimals: 18,
         imageUrl:
-          'https://raw.githubusercontent.com/valora-inc/address-metadata/main/assets/tokens/ARB.png',
+          'https://raw.githubusercontent.com/valora-xyz/address-metadata/main/assets/tokens/ARB.png',
         networkId: NetworkId['arbitrum-sepolia'],
         tokenId: 'arbitrum-sepolia:0x912ce59144191c1204e64559fe8253a0e49e6548',
         networkIconUrl:
-          'https://raw.githubusercontent.com/valora-inc/address-metadata/main/assets/tokens/ARB.png',
+          'https://raw.githubusercontent.com/valora-xyz/address-metadata/main/assets/tokens/ARB.png',
         priceUsd: '0.5443',
         balance: '0.01',
         type: 'base-token',
@@ -1736,7 +1736,7 @@ export const mockEarnPositions: EarnPosition[] = [
     displayProps: {
       title: 'USDC',
       description: 'Supplied (APY: 1.92%)',
-      imageUrl: 'https://raw.githubusercontent.com/valora-inc/dapp-list/main/assets/aave.png',
+      imageUrl: 'https://raw.githubusercontent.com/valora-xyz/dapp-list/main/assets/aave.png',
     },
     dataProps: {
       yieldRates: [
@@ -1797,7 +1797,7 @@ export const mockEarnPositions: EarnPosition[] = [
     displayProps: {
       title: 'ETH',
       description: 'Supplied (APY: 10.42%)',
-      imageUrl: 'https://raw.githubusercontent.com/valora-inc/dapp-list/main/assets/aave.png',
+      imageUrl: 'https://raw.githubusercontent.com/valora-xyz/dapp-list/main/assets/aave.png',
     },
     dataProps: {
       yieldRates: [

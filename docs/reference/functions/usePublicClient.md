@@ -10,7 +10,7 @@
 function usePublicClient(__namedParameters): object
 ```
 
-Defined in: [packages/wallet-stack/src/public/hooks/usePublicClient.ts:4](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/hooks/usePublicClient.ts#L4)
+Defined in: [packages/wallet-stack/src/public/hooks/usePublicClient.ts:4](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/hooks/usePublicClient.ts#L4)
 
 ## Parameters
 

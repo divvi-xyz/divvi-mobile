@@ -12,7 +12,7 @@ function getWalletClient(__namedParameters): Promise<{
 }>
 ```
 
-Defined in: [packages/wallet-stack/src/public/getWalletClient.ts:12](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/getWalletClient.ts#L12)
+Defined in: [packages/wallet-stack/src/public/getWalletClient.ts:12](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/getWalletClient.ts#L12)
 
 ## Parameters
 

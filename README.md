@@ -1,10 +1,10 @@
 # Wallet Stack Framework
 
-[![Checks](https://github.com/valora-inc/wallet-stack/actions/workflows/check.yml/badge.svg)](https://github.com/valora-inc/wallet-stack/actions/workflows/check.yml)
-[![E2E](https://github.com/valora-inc/wallet-stack/actions/workflows/e2e-main.yml/badge.svg)](https://github.com/valora-inc/wallet-stack/actions/workflows/e2e-main.yml)
-[![Tests](https://github.com/valora-inc/wallet-stack/actions/workflows/test.yml/badge.svg)](https://github.com/valora-inc/wallet-stack/actions/workflows/test.yml)
-[![Codecov](https://codecov.io/gh/valora-inc/wallet-stack/branch/main/graph/badge.svg)](https://codecov.io/gh/valora-inc/wallet-stack)
-[![GitHub contributors](https://img.shields.io/github/contributors/valora-inc/wallet-stack)](https://github.com/valora-inc/wallet-stack/graphs/contributors)
+[![Checks](https://github.com/valora-xyz/wallet-stack/actions/workflows/check.yml/badge.svg)](https://github.com/valora-xyz/wallet-stack/actions/workflows/check.yml)
+[![E2E](https://github.com/valora-xyz/wallet-stack/actions/workflows/e2e-main.yml/badge.svg)](https://github.com/valora-xyz/wallet-stack/actions/workflows/e2e-main.yml)
+[![Tests](https://github.com/valora-xyz/wallet-stack/actions/workflows/test.yml/badge.svg)](https://github.com/valora-xyz/wallet-stack/actions/workflows/test.yml)
+[![Codecov](https://codecov.io/gh/valora-xyz/wallet-stack/branch/main/graph/badge.svg)](https://codecov.io/gh/valora-xyz/wallet-stack)
+[![GitHub contributors](https://img.shields.io/github/contributors/valora-xyz/wallet-stack)](https://github.com/valora-xyz/wallet-stack/graphs/contributors)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
 Wallet Stack represents five years of battle-tested mobile Web3 development, originally created for the Valora wallet. We've refined these building blocks through millions of user interactions, real-world security challenges, and continuous improvements to create exceptional Web3 mobile experiences.
@@ -28,7 +28,7 @@ Built on top of [Expo](https://expo.dev), the industry standard for React Native
 ## Quick Start
 
 ```bash
-yarn create expo --template https://github.com/valora-inc/wallet-stack-starter my-app
+yarn create expo --template https://github.com/valora-xyz/wallet-stack-starter my-app
 cd my-app
 yarn install
 ```

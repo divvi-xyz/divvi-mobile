@@ -10,7 +10,7 @@
 function usePrepareTransactions(): object
 ```
 
-Defined in: [packages/wallet-stack/src/public/hooks/usePrepareTransactions.ts:5](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/hooks/usePrepareTransactions.ts#L5)
+Defined in: [packages/wallet-stack/src/public/hooks/usePrepareTransactions.ts:5](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/hooks/usePrepareTransactions.ts#L5)
 
 ## Returns
 

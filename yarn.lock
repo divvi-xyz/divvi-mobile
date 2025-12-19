@@ -14150,9 +14150,9 @@ react-native-config@^1.5.5:
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-1.5.5.tgz#5977db58ff20b6fe9dd6fb28c815a9ba43d018d2"
   integrity sha512-dGdLnBU0cd5xL5bF0ROTmHYbsstZnQKOEPfglvZi1vStvAjpld14X25K6mY3KGPTMWAzx6TbjKeq5dR+ILuMMA==
 
-"react-native-contacts@https://github.com/valora-inc/react-native-contacts#9940121":
+"react-native-contacts@https://github.com/valora-xyz/react-native-contacts#9940121":
   version "5.0.0"
-  resolved "https://github.com/valora-inc/react-native-contacts#9940121a0512d00fa771273805e2c41996af6b23"
+  resolved "https://github.com/valora-xyz/react-native-contacts#9940121a0512d00fa771273805e2c41996af6b23"
 
 react-native-device-info@^13.2.0:
   version "13.2.0"

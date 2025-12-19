@@ -4,7 +4,7 @@ import Logger from 'src/utils/Logger'
  * Helper to wrap sagas and ensure unhandled errors don't bubble up any further.
  * This is especially useful for sagas called by takeEvery/takeLatest/takeLeading
  * to avoid unhandled exceptions from cancelling them.
- * See more details: https://github.com/valora-inc/wallet/tree/main/WALLET.md#redux-saga-pitfalls
+ * See more details: https://github.com/valora-xyz/wallet/tree/main/WALLET.md#redux-saga-pitfalls
  *
  * Example usage: yield takeEvery('SOME_ACTION', safely(someHandler))
  *

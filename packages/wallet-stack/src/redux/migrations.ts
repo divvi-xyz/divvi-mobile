@@ -357,7 +357,7 @@ export const migrations = {
   19: (state: any) => {
     // Fixes migration 18 when state.walletConnect is undefined and results
     // in state.walletConnect.v2 to be an empty object and hence not using the reducer initial state
-    // See https://github.com/valora-inc/wallet/issues/1270
+    // See https://github.com/valora-xyz/wallet/issues/1270
     if (state.walletConnect?.v2?.sessions === undefined) {
       return {
         ...state,

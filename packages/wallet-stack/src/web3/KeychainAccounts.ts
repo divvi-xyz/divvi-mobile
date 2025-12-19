@@ -91,7 +91,7 @@ export async function getStoredPrivateKey(
     return privateKey
   }
 
-  // There was a bug introduced in https://github.com/valora-inc/wallet/blob/f7b3a2cc7c2689a17b7eb50edfdb1b8743f441d1/src/web3/KeychainAccountManager.ts#L63-L71
+  // There was a bug introduced in https://github.com/valora-xyz/wallet/blob/f7b3a2cc7c2689a17b7eb50edfdb1b8743f441d1/src/web3/KeychainAccountManager.ts#L63-L71
   // which caused the private key to be stored without the 0x prefix
   // so all accounts created or imported after that change will have the private key stored without the 0x prefix
   // Later on we reverted the code with the bug and it caused signing issues for these accounts.

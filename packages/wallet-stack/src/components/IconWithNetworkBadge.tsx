@@ -11,7 +11,7 @@ export enum NetworkBadgeSize {
 }
 
 // More sizes for reference here:
-//  https://github.com/valora-inc/wallet/blob/main/src/components/TokenIcon.tsx#L15
+//  https://github.com/valora-xyz/wallet/blob/main/src/components/TokenIcon.tsx#L15
 const NetworkBadgeSizeToStyle = {
   [NetworkBadgeSize.Medium]: {
     width: 12,

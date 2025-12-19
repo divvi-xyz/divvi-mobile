@@ -10,4 +10,4 @@
 type UnlockResult = 'success' | 'failure' | 'canceled'
 ```
 
-Defined in: [packages/wallet-stack/src/public/unlockAccount.ts:7](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/unlockAccount.ts#L7)
+Defined in: [packages/wallet-stack/src/public/unlockAccount.ts:7](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/unlockAccount.ts#L7)

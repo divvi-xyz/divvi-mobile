@@ -10,7 +10,7 @@
 function sendTransactions(prepared): Promise<`0x${string}`[]>
 ```
 
-Defined in: [packages/wallet-stack/src/public/sendTransactions.ts:7](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/sendTransactions.ts#L7)
+Defined in: [packages/wallet-stack/src/public/sendTransactions.ts:7](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/sendTransactions.ts#L7)
 
 ## Parameters
 

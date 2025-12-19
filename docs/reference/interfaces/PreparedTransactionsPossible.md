@@ -6,7 +6,7 @@
 
 # Interface: PreparedTransactionsPossible
 
-Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:50](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L50)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:50](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L50)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:50](https://g
 feeCurrency: TokenBalance
 ```
 
-Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:53](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L53)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:53](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L53)
 
 ---
 
@@ -26,7 +26,7 @@ Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:53](https://g
 transactions: TransactionRequest[];
 ```
 
-Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:52](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L52)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:52](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L52)
 
 ---
 
@@ -36,4 +36,4 @@ Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:52](https://g
 type: 'possible'
 ```
 
-Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:51](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L51)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:51](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L51)

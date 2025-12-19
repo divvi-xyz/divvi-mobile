@@ -10,7 +10,7 @@
 function getPublicClient(__namedParameters): object
 ```
 
-Defined in: [packages/wallet-stack/src/public/getPublicClient.ts:10](https://github.com/valora-inc/wallet-stack/blob/main/packages/wallet-stack/src/public/getPublicClient.ts#L10)
+Defined in: [packages/wallet-stack/src/public/getPublicClient.ts:10](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/getPublicClient.ts#L10)
 
 ## Parameters
 

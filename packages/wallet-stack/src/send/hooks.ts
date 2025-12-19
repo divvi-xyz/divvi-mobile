@@ -20,13 +20,13 @@ import { parsePhoneNumber } from 'src/utils/phoneNumbers'
 import { Address } from 'viem'
 import { normalize } from 'viem/ens'
 
-// Ref: https://github.com/valora-inc/resolve-kit/blob/f84005ea0b522fb6ae40e10ab53d07cf8ef823ef/src/types.ts#L3
+// Ref: https://github.com/valora-xyz/resolve-kit/blob/f84005ea0b522fb6ae40e10ab53d07cf8ef823ef/src/types.ts#L3
 export enum ResolutionKind {
   Address = 'address',
   Ens = 'ens',
 }
 
-// Ref: https://github.com/valora-inc/resolve-kit/blob/f84005ea0b522fb6ae40e10ab53d07cf8ef823ef/src/types.ts#L8
+// Ref: https://github.com/valora-xyz/resolve-kit/blob/f84005ea0b522fb6ae40e10ab53d07cf8ef823ef/src/types.ts#L8
 export interface NameResolution {
   kind: ResolutionKind
   address: string

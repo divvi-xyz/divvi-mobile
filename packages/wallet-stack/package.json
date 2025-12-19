@@ -5,13 +5,13 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/valora-inc/wallet-stack",
+    "url": "https://github.com/valora-xyz/wallet-stack",
     "directory": "packages/wallet-stack"
   },
   "bugs": {
-    "url": "https://github.com/valora-inc/wallet-stack/issues"
+    "url": "https://github.com/valora-xyz/wallet-stack/issues"
   },
-  "homepage": "https://github.com/valora-inc/wallet-stack",
+  "homepage": "https://github.com/valora-xyz/wallet-stack",
   "main": "./src/public/index.ts",
   "publishConfig": {
     "access": "public",
@@ -43,7 +43,7 @@
     "blockchain",
     "wallet",
     "crypto",
-    "divvi",
+    "wallet-stack",
     "multi-chain",
     "configurable",
     "mobile-framework",
@@ -98,7 +98,7 @@
     "react-native-app-control": "^1.0.2",
     "react-native-auth0": "5.0.0-beta.5",
     "react-native-config": "^1.5.5",
-    "react-native-contacts": "https://github.com/valora-inc/react-native-contacts#9940121",
+    "react-native-contacts": "https://github.com/valora-xyz/react-native-contacts#9940121",
     "react-native-device-info": "^13.2.0",
     "react-native-gesture-handler": "^2.23.1",
     "react-native-haptic-feedback": "^2.3.3",
@@ -208,7 +208,7 @@
     "mockdate": "^3.0.5",
     "react": "19.0.0",
     "react-native": "0.79.6",
-    "react-native-contacts": "https://github.com/valora-inc/react-native-contacts#9940121",
+    "react-native-contacts": "https://github.com/valora-xyz/react-native-contacts#9940121",
     "react-native-kill-packager": "^1.0.0",
     "react-native-svg-mock": "^2.0.0",
     "react-test-renderer": "19.0.0",

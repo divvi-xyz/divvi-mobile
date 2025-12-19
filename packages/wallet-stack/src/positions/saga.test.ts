@@ -84,7 +84,7 @@ const MOCK_EARN_POSITIONS_RESPONSE = {
       displayProps: {
         title: 'USDC',
         description: 'Supplied (APY: 1.92%)',
-        imageUrl: 'https://raw.githubusercontent.com/valora-inc/dapp-list/main/assets/aave.png',
+        imageUrl: 'https://raw.githubusercontent.com/valora-xyz/dapp-list/main/assets/aave.png',
       },
       dataProps: {
         yieldRates: [
