@@ -1,4 +1,4 @@
-const iosName = 'Divvi'
+const iosName = 'wallet'
 const derivedDataPath = 'ios/build'
 const sdk = 'iphonesimulator'
 

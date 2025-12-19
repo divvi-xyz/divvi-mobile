@@ -2,7 +2,7 @@
   "expo": {
     // Using app.json for clarity in this example app.
     // For more complex conditional configs, consider using app.config.js/ts instead.
-    "name": "Wallet Stack Example",
+    "name": "wallet",
     "slug": "wallet-stack",
     // Main scheme should be first (see usage in index.tsx)
     // TODO: use a Divvi scheme
