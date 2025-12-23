@@ -39,13 +39,13 @@ module.exports = {
     simulator: {
       type: 'ios.simulator',
       device: {
-        type: 'iPhone SE (2nd generation)',
+        type: 'iPhone SE (3rd generation)',
       },
     },
     'simulator.15.5': {
       type: 'ios.simulator',
       device: {
-        type: 'iPhone SE (2nd generation)',
+        type: 'iPhone SE (3rd generation)',
         os: 'iOS 15.5',
       },
     },
