@@ -6197,10 +6197,10 @@
     "@walletconnect/window-getters" "^1.0.1"
     tslib "1.14.1"
 
-"@wix-pilot/core@^3.4.1":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@wix-pilot/core/-/core-3.4.1.tgz#434c8db3a9b85f03aa44d316c090fda5575afcd0"
-  integrity sha512-9WvI+FuDYQ1IJsyHRfZphehlbOXIOswlxowwJZ0FlUaebGhR78T61qY1e532HHlJfKyuIu1IwdSQ2tg5L+hUhg==
+"@wix-pilot/core@^3.4.2":
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/@wix-pilot/core/-/core-3.4.2.tgz#a421404893b90913145df399136d3e0dd4d57895"
+  integrity sha512-O8V2NLfPEKI2IviJXG4g/vNbMfsBZNBhzAKFUOOaOR9TTDUJYlZUttqjhjP/fPnaDky0/hrfGES15sO0N7zEkw==
   dependencies:
     chalk "^4.1.0"
     pngjs "^7.0.0"
@@ -8088,12 +8088,12 @@ detect-newline@^4.0.1:
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-4.0.1.tgz#fcefdb5713e1fb8cb2839b8b6ee22e6716ab8f23"
   integrity sha512-qE3Veg1YXzGHQhlA6jzebZN2qVf6NX+A7m7qlhCGG30dJixrAQhYOsJjsnBjJkCSmuOPpCk30145fr8FV0bzog==
 
-detox@^20.41.3:
-  version "20.41.3"
-  resolved "https://registry.yarnpkg.com/detox/-/detox-20.41.3.tgz#8f96a27c937d44c69a8f411fad26a33eef88a76f"
-  integrity sha512-U9b/ybzmrDh+PcAWSorj4O2QQTxpNfILSQmpLozw+eXHOXg+TMXlN917Nz3n4zfEAeLne7sAbkfEgpyic1txLw==
+detox@^20.42.0:
+  version "20.46.0"
+  resolved "https://registry.yarnpkg.com/detox/-/detox-20.46.0.tgz#e60f7b2891fa7d4124fab5889c77d1a6895f4caf"
+  integrity sha512-CXJk6/bewvi7KB6btVnmsp+43clIK3OCC2sJOnwwKaz7F2/mfD7GG0YUz/JdMyW57Bm9GF/XScvIsSd7albXWA==
   dependencies:
-    "@wix-pilot/core" "^3.4.1"
+    "@wix-pilot/core" "^3.4.2"
     "@wix-pilot/detox" "^1.0.13"
     ajv "^8.6.3"
     bunyan "^1.8.12"
