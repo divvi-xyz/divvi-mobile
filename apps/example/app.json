@@ -5,7 +5,7 @@
     "name": "wallet",
     "slug": "wallet-stack",
     // Main scheme should be first (see usage in index.tsx)
-    // TODO: use a Divvi scheme
+    // TODO: use a wallet-stack / Valora scheme
     "scheme": ["celo", "wc"],
     "version": "1.0.0",
     "orientation": "portrait",
