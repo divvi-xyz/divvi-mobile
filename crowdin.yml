@@ -1,5 +1,5 @@
 pull_request_title: 'chore(l10n): update translations from Crowdin'
 files:
-  - source: /packages/@divvi/mobile/locales/base/*.json
-    translation: /packages/@divvi/mobile/locales/%locale%/%original_file_name%
+  - source: /packages/wallet-stack/locales/base/*.json
+    translation: /packages/wallet-stack/locales/%locale%/%original_file_name%
     type: i18next_json

@@ -4,7 +4,7 @@ import path from 'path'
 const rootDir = path.resolve(__dirname, '..') // Move up to project root
 const packagePaths: string[] = [
   path.join(rootDir, 'package.json'),
-  path.join(rootDir, 'packages/@divvi/mobile/package.json'),
+  path.join(rootDir, 'packages/wallet-stack/package.json'),
   path.join(rootDir, 'apps/example/package.json'),
 ]
 

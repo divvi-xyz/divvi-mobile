@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / useWalletClient
+[wallet-stack](../README.md) / useWalletClient
 
 # Function: useWalletClient()
 
@@ -10,7 +10,7 @@
 function useWalletClient(__namedParameters): object
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/hooks/useWalletClient.ts:8](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/hooks/useWalletClient.ts#L8)
+Defined in: [packages/wallet-stack/src/public/hooks/useWalletClient.ts:8](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/hooks/useWalletClient.ts#L8)
 
 ## Parameters
 

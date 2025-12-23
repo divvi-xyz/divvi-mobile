@@ -3,18 +3,18 @@ sidebar_position: 2
 sidebar_label: Configuring your app
 ---
 
-# Configuring Your Divvi Mobile App
+# Configuring Your Wallet Stack App
 
-Divvi Mobile apps are configured through a single configuration object passed to `createApp`. By default, you get a fully functioning Divvi app with sensible defaults.
+Wallet Stack apps are configured through a single configuration object passed to `createApp`. By default, you get a fully functioning Wallet Stack app with sensible defaults.
 
-Since Divvi Mobile is built on top of Expo, you also get all the benefits of a standard Expo app. This means you can use any Expo configuration options, plugins, and features as documented in the [Expo documentation](https://docs.expo.dev/). Common Expo configurations like app icons, splash screens, and native modules can be configured through your `app.json` or `app.config.js` file.
+Since Wallet Stack is built on top of Expo, you also get all the benefits of a standard Expo app. This means you can use any Expo configuration options, plugins, and features as documented in the [Expo documentation](https://docs.expo.dev/). Common Expo configurations like app icons, splash screens, and native modules can be configured through your `app.json` or `app.config.js` file.
 
 ## Basic Configuration
 
 The minimal configuration requires just a few key properties:
 
 ```typescript
-import { createApp } from '@divvi/mobile'
+import { createApp } from 'wallet-stack'
 
 const App = createApp({
   // Unique identifier for your app
@@ -48,7 +48,7 @@ const App = createApp({
 
 ### Theme Customization
 
-Divvi Mobile allows you to customize the look and feel of your app through the `themes` configuration. Note that currently only a single theme is supported.
+Wallet Stack allows you to customize the look and feel of your app through the `themes` configuration. Note that currently only a single theme is supported.
 
 ```typescript
 import WelcomeLogo from './assets/WelcomeLogo'
@@ -92,7 +92,7 @@ Provide high-resolution images and icons to ensure crisp visuals across differen
 ### Tab Navigation
 
 ```typescript
-import { createApp } from '@divvi/mobile'
+import { createApp } from 'wallet-stack'
 import { HomeIcon } from './components/icons'
 import { HomeScreen } from './screens/Home'
 
@@ -130,7 +130,7 @@ const App = createApp({
 Beyond tabs, you can add custom screens that can be navigated to from anywhere in your app:
 
 ```typescript
-import { createApp } from '@divvi/mobile'
+import { createApp } from 'wallet-stack'
 import CustomScreen from './screens/CustomScreen'
 
 const App = createApp({
@@ -156,7 +156,7 @@ const App = createApp({
 To enable type-safe navigation, define your screen parameters:
 
 ```typescript
-import { NativeStackScreenProps, StackParamList } from '@divvi/mobile'
+import { NativeStackScreenProps, StackParamList } from 'wallet-stack'
 
 // Define your screen parameters
 type RootStackParamList = StackParamList & {
@@ -182,7 +182,7 @@ declare global {
 Now you get full type safety when navigating:
 
 ```typescript
-import { navigate } from '@divvi/mobile'
+import { navigate } from 'wallet-stack'
 
 // TypeScript will ensure you provide the correct parameters
 function handleSomeAction() {
@@ -195,7 +195,7 @@ function handleSomeAction() {
 And in your screen component:
 
 ```typescript
-import { NativeStackScreenProps } from '@divvi/mobile'
+import { NativeStackScreenProps } from 'wallet-stack'
 
 // Type-safe screen component
 function CustomScreen({ route }: RootStackScreenProps<'CustomScreen'>) {
@@ -249,7 +249,7 @@ const App = createApp({
 For a complete list of configuration options, see the [API reference](reference) or check the type definition:
 
 ```typescript
-import type { PublicAppConfig } from '@divvi/mobile'
+import type { PublicAppConfig } from 'wallet-stack'
 ```
 
 ## Best Practices

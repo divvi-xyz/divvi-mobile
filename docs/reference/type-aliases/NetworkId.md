@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / NetworkId
+[wallet-stack](../README.md) / NetworkId
 
 # Type Alias: NetworkId
 
@@ -16,4 +16,4 @@ type NetworkId =
   | 'base-mainnet'
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/types.tsx:272](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/types.tsx#L272)
+Defined in: [packages/wallet-stack/src/public/types.tsx:272](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/types.tsx#L272)

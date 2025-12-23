@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / StackParamList
+[wallet-stack](../README.md) / StackParamList
 
 # Type Alias: StackParamList
 
@@ -10,7 +10,7 @@
 type StackParamList = object
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/navigate.ts:32](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/navigate.ts#L32)
+Defined in: [packages/wallet-stack/src/public/navigate.ts:32](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/navigate.ts#L32)
 
 ## Type declaration
 

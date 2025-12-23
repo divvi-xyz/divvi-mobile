@@ -13,9 +13,9 @@ const CROWDIN_BRANCH = 'l10n/main'
 const CROWDIN_PR_USER = 'divvi-bot-crowdin'
 
 const ALLOWED_UPDATED_FILE_MATCHER = new RegExp(
-  `packages/@divvi/mobile/locales/.*/translation\\.json`
+  `packages/wallet-stack/locales/.*/translation\\.json`
 )
-const DISALLOWED_UPDATED_FILES = ['packages/@divvi/mobile/locales/base/translation.json']
+const DISALLOWED_UPDATED_FILES = ['packages/wallet-stack/locales/base/translation.json']
 const enableAutomergeQuery = `mutation ($pullRequestId: ID!, $mergeMethod: PullRequestMergeMethod!) {
   enablePullRequestAutoMerge(input: {
     pullRequestId: $pullRequestId,

@@ -1,4 +1,4 @@
-import { createApp } from '@divvi/mobile'
+import { createApp } from 'wallet-stack'
 import { registerRootComponent } from 'expo'
 import Constants from 'expo-constants'
 import React from 'react'

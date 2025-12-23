@@ -2,10 +2,10 @@
   "expo": {
     // Using app.json for clarity in this example app.
     // For more complex conditional configs, consider using app.config.js/ts instead.
-    "name": "Divvi",
-    "slug": "divvi",
+    "name": "wallet",
+    "slug": "wallet-stack",
     // Main scheme should be first (see usage in index.tsx)
-    // TODO: use a Divvi scheme
+    // TODO: use a wallet-stack / Valora scheme
     "scheme": ["celo", "wc"],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,7 +16,7 @@
     "newArchEnabled": false,
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "xyz.divvi.example",
+      "bundleIdentifier": "xyz.wallet.example",
       "infoPlist": {
         // TODO: add all reasons for all permissions
         "NSCameraUsageDescription": "[REASON]",
@@ -32,7 +32,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ff5050"
       },
-      "package": "xyz.divvi.example",
+      "package": "xyz.wallet.example",
       "permissions": [
         // TODO: add all reasons for all permissions
         "android.permission.CAMERA",
@@ -76,7 +76,7 @@
           "domain": "{DOMAIN}"
         }
       ],
-      "@divvi/mobile",
+      "wallet-stack",
       "./plugins/withConditionalDetox",
       [
         "./plugins/withCustomGradleProperties",

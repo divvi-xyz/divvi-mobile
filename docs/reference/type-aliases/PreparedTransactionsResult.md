@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / PreparedTransactionsResult
+[wallet-stack](../README.md) / PreparedTransactionsResult
 
 # Type Alias: PreparedTransactionsResult
 
@@ -13,4 +13,4 @@ type PreparedTransactionsResult =
   | PreparedTransactionsNotEnoughBalanceForGas
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:69](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L69)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:69](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L69)

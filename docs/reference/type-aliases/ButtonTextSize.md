@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / ButtonTextSize
+[wallet-stack](../README.md) / ButtonTextSize
 
 # Type Alias: ButtonTextSize
 
@@ -10,4 +10,4 @@
 type ButtonTextSize = 'small' | 'medium'
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/components/Button.tsx:6](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/components/Button.tsx#L6)
+Defined in: [packages/wallet-stack/src/public/components/Button.tsx:6](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/components/Button.tsx#L6)
