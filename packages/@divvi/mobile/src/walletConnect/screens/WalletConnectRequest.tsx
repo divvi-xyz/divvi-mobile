@@ -12,6 +12,7 @@ import { Spacing } from 'src/styles/styles'
 import ActionRequest from 'src/walletConnect/screens/ActionRequest'
 import ConnectionTimedOut from 'src/walletConnect/screens/ConnectionTimedOut'
 import SessionRequest from 'src/walletConnect/screens/SessionRequest'
+import SmartAccountConversionRequest from 'src/walletConnect/screens/SmartAccountConversionRequest'
 import { WalletConnectRequestType } from 'src/walletConnect/types'
 
 type Props = BottomSheetScreenProps<StackParamList, Screens.WalletConnectRequest>
@@ -42,6 +43,10 @@ function WalletConnectRequest({ route: { params } }: Props) {
       {params.type === WalletConnectRequestType.Session && <SessionRequest {...params} />}
 
       {params.type === WalletConnectRequestType.Action && <ActionRequest {...params} />}
+
+      {params.type === WalletConnectRequestType.SmartAccountConversion && (
+        <SmartAccountConversionRequest {...params} />
+      )}
 
       {params.type === WalletConnectRequestType.TimeOut && <ConnectionTimedOut />}
     </BottomSheetScrollView>

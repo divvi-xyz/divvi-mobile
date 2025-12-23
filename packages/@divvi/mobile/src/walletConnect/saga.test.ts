@@ -24,6 +24,7 @@ import {
   denyRequest,
   sessionProposal as sessionProposalAction,
 } from 'src/walletConnect/actions'
+import { getAtomicCapabilityByWalletConnectChainId } from 'src/walletConnect/capabilities'
 import { SupportedActions, SupportedEvents, rpcError } from 'src/walletConnect/constants'
 import {
   _acceptSession,
@@ -40,6 +41,7 @@ import {
   walletConnectSaga,
 } from 'src/walletConnect/saga'
 import { WalletConnectRequestType } from 'src/walletConnect/types'
+import { getWalletAddress } from 'src/web3/saga'
 import { demoModeEnabledSelector, walletAddressSelector } from 'src/web3/selectors'
 import { getSupportedNetworkIds } from 'src/web3/utils'
 import { createMockStore } from 'test/utils'
@@ -722,10 +724,13 @@ describe('showActionRequest', () => {
           123,
         ],
         [call.fn(prepareTransactions), mockPreparedTransactions],
+        [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
+        [call.fn(getWalletAddress), mockAccount],
+        [select(demoModeEnabledSelector), false],
       ])
       .run()
 
-    // 2 calls, one in loading state and one in the action request state
+    // 2 calls: loading state, then action request state
     expect(navigate).toHaveBeenCalledTimes(2)
     expect(navigate).toHaveBeenNthCalledWith(1, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Loading,
@@ -763,7 +768,7 @@ describe('showActionRequest', () => {
       ])
       .run()
 
-    // 2 calls, one in loading state and one in the action request state
+    // 2 calls: loading state, then action request state
     expect(navigate).toHaveBeenCalledTimes(2)
     expect(navigate).toHaveBeenNthCalledWith(1, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Loading,
@@ -801,7 +806,7 @@ describe('showActionRequest', () => {
       ])
       .run()
 
-    // 2 calls, one in loading state and one in the action request state
+    // 2 calls: loading state, then action request state
     expect(navigate).toHaveBeenCalledTimes(2)
     expect(navigate).toHaveBeenNthCalledWith(1, Screens.WalletConnectRequest, {
       type: WalletConnectRequestType.Loading,
@@ -1508,6 +1513,9 @@ describe('wallet_sendCalls', () => {
           123,
         ],
         [call.fn(prepareTransactions), mockPreparedTransactions],
+        [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
+        [call.fn(getWalletAddress), mockAccount],
+        [select(demoModeEnabledSelector), false],
       ])
       .run()
 
@@ -1613,6 +1621,9 @@ describe('wallet_sendCalls', () => {
           123,
         ],
         [call.fn(prepareTransactions), mockPreparedTransactions],
+        [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
+        [call.fn(getWalletAddress), mockAccount],
+        [select(demoModeEnabledSelector), false],
       ])
       .run()
 
@@ -1702,6 +1713,9 @@ describe('wallet_sendCalls', () => {
           123,
         ],
         [call.fn(prepareTransactions), mockPreparedTransactions],
+        [call.fn(getAtomicCapabilityByWalletConnectChainId), 'unsupported'],
+        [call.fn(getWalletAddress), mockAccount],
+        [select(demoModeEnabledSelector), false],
       ])
       .run()
 
