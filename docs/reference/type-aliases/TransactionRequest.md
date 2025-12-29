@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / TransactionRequest
+[wallet-stack](../README.md) / TransactionRequest
 
 # Type Alias: TransactionRequest
 
@@ -10,7 +10,7 @@
 type TransactionRequest = object
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/prepareTransactions.ts:20](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/prepareTransactions.ts#L20)
+Defined in: [packages/wallet-stack/src/public/prepareTransactions.ts:20](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/prepareTransactions.ts#L20)
 
 ## Type declaration
 

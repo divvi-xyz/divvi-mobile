@@ -1,4 +1,4 @@
-const iosName = 'Divvi'
+const iosName = 'wallet'
 const derivedDataPath = 'ios/build'
 const sdk = 'iphonesimulator'
 
@@ -39,14 +39,14 @@ module.exports = {
     simulator: {
       type: 'ios.simulator',
       device: {
-        type: 'iPhone SE (2nd generation)',
+        type: 'iPhone SE (3rd generation)',
       },
     },
-    'simulator.15.2': {
+    'simulator.15.5': {
       type: 'ios.simulator',
       device: {
-        type: 'iPhone SE (2nd generation)',
-        os: 'iOS 15.2',
+        type: 'iPhone SE (3rd generation)',
+        os: 'iOS 15.5',
       },
     },
     'simulator.17.2': {
@@ -73,8 +73,8 @@ module.exports = {
       device: 'simulator',
       app: 'ios.release',
     },
-    'ios.release.15.2': {
-      device: 'simulator.15.2',
+    'ios.release.15.5': {
+      device: 'simulator.15.5',
       app: 'ios.release',
     },
     'ios.release.17.2': {

@@ -3,13 +3,13 @@ sidebar_position: 3
 sidebar_label: Architecture
 ---
 
-# Understanding Divvi Mobile Architecture
+# Understanding Wallet Stack Architecture
 
-This document explains the key capabilities and architecture of the Divvi Mobile framework.
+This document explains the key capabilities and architecture of the Wallet Stack framework.
 
 ## Overview
 
-Divvi Mobile represents five years of battle-tested mobile Web3 development, originally created for the Valora wallet. We've refined these building blocks through millions of user interactions, real-world security challenges, and continuous improvements to create exceptional Web3 mobile experiences.
+Wallet Stack represents five years of battle-tested mobile Web3 development, originally created for the Valora wallet. We've refined these building blocks through millions of user interactions, real-world security challenges, and continuous improvements to create exceptional Web3 mobile experiences.
 
 Now, we're making these powerful tools available to all builders. Our mission is to empower developers to create the next generation of Web3 mobile apps, scaling beyond Valora to support a diverse ecosystem of applications.
 

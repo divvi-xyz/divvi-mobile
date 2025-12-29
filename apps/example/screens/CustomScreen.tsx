@@ -1,4 +1,4 @@
-import { useWallet } from '@divvi/mobile'
+import { useWallet } from 'wallet-stack'
 import React from 'react'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { RootStackScreenProps } from './types'

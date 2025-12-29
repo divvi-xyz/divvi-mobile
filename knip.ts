@@ -47,7 +47,7 @@ const config: KnipConfig = {
         '@tsconfig/node-lts', // used in e2e/tsconfig.json
       ],
     },
-    'packages/@divvi/mobile': {
+    'packages/wallet-stack': {
       entry: ['index.js!', 'metro-config.js!', './scripts/**/*.js'],
       project: ['src/**/*.ts!', 'src/**/*.tsx!', 'src/**/*.js!'],
       ignoreDependencies: [

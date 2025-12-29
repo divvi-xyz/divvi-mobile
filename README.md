@@ -1,15 +1,15 @@
-# Divvi Mobile Framework
+# Wallet Stack Framework
 
-[![Checks](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/check.yml/badge.svg)](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/check.yml)
-[![E2E](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/e2e-main.yml/badge.svg)](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/e2e-main.yml)
-[![Tests](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/test.yml/badge.svg)](https://github.com/divvi-xyz/divvi-mobile/actions/workflows/test.yml)
-[![Codecov](https://codecov.io/gh/divvi-xyz/divvi-mobile/branch/main/graph/badge.svg)](https://codecov.io/gh/divvi-xyz/divvi-mobile)
-[![GitHub contributors](https://img.shields.io/github/contributors/divvi-xyz/divvi-mobile)](https://github.com/divvi-xyz/divvi-mobile/graphs/contributors)
+[![Checks](https://github.com/valora-xyz/wallet-stack/actions/workflows/check.yml/badge.svg)](https://github.com/valora-xyz/wallet-stack/actions/workflows/check.yml)
+[![E2E](https://github.com/valora-xyz/wallet-stack/actions/workflows/e2e-main.yml/badge.svg)](https://github.com/valora-xyz/wallet-stack/actions/workflows/e2e-main.yml)
+[![Tests](https://github.com/valora-xyz/wallet-stack/actions/workflows/test.yml/badge.svg)](https://github.com/valora-xyz/wallet-stack/actions/workflows/test.yml)
+[![Codecov](https://codecov.io/gh/valora-xyz/wallet-stack/branch/main/graph/badge.svg)](https://codecov.io/gh/valora-xyz/wallet-stack)
+[![GitHub contributors](https://img.shields.io/github/contributors/valora-xyz/wallet-stack)](https://github.com/valora-xyz/wallet-stack/graphs/contributors)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
-Divvi Mobile represents five years of battle-tested mobile Web3 development, originally created for the Valora wallet. We've refined these building blocks through millions of user interactions, real-world security challenges, and continuous improvements to create exceptional Web3 mobile experiences.
+Wallet Stack represents five years of battle-tested mobile Web3 development, originally created for the Valora wallet. We've refined these building blocks through millions of user interactions, real-world security challenges, and continuous improvements to create exceptional Web3 mobile experiences.
 
-Built on top of [Expo](https://expo.dev), the industry standard for React Native development, Divvi Mobile combines proven Web3 capabilities with modern mobile development tools. Now, we're making these powerful tools available to all builders. Our mission is to empower developers to create the next generation of Web3 mobile apps, scaling beyond Valora to support a diverse ecosystem of applications.
+Built on top of [Expo](https://expo.dev), the industry standard for React Native development, Wallet Stack combines proven Web3 capabilities with modern mobile development tools. Now, we're making these powerful tools available to all builders. Our mission is to empower developers to create the next generation of Web3 mobile apps, scaling beyond Valora to support a diverse ecosystem of applications.
 
 ## Features
 
@@ -28,7 +28,7 @@ Built on top of [Expo](https://expo.dev), the industry standard for React Native
 ## Quick Start
 
 ```bash
-yarn create expo --template https://github.com/divvi-xyz/divvi-app-starter my-app
+yarn create expo --template https://github.com/valora-xyz/wallet-stack-starter my-app
 cd my-app
 yarn install
 ```

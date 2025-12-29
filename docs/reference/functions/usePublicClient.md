@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / usePublicClient
+[wallet-stack](../README.md) / usePublicClient
 
 # Function: usePublicClient()
 
@@ -10,7 +10,7 @@
 function usePublicClient(__namedParameters): object
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/hooks/usePublicClient.ts:4](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/hooks/usePublicClient.ts#L4)
+Defined in: [packages/wallet-stack/src/public/hooks/usePublicClient.ts:4](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/hooks/usePublicClient.ts#L4)
 
 ## Parameters
 
