@@ -1,8 +1,8 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / sendTransactions
+[wallet-stack](../README.md) / sendTransactions
 
 # Function: sendTransactions()
 
@@ -10,7 +10,7 @@
 function sendTransactions(prepared): Promise<`0x${string}`[]>
 ```
 
-Defined in: [packages/@divvi/mobile/src/public/sendTransactions.ts:7](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/public/sendTransactions.ts#L7)
+Defined in: [packages/wallet-stack/src/public/sendTransactions.ts:7](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/public/sendTransactions.ts#L7)
 
 ## Parameters
 

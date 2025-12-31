@@ -5,7 +5,7 @@ import {
   usePrepareTransactions,
   useSendTransactions,
   useWallet,
-} from '@divvi/mobile'
+} from 'wallet-stack'
 import React, { useEffect, useState } from 'react'
 import {
   ActivityIndicator,

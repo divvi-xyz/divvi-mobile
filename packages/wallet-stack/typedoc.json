@@ -1,0 +1,29 @@
+{
+  // See the following for more details:
+  // - https://typedoc-plugin-markdown.org/docs/options
+  // - https://typedoc-plugin-markdown.org/plugins/frontmatter/options
+  "$schema": "https://typedoc-plugin-markdown.org/schema.json",
+  "exclude": ["**/*+(index|.test).ts"],
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "excludeProtected": true,
+  // Prevent externally resolved TypeScript files from being documented.
+  // Otherwise, we get a lot of noise in the output with viem types.
+  "excludeExternals": true,
+  "hideGenerator": true,
+  "out": "../../docs/reference",
+  "gitRevision": "main",
+  "readme": "../../docs/_reference.md",
+  "entryPoints": ["./src/public"],
+  "githubPages": false,
+  "plugin": ["typedoc-plugin-markdown", "typedoc-plugin-frontmatter"],
+  // Append the documentation index page to the readme page.
+  "mergeReadme": true,
+  "readmeFrontmatter": {
+    "title": "API reference"
+  },
+  "formatWithPrettier": true,
+  "useCodeBlocks": true,
+  // Show functions first in the index
+  "groupOrder": ["Functions", "*"]
+}

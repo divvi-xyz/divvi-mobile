@@ -7,7 +7,6 @@ module.exports = {
     {
       name: 'main',
       prerelease: 'alpha',
-      channel: 'alpha',
     },
   ],
   preset: 'conventionalcommits',

@@ -1,12 +1,12 @@
-[**@divvi/mobile**](../README.md)
+[**wallet-stack**](../README.md)
 
 ---
 
-[@divvi/mobile](../README.md) / PreparedTransactionsNotEnoughBalanceForGas
+[wallet-stack](../README.md) / PreparedTransactionsNotEnoughBalanceForGas
 
 # Interface: PreparedTransactionsNotEnoughBalanceForGas
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:64](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L64)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:64](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L64)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:64](https://
 feeCurrencies: TokenBalance[];
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:66](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L66)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:66](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L66)
 
 ---
 
@@ -26,4 +26,4 @@ Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:66](https://
 type: 'not-enough-balance-for-gas'
 ```
 
-Defined in: [packages/@divvi/mobile/src/viem/prepareTransactions.ts:65](https://github.com/divvi-xyz/divvi-mobile/blob/main/packages/@divvi/mobile/src/viem/prepareTransactions.ts#L65)
+Defined in: [packages/wallet-stack/src/viem/prepareTransactions.ts:65](https://github.com/valora-xyz/wallet-stack/blob/main/packages/wallet-stack/src/viem/prepareTransactions.ts#L65)

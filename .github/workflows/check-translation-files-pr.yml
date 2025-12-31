@@ -22,9 +22,9 @@ jobs:
         uses: tj-actions/changed-files@v45
         with:
           files: |
-            packages/@divvi/mobile/locales/*/translation.json
+            packages/wallet-stack/locales/*/translation.json
           files_ignore: |
-            packages/@divvi/mobile/locales/base/translation.json
+            packages/wallet-stack/locales/base/translation.json
       - name: Fail if translation files are changed
         if: ${{ (github.event_name != 'merge_group') && (github.head_ref != 'l10n/main') && (steps.changed-files.outputs.any_changed == 'true') }}
         run: |
