@@ -14136,10 +14136,10 @@ react-native-app-control@^1.0.2:
   resolved "https://registry.yarnpkg.com/react-native-app-control/-/react-native-app-control-1.0.2.tgz#40f9e5a76cc56b44536d8e1cd6da4d9d0c5b248e"
   integrity sha512-894KjiVLRG3+tlz93B/+LfAYcRv7ZSrObMMYFaE66rMRq/1H7EUyKH6Gf6631bACBDmN81KKK04rsnFP/lzIFQ==
 
-react-native-auth0@5.0.0-beta.5:
-  version "5.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/react-native-auth0/-/react-native-auth0-5.0.0-beta.5.tgz#44aa5ad6babd370cc506748ebfe8da6caf1efba0"
-  integrity sha512-ShkQNZNjpmBH1ylSolDonlTHnZPgpKT91kKA1rp9dLjbLLmduq/TTGIrcRlBrVzu2E4NmQKCuiEkJ6VwaywbZg==
+react-native-auth0@5.0.0-beta.6:
+  version "5.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/react-native-auth0/-/react-native-auth0-5.0.0-beta.6.tgz#2f8b4bd5f8c4e6381f7e5be343e7cf984d35b7fd"
+  integrity sha512-nAOm+rIG1mkTU+ETdLYY3GCjr/4YpQjaeKiwYHlX2PY/7NOnkWP02XCtPn2rDMyiVO+SdIGhI9TPXMKOWFGZkg==
   dependencies:
     base-64 "^1.0.0"
     jwt-decode "^4.0.0"
